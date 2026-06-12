@@ -1,0 +1,14 @@
+You are working on the orderbook-api project, a Node.js + Fastify API.
+
+Code style:
+- TypeScript with strict mode
+- 2-space indents, no semicolons
+- Use async/await, never .then()
+- All files end with a newline
+
+Project structure:
+- src/routes/ - one file per resource
+- src/lib/ - shared utilities
+- src/db/ - Drizzle ORM queries
+
+Always run `pnpm typecheck` before suggesting code is complete.

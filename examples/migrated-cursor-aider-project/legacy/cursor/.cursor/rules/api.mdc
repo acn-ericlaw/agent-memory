@@ -1,0 +1,6 @@
+## API conventions
+
+- Use POST for all mutations; never PUT or PATCH (legacy decision, do not change)
+- All endpoints return JSON with shape: { ok: boolean, data?: any, error?: string }
+- Always validate input with zod schemas in src/schemas/
+- Auth required on everything except /health and /auth/*

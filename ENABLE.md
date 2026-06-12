@@ -1,0 +1,312 @@
+# AI Enable a Repository
+
+This file tells you (the AI agent) exactly how to AI-enable a target repository
+when a user says something like:
+
+> "AI enable this repo `/path/to/target-repo`"
+> "AI enable `../my-project`"
+> "Set up AI memory for this folder"
+
+Follow every step in order. Do not skip steps. Do not copy templates blindly —
+your job is to **analyse first, detect existing AI footprint, then generate or migrate**.
+
+---
+
+## Scope of Changes — Read This First
+
+### What gets touched
+Every file operation in this protocol (read, write, move, delete) is restricted
+to the **target repository directory only**. You must never read from, modify,
+move, or list contents of:
+
+- The user's home directory (`~`, `$HOME`, `%USERPROFILE%`)
+- User-global AI config directories (`~/.claude/`, `~/.cursor/`, `~/.aider/`,
+  `~/.continue/`, `~/.codeium/`, `~/.gemini/`, `~/.config/<vendor>/`, etc.)
+- macOS Application Support (`~/Library/Application Support/`)
+- Windows AppData (`%APPDATA%`, `%LOCALAPPDATA%`)
+- System-wide paths (`/etc/`, `/usr/`, `C:\ProgramData\`)
+- Any path that resolves outside the target repo root (resolve symlinks first)
+
+If a vendor stores its primary data outside the target repo, only what is
+*inside* the repo gets migrated. The user's global AI tooling, their other
+projects, and their machine-wide config are completely untouched.
+
+If you are ever tempted to read or modify something outside the resolved
+target-repo path, stop and tell the user instead.
+
+### Why this boundary exists (design intent)
+
+This is not only a safety guardrail — it is the core philosophy of the tool.
+
+- **The user's `~/` is their personal AI environment.** Whatever vendor a
+  user prefers (Cursor, Claude Code, Aider, Continue, etc.) is their own
+  workflow choice. They will keep using it after enablement. Their personal
+  history, profile, model preferences, and global settings must remain intact.
+
+- **The repo's `memory/` is the team's shared collaboration layer.** It exists
+  so that multiple contributors using *different* AI vendors can share a
+  common project memory. It is committed to git and travels with the code.
+
+These two layers are designed to coexist. A user can keep using Cursor with
+all their personal settings, while their teammate uses Claude Code, while a
+third uses Aider — and all of them collaborate through the repo's `memory/`
+without disturbing each other's individual tooling.
+
+Migration moves only the repo-local vendor artifacts (steering files committed
+to the repo, chat history files written into the repo). Anything in the user's
+home directory is theirs and stays theirs.
+
+---
+
+## Step 1 — Locate the Target Repo
+
+Resolve the path the user provided to an absolute path.
+Confirm the directory exists. If it does not, stop and tell the user.
+
+List the top-level contents (including hidden files) of the target directory.
+Use `ls -la` or equivalent — many AI footprints live in dotfiles and dot-directories.
+
+---
+
+## Step 2 — Detect Existing AI Footprint
+
+Before analysing the codebase, check whether this repo has already been touched
+by any AI tooling. **Read `MIGRATE.md` for the full detection table and migration
+rules.** Quick checklist:
+
+**Steering files (instructions to AI):**
+- `CLAUDE.md`, `GEMINI.md`, `AGENTS.md`
+- `.cursorrules`, `.cursor/rules/*.mdc`
+- `.clinerules`, `.roorules`
+- `.windsurfrules`, `.codeiumrc`
+- `.aider.conf.yml`, `CONVENTIONS.md`
+- `.continue/config.json`
+- `.github/copilot-instructions.md`
+- `.rules` (Zed)
+
+**Memory / session / history files:**
+- `memory/` (ours — already enabled)
+- `.claude/`, `.codex/`
+- `.aider.chat.history.md`, `.aider.input.history`
+- `.continue/sessions/*.json`
+- `.cursor/`, `.windsurf/`, `.cline/`
+
+Build a list of detected footprints. Categorise each as:
+
+- **OURS** — `memory/instructions.md`, `memory/continuity.md`, `memory/sessions/`
+  exist AND match the schema in `templates/.agent/schema.md`
+- **VENDOR** — any file from the lists above that is *not* in our format
+- **AMBIGUOUS** — a file with our name (e.g. `CLAUDE.md`) but different content
+  (e.g. someone hand-wrote project rules into it before knowing about our system)
+
+---
+
+## Step 3 — Decide the Mode
+
+Based on detection, choose one of three modes:
+
+### Mode A — Fresh Enable
+No AI footprint found. Proceed to Step 4 (generate from scratch).
+
+### Mode B — Already Ours (Idempotent)
+`memory/` exists and matches our schema. Tell the user:
+> "This repo is already AI-enabled with agent-memory format.
+> Found N sessions logged. Nothing to migrate. Last session: <date> by <agent>."
+
+If they confirm they want to re-run anyway, treat as Mode A but skip any file
+that already exists unless they say "overwrite".
+
+### Mode C — Migrate from Vendor
+Vendor footprint detected. **Read `MIGRATE.md` and follow its protocol.**
+After migration completes, return to this file at Step 4 to fill any gaps.
+
+Ask the user before starting migration:
+> "Detected existing AI setup: <list of footprints>.
+> I can migrate these into the unified agent-memory format.
+> Originals will be preserved under `legacy/`. Proceed? (yes/no/dry-run)"
+
+If `dry-run`, print what would happen without writing anything.
+If `no`, ask whether to proceed with fresh enable instead, or abort.
+
+---
+
+## Step 4 — Analyse the Target Repo
+
+(Skip this step if Mode C populated everything already — go to Step 5.
+Otherwise, proceed.)
+
+Read the following files if they exist:
+
+**Identity & purpose**
+- `README.md` or `README.rst` or `README.txt`
+- `package.json` → name, description, scripts, dependencies
+- `pyproject.toml` or `setup.py` or `setup.cfg`
+- `Cargo.toml`
+- `go.mod`
+- `composer.json`
+- `*.gemspec`
+- `pubspec.yaml`
+
+**Structure signals**
+- Top-level folder names (src/, app/, lib/, api/, frontend/, backend/, etc.)
+- Presence of `Dockerfile`, `docker-compose.yml`, `.github/workflows/`
+- Presence of `Makefile`, `justfile`, `Taskfile.yml`
+- Presence of test directories (`tests/`, `spec/`, `__tests__/`, `test/`)
+
+From this analysis, determine:
+
+1. **Project name** — from package file or folder name
+2. **Primary language(s)** — from file extensions and package files
+3. **Framework / stack** — from dependencies
+4. **Project type** — web app / API / CLI / library / monorepo / data / other
+5. **Test setup** — yes/no, framework name if detectable
+6. **CI/CD** — yes/no, platform if detectable
+
+---
+
+## Step 5 — Generate or Complete Memory Files
+
+If Mode A (fresh): generate all memory files from templates, replacing every
+`{{placeholder}}` with real content derived from your analysis.
+
+If Mode C (post-migration): the migration process will have created partial
+files. Fill in any sections still containing placeholders, using your repo
+analysis. Do NOT overwrite content that migration already placed.
+
+### 5a. `memory/instructions.md`
+
+Fill in:
+- What this project actually is (from README / package description)
+- The real tech stack
+- Project-specific rules (incorporate any rules migrated from vendor steering files)
+- Conventions you observed
+
+### 5b. `memory/continuity.md`
+
+Fill in:
+- Real project name and detected status
+- Actual stack and tools
+- Today's date as `last_enabled`
+- `last_session`:
+  - If migrated from vendor history, use the most recent session date from those logs
+  - Otherwise `(none yet)`
+- **repo:** write the path `~`-relative (e.g. `~/projects/foo`) — never an absolute
+  `/Users/<name>/…` (or `/home/<name>/…`) path. `memory/` is committed to git and
+  shared across the team, so absolute home paths would leak the enabling user's
+  username to everyone.
+- Open Threads: include any TODOs surfaced during analysis or migration
+
+### 5c. `memory/sessions/`
+
+If Mode C, sessions will already be populated from migrated history.
+Otherwise create the directory with a `.gitkeep` file.
+
+### 5d. `.agent/schema.md`
+
+Copy `templates/.agent/schema.md` verbatim. No customisation.
+
+---
+
+## Step 6 — Install Bootstrap Files
+
+Copy from `templates/` into target repo root:
+
+- `AGENTS.md`
+- `CLAUDE.md`
+- `GEMINI.md`
+- `.cursorrules`
+- `.windsurfrules`
+- `.github/copilot-instructions.md`
+
+`CLAUDE.md` and `GEMINI.md` contain `{{PROJECT_NAME}}` and `{{PROJECT_ONELINE}}`
+placeholders — fill them from your Step 4 analysis (project name + a one-line
+description) so eagerly-loaded runtimes get context without an extra hop. The
+remaining bootstrap files install verbatim.
+
+**Conflict handling:**
+- If Mode C ran and a vendor bootstrap file was migrated, the migration step
+  already moved it to `legacy/` — proceed to install our version.
+- If the file exists but is identical to our template, skip silently.
+- Otherwise ask the user per-file: overwrite / skip / rename existing to `.bak`.
+
+Create `.github/` in the target if it does not exist.
+
+---
+
+## Step 7 — Update Target .gitignore
+
+If `.gitignore` exists in the target, ensure the following block is present
+(append if missing, do not duplicate):
+
+```
+# AI memory (agent-memory system)
+# memory/ and .agent/ are intentional — do not ignore them
+legacy/   # archived vendor AI files from migration (optional to commit)
+```
+
+Do not create `.gitignore` if it does not exist.
+
+---
+
+## Step 8 — Report
+
+Print a clear summary including migration details if Mode C ran:
+
+```
+✓ AI-enabled: /absolute/path/to/target-repo
+  Mode: <Fresh Enable | Migrated from <vendors> | Already Ours>
+
+  Detected:
+  • Project:    <name>
+  • Language:   <language>
+  • Stack:      <stack>
+  • Type:       <type>
+
+  Migrated (Mode C only):
+  • <vendor>:  <files>  →  <where>
+  • Sessions converted: N (from <oldest>  to  <newest>)
+
+  Created:
+  • memory/instructions.md
+  • memory/continuity.md
+  • memory/sessions/   (N session files)
+  • .agent/schema.md
+  • AGENTS.md, CLAUDE.md, GEMINI.md, .cursorrules,
+    .windsurfrules, .github/copilot-instructions.md
+
+  Preserved (Mode C only):
+  • legacy/<original-files>  (originals, do not edit)
+
+  Skipped:      <any>
+
+  Next steps:
+  1. Review memory/instructions.md and memory/continuity.md
+  2. Verify migrated sessions look correct (memory/sessions/)
+  3. cd /path/to/target-repo
+  4. git add . && git commit -m "chore: AI-enable repo (migrated from <vendor>)"
+```
+
+---
+
+## Step 9 — Offer Post-Enable Actions
+
+After reporting, offer:
+
+> "Would you like me to:
+>   (a) Open memory/continuity.md so you can review what I detected
+>   (b) Walk through the migrated sessions
+>   (c) Both
+>   (d) Done"
+
+Respond accordingly.
+
+---
+
+## Notes
+
+- Never modify source code in the target repo.
+- Never modify `package.json`, `Cargo.toml`, etc.
+- Only create/modify files within: `memory/`, `.agent/`, `legacy/`,
+  `.github/copilot-instructions.md`, and the bootstrap files listed in Step 6.
+- If the target repo is the agent-memory tool itself, say so and stop.
+- Always preserve vendor originals under `legacy/` — they are user data.
