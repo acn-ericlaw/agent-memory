@@ -12,6 +12,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 3.2.0, 6/13/2026
+
+> Protocol clarifications from a real-work field report (a Node.js→Rust refactor of an
+> enabled repo, driven entirely by that repo's own memory layer). Documentation and
+> wording only — no memory-file shape change; already-enabled repos pick these up via
+> the `UPGRADE.md` 3.1.0→3.2.0 rung.
+
+### Added
+
+1. After-session **checklist** in `AGENTS.md` (root + template), plus an optional
+   Stop/pre-commit hook recipe (`docs/optional-ritual-hook.md`) to prompt the ritual
+   without breaking the no-code core.
+2. Stack-fact **altitude rule**: `continuity.md` → `## Stack & Tools` is the canonical
+   live home for language/deps/versions; `instructions.md` keeps a high-level
+   descriptor and points there (notes added to both templates and `.agent/schema.md`).
+
+### Removed
+
+N/A.
+
+### Changed
+
+1. **Session model** defined precisely: a session is **one log-write** (a long
+   conversation may produce several), and the title's `start` is now **best-effort**
+   (the persist-time `end` is the required ordering stamp) — no more fabricated starts.
+2. **Metadata ownership** pinned and a contradiction fixed: `ENABLE.md` Step 5b seeded
+   new facts as `tier: active` while `DECAY.md`/`AGENTS.md` said `tier: working` — now
+   uniformly **born `working`**. The agent seeds `id`/`created`/`tier`/`uses: 1`; the
+   review owns `uses`/`last_used`/`tier` thereafter.
+3. **Open-Thread archival** rule surfaced to the agent: mark `[x]` and leave it for the
+   review to sweep — don't self-archive.
+
+---
 ## Version 3.1.0, 6/13/2026
 
 > Propagate the AI-infrastructure `.gitignore` into enabled repos. Personal AI-IDE

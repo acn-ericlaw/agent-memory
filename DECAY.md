@@ -36,6 +36,15 @@ when rendered, readable and editable by any agent or human, diff-friendly.
 There is no `strength` field. Importance is expressed structurally: `tier: core`,
 or membership in the `## Architectural Invariants` section.
 
+### What the agent sets at creation vs. what the review owns
+At creation the agent writes only: `id`, `created: <today>`, `tier: working`, and
+seeds `last_used: <today> | uses: 1` — the creating session names the fact under
+`Created` in its `## Memory References`, so `1` is the honest first count. After
+creation the agent **never hand-edits `uses`, `last_used`, or `tier`**; it records
+references in session logs (§2) and the review recomputes those three (the "yes"
+rows above). `id` and `created` are immutable. Ordinary facts are born `working`
+(§3); only `## Architectural Invariants` facts are born `core`.
+
 ### Assigning an id
 Lowercase, hyphenated, derived from the fact's gist (`webhook-fire-forget`,
 `drizzle-over-prisma`). Unique within `continuity.md`. Once assigned it is

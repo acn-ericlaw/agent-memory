@@ -22,6 +22,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 2.0.0 | Vendor detection + migration (Mode C); idempotent re-runs (Mode B) |
 | 3.0.0 | Evolving memory: fact metadata + ids, decay-policy, review ritual, archive |
 | 3.1.0 | AI-infrastructure `.gitignore` propagated into enabled repos (created or appended) |
+| 3.2.0 | Protocol clarifications: session = one log-write (start best-effort); metadata ownership; stack-fact altitude; after-session checklist |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -69,10 +70,11 @@ Backward-compatible: do not remove or rewrite existing content; only enrich and 
    (Key Decisions, Conventions, Stack lines, User Preferences, …):
    - assign a unique kebab `id`,
    - append the footer
-     `<!-- id: … | created: <today> | last_used: <today> | uses: 1 | tier: active -->`.
+     `<!-- id: … | created: <today> | last_used: <today> | uses: 1 | tier: working -->`.
    Unchecked Open Threads (`- [ ]`) get an id but are pinned (never decay). Do not
    fabricate history — `created`/`last_used` = today, `uses` = 1 is the honest
-   baseline for a repo that had no metadata before.
+   baseline for a repo that had no metadata before. Facts are born `working`; the
+   first review re-tiers them from the session-log event stream.
 
 2. **Add `## Architectural Invariants`** immediately above `## Key Decisions`. Seed
    it from hard constraints already visible in `memory/instructions.md` (things that
@@ -131,3 +133,32 @@ those entries never reached the target. Bring the target up to the current behav
 
 4. **Report**: whether `.gitignore` was created or appended, and how many entries
    were added.
+
+---
+
+## Rung: 3.1.0 → 3.2.0 — protocol clarifications (session model, metadata ownership, altitude)
+
+Documentation/protocol clarifications from a real-work field report. **No memory-file
+*shape* change** — re-sync the generic protocol docs and leave existing facts alone;
+the review reconciles tiers as usual.
+
+1. **Re-sync the generic protocol docs** (copy verbatim from the tool root / templates,
+   only where different): `DECAY.md`, `REVIEW.md`, `.agent/schema.md`
+   (from `templates/.agent/schema.md`), and `AGENTS.md` (from `templates/AGENTS.md`).
+   These now define a session as **one log-write** (several per conversation OK) with
+   `start` **best-effort**; pin metadata ownership (agent seeds `id`/`created`/`tier` +
+   `uses: 1`, the review owns `uses`/`last_used`/`tier`); state the
+   leave-`[x]`-for-the-review rule; mark `## Stack & Tools` as the canonical stack
+   home; and add an after-session checklist.
+
+2. **Add the stack-altitude notes** (only if absent, don't move existing content): in
+   `memory/instructions.md` that precise deps/versions live in `continuity.md` →
+   `## Stack & Tools`, and the canonical-home note on that section.
+
+3. **Don't rewrite existing fact metadata.** "Born `working`" applies to facts created
+   from now on; leave already-stamped tiers for the review to reconcile.
+
+4. **Stamp** `.agent/version.md` → `version: 3.2.0`, `last_upgraded: <today>`,
+   preserving `enabled_with` and `mode`.
+
+5. **Report**: which docs were re-synced and the notes added.

@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v3.1.0 — evolving-memory layer (v3.0.0) + AI-infrastructure `.gitignore` propagation (v3.1.0)
+- **status:** v3.2.0 — evolving memory (v3.0.0), `.gitignore` propagation (v3.1.0), protocol clarifications from field report (v3.2.0)
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-161103)
+- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-223743)
 - **last_review:** (none yet)
 
 ## What's Been Built
@@ -186,6 +186,22 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   preserved). Target not committed (separate repo; offered to user).
   <!-- id: gitignore-v310-mercury-validation | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
 
+### Shipped — v3.2.0: protocol clarifications from a real-work field report (2026-06-13)
+- [x] **Acted on a field report** from a separate Claude Code session that refactored
+  `~/sandbox/simple-proxy` Node.js→Rust (itself validating the self-contained-target
+  design). Shipped 5 fixes as v3.2.0 (docs/wording, no file-shape change): (1) session
+  = **one log-write** (several per conversation OK), `start` now **best-effort** — no
+  fabricated timestamps; (2) **metadata ownership** pinned + a real contradiction fixed
+  (ENABLE Step 5b seeded new facts `tier: active` while DECAY/AGENTS said `working` →
+  now uniformly **born working**; agent seeds id/created/tier/uses:1, review owns
+  uses/last_used/tier); (3) surfaced the **leave-`[x]`-for-the-review** rule to the
+  agent; (4) **stack-fact altitude** — `continuity.md` Stack & Tools is canonical,
+  instructions points there; (5) **after-session checklist** in AGENTS + an optional
+  hook recipe (`docs/optional-ritual-hook.md`). Touched DECAY, schema, both AGENTS,
+  ENABLE, templates, UPGRADE (+3.1.0→3.2.0 rung), VERSION→3.2.0, README/CHANGELOG.
+  Report archived at `docs/assessments/2026-06-13-protocol-field-report.md`.
+  <!-- id: field-report-v320 | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: working -->
+
 ### First real-work dogfood — enabled `~/sandbox/simple-proxy` (Mode A, 2026-06-13)
 - [x] **Real Mode A fresh enable** of a zero-dep Node.js TCP-proxy CLI (no prior AI
   footprint). 15 files generated, source untouched, verified. Logged 7 refactor Open
@@ -231,8 +247,10 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   session; lean on archive/INDEX.md (+ optional sessions/INDEX.md) as the no-code
   mitigation if memory grows large. Full vector/semantic retrieval stays out of scope.
   <!-- id: backlog-provenance-retrieval | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
-- [ ] **Dogfooding on real work.** User will use the tool on a real project to gather
-  insights for further improvements — feed those back into this backlog. (Stated 2026-06-13.)
+- [ ] **Dogfooding on real work (ongoing).** Already delivering: the simple-proxy
+  enable surfaced v3.1.0 (`.gitignore`), and the simple-proxy Node→Rust refactor's
+  field report drove v3.2.0 (protocol clarifications). Keep feeding real-work insights
+  back into this backlog. (Stated 2026-06-13.)
   <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
 
 - [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**

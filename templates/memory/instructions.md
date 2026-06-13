@@ -8,6 +8,10 @@
 **Primary language:** {{PRIMARY_LANGUAGE}}
 **Framework / stack:** {{STACK}}
 
+> High-level only. The precise dependency list and current versions live in
+> `memory/continuity.md` → `## Stack & Tools` (the live source of truth) — keep this
+> section enduring and don't duplicate them here.
+
 ## Repository Structure
 
 {{REPO_STRUCTURE_SUMMARY}}

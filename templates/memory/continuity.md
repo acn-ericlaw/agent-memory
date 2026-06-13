@@ -21,6 +21,9 @@
 
 ## Stack & Tools
 
+> Canonical live home for the current stack — language version, dependencies, tool
+> versions. `instructions.md` keeps only a high-level descriptor and points here.
+
 {{STACK_DETAILS}}
 
 ## Architectural Invariants
@@ -39,6 +42,9 @@
 {{CONVENTIONS_SUMMARY}}
 
 ## Open Threads
+
+> Mark completed items `- [x]` and leave them in place — the review sweeps them to
+> the archive once older than `archive_window` sessions. Don't archive them by hand.
 
 {{OPEN_THREADS}}
 

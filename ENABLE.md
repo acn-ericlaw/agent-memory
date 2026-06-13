@@ -219,7 +219,10 @@ analysis. Do NOT overwrite content that migration already placed.
 
 Fill in:
 - What this project actually is (from README / package description)
-- The real tech stack
+- The tech stack at an **enduring, high-level** altitude (e.g. "async Rust CLI") —
+  *not* a precise dependency list. The volatile specifics (current language version,
+  deps, tool versions) belong in `continuity.md` → `## Stack & Tools`; don't
+  duplicate them here. Point to continuity instead.
 - Project-specific rules (incorporate any rules migrated from vendor steering files)
 - Conventions you observed
 
@@ -227,7 +230,8 @@ Fill in:
 
 Fill in:
 - Real project name and detected status
-- Actual stack and tools
+- **`## Stack & Tools`** — the canonical live home for the current language version,
+  dependencies, and tool versions (the precise facts `instructions.md` defers here)
 - Today's date as `last_enabled`
 - `last_session`:
   - If migrated from vendor history, use the most recent session date from those logs
@@ -242,9 +246,11 @@ Fill in:
   "no runtime deps"). If none are obvious, remove the section. Facts here never decay.
 - Open Threads: include any TODOs surfaced during analysis or migration
 - **Metadata footers:** give every fact you write a kebab `id` and the footer
-  `<!-- id: … | created: <today> | last_used: <today> | uses: 1 | tier: active -->`
-  (Architectural Invariants get `tier: core`; unchecked Open Threads get an id but
-  never decay). See `.agent/schema.md`.
+  `<!-- id: … | created: <today> | last_used: <today> | uses: 1 | tier: working -->`.
+  Ordinary facts are born `tier: working`; **Architectural Invariants get `tier: core`**;
+  unchecked Open Threads get an id but never decay. `uses: 1` / `last_used: today` is
+  the honest seed (the enable counts as the first reference) — the review owns those
+  fields thereafter; don't hand-edit them. See `.agent/schema.md` and `DECAY.md` §1.
 
 ### 5c. `memory/sessions/`
 

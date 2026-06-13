@@ -60,23 +60,41 @@ no context — facts fade to the archive but are never deleted.
 
 ### After Every Session
 
+A "session" is **one log-write** — the work since the last log, not necessarily a
+whole conversation. A long, multi-task conversation may produce several logs; that's
+expected (the decay math counts log files — `DECAY.md` §4).
+
 1. **Create** `memory/sessions/YYYY-MM-DD-HHMMSS.md` using the UTC timestamp at
-   **persist time** (when you write the file — i.e. session end). Use
-   `date -u +%Y-%m-%d-%H%M%S` or equivalent; omit colons for cross-platform
-   compatibility. Title line: `# Session (startZ - endZ)` — full ISO 8601 with
-   milliseconds for both. Write one session block. Never append to another
-   contributor's session file.
+   **persist time** (when you write the file). Use `date -u +%Y-%m-%d-%H%M%S` or
+   equivalent; omit colons for cross-platform compatibility. Title line:
+   `# Session (endZ)` — the persist-time UTC stamp (full ISO 8601 ms) is required; a
+   start time is optional/best-effort, so don't fabricate one. Never append to
+   another contributor's session file.
    Include a `## Memory References` section (fact ids referenced / created /
    reactivated) — the event log the review ritual reads (`DECAY.md`).
 2. **Update** `memory/continuity.md`:
    - Set `last_session` to today's date and your agent name.
-   - Check off completed Open Threads.
-   - Add new Open Threads; give new facts a kebab `id` + metadata footer, `tier: working`.
-   - Update any changed facts.
+   - Mark completed Open Threads `- [x]` and **leave them** — the review sweeps them
+     once older than `archive_window`; don't archive them by hand.
+   - Add new Open Threads; give each new fact a kebab `id` + footer: set `id`,
+     `created`, `tier: working` (or `core` for an invariant), and seed
+     `last_used: today | uses: 1`. Don't hand-edit `uses`/`last_used`/`tier` after —
+     the review owns them.
+   - Update the substance of any changed fact (not its usage metadata).
 3. **Review cadence.** If `sessions_since_last_review ≥ review_every`
    (`memory/decay-policy.md`) or `continuity.md` exceeds `continuity_max_lines`, run
    the review ritual (`REVIEW.md`). Also run on demand if the user says "review memory".
 4. Remind the user to commit: `git add memory/ && git commit -m "session YYYY-MM-DD [agent]"`
+
+**After-session checklist** (the ritual is convention — run it each time):
+- [ ] session log written (persist-time filename + `## Memory References`)
+- [ ] `continuity.md`: `last_session` set, threads checked, new facts have footers
+- [ ] review run if cadence/size triggered (`REVIEW.md`)
+- [ ] reminded the user to commit `memory/`
+
+> Optional reinforcement: wire a lightweight Stop or pre-commit hook so this ritual
+> is *prompted*, not merely documented (see `docs/optional-ritual-hook.md`). It stays
+> optional — the protocol itself is no-code.
 
 ### Multi-Agent Continuity
 
