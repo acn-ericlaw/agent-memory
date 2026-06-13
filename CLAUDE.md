@@ -31,7 +31,7 @@ of two modes:
   `memory/sessions/` files *before responding*; append a session log and update
   `continuity.md` *after*.
 - **AI-enabling another repo** (user says "AI enable `/path`") → read `ENABLE.md`
-  and follow its 9-step protocol exactly. For vendor migration specifics, read
+  and follow its 10-step protocol exactly. For vendor migration specifics, read
   `MIGRATE.md`. Do not improvise from memory.
 
 ## Architecture — How the Files Relate

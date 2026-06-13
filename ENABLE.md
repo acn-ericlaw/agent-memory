@@ -161,6 +161,14 @@ From this analysis, determine:
 4. **Project type** — web app / API / CLI / library / monorepo / data / other
 5. **Test setup** — yes/no, framework name if detectable
 6. **CI/CD** — yes/no, platform if detectable
+7. **Version (source of truth)** — read from the canonical build manifest only
+   (`pom.xml` → `<version>`, `package.json` → `"version"`, `Cargo.toml` →
+   `version =`, `pyproject.toml` → `version =`, `*.gemspec` → `spec.version`).
+   If README, docs, comments, or other files reference a *different* version
+   string, **do not fix the drift** — log it as an Open Thread in
+   `memory/continuity.md`:
+   `- [ ] Version drift: build manifest is X.Y.Z but <file(s)> reference a different version — verify and align`
+   Resolving drift is the user's responsibility, not the enablement step.
 
 ---
 
@@ -247,7 +255,36 @@ Do not create `.gitignore` if it does not exist.
 
 ---
 
-## Step 8 — Report
+## Step 8 — Verify
+
+Before reporting, sanity-check the output. Fix any issue found here before
+proceeding — the report should describe a correct state, not optimistically
+describe what was intended.
+
+1. **Files exist.** Confirm all of the following are present in the target repo:
+   - `memory/instructions.md`, `memory/continuity.md`, `memory/sessions/`
+   - `.agent/schema.md`
+   - `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`,
+     `.github/copilot-instructions.md`
+
+2. **No unfilled placeholders.** Grep for `{{` in every file you created.
+   If any remain, fill them now.
+
+3. **Mode C — integration is faithful.** For each vendor file migrated, confirm
+   that at least the project name, stack, or a key rule from the original appears
+   in `memory/instructions.md`. If the vendor content is absent, re-run the
+   integration step for that vendor.
+
+4. **Mode C — session files are well-formed.** Confirm each session file under
+   `memory/sessions/` has a title line matching
+   `# Session (YYYY-MM-DDThh:mm:ss.mmmZ - YYYY-MM-DDThh:mm:ss.mmmZ)`.
+
+Log any issue you cannot fix as an Open Thread in `memory/continuity.md` and
+note it in the report.
+
+---
+
+## Step 9 — Report
 
 Print a clear summary including migration details if Mode C ran:
 
@@ -287,7 +324,7 @@ Print a clear summary including migration details if Mode C ran:
 
 ---
 
-## Step 9 — Offer Post-Enable Actions
+## Step 10 — Offer Post-Enable Actions
 
 After reporting, offer:
 
