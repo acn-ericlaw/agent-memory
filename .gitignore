@@ -1,0 +1,28 @@
+# Vendor-specific AI infrastructure — personal / per-machine runtime state.
+#
+# IMPORTANT: this repo deliberately tracks AI *steering* files — CLAUDE.md,
+# GEMINI.md, AGENTS.md, .cursorrules, .windsurfrules,
+# .github/copilot-instructions.md — and the templates/ that ship them. Those are
+# the product and must stay tracked. Only the personal runtime/IDE directories and
+# local history/caches below are ignored (the "infrastructure", not the steering).
+
+# Agent / AI-IDE runtime directories
+.kiro/
+.claude/
+.cursor/
+.continue/
+.windsurf/
+.codeium/
+.gemini/
+.cline/
+.roo/
+.zed/
+.codex/
+
+# Aider local history / cache (steering files like .aider.conf.yml stay tracked)
+.aider.chat.history.md
+.aider.input.history
+.aider.tags.cache*
+
+# OS / editor noise
+.DS_Store

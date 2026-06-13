@@ -128,8 +128,18 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `last_review`, and Memory References in session logs going forward. Legacy facts in
   What's Been Built / Key Decisions are grandfathered as `active` (no metadata footers
   yet); backfill them with ids/metadata if/when desired (or let the first review do it).
-- [ ] **Validate** the new protocol docs read unambiguously (manual review) and run a
-  real review cycle once this repo accrues ~10 post-adoption sessions.
+- [x] **Validate version-aware Mode B + UPGRADE.md** — test-drove on TWO real
+  pre-versioning repos (2026-06-13), both 2.x → 3.0.0 in place, both idempotent:
+  - `~/sandbox/mercury-composable` (orig. Mode C, git-tracked): committed `0d4cc3b9`;
+    promote-into-invariants style (2 hard constraints moved up from Key Decisions).
+  - `~/sandbox/rust/rust_event_bus_example` (orig. Mode A, **not git-tracked**):
+    additive-only style (no content moved); source untouched. (No git → not committed.)
+  All files present, no placeholder/path leaks, sessions untouched, no protocol
+  ambiguity. Validated across both original modes (A, C) and git/non-git.
+- [ ] **Run a real review cycle** once a repo accrues ~10 post-adoption sessions
+  (validates REVIEW.md's recompute/archive/sweep end-to-end with real session logs).
+- [ ] Optionally update `examples/` to mention the mercury upgrade as a real Mode B
+  upgrade fixture (analogous to rust-event-bus being a real Mode A).
 - [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**
   (2026-06-13) in favor of the markdown-native evolving-memory layer above. Not
   deleted — revisit if the markdown layer hits limits. Original open questions:
