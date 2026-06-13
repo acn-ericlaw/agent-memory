@@ -92,9 +92,33 @@ paths inside it. Examples:
 
 ### B. Extract steering content → `memory/instructions.md`
 
-Read the vendor's steering file (the "instructions" equivalent). If the content
-is non-trivial (more than a one-line pointer), append a section to
-`memory/instructions.md` under the heading:
+Read the vendor's steering file (the "instructions" equivalent). Before writing
+anything, assess its quality:
+
+**Does the file contain project-specific context** — what the project is, its
+tech stack, architecture, key decisions? If yes, it is *project instructions*
+and warrants the integration path. If it contains only coding conventions, style
+rules, or AI behavioral directives with no project context, use the verbatim path.
+
+**Integration path — project instructions:**
+
+Map content into the appropriate sections of `memory/instructions.md` instead
+of appending it verbatim:
+
+- Project description / purpose → "What this project is" section
+- Tech stack, frameworks, tools → stack section
+- Architecture, module layout → relevant descriptive sections
+- Coding conventions, style rules → conventions section
+- AI-specific behavioral directives that don't fit the schema → append under
+  `## Migrated rules from <vendor>` (these are the residue after integration)
+
+If `memory/instructions.md` does not yet exist, create it from the template and
+fill the relevant sections from the vendor content.
+
+**Verbatim path — AI rules only:**
+
+If the content is non-trivial (more than a one-line pointer) but contains no
+project-specific context, append it to `memory/instructions.md` under:
 
 ```markdown
 ## Migrated rules from <vendor>
@@ -144,10 +168,16 @@ In `memory/continuity.md`, add to Open Threads:
 
 ## Per-Vendor Protocols
 
+> **Before writing any steering content**, apply the quality assessment in
+> Section B above. Per-vendor instructions below describe what to read and
+> archive — the integration vs. verbatim decision is always made by Section B.
+
 ### Claude Code
 
 **Steering:** `CLAUDE.md` (non-ours version)
-- Append entire content under `## Migrated rules from Claude Code` in `memory/instructions.md`.
+- Apply the Section B quality assessment. A hand-written `CLAUDE.md` often
+  contains real project instructions and warrants the integration path, not
+  verbatim append.
 
 **History:** `.claude/projects/<project-id>/sessions/` or similar
 - Claude Code stores sessions as JSONL files (`<uuid>.jsonl`).

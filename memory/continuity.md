@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v2 complete — added detection and migration of vendor AI files
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-12 | agent: Claude Code (test drive on mercury-composable)
+- **last_session:** 2026-06-12 | agent: Claude Code
 
 ## What's Been Built
 
@@ -44,13 +44,14 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 ## Open Threads
 
 ### Design improvements from first real test drive (mercury-composable, 2026-06-12)
-- [ ] **MIGRATE.md: add an "integration" path for good steering files.** When a
-  vendor `CLAUDE.md`/`.cursorrules`/etc. is already quality project instructions,
-  integrate it into `memory/instructions.md` schema sections instead of dumping it
-  verbatim under `## Migrated rules`. (Highest value — validated on a real repo.)
-- [ ] **Fix `legacy/` gitignore contradiction.** ENABLE.md Step 7 gitignores
-  `legacy/`, but README/MIGRATE promise originals are "preserved." Either don't
-  ignore `legacy/` (so it commits) or change the promise to "local archive only."
+- [x] **MIGRATE.md: add an "integration" path for good steering files.** Section B
+  of the General Migration Workflow now has a quality gate: project instructions
+  (stack, architecture, purpose) → integrated into schema sections; AI rules only
+  → verbatim append. Per-vendor protocols have a cross-reference note so the gate
+  always applies.
+- [x] **Fix `legacy/` gitignore contradiction.** Removed `legacy/` from the
+  Step 7 gitignore block; it now commits to git, consistent with the "preserved"
+  promise in README/MIGRATE.
 - [ ] **Add source-of-truth / version-drift guidance** to ENABLE.md Step 4
   (prefer build manifest e.g. pom.xml/package.json; surface drift as an Open Thread).
 - [ ] **Make migration git-aware** in MIGRATE.md (use `git mv` for tracked files to

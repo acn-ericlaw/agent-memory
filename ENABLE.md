@@ -240,8 +240,7 @@ If `.gitignore` exists in the target, ensure the following block is present
 
 ```
 # AI memory (agent-memory system)
-# memory/ and .agent/ are intentional — do not ignore them
-legacy/   # archived vendor AI files from migration (optional to commit)
+# memory/, .agent/, and legacy/ are intentional — do not ignore them
 ```
 
 Do not create `.gitignore` if it does not exist.
