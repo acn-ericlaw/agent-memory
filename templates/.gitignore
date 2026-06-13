@@ -1,0 +1,20 @@
+# === agent-memory: AI infrastructure (personal / per-machine — do not commit) ===
+# Steering files (CLAUDE.md, GEMINI.md, AGENTS.md, .cursorrules, .windsurfrules,
+# .github/copilot-instructions.md) and the shared memory layer (memory/, .agent/,
+# legacy/) are intentionally TRACKED — they are committed and shared across the
+# team, so do NOT ignore them. Only personal AI-IDE runtime directories and local
+# history/caches are ignored below (the "infrastructure", not the steering).
+.kiro/
+.claude/
+.cursor/
+.continue/
+.windsurf/
+.codeium/
+.gemini/
+.cline/
+.roo/
+.zed/
+.codex/
+.aider.chat.history.md
+.aider.input.history
+.aider.tags.cache*

@@ -116,6 +116,7 @@ it in place** — additively, never destructively.
 | 1.0.0 | Fresh enable from templates (Mode A) |
 | 2.0.0 | Vendor detection + migration (Mode C); idempotent re-runs (Mode B) |
 | 3.0.0 | Evolving memory: fact metadata + ids, decay-policy, review ritual, archive |
+| 3.1.0 | AI-infrastructure `.gitignore` propagated into enabled repos |
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the

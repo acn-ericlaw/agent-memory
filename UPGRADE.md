@@ -21,6 +21,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 1.0.0 | Fresh enable from templates (Mode A) |
 | 2.0.0 | Vendor detection + migration (Mode C); idempotent re-runs (Mode B) |
 | 3.0.0 | Evolving memory: fact metadata + ids, decay-policy, review ritual, archive |
+| 3.1.0 | AI-infrastructure `.gitignore` propagated into enabled repos (created or appended) |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -105,3 +106,28 @@ Backward-compatible: do not remove or rewrite existing content; only enrich and 
 
 10. **Report**: facts backfilled (N), files created/installed, where the policy and
     archive now live, and a reminder to populate `## Architectural Invariants`.
+
+---
+
+## Rung: 3.0.0 → 3.1.0 — propagate the AI-infrastructure `.gitignore`
+
+Additive: the enabling user's personal AI-IDE runtime directories (`.claude/`,
+`.kiro/`, `.cursor/`, …) should not be committed to the shared repo. Earlier
+versions only added a comment to an existing `.gitignore` and never created one, so
+those entries never reached the target. Bring the target up to the current behavior.
+
+1. **Apply the managed `.gitignore` block** exactly as `ENABLE.md` Step 7 describes
+   (the same logic — keep them in lockstep): create from `templates/.gitignore` if
+   the target has none, otherwise add the sentinel-headed block and **only the entries
+   not already present anywhere in the file** (de-duplicate — an older enable or the
+   user may already ignore `.kiro/` etc.). The sentinel is
+   `# === agent-memory: AI infrastructure (personal / per-machine — do not commit) ===`.
+
+2. **Never remove or reorder** existing `.gitignore` entries — add-only. Adding a
+   path does not untrack already-committed files, so this is safe.
+
+3. **Stamp** `.agent/version.md` → `version: 3.1.0`, `last_upgraded: <today>`,
+   preserving `enabled_with` and `mode`.
+
+4. **Report**: whether `.gitignore` was created or appended, and how many entries
+   were added.

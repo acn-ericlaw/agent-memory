@@ -305,17 +305,34 @@ Create `.github/` in the target if it does not exist.
 
 ---
 
-## Step 7 — Update Target .gitignore
+## Step 7 — Install / Update Target .gitignore
 
-If `.gitignore` exists in the target, ensure the following block is present
-(append if missing, do not duplicate):
+Personal AI-IDE runtime directories (`.claude/`, `.kiro/`, `.cursor/`, …) are
+per-machine state that should never be committed to the shared repo — but the
+agent-memory *steering* files and the `memory/` layer **must** stay tracked. The
+canonical managed block that encodes this lives in `templates/.gitignore`; its first
+line is a sentinel:
 
 ```
-# AI memory (agent-memory system)
-# memory/, .agent/, and legacy/ are intentional — do not ignore them
+# === agent-memory: AI infrastructure (personal / per-machine — do not commit) ===
 ```
 
-Do not create `.gitignore` if it does not exist.
+Apply it idempotently. In every case, **de-duplicate**: an entry that already appears
+anywhere in the file (e.g. an older enable or the user already ignores `.kiro/`) is
+never added a second time, even under a different heading.
+
+- **No `.gitignore` in the target** → create one by copying `templates/.gitignore`
+  verbatim.
+- **`.gitignore` exists** → make sure the managed block is present and complete:
+  - if the sentinel line is absent, append a blank line, the sentinel header, and the
+    comment — then only the entries not already present elsewhere in the file;
+  - if the sentinel is present, add under it only the template entries still missing.
+  - if every template entry is already present (sentinel or not), make no change.
+
+Never remove, rewrite, or reorder the user's existing `.gitignore` entries — only
+add. Adding a path to `.gitignore` does not untrack files already committed, so this
+is safe even if a vendor dir was previously committed (e.g. before a Mode C migration
+moved it to `legacy/`).
 
 ---
 
@@ -332,6 +349,8 @@ describe what was intended.
    - `DECAY.md`, `REVIEW.md`
    - `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`,
      `.github/copilot-instructions.md`
+   - `.gitignore` exists and contains the agent-memory sentinel line plus the
+     AI-infrastructure entries (Step 7).
    - `.agent/version.md` records the version from this tool's root `VERSION`.
 
 2. **No unfilled placeholders.** Grep for `{{` in every file you created.
@@ -379,6 +398,7 @@ Print a clear summary including migration details if Mode C ran:
   • DECAY.md, REVIEW.md
   • AGENTS.md, CLAUDE.md, GEMINI.md, .cursorrules,
     .windsurfrules, .github/copilot-instructions.md
+  • .gitignore  (created | updated — AI-infrastructure entries)
 
   Preserved (Mode C only):
   • legacy/<original-files>  (originals, do not edit)
@@ -413,7 +433,8 @@ Respond accordingly.
 - Never modify source code in the target repo.
 - Never modify `package.json`, `Cargo.toml`, etc.
 - Only create/modify files within: `memory/`, `.agent/`, `legacy/`, `DECAY.md`,
-  `REVIEW.md`, `.github/copilot-instructions.md`, and the bootstrap files listed in
-  Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a target.)
+  `REVIEW.md`, `.gitignore` (add-only, never remove existing entries),
+  `.github/copilot-instructions.md`, and the bootstrap files listed in Step 6.
+  (`UPGRADE.md` and `VERSION` are tool-only — never written into a target.)
 - If the target repo is the agent-memory tool itself, say so and stop.
 - Always preserve vendor originals under `legacy/` — they are user data.

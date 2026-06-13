@@ -7,24 +7,44 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v2 complete — added detection and migration of vendor AI files
+- **status:** v3.1.0 — evolving-memory layer (v3.0.0) + AI-infrastructure `.gitignore` propagation (v3.1.0)
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-024537)
+- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-161103)
 - **last_review:** (none yet)
 
 ## What's Been Built
 
-- `ENABLE.md` — 9-step protocol with detection (Step 2), mode selection (Step 3),
-  and post-migration completion logic
-- `MIGRATE.md` — per-vendor migration protocols for 11 vendors
-- `templates/` — bootstrap + memory templates with `{{placeholders}}`
+**Core protocol & templates**
+- `ENABLE.md` — 10-step protocol: detection (Step 2), mode selection (Step 3),
+  analysis (4), generate/complete (5), bootstrap install (6), `.gitignore` install
+  (7), verify (8), report (9), post-enable actions (10); version-aware Mode B
+- `MIGRATE.md` — per-vendor migration protocols for 11 vendors (reached via Mode C)
 - `AGENTS.md` — dual-mode dispatch (memory protocol + enable)
 - `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`, Copilot bootstrap
-- `memory/` — this tool's own memory layer
-- `examples/rust-event-bus/` — Mode A example, now a REAL fixture (unedited output
-  from enabling ~/sandbox/rust/rust_event_bus_example); replaced the old node-project mock
-- `examples/migrated-cursor-aider-project/` — Mode C example (migration from
-  Cursor + Aider, with originals preserved under legacy/ and 3 converted sessions)
+- `templates/` — bootstrap + memory templates with `{{placeholders}}`, including
+  `templates/.gitignore` (v3.1.0), `memory/decay-policy.md`, `.agent/version.md`
+- `memory/` — this tool's own memory layer (dogfooded)
+
+**Evolving-memory layer (v3.0.0)**
+- `DECAY.md` (deterministic integer tier rules), `REVIEW.md` (review ritual),
+  `UPGRADE.md` (in-place version ladder, operator-only), `VERSION` (semver)
+- `DESIGN-evolving-memory.md` (design) + `docs/assessments/` (industry-alignment baseline)
+- `memory/archive/` cold storage; fact metadata footers + `## Memory References`
+
+**v3.1.0**
+- AI-infrastructure `.gitignore` propagation into enabled repos (create-or-append,
+  de-duplicating, add-only)
+
+**Governance / licensing**
+- `LICENSE` (Apache-2.0), `CHANGELOG.md` (Keep a Changelog; v1.0.0–3.1.0)
+
+**Examples**
+- `examples/rust-event-bus/` — Mode A, a REAL fixture (unedited output from enabling
+  `~/sandbox/rust/rust_event_bus_example`); replaced the old node-project mock
+- `examples/migrated-cursor-aider-project/` — Mode C (Cursor + Aider, originals under
+  `legacy/`, 3 converted sessions)
+- `examples/evolving-memory-example/` — the review ritual in action (continuity
+  before/after, archive, session log with Memory References)
 
 ## Supported Migration Sources (v2)
 
@@ -141,7 +161,42 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - [ ] Optionally update `examples/` to mention the mercury upgrade as a real Mode B
   upgrade fixture (analogous to rust-event-bus being a real Mode A).
 
-### Backlog — v3.1 (temporal & supersession) + beyond
+### Shipped — v3.1.0: AI-infrastructure `.gitignore` propagation (2026-06-13)
+- [x] **Propagate the `.gitignore` design into enabled repos.** Found during the
+  first real-work dogfood (enabling `~/sandbox/simple-proxy`): the tool's own repo
+  ignores personal AI-IDE runtime dirs (`.claude/`, `.kiro/`, `.cursor/`, …) but
+  `ENABLE.md` Step 7 never passed that on — it only appended a comment to an
+  *existing* `.gitignore` and refused to create one. Fix shipped as **v3.1.0**
+  (additive → MINOR): new `templates/.gitignore` (sentinel-headed managed block);
+  `ENABLE.md` Step 7 now creates-or-appends idempotently (add-only, never reorders);
+  Step 8 verifies it; Step 9 report + Notes scope list updated; `UPGRADE.md` rung
+  3.0.0→3.1.0 added; `VERSION`→3.1.0; version tables in `UPGRADE.md`/`README.md` and
+  `CHANGELOG.md` updated. Steering files + `memory/` stay tracked (verified via
+  `git check-ignore`).
+  <!-- id: gitignore-propagation-v310 | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+- [x] **Validated via Mode B upgrade of `~/sandbox/mercury-composable`** (3.0.0→3.1.0,
+  2026-06-13). Two refinements surfaced and fixed during the run: (1) **de-dup** — the
+  "no sentinel → append full block" wording would have duplicated `.kiro/` (already in
+  mercury's pre-existing `.gitignore`); `ENABLE.md` Step 7 + the UPGRADE rung now append
+  only entries not already present anywhere in the file. (2) **`legacy/` contradiction**
+  — mercury ignores `legacy/` though `legacy/claude-code/CLAUDE.md` is tracked and the
+  design treats legacy as committed; surfaced as an Open Thread in the target (never
+  pick a winner), not auto-fixed. Verified: no dup `.kiro/`, steering/memory tracked,
+  runtime dirs ignored, idempotent re-run is a no-op, stamp 3.1.0 (enabled_with/mode
+  preserved). Target not committed (separate repo; offered to user).
+  <!-- id: gitignore-v310-mercury-validation | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+
+### First real-work dogfood — enabled `~/sandbox/simple-proxy` (Mode A, 2026-06-13)
+- [x] **Real Mode A fresh enable** of a zero-dep Node.js TCP-proxy CLI (no prior AI
+  footprint). 15 files generated, source untouched, verified. Logged 7 refactor Open
+  Threads in the target's continuity (package.json `main` points at a non-existent
+  file; stale README `moment`/`source_port` references; ES5 modernization; duplicate
+  code across the two entry points; per-connection signal handlers; no tests). This
+  enable is what surfaced the `.gitignore` gap above. Target later stamped 3.1.0.
+  Refactor of the target is the user's planned next step.
+  <!-- id: dogfood-simple-proxy-enable | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+
+### Backlog — vNext (temporal & supersession) + beyond
 > From the 2026-06-13 industry-alignment assessment:
 > `docs/assessments/2026-06-13-industry-alignment.md`. Verdict: on track; distinctive
 > on event-sourcing/determinism/governance; one real gap = temporal/supersession.

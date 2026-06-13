@@ -12,6 +12,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 3.1.0, 6/13/2026
+
+> Propagate the AI-infrastructure `.gitignore` into enabled repos. Personal AI-IDE
+> runtime directories (`.claude/`, `.kiro/`, `.cursor/`, …) are per-machine state
+> that should never be committed to a shared repo; the tool's own repo already
+> ignored them, but enablement never passed that design on to targets. Additive and
+> backward-compatible; already-enabled repos catch up in place via `UPGRADE.md`
+> Mode B.
+
+### Added
+
+1. `templates/.gitignore` — the canonical managed block (sentinel-headed) listing
+   the AI-IDE runtime directories and Aider local-history/cache files to ignore,
+   while explicitly keeping steering files and the `memory/` layer tracked.
+2. `UPGRADE.md` rung 3.0.0 → 3.1.0 — creates or appends the `.gitignore` block in
+   already-enabled repos (idempotent, add-only).
+
+### Removed
+
+N/A — additive.
+
+### Changed
+
+1. `ENABLE.md` Step 7 — now **installs** a `.gitignore` (copied from the template)
+   when the target has none, and appends only the missing managed entries when one
+   exists; never removes or reorders the user's existing entries. Previously it only
+   added a comment to an existing file and refused to create one.
+2. `ENABLE.md` — Step 8 verifies the `.gitignore` sentinel + entries; the Step 9
+   report and the Notes file-scope list now include `.gitignore`.
+3. `VERSION` → 3.1.0; version tables in `UPGRADE.md` and `README.md` updated.
+
+---
 ## Version 3.0.0, 6/13/2026
 
 > Evolving memory layer. Facts stop being static: they carry usage metadata, fade
