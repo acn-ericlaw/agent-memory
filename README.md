@@ -276,3 +276,13 @@ ENABLE.md Step 3 →  Mode A: Fresh Enable   (nothing detected → templates fil
                     Mode B: Already Ours   (memory/ exists → up-to-date skips; older → UPGRADE.md)
                     Mode C: Migrate Vendor (vendor files found → MIGRATE.md takes over)
 ```
+
+---
+
+## Changelog
+
+Notable changes are recorded in the [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+Licensed under the [Apache License, Version 2.0](LICENSE). See the [`LICENSE`](LICENSE) file for the full text.
