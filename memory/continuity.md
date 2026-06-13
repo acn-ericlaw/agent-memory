@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v2 complete — added detection and migration of vendor AI files
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-012713)
+- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-012935)
 
 ## What's Been Built
 
@@ -57,7 +57,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   promise in README/MIGRATE.
 - [x] **Add source-of-truth / version-drift guidance** to ENABLE.md Step 4
   (prefer build manifest e.g. pom.xml/package.json; surface drift as an Open Thread).
-- [ ] **Make migration git-aware** in MIGRATE.md (use `git mv` for tracked files to
+- [x] **Make migration git-aware** in MIGRATE.md (use `git mv` for tracked files to
   preserve history; plain move otherwise).
 - [x] **Add a post-report verification step** to ENABLE.md (sanity-check generated
   files exist and integration is faithful) instead of ending at the report.

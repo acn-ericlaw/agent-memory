@@ -94,6 +94,15 @@ paths inside it. Examples:
 .aider.chat.history.md  →  legacy/aider/.aider.chat.history.md
 ```
 
+**Git-aware move:** check whether the target repo is a git repository
+(`git -C <repo> rev-parse --is-inside-work-tree 2>/dev/null`). If it is,
+check each file's tracking status (`git -C <repo> ls-files --error-unmatch
+<file>`). Use `git mv` for tracked files so git preserves the rename in history;
+use a plain filesystem move for untracked files. If `git mv` fails (e.g. the
+destination directory doesn't exist yet), create the `legacy/<vendor>/` directory
+first, then retry. Record in the report whether each file was moved with `git mv`
+or a plain move.
+
 ### B. Extract steering content → `memory/instructions.md`
 
 Read the vendor's steering file (the "instructions" equivalent). Before writing
