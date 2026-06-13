@@ -306,8 +306,9 @@ beside `ENABLE.md`.
    a fact permanent.
 4. **Default windows — shipping** `working_window: 3`, `active_window: 8`,
    `archive_window: 20`, `review_every: 10`; tunable per-repo in `decay-policy.md`.
-5. **Doc location** — `DESIGN-evolving-memory.md` stays at root until it's split
-   into `DECAY.md` + `REVIEW.md`, then removed (history stays in git).
+5. **Doc location** — the rules shipped as `DECAY.md` + `REVIEW.md` (repo root,
+   installed into enabled repos). This document is kept as the design rationale and
+   now lives under `docs/` (moved 2026-06-13); history stays in git.
 
 ---
 

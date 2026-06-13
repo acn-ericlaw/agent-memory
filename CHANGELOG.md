@@ -89,7 +89,7 @@ N/A — additive.
 
 1. Evolving-memory layer — facts carry usage metadata (`id`, `created`, `last_used`,
    `uses`, `tier`) and fade through tiers (active → recent → archive), recomputed
-   deterministically from session logs. Full design in `DESIGN-evolving-memory.md`.
+   deterministically from session logs. Full design in `docs/DESIGN-evolving-memory.md`.
 2. `DECAY.md` — metadata fields, tier lifecycle, and the deterministic integer decay
    rules (no floating-point scoring).
 3. `REVIEW.md` — the review ritual that recomputes usage from session logs and

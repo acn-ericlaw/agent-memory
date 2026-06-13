@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v3.2.0 — evolving memory (v3.0.0), `.gitignore` propagation (v3.1.0), protocol clarifications from field report (v3.2.0)
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-224559)
+- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-225207)
 - **last_review:** 2026-06-13 | through 2026-06-13-223743
 
 ## What's Been Built
@@ -28,7 +28,7 @@
 **Evolving-memory layer (v3.0.0)**
 - `DECAY.md` (deterministic integer tier rules), `REVIEW.md` (review ritual),
   `UPGRADE.md` (in-place version ladder, operator-only), `VERSION` (semver)
-- `DESIGN-evolving-memory.md` (design) + `docs/assessments/` (industry-alignment baseline)
+- `docs/DESIGN-evolving-memory.md` (design) + `docs/assessments/` (industry-alignment baseline)
 - `memory/archive/` cold storage; fact metadata footers + `## Memory References`
 
 **v3.1.0**
@@ -124,7 +124,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   both. (Earlier thread overstated the drift.)
 
 ### Evolving long-term memory layer (v3.0.0) — BUILT 2026-06-13
-- [x] **Evolving-memory layer implemented.** Design: `DESIGN-evolving-memory.md`.
+- [x] **Evolving-memory layer implemented.** Design: `docs/DESIGN-evolving-memory.md`.
   Deterministic integer tier rules (no float `strength`); event-sourced metadata
   (derived from session-log `## Memory References` at review); stable kebab fact IDs;
   `sessions/` = immutable event log; tiers by counting session files; decay sweeps
