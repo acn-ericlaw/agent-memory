@@ -27,8 +27,9 @@ Read these files before responding to anything:
 
 ## After Every Session
 
-1. **Append** a session block to `memory/sessions/YYYY-MM-DD.md`
-   (create if it does not exist; append if it does — never overwrite).
+1. **Create** `memory/sessions/YYYY-MM-DD-XXXX.md` where `XXXX` is a 4-character
+   random hex suffix you generate at session-start (e.g. `a3f2`). Write a single
+   `## Session 1` block. Never append to another contributor's session file.
 2. **Update** `memory/continuity.md`:
    - Set `last_session` to today's date and your agent name.
    - Check off completed Open Threads.

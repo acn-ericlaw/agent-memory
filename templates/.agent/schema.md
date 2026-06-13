@@ -47,14 +47,17 @@ Live project state. Update every session.
 
 ---
 
-## memory/sessions/YYYY-MM-DD.md
+## memory/sessions/YYYY-MM-DD-XXXX.md
 
-Append-only session log. One file per day, multiple sessions per file.
+Append-only session log. **One file per session**, named with the date and a
+4-character random hex suffix (e.g. `2026-06-13-a3f2.md`). Generate the suffix
+at session-start using any available random source. The suffix prevents filename
+collisions when multiple contributors commit sessions on the same day.
 
 ```
 # Sessions — YYYY-MM-DD
 
-## Session N
+## Session 1
 
 **Agent:** string
 **User:** brief task context
@@ -70,15 +73,16 @@ What the next agent needs to know.
 ```
 
 Rules: never delete or edit past blocks. Always append below existing entries.
-New day = new file. Do not record a session duration — agents cannot measure it
-reliably; include a timestamp only if the user provides one.
+Each session gets its own file — do not append to another contributor's file.
+Do not record a session duration — agents cannot measure it reliably; include a
+timestamp only if the user provides one.
 
 ---
 
 ## memory/sessions/INDEX.md  (optional)
 
 A lightweight, one-line-per-session index so agents can orient without listing or
-opening files: `YYYY-MM-DD — <agent> — <one-line summary>`. Optional and
+opening files: `YYYY-MM-DD-XXXX — <agent> — <one-line summary>`. Optional and
 progressive — maintain it only if the team wants it. If kept, append one line each
 session. A stale index is worse than none, so skip it rather than let it drift.
 

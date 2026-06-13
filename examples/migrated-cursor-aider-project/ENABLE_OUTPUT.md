@@ -37,9 +37,9 @@ Migrating Aider...
   • Moving  .aider.input.history            →  legacy/aider/.aider.input.history
   • Moving  .aider.conf.yml                 →  legacy/aider/.aider.conf.yml
   • Parsing chat history... found 3 sessions
-  • Writing  memory/sessions/2026-06-08.md
-  • Writing  memory/sessions/2026-06-09.md
-  • Writing  memory/sessions/2026-06-10.md
+  • Writing  memory/sessions/2026-06-08-a1b2.md
+  • Writing  memory/sessions/2026-06-09-c3d4.md
+  • Writing  memory/sessions/2026-06-10-e5f6.md
   ✓ Aider migration complete
 
 Analysing project (post-migration)...
