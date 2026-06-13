@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v2 complete — added detection and migration of vendor AI files
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-012935)
+- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-013154)
 
 ## What's Been Built
 
@@ -61,7 +61,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   preserve history; plain move otherwise).
 - [x] **Add a post-report verification step** to ENABLE.md (sanity-check generated
   files exist and integration is faithful) instead of ending at the report.
-- [ ] **Add monorepo/multi-module guidance** — templates are single-project shaped.
+- [x] **Add monorepo/multi-module guidance** — templates are single-project shaped.
 - [x] Replace mockup examples with a REAL fixture: `examples/node-project` (mock,
   taskflow-api) removed; `examples/rust-event-bus` added as the unedited output of a
   real Mode A enable. (migrated-cursor-aider remains a mockup — still a candidate to

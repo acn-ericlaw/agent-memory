@@ -12,6 +12,14 @@
 
 {{REPO_STRUCTURE_SUMMARY}}
 
+## Module Inventory
+
+*(Monorepos only — remove this section for single-package repos)*
+
+| Module | Language | Purpose |
+|---|---|---|
+| `{{MODULE_PATH}}` | {{MODULE_LANG}} | {{MODULE_PURPOSE}} |
+
 ## Conventions Observed
 
 {{CONVENTIONS}}

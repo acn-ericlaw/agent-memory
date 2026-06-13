@@ -14,6 +14,7 @@ Stable project context and agent rules. Edit rarely.
 
 ## What This Project Is
 ## Repository Structure
+## Module Inventory     (monorepos only — remove for single-package repos)
 ## Conventions Observed
 ## Tone & Style
 ## Core Rules

@@ -158,7 +158,15 @@ From this analysis, determine:
 1. **Project name** — from package file or folder name
 2. **Primary language(s)** — from file extensions and package files
 3. **Framework / stack** — from dependencies
-4. **Project type** — web app / API / CLI / library / monorepo / data / other
+4. **Project type** — web app / API / CLI / library / **monorepo** / data / other.
+   Monorepo detection signals:
+   - JS/TS: `pnpm-workspace.yaml`, `lerna.json`, `nx.json`, `turbo.json`, `rush.json`,
+     multiple `package.json` files in subdirectories
+   - Go: `go.work`
+   - Rust: root `Cargo.toml` containing `[workspace]`
+   - Java/Kotlin: root `pom.xml` with `<modules>` section, or root `settings.gradle`
+     with `include(...)` statements
+   - Python: multiple `pyproject.toml` or `setup.py` files under subdirectories
 5. **Test setup** — yes/no, framework name if detectable
 6. **CI/CD** — yes/no, platform if detectable
 7. **Version (source of truth)** — read from the canonical build manifest only
@@ -169,6 +177,18 @@ From this analysis, determine:
    `memory/continuity.md`:
    `- [ ] Version drift: build manifest is X.Y.Z but <file(s)> reference a different version — verify and align`
    Resolving drift is the user's responsibility, not the enablement step.
+
+**Monorepo handling:** If project type is monorepo, additionally enumerate each
+top-level module or package: its path, language (if the repo is mixed), and a
+one-line description of its purpose. You will use this to fill the
+`## Module Inventory` section of `memory/instructions.md` in Step 5.
+
+Default strategy: **one root `memory/` for the whole repo.** A shared memory
+layer is more useful than per-module silos in most monorepos, because conventions,
+cross-cutting decisions, and team context are repo-wide. Only recommend adding
+per-module `memory/` directories if modules are independently deployed and
+maintained by separate teams who never collaborate across module boundaries —
+and note that recommendation as an Open Thread rather than implementing it.
 
 ---
 
