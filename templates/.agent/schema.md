@@ -56,7 +56,7 @@ always the last file alphabetically — no ambiguity even with multiple contribu
 on the same day.
 
 ```
-# Session — YYYY-MM-DD-HHMMSS UTC
+# Session — YYYY-MM-DDThh:mm:ss.mmmZ
 
 **Agent:** string
 **User:** brief task context
