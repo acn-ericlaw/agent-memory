@@ -140,6 +140,38 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (validates REVIEW.md's recompute/archive/sweep end-to-end with real session logs).
 - [ ] Optionally update `examples/` to mention the mercury upgrade as a real Mode B
   upgrade fixture (analogous to rust-event-bus being a real Mode A).
+
+### Backlog — v3.1 (temporal & supersession) + beyond
+> From the 2026-06-13 industry-alignment assessment:
+> `docs/assessments/2026-06-13-industry-alignment.md`. Verdict: on track; distinctive
+> on event-sourcing/determinism/governance; one real gap = temporal/supersession.
+> Re-run the assessment after meaningful iterations and compare its scorecard.
+
+- [ ] **P1 — Supersession / fact-invalidation semantics.** On a reversed decision,
+  tombstone the old fact (`superseded-by: <id>`; new fact `supersedes: <id>`) and
+  archive it flagged "superseded", not "faded". Markdown-native `expired_at`/`invalid_at`
+  (cf. Zep); closes assessment gaps #1+#2; buys the "knowledge updates" ability.
+  Touches DECAY.md, REVIEW.md, schema, examples. Highest-value next step.
+  <!-- id: backlog-supersession | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+- [ ] **P2 — Invalidation cadence for never-decay facts.** Add `verify_invariants_every: N`
+  to decay-policy.md; review prompts a human to confirm `core`/Architectural Invariants
+  are still true (never-decay ≠ never-checked).
+  <!-- id: backlog-invariant-verify-cadence | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+- [ ] **P3 — Write-time contradiction flag.** Extend the migration-time contradiction
+  check into REVIEW.md: when a fact is added, scan for one it contradicts → raise an
+  Open Thread (SSGM "pre-consolidation validation", scaled down).
+  <!-- id: backlog-contradiction-check | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+- [ ] **P4 — Minimal memory eval.** `memory-smoke-test.md`: N questions a fresh agent
+  should answer from memory alone. Manual, but app-level eval is unsolved industry-wide.
+  <!-- id: backlog-memory-eval | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+- [ ] **P5 — Provenance surfacing + retrieval-at-scale.** Surface each fact's originating
+  session; lean on archive/INDEX.md (+ optional sessions/INDEX.md) as the no-code
+  mitigation if memory grows large. Full vector/semantic retrieval stays out of scope.
+  <!-- id: backlog-provenance-retrieval | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+- [ ] **Dogfooding on real work.** User will use the tool on a real project to gather
+  insights for further improvements — feed those back into this backlog. (Stated 2026-06-13.)
+  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+
 - [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**
   (2026-06-13) in favor of the markdown-native evolving-memory layer above. Not
   deleted — revisit if the markdown layer hits limits. Original open questions:
