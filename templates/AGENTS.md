@@ -27,10 +27,12 @@ Read these files before responding to anything:
 
 ## After Every Session
 
-1. **Create** `memory/sessions/YYYY-MM-DD-HHMMSS.md` using the current UTC time
-   at session-start (e.g. `2026-06-13-053000.md` — omit colons for cross-platform
-   compatibility). Write one session block. Never append to another contributor's
-   session file.
+1. **Create** `memory/sessions/YYYY-MM-DD-HHMMSS.md` using the UTC timestamp at
+   **persist time** (when you write the file — i.e. session end). Use
+   `date -u +%Y-%m-%d-%H%M%S` or equivalent; omit colons for cross-platform
+   compatibility. Title line: `# Session (startZ - endZ)` — full ISO 8601 with
+   milliseconds for both. Write one session block. Never append to another
+   contributor's session file.
 2. **Update** `memory/continuity.md`:
    - Set `last_session` to today's date and your agent name.
    - Check off completed Open Threads.

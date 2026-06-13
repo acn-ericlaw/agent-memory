@@ -49,14 +49,15 @@ Live project state. Update every session.
 
 ## memory/sessions/YYYY-MM-DD-HHMMSS.md
 
-One file per session, named with the UTC timestamp at session-start
-(e.g. `2026-06-13-053000.md`). Colons are omitted for cross-platform filename
-compatibility. Because filenames sort lexicographically, the last session is
-always the last file alphabetically — no ambiguity even with multiple contributors
-on the same day.
+One file per session, named with the UTC timestamp at **persist time** — the
+moment the file is written (i.e. session end), not session start. Use
+`date -u +%Y-%m-%d-%H%M%S` or equivalent. Colons are omitted for cross-platform
+filename compatibility. Because filenames sort lexicographically, the last session
+is always the last file alphabetically — no ambiguity even with multiple
+contributors on the same day.
 
 ```
-# Session — YYYY-MM-DDThh:mm:ss.mmmZ
+# Session (YYYY-MM-DDThh:mm:ss.mmmZ - YYYY-MM-DDThh:mm:ss.mmmZ)
 
 **Agent:** string
 **User:** brief task context
@@ -71,10 +72,14 @@ Bullet list (if any).
 What the next agent needs to know.
 ```
 
+Title format: `# Session (startZ - endZ)` where both are full ISO 8601 UTC
+timestamps with milliseconds. Record the UTC time when you begin your first
+action as the start; the time when you write this file as the end. Both are
+required — they remove ambiguity about session boundaries and aid conflict tracing.
+
 Rules: never edit past files. Each session creates its own file. To resume
 context before responding, sort `memory/sessions/` lexicographically and read
-the most recent 2–3 files. Do not record a session duration — agents cannot
-measure it reliably; include a timestamp only if the user provides one.
+the most recent 2–3 files.
 
 ---
 

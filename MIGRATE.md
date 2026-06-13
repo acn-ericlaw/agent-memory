@@ -40,9 +40,11 @@ selects Mode C (Migrate from Vendor).
    `memory/instructions.md`, append under clear section headers — do not
    discard vendor rules.
 3. **Convert chronologically.** Session and history data must become dated
-   `memory/sessions/YYYY-MM-DD-HHMMSS.md` files using the original session
-   timestamp (UTC, colons omitted). If the original timestamp is unavailable,
-   use the file mtime. Order files chronologically; lexicographic sort = time order.
+   `memory/sessions/YYYY-MM-DD-HHMMSS.md` files. Use the original session
+   timestamp (UTC, colons omitted) as the filename. If the original timestamp is
+   unavailable, use the file mtime. Title line: `# Session (startZ - endZ)`; when
+   only one timestamp is available, use it for both. Order files chronologically;
+   lexicographic sort = time order.
 4. **Mark migrated content.** Every migrated session block must begin with
    `> Migrated from <vendor> on <today's-date>`.
 5. **One pass per vendor.** Process each detected vendor independently —
@@ -141,7 +143,7 @@ the standard session log format. Each converted session gets its own file:
 Standard format for a migrated session:
 
 ```markdown
-## Session N
+# Session (<original-timestamp>Z - <original-timestamp>Z)
 
 > Migrated from <vendor> on <YYYY-MM-DD-of-migration>
 > Original timestamp: <vendor's timestamp if available>
@@ -149,10 +151,10 @@ Standard format for a migrated session:
 **Agent:** <vendor agent name>
 **User:** (migrated history — user context not preserved)
 
-### Summary
+## Summary
 <extracted summary, see per-vendor rules below>
 
-### Original excerpt
+## Original excerpt
 <first ~200 chars of the conversation if useful>
 ```
 
