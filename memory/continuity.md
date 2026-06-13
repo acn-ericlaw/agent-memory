@@ -9,8 +9,8 @@
 - **project:** agent-memory
 - **status:** v3.2.0 — evolving memory (v3.0.0), `.gitignore` propagation (v3.1.0), protocol clarifications from field report (v3.2.0)
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-223743)
-- **last_review:** (none yet)
+- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-224559)
+- **last_review:** 2026-06-13 | through 2026-06-13-223743
 
 ## What's Been Built
 
@@ -58,16 +58,16 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 - Target-repo scope only — never read/modify/move anything outside the resolved
   target-repo root (never `~`, `~/.claude/`, Application Support, AppData, system paths)
-  <!-- id: target-repo-scope-only | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: core -->
+  <!-- id: target-repo-scope-only | created: 2026-06-13 | last_used: 2026-06-13 | uses: 3 | tier: core -->
 - Never delete vendor files — move originals to `legacy/<vendor>/`, preserving paths
   <!-- id: never-delete-vendor-files | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: core -->
 - Never overwrite, never pick a winner — fold vendor steering under
   `## Migrated rules from <vendor>`; surface contradictions as Open Threads
-  <!-- id: never-pick-a-winner | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: core -->
+  <!-- id: never-pick-a-winner | created: 2026-06-13 | last_used: 2026-06-13 | uses: 2 | tier: core -->
 - No-code, markdown-only — the files are the product; the agent is the runtime
-  <!-- id: no-code-markdown-only | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: core -->
+  <!-- id: no-code-markdown-only | created: 2026-06-13 | last_used: 2026-06-13 | uses: 3 | tier: core -->
 - Upgrades are additive and non-destructive — enrich and add, never rewrite or delete
-  <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: core -->
+  <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-13 | uses: 4 | tier: core -->
 
 ## Key Decisions
 
@@ -156,8 +156,14 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
     additive-only style (no content moved); source untouched. (No git → not committed.)
   All files present, no placeholder/path leaks, sessions untouched, no protocol
   ambiguity. Validated across both original modes (A, C) and git/non-git.
-- [ ] **Run a real review cycle** once a repo accrues ~10 post-adoption sessions
-  (validates REVIEW.md's recompute/archive/sweep end-to-end with real session logs).
+- [x] **First review cycle ran** (2026-06-13, 10 session files, `review_every: 10`).
+  Recompute + re-tier validated on real `## Memory References` data (4 of 10 logs
+  carried events; the 6 pre-adoption logs none). `uses` recomputed (e.g.
+  upgrades-additive 1→4, target-repo-scope-only / no-code-markdown-only 1→3); 2
+  completed threads re-tiered active→working per the rules. **Archive/sweep paths NOT
+  yet exercised** — nothing is older than `archive_window` (20 sessions); revisit when
+  facts actually age out. Observation: the tier model has no "done" state for completed
+  `[x]` threads — they read as `working` until swept (candidate refinement).
 - [ ] Optionally update `examples/` to mention the mercury upgrade as a real Mode B
   upgrade fixture (analogous to rust-event-bus being a real Mode A).
 
@@ -173,7 +179,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   3.0.0→3.1.0 added; `VERSION`→3.1.0; version tables in `UPGRADE.md`/`README.md` and
   `CHANGELOG.md` updated. Steering files + `memory/` stay tracked (verified via
   `git check-ignore`).
-  <!-- id: gitignore-propagation-v310 | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+  <!-- id: gitignore-propagation-v310 | created: 2026-06-13 | last_used: 2026-06-13 | uses: 2 | tier: active -->
 - [x] **Validated via Mode B upgrade of `~/sandbox/mercury-composable`** (3.0.0→3.1.0,
   2026-06-13). Two refinements surfaced and fixed during the run: (1) **de-dup** — the
   "no sentinel → append full block" wording would have duplicated `.kiro/` (already in
@@ -184,7 +190,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   pick a winner), not auto-fixed. Verified: no dup `.kiro/`, steering/memory tracked,
   runtime dirs ignored, idempotent re-run is a no-op, stamp 3.1.0 (enabled_with/mode
   preserved). Target not committed (separate repo; offered to user).
-  <!-- id: gitignore-v310-mercury-validation | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+  <!-- id: gitignore-v310-mercury-validation | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: working -->
 
 ### Shipped — v3.2.0: protocol clarifications from a real-work field report (2026-06-13)
 - [x] **Acted on a field report** from a separate Claude Code session that refactored
@@ -210,7 +216,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   code across the two entry points; per-connection signal handlers; no tests). This
   enable is what surfaced the `.gitignore` gap above. Target later stamped 3.1.0.
   Refactor of the target is the user's planned next step.
-  <!-- id: dogfood-simple-proxy-enable | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+  <!-- id: dogfood-simple-proxy-enable | created: 2026-06-13 | last_used: 2026-06-13 | uses: 2 | tier: active -->
 - [x] **Design validated: enabled target repos are self-contained.** The user chose to
   run the simple-proxy refactor in a *separate* Claude Code session launched inside the
   target — driven by simple-proxy's own `CLAUDE.md`→`AGENTS.md`→`memory/`, needing no
@@ -218,7 +224,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   enablement; the enabled repo then stands on its own. Baselines committed cleanly
   (simple-proxy: source import + AI-enable; mercury: v3.1.0 upgrade) so the new
   sessions start from committed state. (2026-06-13)
-  <!-- id: dogfood-target-repo-self-contained | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+  <!-- id: dogfood-target-repo-self-contained | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: working -->
 
 ### Backlog — vNext (temporal & supersession) + beyond
 > From the 2026-06-13 industry-alignment assessment:
@@ -251,7 +257,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   enable surfaced v3.1.0 (`.gitignore`), and the simple-proxy Node→Rust refactor's
   field report drove v3.2.0 (protocol clarifications). Keep feeding real-work insights
   back into this backlog. (Stated 2026-06-13.)
-  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-06-13 | uses: 3 | tier: active -->
 
 - [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**
   (2026-06-13) in favor of the markdown-native evolving-memory layer above. Not
