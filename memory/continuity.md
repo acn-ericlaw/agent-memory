@@ -195,6 +195,14 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   enable is what surfaced the `.gitignore` gap above. Target later stamped 3.1.0.
   Refactor of the target is the user's planned next step.
   <!-- id: dogfood-simple-proxy-enable | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+- [x] **Design validated: enabled target repos are self-contained.** The user chose to
+  run the simple-proxy refactor in a *separate* Claude Code session launched inside the
+  target — driven by simple-proxy's own `CLAUDE.md`→`AGENTS.md`→`memory/`, needing no
+  knowledge of this tool. Confirms the two-layer model: the tool's job ends at
+  enablement; the enabled repo then stands on its own. Baselines committed cleanly
+  (simple-proxy: source import + AI-enable; mercury: v3.1.0 upgrade) so the new
+  sessions start from committed state. (2026-06-13)
+  <!-- id: dogfood-target-repo-self-contained | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
 
 ### Backlog — vNext (temporal & supersession) + beyond
 > From the 2026-06-13 industry-alignment assessment:
