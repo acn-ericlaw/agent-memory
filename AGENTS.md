@@ -55,9 +55,10 @@ Read these files before responding to anything:
 
 ### After Every Session
 
-1. **Create** `memory/sessions/YYYY-MM-DD-XXXX.md` where `XXXX` is a 4-character
-   random hex suffix you generate at session-start (e.g. `a3f2`). Write a single
-   `## Session 1` block. Never append to another contributor's session file.
+1. **Create** `memory/sessions/YYYY-MM-DD-HHMMSS.md` using the current UTC time
+   at session-start (e.g. `2026-06-13-053000.md` — omit colons for cross-platform
+   compatibility). Write one session block. Never append to another contributor's
+   session file.
 2. **Update** `memory/continuity.md`:
    - Set `last_session` to today's date and your agent name.
    - Check off completed Open Threads.

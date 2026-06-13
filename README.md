@@ -110,7 +110,7 @@ Migration rules per vendor: see [`MIGRATE.md`](./MIGRATE.md).
 - **Steering folded in.** Vendor rules become a `## Migrated rules from <vendor>`
   section inside `memory/instructions.md`. Nothing is discarded.
 - **History becomes sessions.** Chat logs and JSONL files are parsed and split
-  into dated `memory/sessions/YYYY-MM-DD-XXXX.md` files in our standard format.
+  into dated `memory/sessions/YYYY-MM-DD-HHMMSS.md` files in our standard format.
 - **Contradictions surfaced.** If two vendors had conflicting rules, both are
   preserved and an Open Thread is added asking the user to resolve.
 - **Idempotent.** Running enable on an already-migrated repo detects our format

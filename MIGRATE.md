@@ -40,8 +40,9 @@ selects Mode C (Migrate from Vendor).
    `memory/instructions.md`, append under clear section headers — do not
    discard vendor rules.
 3. **Convert chronologically.** Session and history data must become dated
-   `memory/sessions/YYYY-MM-DD-XXXX.md` files (4-char random hex suffix),
-   ordered by the original timestamps. Generate one suffix per converted file.
+   `memory/sessions/YYYY-MM-DD-HHMMSS.md` files using the original session
+   timestamp (UTC, colons omitted). If the original timestamp is unavailable,
+   use the file mtime. Order files chronologically; lexicographic sort = time order.
 4. **Mark migrated content.** Every migrated session block must begin with
    `> Migrated from <vendor> on <today's-date>`.
 5. **One pass per vendor.** Process each detected vendor independently —
@@ -134,8 +135,8 @@ add the section after the standard headings.
 
 Read the vendor's history/session data and convert each session or chat into
 the standard session log format. Each converted session gets its own file:
-`memory/sessions/YYYY-MM-DD-XXXX.md` with a freshly generated 4-char hex suffix.
-Multiple sessions on the same original date each get their own file and suffix.
+`memory/sessions/YYYY-MM-DD-HHMMSS.md` using the original session timestamp
+(UTC, colons omitted). Multiple sessions on the same date naturally sort by time.
 
 Standard format for a migrated session:
 
@@ -317,7 +318,7 @@ For each .jsonl file:
   date     = earliest timestamp in messages (or file mtime as fallback)
   session  = group(messages by 30-minute idle gap)
   for each grouped session:
-    write to memory/sessions/<date>-<4hex>.md as a session block
+    write to memory/sessions/<date>-<hhmmss>.md as a session block
 ```
 
 Be conservative with summaries — better to say "Migrated session, content

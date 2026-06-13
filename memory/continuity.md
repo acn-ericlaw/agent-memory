@@ -36,8 +36,9 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Steering content folded into `memory/instructions.md` as
   `## Migrated rules from <vendor>` sections
 - History (JSONL, markdown chat logs, JSON sessions) converted to dated
-  `memory/sessions/YYYY-MM-DD-XXXX.md` files (one per session, 4-char random hex
-  suffix prevents multi-contributor merge conflicts)
+  `memory/sessions/YYYY-MM-DD-HHMMSS.md` files (one per session, UTC timestamp
+  filename — lexicographic sort = chronological sort, resolves last-session
+  unambiguously across multiple contributors)
 - Contradictions between vendors surface as Open Threads — the tool never picks a winner
 - Three modes: Fresh Enable (A), Already Ours (B, idempotent), Migrate Vendor (C)
 - Dry-run support so users can preview before committing

@@ -47,42 +47,41 @@ Live project state. Update every session.
 
 ---
 
-## memory/sessions/YYYY-MM-DD-XXXX.md
+## memory/sessions/YYYY-MM-DD-HHMMSS.md
 
-Append-only session log. **One file per session**, named with the date and a
-4-character random hex suffix (e.g. `2026-06-13-a3f2.md`). Generate the suffix
-at session-start using any available random source. The suffix prevents filename
-collisions when multiple contributors commit sessions on the same day.
+One file per session, named with the UTC timestamp at session-start
+(e.g. `2026-06-13-053000.md`). Colons are omitted for cross-platform filename
+compatibility. Because filenames sort lexicographically, the last session is
+always the last file alphabetically — no ambiguity even with multiple contributors
+on the same day.
 
 ```
-# Sessions — YYYY-MM-DD
-
-## Session 1
+# Session — YYYY-MM-DD-HHMMSS UTC
 
 **Agent:** string
 **User:** brief task context
 
-### What We Did
+## What We Did
 Prose summary, 2–5 sentences.
 
-### Decisions Made
+## Decisions Made
 Bullet list (if any).
 
-### Context for Next Session
+## Context for Next Session
 What the next agent needs to know.
 ```
 
-Rules: never delete or edit past blocks. Always append below existing entries.
-Each session gets its own file — do not append to another contributor's file.
-Do not record a session duration — agents cannot measure it reliably; include a
-timestamp only if the user provides one.
+Rules: never edit past files. Each session creates its own file. To resume
+context before responding, sort `memory/sessions/` lexicographically and read
+the most recent 2–3 files. Do not record a session duration — agents cannot
+measure it reliably; include a timestamp only if the user provides one.
 
 ---
 
 ## memory/sessions/INDEX.md  (optional)
 
 A lightweight, one-line-per-session index so agents can orient without listing or
-opening files: `YYYY-MM-DD-XXXX — <agent> — <one-line summary>`. Optional and
+opening files: `YYYY-MM-DD-HHMMSS — <agent> — <one-line summary>`. Optional and
 progressive — maintain it only if the team wants it. If kept, append one line each
 session. A stale index is worse than none, so skip it rather than let it drift.
 
