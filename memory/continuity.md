@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v2 complete — added detection and migration of vendor AI files
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-013154)
+- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-020346)
 
 ## What's Been Built
 
@@ -83,6 +83,15 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   never contained `Duration` (migrated-block format) and have no CLAUDE.md to carry
   a stale header — the only real drift was the User Preferences line, now fixed in
   both. (Earlier thread overstated the drift.)
+
+### Next direction
+- [ ] **Knowledge graph layer — SurrealDB for long-term memory.** User wants to
+  explore SurrealDB as a knowledge graph backing store. Open questions to address:
+  (1) replace or supplement markdown files? (2) what is the entity/relation schema
+  (projects, sessions, decisions, people, files, rules)? (3) how do agents interact
+  — SurrealQL, REST, SDK? (4) fit with "no-code, markdown-only" philosophy — does
+  this become an optional tier? (5) single-agent vs multi-agent / multi-repo access
+  patterns. (6) SurrealDB Cloud vs self-hosted. Come prepared with a proposal.
 
 ### Pre-existing
 - [ ] Test migration on a real repo with Cursor + Aider footprint
