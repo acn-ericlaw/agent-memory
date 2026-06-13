@@ -108,12 +108,26 @@ Based on detection, choose one of three modes:
 ### Mode A — Fresh Enable
 No AI footprint found. Proceed to Step 4 (generate from scratch).
 
-### Mode B — Already Ours (Idempotent)
-`memory/` exists and matches our schema. Tell the user:
-> "This repo is already AI-enabled with agent-memory format.
-> Found N sessions logged. Nothing to migrate. Last session: <date> by <agent>."
+### Mode B — Already Ours (Idempotent, version-aware)
+`memory/` exists and matches our schema. Now check the version:
 
-If they confirm they want to re-run anyway, treat as Mode A but skip any file
+- `installed` = the target's `.agent/version.md` → `version` (a **missing** file
+  means it was enabled before versioning existed → treat as `2.x baseline`).
+- `current` = this tool's root `VERSION`.
+
+Then:
+- **Up to date** (`installed == current`): tell the user and stop —
+  > "This repo is already AI-enabled with agent-memory v<current>.
+  > Found N sessions logged. Nothing to migrate or upgrade. Last session: <date> by <agent>."
+- **Older** (`installed < current`): an in-place upgrade is available.
+  **Read `UPGRADE.md` and run its ladder** from `installed` up to `current`, then
+  re-stamp `.agent/version.md` and report what changed. Ask first:
+  > "This repo is on agent-memory v<installed>; current is v<current>.
+  > I can upgrade it in place (additive, non-destructive). Proceed? (yes/no/dry-run)"
+- **Newer** (`installed > current`): the repo is ahead of this tool checkout —
+  stop and tell the user to update the tool.
+
+If they instead want to re-run a fresh enable, treat as Mode A but skip any file
 that already exists unless they say "overwrite".
 
 ### Mode C — Migrate from Vendor
@@ -218,11 +232,19 @@ Fill in:
 - `last_session`:
   - If migrated from vendor history, use the most recent session date from those logs
   - Otherwise `(none yet)`
+- `last_review`: `(none yet)`
 - **repo:** write the path `~`-relative (e.g. `~/projects/foo`) — never an absolute
   `/Users/<name>/…` (or `/home/<name>/…`) path. `memory/` is committed to git and
   shared across the team, so absolute home paths would leak the enabling user's
   username to everyone.
+- **Architectural Invariants:** seed from hard constraints in the build manifest /
+  README / `instructions.md` (things that must never change — e.g. "POST-only API",
+  "no runtime deps"). If none are obvious, remove the section. Facts here never decay.
 - Open Threads: include any TODOs surfaced during analysis or migration
+- **Metadata footers:** give every fact you write a kebab `id` and the footer
+  `<!-- id: … | created: <today> | last_used: <today> | uses: 1 | tier: active -->`
+  (Architectural Invariants get `tier: core`; unchecked Open Threads get an id but
+  never decay). See `.agent/schema.md`.
 
 ### 5c. `memory/sessions/`
 
@@ -232,6 +254,19 @@ Otherwise create the directory with a `.gitkeep` file.
 ### 5d. `.agent/schema.md`
 
 Copy `templates/.agent/schema.md` verbatim. No customisation.
+
+### 5e. Evolving-memory layer
+
+Install the layer so the repo's memory can decay, review, and archive over time:
+
+- `memory/decay-policy.md` — copy from `templates/memory/decay-policy.md`, filling
+  `{{PROJECT_NAME}}`. The default windows (3/8/20, review every 10) suit most repos.
+- `memory/archive/INDEX.md` — create with a header and an empty table.
+- `.agent/version.md` — copy from `templates/.agent/version.md`. Fill
+  `{{AGENT_MEMORY_VERSION}}` from this tool's root `VERSION`, `{{TODAY}}`, and
+  `{{ENABLE_MODE}}` (`A` for fresh, `C` for migrate).
+
+`DECAY.md` and `REVIEW.md` are installed at the repo root in Step 6.
 
 ---
 
@@ -250,6 +285,15 @@ Copy from `templates/` into target repo root:
 placeholders — fill them from your Step 4 analysis (project name + a one-line
 description) so eagerly-loaded runtimes get context without an extra hop. The
 remaining bootstrap files install verbatim.
+
+Also install the evolving-memory protocol docs at the target root, **copied
+verbatim from this tool's root** (they are generic — no placeholders):
+
+- `DECAY.md`
+- `REVIEW.md`
+
+These must travel into the target because the review ritual runs *inside* the
+enabled repo. (`UPGRADE.md` is tool-operator-only — do **not** install it.)
 
 **Conflict handling:**
 - If Mode C ran and a vendor bootstrap file was migrated, the migration step
@@ -283,9 +327,12 @@ describe what was intended.
 
 1. **Files exist.** Confirm all of the following are present in the target repo:
    - `memory/instructions.md`, `memory/continuity.md`, `memory/sessions/`
-   - `.agent/schema.md`
+   - `memory/decay-policy.md`, `memory/archive/INDEX.md`
+   - `.agent/schema.md`, `.agent/version.md`
+   - `DECAY.md`, `REVIEW.md`
    - `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`,
      `.github/copilot-instructions.md`
+   - `.agent/version.md` records the version from this tool's root `VERSION`.
 
 2. **No unfilled placeholders.** Grep for `{{` in every file you created.
    If any remain, fill them now.
@@ -325,8 +372,11 @@ Print a clear summary including migration details if Mode C ran:
   Created:
   • memory/instructions.md
   • memory/continuity.md
+  • memory/decay-policy.md
   • memory/sessions/   (N session files)
-  • .agent/schema.md
+  • memory/archive/INDEX.md
+  • .agent/schema.md, .agent/version.md  (v<version>)
+  • DECAY.md, REVIEW.md
   • AGENTS.md, CLAUDE.md, GEMINI.md, .cursorrules,
     .windsurfrules, .github/copilot-instructions.md
 
@@ -362,7 +412,8 @@ Respond accordingly.
 
 - Never modify source code in the target repo.
 - Never modify `package.json`, `Cargo.toml`, etc.
-- Only create/modify files within: `memory/`, `.agent/`, `legacy/`,
-  `.github/copilot-instructions.md`, and the bootstrap files listed in Step 6.
+- Only create/modify files within: `memory/`, `.agent/`, `legacy/`, `DECAY.md`,
+  `REVIEW.md`, `.github/copilot-instructions.md`, and the bootstrap files listed in
+  Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a target.)
 - If the target repo is the agent-memory tool itself, say so and stop.
 - Always preserve vendor originals under `legacy/` — they are user data.

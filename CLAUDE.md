@@ -7,7 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 `agent-memory` is a **no-code, markdown-only** system with three jobs in one repo:
 
 1. **A shared memory system** — a `memory/` layer that persists project context
-   across sessions and across different AI vendors (Claude, Gemini, Cursor, …).
+   across sessions and across different AI vendors (Claude, Gemini, Cursor, …). It
+   *evolves*: facts carry usage metadata, fade through tiers, and archive when stale,
+   recomputed deterministically from the session-log event stream (see `DECAY.md`).
 2. **An AI-enablement tool** — point it at any other repo to generate a tailored
    memory system there.
 3. **A migration tool** — when the target repo already has vendor AI files
@@ -32,7 +34,8 @@ of two modes:
   `continuity.md` *after*.
 - **AI-enabling another repo** (user says "AI enable `/path`") → read `ENABLE.md`
   and follow its 10-step protocol exactly. For vendor migration specifics, read
-  `MIGRATE.md`. Do not improvise from memory.
+  `MIGRATE.md`; for upgrading a repo already enabled by an older version, read
+  `UPGRADE.md` (reached only via `ENABLE.md` Mode B). Do not improvise from memory.
 
 ## Architecture — How the Files Relate
 
@@ -44,13 +47,23 @@ The system is layered, and the layering is the design (see README "Two Layers"):
   hub; the rest defer to it.
 - **`ENABLE.md`** — the enablement protocol (detect footprint → choose Mode A/B/C →
   analyze → generate). **`MIGRATE.md`** — per-vendor detection table and conversion
-  rules, invoked only when `ENABLE.md` selects Mode C.
+  rules, invoked only when `ENABLE.md` selects Mode C. **`UPGRADE.md`** — the
+  in-place version-upgrade ladder, invoked only when Mode B detects version drift.
+  Both `MIGRATE.md` and `UPGRADE.md` are tool-operator-only (not installed into targets).
+- **Evolving-memory layer** — **`DECAY.md`** (metadata fields, tier lifecycle, the
+  deterministic decay rules — no floating-point scoring) and **`REVIEW.md`** (the
+  review ritual that recomputes usage from session logs and archives faded facts).
+  These are generic and *installed into every enabled repo's root* (the ritual runs
+  inside the repo). **`VERSION`** is the tool's semver; each enabled repo stamps
+  `.agent/version.md` to record what it's on.
 - **`templates/`** — exactly what gets installed into a *target* repo: bootstrap
-  files plus `memory/` files containing `{{UPPER_SNAKE_CASE}}` placeholders, and
-  `.agent/schema.md` (the canonical memory-file format, copied verbatim).
+  files plus `memory/` files containing `{{UPPER_SNAKE_CASE}}` placeholders
+  (including `decay-policy.md`), `.agent/schema.md` (the canonical memory-file
+  format, copied verbatim), and `.agent/version.md` (the install manifest).
 - **`memory/`** — this repo's *own* memory layer (not a template). It eats its own
   dog food: `instructions.md` (stable rules), `continuity.md` (live state, open
-  threads, decisions), `sessions/` (dated logs).
+  threads, decisions), `decay-policy.md` (tunable windows), `sessions/` (dated logs,
+  the immutable event log), `archive/` (faded facts, never deleted).
 - **`examples/`** — real filled-in output, not placeholders: `rust-event-bus/` is a
   Mode A (a *real* fresh enable on a Rust repo — unedited generated `memory/`);
   `migrated-cursor-aider-project/` is a Mode C (migration, with originals under
@@ -60,7 +73,10 @@ When you change behavior, the change usually spans several of these in lockstep:
 a new vendor needs a row in both `MIGRATE.md`'s detection table and a per-vendor
 section, plus the supported-vendor tables in `README.md` and `AGENTS.md`. Editing
 a memory-file shape means updating `templates/`, `templates/.agent/schema.md`, and
-the `examples/` together.
+the `examples/` together. A change to the evolving-memory layer touches `DECAY.md`,
+`REVIEW.md`, `templates/memory/decay-policy.md`, the schema, and the
+`examples/evolving-memory-example/`; if it changes the file shape, bump `VERSION`
+and add an `UPGRADE.md` rung so already-enabled repos can catch up.
 
 ## Non-Negotiable Constraints (from ENABLE.md / MIGRATE.md)
 
@@ -79,8 +95,10 @@ mere guardrails:
   `## Migrated rules from <vendor>`; surface contradictions as Open Threads for the
   user to resolve.
 - **Never modify source code or package manifests** in a target repo.
-- Migration is **idempotent** (Mode B detects "already ours" and exits) and supports
-  **dry-run**.
+- Migration is **idempotent** (Mode B detects "already ours"; if the repo is on an
+  older `VERSION` it upgrades in place via `UPGRADE.md`, else exits) and supports
+  **dry-run**. Upgrades are additive and non-destructive — never rewrite or delete
+  existing memory, only enrich and add.
 
 ## Conventions
 

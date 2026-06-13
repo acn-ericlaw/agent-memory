@@ -6,7 +6,9 @@ all in one repo. Markdown only. No code to run. No API keys.
 Three things in one:
 
 1. **A memory system** — clone it, open with your agent, work normally.
-   Context persists across sessions and across different AI agents.
+   Context persists across sessions and across different AI agents — and it
+   *evolves*: frequently-used facts strengthen, unused ones fade to an archive,
+   and the live `continuity.md` stays lean (see "Evolving Memory" below).
 
 2. **An enablement tool** — point your agent at any existing repo and it
    gets a tailored memory system set up automatically.
@@ -78,7 +80,49 @@ This matters because:
 
 ---
 
+## Evolving Memory (Long-Term)
 
+Memory doesn't just accumulate — it evolves, the way human memory does:
+**frequently-used facts strengthen, unused ones fade, important ones stay
+permanent.** It stays 100% markdown; the agent does the work, no code runs.
+
+- **Each fact carries metadata** in an HTML comment (`id`, `created`, `last_used`,
+  `uses`, `tier`) — invisible when rendered, maintained by the agent.
+- **Usage is event-sourced.** Session logs record a `## Memory References` list of
+  the fact ids they touched; that log *is* the ledger. A periodic **review ritual**
+  recomputes `uses`/`last_used` from it — so the numbers are reproducible by any
+  agent, on any vendor.
+- **No floating-point scoring.** Tiers (`core → active → working → archive-candidate
+  → archived`) are decided by *counting session files* against integer windows, so
+  Claude, Gemini, and Cursor all reach the same decision. Tunable in
+  `memory/decay-policy.md`.
+- **Nothing is deleted.** Faded facts move to `memory/archive/` (cold storage,
+  greppable via `INDEX.md`); referencing one again pulls it back to `active`.
+- **`core` is human-set** and `## Architectural Invariants` + open work never decay.
+
+Reference: `DECAY.md` (the rules) and `REVIEW.md` (the ritual), installed at the
+root of every enabled repo.
+
+---
+
+## Versioning & Upgrades
+
+The tool is versioned (root `VERSION`, semver). Each enabled repo stamps
+`.agent/version.md` with the version it's on, so re-running enablement can **upgrade
+it in place** — additively, never destructively.
+
+| Version | Capability |
+|---|---|
+| 1.0.0 | Fresh enable from templates (Mode A) |
+| 2.0.0 | Vendor detection + migration (Mode C); idempotent re-runs (Mode B) |
+| 3.0.0 | Evolving memory: fact metadata + ids, decay-policy, review ritual, archive |
+
+When you "AI enable" a repo that's already on an older version, Mode B detects the
+drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the
+single "AI enable this repo" command). A missing `.agent/version.md` is treated as a
+pre-versioning install and upgraded from the 2.x baseline.
+
+---
 
 The tool detects and migrates from these vendors:
 
@@ -152,8 +196,12 @@ claude
 
 ```
 agent-memory/
-  ENABLE.md                          ← protocol: detect, migrate, generate
-  MIGRATE.md                         ← per-vendor migration rules
+  VERSION                            ← tool version (semver)
+  ENABLE.md                          ← protocol: detect, migrate, generate, upgrade
+  MIGRATE.md                         ← per-vendor migration rules (tool-only)
+  UPGRADE.md                         ← in-place version-upgrade ladder (tool-only)
+  DECAY.md                           ← evolving-memory rules (installed into targets)
+  REVIEW.md                          ← the review ritual (installed into targets)
   AGENTS.md                          ← memory protocol + enable dispatch
   CLAUDE.md / GEMINI.md              ← vendor bootstraps for this repo
   .cursorrules / .windsurfrules      ← Cursor / Windsurf bootstraps
@@ -164,13 +212,17 @@ agent-memory/
     memory/
       instructions.md                ← with {{placeholders}}
       continuity.md                  ← with {{placeholders}}
+      decay-policy.md                ← evolving-memory windows/triggers
       sessions/.gitkeep
-    .agent/schema.md
+    .agent/schema.md                 ← canonical file format (verbatim)
+    .agent/version.md                ← install manifest (with {{placeholders}})
 
   memory/                            ← this tool's own memory layer
     instructions.md
     continuity.md
-    sessions/
+    decay-policy.md
+    sessions/                        ← dated logs (immutable event log)
+    archive/                         ← faded facts (cold storage, never deleted)
 
   examples/
     rust-event-bus/                  ← Mode A: REAL fresh enable on a Rust repo
@@ -192,6 +244,13 @@ agent-memory/
           2026-06-09.md
           2026-06-10.md
       ENABLE_OUTPUT.md               ← terminal output of the migration
+    evolving-memory-example/         ← the review ritual in action
+      continuity-before.md           ← live state before a review
+      continuity-after.md            ← same file after (lean: archived + reactivated)
+      decay-policy.md                ← the windows used in the example
+      archive/2026-Q2.md             ← facts moved to cold storage
+      archive/INDEX.md
+      sessions/2026-06-20-141503.md  ← session log with Memory References + review summary
 ```
 
 ---
@@ -214,6 +273,6 @@ No code changes ever required.
 
 ```
 ENABLE.md Step 3 →  Mode A: Fresh Enable   (nothing detected → templates fill from analysis)
-                    Mode B: Already Ours   (memory/ exists in our format → idempotent skip)
+                    Mode B: Already Ours   (memory/ exists → up-to-date skips; older → UPGRADE.md)
                     Mode C: Migrate Vendor (vendor files found → MIGRATE.md takes over)
 ```

@@ -48,10 +48,15 @@ Read these files before responding to anything:
 2. `memory/continuity.md`   — current project state, open threads, decisions
 3. `memory/sessions/`       — scan the most recent 2–3 session files
 
+If a topic seems unfamiliar, grep `memory/archive/INDEX.md` before saying you have
+no context — facts fade to the archive but are never deleted.
+
 ### During the Session
 
 - Reference `memory/continuity.md` when relevant.
 - Note any new facts, decisions, or preferences for post-session write.
+- Track which fact **ids** you rely on, create, or reactivate — record them in the
+  session log's `## Memory References`. Don't edit fact metadata mid-session.
 
 ### After Every Session
 
@@ -61,12 +66,17 @@ Read these files before responding to anything:
    compatibility. Title line: `# Session (startZ - endZ)` — full ISO 8601 with
    milliseconds for both. Write one session block. Never append to another
    contributor's session file.
+   Include a `## Memory References` section (fact ids referenced / created /
+   reactivated) — the event log the review ritual reads (`DECAY.md`).
 2. **Update** `memory/continuity.md`:
    - Set `last_session` to today's date and your agent name.
    - Check off completed Open Threads.
-   - Add new Open Threads.
+   - Add new Open Threads; give new facts a kebab `id` + metadata footer, `tier: working`.
    - Update any changed facts.
-3. Remind the user to commit: `git add memory/ && git commit -m "session YYYY-MM-DD [agent]"`
+3. **Review cadence.** If `sessions_since_last_review ≥ review_every`
+   (`memory/decay-policy.md`) or `continuity.md` exceeds `continuity_max_lines`, run
+   the review ritual (`REVIEW.md`). Also run on demand if the user says "review memory".
+4. Remind the user to commit: `git add memory/ && git commit -m "session YYYY-MM-DD [agent]"`
 
 ### Multi-Agent Continuity
 

@@ -19,11 +19,17 @@ Read these files before responding to anything:
 2. `memory/continuity.md`   — current project state, open threads, key decisions
 3. `memory/sessions/`       — scan the most recent 2–3 session logs
 
+If a topic seems unfamiliar, grep `memory/archive/INDEX.md` before saying you have
+no context — facts fade to the archive but are never deleted.
+
 ## During the Session
 
 - Treat `memory/continuity.md` as your working memory.
 - Reference prior decisions before suggesting changes that might contradict them.
 - Note any new facts, preferences, or decisions for post-session write.
+- Track which fact **ids** you rely on, create, or pull back from the archive — you
+  will list them in the session log's `## Memory References`. Do **not** edit fact
+  metadata mid-session; the review ritual does the counting.
 
 ## After Every Session
 
@@ -33,12 +39,20 @@ Read these files before responding to anything:
    compatibility. Title line: `# Session (startZ - endZ)` — full ISO 8601 with
    milliseconds for both. Write one session block. Never append to another
    contributor's session file.
+   Include a `## Memory References` section listing the fact ids you referenced,
+   created (born `tier: working`), or reactivated. This is the event log the review
+   ritual reads — see `DECAY.md`.
 2. **Update** `memory/continuity.md`:
    - Set `last_session` to today's date and your agent name.
    - Check off completed Open Threads.
    - Add new Open Threads surfaced during the session.
+   - Give any new fact a kebab `id` + metadata footer, `tier: working`.
    - Update any facts that changed.
-3. Remind the user: `git add memory/ && git commit -m "session YYYY-MM-DD [agent]"`
+3. **Review cadence.** If `sessions_since_last_review ≥ review_every`
+   (`memory/decay-policy.md`), or `continuity.md` has grown past
+   `continuity_max_lines`, run the review ritual now — see `REVIEW.md`. (Also run it
+   on demand if the user says "review memory".)
+4. Remind the user: `git add memory/ && git commit -m "session YYYY-MM-DD [agent]"`
 
 ## Multi-Agent Continuity
 
@@ -53,7 +67,13 @@ shared ground truth across all agents.
 memory/
   instructions.md     ← project context + agent rules    (edit rarely)
   continuity.md       ← live project state               (update every session)
-  sessions/           ← dated session logs               (append every session)
+  decay-policy.md     ← evolving-memory windows/triggers (tune as needed)
+  sessions/           ← dated session logs (event log)   (append; never edit past logs)
+  archive/            ← faded facts + swept threads       (cold storage; never deleted)
+    INDEX.md          ← greppable index of archived facts
 .agent/
   schema.md           ← file format reference
+  version.md          ← which agent-memory version this repo is on
+DECAY.md              ← evolving-memory rules (metadata, tiers, deterministic decay)
+REVIEW.md             ← the review ritual (when/how to recompute + archive)
 ```

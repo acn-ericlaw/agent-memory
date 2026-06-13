@@ -9,7 +9,8 @@
 - **project:** agent-memory
 - **status:** v2 complete — added detection and migration of vendor AI files
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-020346)
+- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-024537)
+- **last_review:** (none yet)
 
 ## What's Been Built
 
@@ -29,6 +30,24 @@
 
 Claude Code, Cursor, Cline, Roo Code, Aider, Continue.dev, Codeium/Windsurf,
 GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
+
+## Architectural Invariants
+
+> Hard constraints — the tool's core safety philosophy. These never decay (`core`).
+> (Added 2026-06-13 when this repo adopted the evolving-memory layer.)
+
+- Target-repo scope only — never read/modify/move anything outside the resolved
+  target-repo root (never `~`, `~/.claude/`, Application Support, AppData, system paths)
+  <!-- id: target-repo-scope-only | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: core -->
+- Never delete vendor files — move originals to `legacy/<vendor>/`, preserving paths
+  <!-- id: never-delete-vendor-files | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: core -->
+- Never overwrite, never pick a winner — fold vendor steering under
+  `## Migrated rules from <vendor>`; surface contradictions as Open Threads
+  <!-- id: never-pick-a-winner | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: core -->
+- No-code, markdown-only — the files are the product; the agent is the runtime
+  <!-- id: no-code-markdown-only | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: core -->
+- Upgrades are additive and non-destructive — enrich and add, never rewrite or delete
+  <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: core -->
 
 ## Key Decisions
 
@@ -84,14 +103,39 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   a stale header — the only real drift was the User Preferences line, now fixed in
   both. (Earlier thread overstated the drift.)
 
-### Next direction
-- [ ] **Knowledge graph layer — SurrealDB for long-term memory.** User wants to
-  explore SurrealDB as a knowledge graph backing store. Open questions to address:
-  (1) replace or supplement markdown files? (2) what is the entity/relation schema
-  (projects, sessions, decisions, people, files, rules)? (3) how do agents interact
-  — SurrealQL, REST, SDK? (4) fit with "no-code, markdown-only" philosophy — does
-  this become an optional tier? (5) single-agent vs multi-agent / multi-repo access
-  patterns. (6) SurrealDB Cloud vs self-hosted. Come prepared with a proposal.
+### Evolving long-term memory layer (v3.0.0) — BUILT 2026-06-13
+- [x] **Evolving-memory layer implemented.** Design: `DESIGN-evolving-memory.md`.
+  Deterministic integer tier rules (no float `strength`); event-sourced metadata
+  (derived from session-log `## Memory References` at review); stable kebab fact IDs;
+  `sessions/` = immutable event log; tiers by counting session files; decay sweeps
+  completed `[x]` threads; auto-core off (human-set); default windows 3/8/20, review
+  every 10. Created: `DECAY.md`, `REVIEW.md`, `UPGRADE.md`, `VERSION` (3.0.0),
+  `templates/memory/decay-policy.md`, `templates/.agent/version.md`,
+  `examples/evolving-memory-example/`. Wired: `templates/memory/continuity.md`
+  (Architectural Invariants + last_review + metadata note), `templates/.agent/schema.md`
+  (metadata fields + Memory References + new files), `templates/AGENTS.md` + root
+  `AGENTS.md` (Before/During/After), `ENABLE.md` (Step 5e generate, Step 6 install
+  DECAY/REVIEW, version-aware Mode B, Step 8 verify), root `CLAUDE.md` + `README.md`
+  (architecture + version table + evolving-memory section).
+- [x] **Versioning + in-place upgrade.** Root `VERSION` (semver); per-repo
+  `.agent/version.md` stamp; `UPGRADE.md` ladder reached only via ENABLE Mode B
+  (operator-only, like MIGRATE.md ← Mode C). 2.x→3.0.0 rung backfills ids/metadata.
+- [x] **Refinement vs. literal plan:** DECAY.md/REVIEW.md are *installed into every
+  enabled repo's root* (the ritual runs inside the repo), not tool-operator-only.
+  UPGRADE.md stays operator-only. (Flagged to user.)
+- [ ] **Dogfood backfill (optional):** this repo adopted the layer — added
+  Architectural Invariants (core), `memory/decay-policy.md`, `memory/archive/INDEX.md`,
+  `last_review`, and Memory References in session logs going forward. Legacy facts in
+  What's Been Built / Key Decisions are grandfathered as `active` (no metadata footers
+  yet); backfill them with ids/metadata if/when desired (or let the first review do it).
+- [ ] **Validate** the new protocol docs read unambiguously (manual review) and run a
+  real review cycle once this repo accrues ~10 post-adoption sessions.
+- [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**
+  (2026-06-13) in favor of the markdown-native evolving-memory layer above. Not
+  deleted — revisit if the markdown layer hits limits. Original open questions:
+  replace vs supplement markdown; entity/relation schema; agent interaction
+  (SurrealQL/REST/SDK); fit with no-code philosophy; single- vs multi-agent access;
+  Cloud vs self-hosted.
 
 ### Pre-existing
 - [ ] Test migration on a real repo with Cursor + Aider footprint
