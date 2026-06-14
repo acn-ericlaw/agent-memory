@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v3.7.0 — evolving memory; truth-maintenance trio (supersession v3.3.0 / invariant-verify v3.4.0 / contradiction-check v3.5.0) + smoke test (v3.6.0) + provenance & retrieval (v3.7.0). vNext backlog (P1–P5) all shipped.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-14 | agent: Claude Code (2026-06-14-024407)
+- **last_session:** 2026-06-14 | agent: Claude Code (2026-06-14-030729)
 - **last_review:** 2026-06-13 | through 2026-06-13-223743
 - **last_invariant_check:** (none yet)
 
@@ -261,6 +261,28 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→3.7.0, `UPGRADE.md` 3.6.0→3.7.0 rung + tables, `README`/`CHANGELOG`. Assessment
   gap #6 ⬜→✅; gap #4 (lexical retrieval) ◐ by-design (semantic out of scope).
   <!-- id: provenance-retrieval-v370 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working | origin: 2026-06-14-024407 -->
+
+### Next major iteration — Vision → Blueprint → Design → Implementation (VBDI) lifecycle
+> Set 2026-06-14. The vNext backlog (P1–P5) is complete; this is the next headline direction.
+> Paused at the framing stage by mutual agreement — to be tackled methodically next.
+
+- [ ] **Build a VBDI lifecycle layer** — *forward*-looking intent traceability to complement
+  the *backward*-looking memory layer. Mission: empower AI to deliver **predictable
+  innovation** with human partnership — a deterministic *process* + an enforceable *trace*
+  from intent → delivery, with a human gate at each altitude change (Vision → Blueprint →
+  Design → Implementation). "Predictable" = the process/trace, not the ideas. Reuses
+  existing primitives: id/origin/supersedes linkage (trace across altitudes), §10
+  contradiction-check (drift detection: impl vs design, design vs blueprint vs vision),
+  §9 supersession (intent changes ripple down), the human-gate pattern
+  (never-pick-a-winner / invariant-verify prompt), and the smoke test (acceptance vs
+  design criteria). Stays no-code/markdown + deterministic. **Plan:** dogfood it — write
+  the Vision (human's to set), then `DESIGN-vbdi-lifecycle.md` (sibling to
+  `DESIGN-evolving-memory.md`), settle forks via structured decisions, build on the
+  version ladder. **Hard parts:** drift across altitudes needs real structure (not
+  hand-waving); keep gates lightweight (Open-Thread-like, not Jira); the trace must be
+  enforceable (grep/review), not just documented. Validated motivation: the Node→Rust
+  rewrite delivered deterministically with no drift — VBDI generalizes that to creation.
+  <!-- id: vbdi-lifecycle-direction | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working | origin: 2026-06-14-030729 -->
 
 ### First real-work dogfood — enabled `~/sandbox/simple-proxy` (Mode A, 2026-06-13)
 - [x] **Real Mode A fresh enable** of a zero-dep Node.js TCP-proxy CLI (no prior AI
