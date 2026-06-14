@@ -40,6 +40,10 @@
   <!-- id: legacy-soap-adapter | created: 2026-03-15 | last_used: 2026-04-30 | uses: 3 | tier: archive-candidate -->
 - CSV bulk-import endpoint for the onboarding team
   <!-- id: csv-bulk-import | created: 2026-03-20 | last_used: 2026-04-25 | uses: 2 | tier: archive-candidate -->
+- ~~API version in the URI path (`/v1/…`)~~ — **superseded** today by header-based versioning
+  <!-- id: rest-versioning-uri | created: 2026-03-10 | last_used: 2026-06-20 | uses: 7 | tier: superseded | superseded-by: rest-versioning-header -->
+- API version selected via the `Accept` header, not the URI path
+  <!-- id: rest-versioning-header | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: working | supersedes: rest-versioning-uri -->
 
 ## Conventions
 

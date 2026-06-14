@@ -7,3 +7,4 @@
 - `csv-bulk-import` — CSV bulk-import endpoint for onboarding — 2026-Q2.md
 - `thread-ci-migration` — completed: CircleCI → GitHub Actions — 2026-Q2.md
 - `drizzle-over-prisma` — stay on Drizzle, no second ORM — 2026-Q2.md (REACTIVATED 2026-06-20 → now in continuity.md)
+- `rest-versioning-uri` — URI-path API versioning — 2026-Q2.md (SUPERSEDED by rest-versioning-header)

@@ -38,14 +38,21 @@ session file it last ran through).
      session date that names the id.
    - `Reactivated`: if the id currently lives in the archive, move it back into
      `continuity.md` as `active`, then apply the Referenced bump.
+   - `Superseded: <old> → <new>` (or `<old> (invalidated)`): confirm the old fact is
+     marked `tier: superseded` + `superseded-by: <new>` (the agent marks it at write
+     time — `DECAY.md` §9; set it here if missing) and the successor carries
+     `supersedes: <old>`.
 3. **Re-tier every fact.** For each fact in `continuity.md`, compute
    `sessions_since_last_used` (count files — `DECAY.md` §4) and apply the
    `DECAY.md` §5 rules in order. Record each tier change.
-4. **Archive.** Facts that resolve to `archived`:
+4. **Archive.** Facts that resolve to `archived` (faded) **or** `superseded` (false):
    - append the fact *with its metadata comment* to `memory/archive/<YYYY>-Q<n>.md`
-     under a dated heading,
-   - add/refresh its line in `memory/archive/INDEX.md` (`id — one-line — <quarter file>`),
+     under a dated heading, noting the reason — `faded` or `superseded by <new-id>`,
+   - add/refresh its line in `memory/archive/INDEX.md`
+     (`id — one-line — <reason> — <quarter file>`),
    - remove it from `continuity.md`.
+   Superseded facts archive **promptly** — no `archive_window` wait, since they are
+   false, not merely stale — and carry their `superseded-by` link into the archive.
 5. **Sweep completed threads.** `- [x]` Open Threads whose completion is older than
    `archive_window` sessions move to the archive the same way (usually the biggest
    lean-up). Keep recently-completed threads for context.
@@ -69,6 +76,8 @@ When an archived id is named in a session (`Referenced`/`Reactivated`):
 - note it in the review summary.
 
 This two-way movement is what keeps the system smart rather than merely lossy.
+**Superseded facts are the exception** — they are terminal (`DECAY.md` §9) and are
+*not* reactivated by a reference; only a human can reverse a supersession by hand.
 
 ---
 
@@ -77,7 +86,8 @@ This two-way movement is what keeps the system smart rather than merely lossy.
 ```markdown
 ## Memory Review (2026-06-20, through 2026-06-20-141503)
 - Reactivated:   1  (drizzle-over-prisma — referenced today after 9 dormant sessions)
-- Archived:      3  facts → memory/archive/2026-Q2.md
+- Superseded:    1  (rest-versioning-v1 → rest-versioning-v2; archived flagged superseded)
+- Archived:      3  facts → memory/archive/2026-Q2.md (faded)
 - Swept threads: 4  completed Open Threads → archive
 - Tier changes:  6  (2 working→active, 1 active→archive-candidate, 3 →archived)
 - Promoted core: 0  (auto-core off; core is human-set)

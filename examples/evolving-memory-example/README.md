@@ -25,6 +25,10 @@ counting session files (no floating-point math — see `DECAY.md` §4), the revi
   more than `archive_window` (20) sessions.
 - **Swept** the completed thread `thread-ci-migration` (`[x]`, done long ago) to
   the archive.
+- **Superseded** `rest-versioning-uri` — the team reversed API versioning to be
+  header-based today, so the URI-path decision is now *false* (not merely stale). It
+  was marked `tier: superseded` at write time and archived flagged "superseded," its
+  successor `rest-versioning-header` carrying the `supersedes` link. (`DECAY.md` §9)
 - **Re-tiered**: `graphql-gateway` `working → active` (referenced again), and
   `jwt-15min-expiry` `active → archive-candidate` (going stale, not yet gone).
 - Left `core` facts and the open thread untouched — they never decay.

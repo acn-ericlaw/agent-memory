@@ -63,12 +63,13 @@ Each fact carries a metadata footer (HTML comment), maintained by the review rit
 — invisible when rendered, read/written by agents:
 
 ```
-<!-- id: kebab-id | created: YYYY-MM-DD | last_used: YYYY-MM-DD | uses: N | tier: core|active|working|archive-candidate -->
+<!-- id: kebab-id | created: YYYY-MM-DD | last_used: YYYY-MM-DD | uses: N | tier: core|active|working|archive-candidate|superseded -->
   id         stable, unique within the file, assigned once at creation
   created    date the fact entered memory
   last_used  date of the most recent session referencing the id  (recomputed at review)
   uses       count of sessions referencing the id                (recomputed at review)
   tier       lifecycle bucket — see DECAY.md / REVIEW.md at the repo root
+  superseded-by / supersedes   (optional) supersession links when a fact is replaced or invalidated — see DECAY.md §9
 ```
 
 **At creation** the agent sets only `id`, `created`, and `tier` — `working` for an
@@ -79,6 +80,11 @@ recomputed by the review from session-log `## Memory References` (see `DECAY.md`
 `## Architectural Invariants` facts and unchecked Open Threads (`- [ ]`) never decay.
 Completed threads (`- [x]`) stay in place until the review sweeps them (see below /
 `REVIEW.md`) — don't archive them by hand.
+
+When a fact becomes **false** (a decision reversed, a dependency dropped), don't just
+delete it: set its footer to `tier: superseded` + `superseded-by: <new-id>` (omit the
+link for pure invalidation), record `Superseded: <old> → <new>` in the session log,
+and let the review archive it flagged "superseded." See `DECAY.md` §9.
 
 ---
 
@@ -115,6 +121,7 @@ What the next agent needs to know.
 - Referenced:  <continuity fact ids this session relied on / reinforced>
 - Created:     <new fact ids added this session (born tier: working)>
 - Reactivated: <fact ids pulled back from the archive>
+- Superseded:  <old-id → new-id, or old-id (invalidated) — facts made false this session; see DECAY.md §9>
 ```
 
 The `## Memory References` section is the **event log** the review ritual reads to

@@ -1,8 +1,9 @@
 # Continuity — taskflow-api
 
 > Snapshot **after** the review at session `2026-06-20-141503` (compare with
-> `continuity-before.md`). Leaner: two stale facts archived, one completed thread
-> swept, one fact reactivated from cold storage. Fictional project; worked example.
+> `continuity-before.md`). Leaner: two stale facts archived (faded), one decision
+> superseded (false → archived), one completed thread swept, one fact reactivated from
+> cold storage. Fictional project; worked example.
 
 ---
 
@@ -39,6 +40,8 @@
   <!-- id: drizzle-over-prisma | created: 2026-03-08 | last_used: 2026-06-20 | uses: 6 | tier: active -->
 - Reporting service reuses Drizzle (no second ORM)
   <!-- id: reporting-service-drizzle | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: working -->
+- API version selected via the `Accept` header, not the URI path
+  <!-- id: rest-versioning-header | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: working | supersedes: rest-versioning-uri -->
 - JWT access tokens expire in 15 minutes; refresh via cookie
   <!-- id: jwt-15min-expiry | created: 2026-04-01 | last_used: 2026-05-28 | uses: 4 | tier: archive-candidate -->
 

@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v3.2.0 — evolving memory (v3.0.0), `.gitignore` propagation (v3.1.0), protocol clarifications from field report (v3.2.0)
+- **status:** v3.3.0 — evolving memory (v3.0.0) + `.gitignore` propagation (v3.1.0) + protocol clarifications (v3.2.0) + supersession (v3.3.0)
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-13 | agent: Claude Code (2026-06-13-225207)
+- **last_session:** 2026-06-14 | agent: Claude Code (2026-06-14-021149)
 - **last_review:** 2026-06-13 | through 2026-06-13-223743
 
 ## What's Been Built
@@ -208,6 +208,19 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   Report archived at `docs/assessments/2026-06-13-protocol-field-report.md`.
   <!-- id: field-report-v320 | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: working -->
 
+### Shipped — v3.3.0: supersession / fact-invalidation (2026-06-14)
+- [x] **P1 (supersession) shipped.** The evolving-memory layer can now represent a fact
+  becoming *false*, not just unused: a terminal `superseded` tier + optional
+  `superseded-by`/`supersedes` footer fields. The agent marks a reversed/invalidated
+  fact `superseded` immediately (a truth-state edit it owns) and records
+  `Superseded: old → new` in the session log; the review archives it flagged
+  "superseded" (not "faded"), terminal (never reactivated). Touched `DECAY.md` (§9 +
+  tier + rule), `REVIEW.md`, `.agent/schema.md`, both `AGENTS.md`, the
+  `evolving-memory-example/` (a worked REST-versioning supersession), `VERSION`→3.3.0,
+  `UPGRADE.md` 3.2.0→3.3.0 rung + tables, `README`/`CHANGELOG`. Flipped the
+  industry-alignment assessment's gap #1 ⬜→✅ — the one "High" gap closed.
+  <!-- id: supersession-v330 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working -->
+
 ### First real-work dogfood — enabled `~/sandbox/simple-proxy` (Mode A, 2026-06-13)
 - [x] **Real Mode A fresh enable** of a zero-dep Node.js TCP-proxy CLI (no prior AI
   footprint). 15 files generated, source untouched, verified. Logged 7 refactor Open
@@ -232,7 +245,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 > on event-sourcing/determinism/governance; one real gap = temporal/supersession.
 > Re-run the assessment after meaningful iterations and compare its scorecard.
 
-- [ ] **P1 — Supersession / fact-invalidation semantics.** On a reversed decision,
+- [x] **P1 — Supersession / fact-invalidation semantics — SHIPPED v3.3.0** (see Shipped section above). On a reversed decision,
   tombstone the old fact (`superseded-by: <id>`; new fact `supersedes: <id>`) and
   archive it flagged "superseded", not "faded". Markdown-native `expired_at`/`invalid_at`
   (cf. Zep); closes assessment gaps #1+#2; buys the "knowledge updates" ability.

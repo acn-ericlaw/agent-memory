@@ -12,6 +12,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 3.3.0, 6/13/2026
+
+> Supersession / fact-invalidation — the evolving-memory layer can now represent a fact
+> becoming *false* (a decision reversed, a dependency dropped), not just fading from
+> disuse. Closes the industry-alignment assessment's one "High" gap. Additive (optional
+> footer fields + a terminal tier); already-enabled repos pick it up via the
+> `UPGRADE.md` 3.2.0→3.3.0 rung.
+
+### Added
+
+1. A terminal **`superseded`** tier and optional **`superseded-by`** / **`supersedes`**
+   footer fields (`DECAY.md` §9). When a fact is reversed/invalidated, the agent marks
+   it `superseded` immediately, adds the successor (`supersedes: <old>`), and records
+   `Superseded: <old> → <new>` in the session log's `## Memory References`.
+2. Review behavior: superseded facts are archived **flagged "superseded"** (distinct
+   from "faded"), promptly (no `archive_window` wait), links preserved in the archive +
+   `INDEX.md`; a `Superseded: N` line joins the review summary. Superseded is
+   **terminal** — never reactivated by a reference (only a human can reverse it).
+3. A worked supersession in `examples/evolving-memory-example/` — a reversed
+   REST-versioning decision threaded through before/after/session-log/archive.
+
+### Removed
+
+N/A.
+
+### Changed
+
+1. `DECAY.md`, `REVIEW.md`, `.agent/schema.md`, and `AGENTS.md` (root + template) updated
+   for the above; `VERSION` → 3.3.0; `UPGRADE.md` 3.2.0→3.3.0 rung + version tables; the
+   industry-alignment assessment flips gap #1 ⬜ → ✅.
+
+---
 ## Version 3.2.0, 6/13/2026
 
 > Protocol clarifications from a real-work field report (a Node.js→Rust refactor of an

@@ -23,6 +23,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 3.0.0 | Evolving memory: fact metadata + ids, decay-policy, review ritual, archive |
 | 3.1.0 | AI-infrastructure `.gitignore` propagated into enabled repos (created or appended) |
 | 3.2.0 | Protocol clarifications: session = one log-write (start best-effort); metadata ownership; stack-fact altitude; after-session checklist |
+| 3.3.0 | Supersession: a fact can be marked `superseded` (replaced/invalidated), archived flagged "superseded" not "faded", terminal (never reactivated) |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -162,3 +163,23 @@ the review reconciles tiers as usual.
    preserving `enabled_with` and `mode`.
 
 5. **Report**: which docs were re-synced and the notes added.
+
+---
+
+## Rung: 3.2.0 → 3.3.0 — supersession / fact-invalidation
+
+Additive: a new terminal `superseded` tier + optional `superseded-by`/`supersedes`
+footer fields, so a fact that becomes *false* (not just unused) is retired correctly.
+**No shape change to existing facts** — repos without superseded facts are unaffected,
+and the optional fields appear only when a fact is actually superseded.
+
+1. **Re-sync the generic rule/protocol docs** (copy verbatim from the tool root /
+   templates, only where different): `DECAY.md` (new `superseded` tier, §9, the rule),
+   `REVIEW.md` (applies `Superseded:` events; archives flagged "superseded"),
+   `.agent/schema.md` (footer fields + the `Superseded:` Memory-References line), and
+   `AGENTS.md` (the after-session supersession step).
+2. **No data migration.** Existing facts are untouched; supersession applies only when
+   a fact is reversed/invalidated from now on.
+3. **Stamp** `.agent/version.md` → `version: 3.3.0`, `last_upgraded: <today>`,
+   preserving `enabled_with` and `mode`.
+4. **Report**: docs re-synced; the supersession capability is now available.

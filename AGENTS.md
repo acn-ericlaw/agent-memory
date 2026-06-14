@@ -81,6 +81,11 @@ expected (the decay math counts log files — `DECAY.md` §4).
      `last_used: today | uses: 1`. Don't hand-edit `uses`/`last_used`/`tier` after —
      the review owns them.
    - Update the substance of any changed fact (not its usage metadata).
+   - **Reversed a decision / a fact became false?** Add the successor (born
+     `tier: working`, `supersedes: <old>`), mark the old `tier: superseded` +
+     `superseded-by: <new>` (omit the link for pure invalidation), and record
+     `Superseded: <old> → <new>` in `## Memory References` — a truth-state edit you
+     own; the review archives it flagged "superseded" (`DECAY.md` §9).
 3. **Review cadence.** If `sessions_since_last_review ≥ review_every`
    (`memory/decay-policy.md`) or `continuity.md` exceeds `continuity_max_lines`, run
    the review ritual (`REVIEW.md`). Also run on demand if the user says "review memory".
