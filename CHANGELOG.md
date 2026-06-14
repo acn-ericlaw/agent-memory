@@ -12,6 +12,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 3.4.0, 6/14/2026
+
+> Invariant verification — never-decay facts (`core` / Architectural Invariants) can
+> quietly go "confidently wrong" when circumstances change. The review now periodically
+> prompts a human to re-confirm them (or supersede the false ones via v3.3.0). Closes
+> the assessment's gap #2. Additive (a policy knob + a tracker field); already-enabled
+> repos catch up via the `UPGRADE.md` 3.3.0→3.4.0 rung.
+
+### Added
+
+1. `verify_invariants_every` (default 20) in `decay-policy.md`, and a
+   `last_invariant_check` tracker in `continuity.md` Project State.
+2. Review routine **step 6** (`REVIEW.md`): when due, raise **one** Open Thread asking a
+   human to re-confirm every never-decay fact, then stamp `last_invariant_check`. The
+   review **never auto-invalidates** — it only prompts; the human confirms or supersedes
+   (§9). An `Invariants:` line joins the review summary.
+3. The worked example shows a first invariant-verification prompt.
+
+### Removed
+
+N/A.
+
+### Changed
+
+1. `DECAY.md` §6 gains a "never-decay ≠ never-checked" note; `.agent/schema.md` documents
+   the `last_invariant_check` field + the knob. `VERSION` → 3.4.0; `UPGRADE.md`
+   3.3.0→3.4.0 rung + version tables; `README`. Assessment gap #2 flipped ⬜ → ✅.
+
+---
 ## Version 3.3.0, 6/13/2026
 
 > Supersession / fact-invalidation — the evolving-memory layer can now represent a fact

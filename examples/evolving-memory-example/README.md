@@ -32,6 +32,11 @@ counting session files (no floating-point math — see `DECAY.md` §4), the revi
 - **Re-tiered**: `graphql-gateway` `working → active` (referenced again), and
   `jwt-15min-expiry` `active → archive-candidate` (going stale, not yet gone).
 - Left `core` facts and the open thread untouched — they never decay.
+- **Prompted invariant re-verification** — the `core` invariants had never been
+  re-confirmed, and `verify_invariants_every` (20) was due, so the review raised a
+  one-off Open Thread asking a human to re-confirm `post-only-mutations` and
+  `utc-everywhere` (or supersede them). The review never auto-invalidates an invariant
+  — never-decay ≠ never-checked. (`DECAY.md` §6/§9)
 
 Net effect: `continuity.md` got leaner, nothing was lost, and a still-relevant fact
 came back automatically.

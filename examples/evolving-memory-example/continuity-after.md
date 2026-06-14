@@ -3,7 +3,8 @@
 > Snapshot **after** the review at session `2026-06-20-141503` (compare with
 > `continuity-before.md`). Leaner: two stale facts archived (faded), one decision
 > superseded (false → archived), one completed thread swept, one fact reactivated from
-> cold storage. Fictional project; worked example.
+> cold storage — plus a first invariant-verification prompt raised. Fictional project;
+> worked example.
 
 ---
 
@@ -14,6 +15,7 @@
 - **last_enabled:** 2026-03-02
 - **last_session:** 2026-06-20 | agent: Claude Code (2026-06-20-141503)
 - **last_review:** 2026-06-20 | through 2026-06-20-141503
+- **last_invariant_check:** 2026-06-20 | through 2026-06-20-141503
 - **repo:** ~/projects/taskflow-api
 
 ## Architectural Invariants
@@ -54,6 +56,9 @@
 
 - [ ] Add idempotency keys to the payments endpoint
   <!-- id: thread-idempotency-keys | created: 2026-06-11 | last_used: 2026-06-20 | uses: 3 | tier: active -->
+- [ ] Re-verify invariants (first check, due): confirm `post-only-mutations` and
+  `utc-everywhere` still hold, or supersede any that don't (`DECAY.md` §9)
+  <!-- id: thread-verify-invariants | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: active -->
 
 ## User Preferences
 

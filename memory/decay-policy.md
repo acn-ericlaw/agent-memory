@@ -13,6 +13,9 @@
 - review_every:        10
 - continuity_max_lines: 300
 
+## Invariant verification
+- verify_invariants_every: 20  # sessions between human re-checks of core / invariants
+
 ## Auto-core (default: off — core is human-set)
 - enabled:          false
 - core_min_uses:    12

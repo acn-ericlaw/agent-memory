@@ -17,6 +17,7 @@
 - **last_enabled:** {{TODAY}}
 - **last_session:** (none yet)
 - **last_review:** (none yet)
+- **last_invariant_check:** (none yet)
 - **repo:** {{REPO_PATH}}
 
 ## Stack & Tools

@@ -12,6 +12,7 @@
 - **last_enabled:** 2026-03-02
 - **last_session:** 2026-06-20 | agent: Claude Code (2026-06-20-141503)
 - **last_review:** 2026-05-30 | through 2026-05-30-093210
+- **last_invariant_check:** (none yet)
 - **repo:** ~/projects/taskflow-api
 
 ## Architectural Invariants

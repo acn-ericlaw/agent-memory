@@ -141,6 +141,11 @@ Exempt from the decay steps (§5 rules 5–8) regardless of counts:
 A *checked* Open Thread (`- [x]`) becomes eligible to be swept to the archive once
 its completion is older than `archive_window` sessions (see `REVIEW.md`).
 
+> **Never-decay ≠ never-checked.** `core` facts and Architectural Invariants can quietly
+> become *wrong* when circumstances change. The review periodically prompts a human to
+> re-confirm them (or supersede the false ones, §9) — see `verify_invariants_every` in
+> `decay-policy.md` and `REVIEW.md` routine step 6.
+
 ---
 
 ## 7. Auto-core (default OFF)

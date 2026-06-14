@@ -44,6 +44,7 @@ Live project state. Update every session.
 - last_enabled:   YYYY-MM-DD
 - last_session:   YYYY-MM-DD | agent: string          (or "none yet")
 - last_review:    YYYY-MM-DD | through <session-file>  (or "none yet")
+- last_invariant_check: YYYY-MM-DD | through <session-file>  (or "none yet") — see REVIEW.md step 6
 - repo:           ~-relative path (e.g. ~/projects/foo) — NEVER absolute /Users/<name>/…; memory is committed & shared
 
 ## Architectural Invariants  hard constraints; never decay (omit the section if none)
@@ -153,8 +154,8 @@ session. A stale index is worse than none, so skip it rather than let it drift.
 ## memory/decay-policy.md
 
 Tunable integer windows + triggers for the evolving-memory layer (`working_window`,
-`active_window`, `archive_window`, `review_every`, `continuity_max_lines`, and
-auto-core). All windows are in **sessions**. The rules these feed live in `DECAY.md`
+`active_window`, `archive_window`, `review_every`, `continuity_max_lines`,
+`verify_invariants_every`, and auto-core). All windows are in **sessions**. The rules these feed live in `DECAY.md`
 and `REVIEW.md` at the repo root.
 
 ---

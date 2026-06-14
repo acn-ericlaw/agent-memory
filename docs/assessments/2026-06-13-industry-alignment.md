@@ -75,7 +75,7 @@ own retreat toward deployment simplicity. The one real, addressable gap is
 | # | Gap | Why it matters (2026) | Severity (this niche) | Status |
 |---|---|---|---|---|
 | 1 | **No supersession / fact-invalidation** | Zep models `valid_at`/`expired_at`/`invalid_at`; LongMemEval tests "knowledge updates"; Mem0 names "change as *replacement* not *evolution*" a top gap. Decay handles *unused*, not *false-when-reversed*. | **High — the one real gap** | ✅ shipped v3.3.0 (`superseded` tier + `supersedes`/`superseded-by`) |
-| 2 | **Never-decay facts can go "confidently wrong"** | "High-relevance facts become confidently wrong when circumstances change" is a named open problem. `core` / Architectural Invariants never age out. | Medium-High | ⬜ open → P2 |
+| 2 | **Never-decay facts can go "confidently wrong"** | "High-relevance facts become confidently wrong when circumstances change" is a named open problem. `core` / Architectural Invariants never age out. | Medium-High | ✅ shipped v3.4.0 (`verify_invariants_every` prompt) |
 | 3 | **No write-time contradiction check** | SSGM "pre-consolidation validation" rejects updates contradicting core facts. Done at *migration* only, not normal sessions. | Medium | ⬜ open → P3 |
 | 4 | **Lexical-only retrieval** | Production leans multi-signal (semantic + BM25 + entity + rerank). Tool has grep + read-whole-file. | Low (bounded by project scale) | ⬜ open → P5 |
 | 5 | **No evaluation harness** | Even leaders admit "application-level evaluation is still a manual, bespoke process." | Low — but a cheap way to lead | ⬜ open → P4 |
@@ -95,7 +95,7 @@ own retreat toward deployment simplicity. The one real, addressable gap is
 | Human governance / audit | emerging need | git + markdown + override | ⭐ Ahead |
 | Temporal / supersession | valid/expired/invalid, knowledge updates | `superseded` tier + `supersedes`/`superseded-by` (v3.3.0) | ✅ shipped v3.3.0 |
 | Truth maintenance | pre-consolidation validation | migration-only + core pinning | ◐ Partial (P3) |
-| Stale pinned-fact handling | open problem | never-decay, no recheck | ⬜ Gap (P2) |
+| Stale pinned-fact handling | open problem | `verify_invariants_every` prompt (v3.4.0) | ✅ shipped v3.4.0 |
 | Retrieval sophistication | multi-signal + rerank | lexical grep + read | ◐ Partial (P5) |
 | Knowledge graph / entities | shift to built-in entity linking | flat markdown (graph deferred) | ◐ Partial / validated deferral |
 | Evaluation | bespoke, unsolved industry-wide | none | ⬜ Gap (P4) |

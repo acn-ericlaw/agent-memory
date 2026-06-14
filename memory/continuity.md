@@ -7,10 +7,11 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v3.3.0 — evolving memory (v3.0.0) + `.gitignore` propagation (v3.1.0) + protocol clarifications (v3.2.0) + supersession (v3.3.0)
+- **status:** v3.4.0 — evolving memory (v3.0.0) + `.gitignore` (v3.1.0) + protocol clarifications (v3.2.0) + supersession (v3.3.0) + invariant-verify (v3.4.0)
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-14 | agent: Claude Code (2026-06-14-021149)
+- **last_session:** 2026-06-14 | agent: Claude Code (2026-06-14-022030)
 - **last_review:** 2026-06-13 | through 2026-06-13-223743
+- **last_invariant_check:** (none yet)
 
 ## What's Been Built
 
@@ -220,6 +221,16 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `UPGRADE.md` 3.2.0→3.3.0 rung + tables, `README`/`CHANGELOG`. Flipped the
   industry-alignment assessment's gap #1 ⬜→✅ — the one "High" gap closed.
   <!-- id: supersession-v330 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working -->
+- [x] **P2 (invariant-verification cadence) shipped as v3.4.0.** Never-decay facts
+  (`core` / Architectural Invariants) can quietly go "confidently wrong"; the review now
+  prompts a human to re-confirm them. Added `verify_invariants_every` (default 20) to
+  `decay-policy.md` and a `last_invariant_check` tracker to continuity Project State;
+  `REVIEW.md` step 6 raises **one** Open Thread to confirm-or-supersede when due (never
+  auto-invalidates) + a summary line; `DECAY.md` §6 note; `.agent/schema.md`; worked
+  example shows a first invariant prompt. `VERSION`→3.4.0, `UPGRADE.md` 3.3.0→3.4.0 rung
+  + tables, `README`/`CHANGELOG`. Assessment gap #2 ⬜→✅. Pairs with v3.3.0: P1 retires
+  a fact you *notice* is false; P2 makes you *check*.
+  <!-- id: invariant-verify-v340 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working -->
 
 ### First real-work dogfood — enabled `~/sandbox/simple-proxy` (Mode A, 2026-06-13)
 - [x] **Real Mode A fresh enable** of a zero-dep Node.js TCP-proxy CLI (no prior AI
@@ -251,7 +262,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (cf. Zep); closes assessment gaps #1+#2; buys the "knowledge updates" ability.
   Touches DECAY.md, REVIEW.md, schema, examples. Highest-value next step.
   <!-- id: backlog-supersession | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
-- [ ] **P2 — Invalidation cadence for never-decay facts.** Add `verify_invariants_every: N`
+- [x] **P2 — Invariant-verification cadence — SHIPPED v3.4.0** (see Shipped section above). Add `verify_invariants_every: N`
   to decay-policy.md; review prompts a human to confirm `core`/Architectural Invariants
   are still true (never-decay ≠ never-checked).
   <!-- id: backlog-invariant-verify-cadence | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->

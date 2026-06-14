@@ -17,8 +17,13 @@ Three triggers:
 2. **On command** — the user says *"review memory"* / *"compact memory"*.
 3. **Size** — when `memory/continuity.md` exceeds `continuity_max_lines`.
 
-`last_review` is tracked in `continuity.md` Project State (a `YYYY-MM-DD` plus the
-session file it last ran through).
+Within a review, one more cadence is checked — **invariant verification**: when
+`sessions_since_last_invariant_check ≥ verify_invariants_every`, the review prompts a
+human to re-confirm the never-decay facts (routine step 6). It rides on the review, so
+it never fires more often than reviews do.
+
+`last_review` and `last_invariant_check` are tracked in `continuity.md` Project State
+(each a `YYYY-MM-DD` plus the session file it last ran through).
 
 ## Inputs
 
@@ -56,8 +61,18 @@ session file it last ran through).
 5. **Sweep completed threads.** `- [x]` Open Threads whose completion is older than
    `archive_window` sessions move to the archive the same way (usually the biggest
    lean-up). Keep recently-completed threads for context.
-6. **Stamp.** Set `last_review` to today + the latest session file name.
-7. **Summarise.** Write a `## Memory Review` block into *this* session's log.
+6. **Verify invariants (cadence).** If `sessions_since_last_invariant_check ≥
+   verify_invariants_every` (or `last_invariant_check` is unset and that many session
+   files exist), raise **one** Open Thread listing every never-decay fact —
+   `tier: core` plus everything under `## Architectural Invariants` — for a human to
+   re-confirm:
+   `- [ ] Re-verify invariants (due): confirm <id>, <id>, … still hold, or supersede any that don't (DECAY.md §9)`.
+   The review **never auto-invalidates** an invariant — it only prompts; the human
+   confirms (checks the thread off) or supersedes the false ones (§9). Then set
+   `last_invariant_check` to today + the latest session file. (Never-decay ≠
+   never-checked.) If not due, skip this step.
+7. **Stamp.** Set `last_review` to today + the latest session file name.
+8. **Summarise.** Write a `## Memory Review` block into *this* session's log.
 
 ## Full rebuild (the ground-truth path)
 
@@ -90,6 +105,7 @@ This two-way movement is what keeps the system smart rather than merely lossy.
 - Archived:      3  facts → memory/archive/2026-Q2.md (faded)
 - Swept threads: 4  completed Open Threads → archive
 - Tier changes:  6  (2 working→active, 1 active→archive-candidate, 3 →archived)
+- Invariants:    not due (next re-verify in 6 sessions)   # or: "prompted — 2 invariants up for re-confirmation"
 - Promoted core: 0  (auto-core off; core is human-set)
 ```
 

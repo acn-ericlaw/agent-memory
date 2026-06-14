@@ -24,6 +24,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 3.1.0 | AI-infrastructure `.gitignore` propagated into enabled repos (created or appended) |
 | 3.2.0 | Protocol clarifications: session = one log-write (start best-effort); metadata ownership; stack-fact altitude; after-session checklist |
 | 3.3.0 | Supersession: a fact can be marked `superseded` (replaced/invalidated), archived flagged "superseded" not "faded", terminal (never reactivated) |
+| 3.4.0 | Invariant verification: `verify_invariants_every` prompts a human to re-confirm never-decay facts (`core` / Architectural Invariants) — never-decay ≠ never-checked |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -183,3 +184,24 @@ and the optional fields appear only when a fact is actually superseded.
 3. **Stamp** `.agent/version.md` → `version: 3.3.0`, `last_upgraded: <today>`,
    preserving `enabled_with` and `mode`.
 4. **Report**: docs re-synced; the supersession capability is now available.
+
+---
+
+## Rung: 3.3.0 → 3.4.0 — invariant verification cadence
+
+Additive: never-decay facts (`core` / Architectural Invariants) can quietly go
+*wrong*; the review now periodically prompts a human to re-confirm them. A new policy
+knob + tracker field; no change to existing facts.
+
+1. **Add `verify_invariants_every`** to `memory/decay-policy.md` (default `20`) — only
+   if absent; preserve any existing value.
+2. **Add `last_invariant_check`** to `continuity.md` Project State, just below
+   `last_review` (value `(none yet)` if never run). It will first fire at the next
+   review once that many session files exist.
+3. **Re-sync the generic protocol docs** (copy verbatim where different): `REVIEW.md`
+   (new routine step 6 + the verify trigger + summary line), `DECAY.md` (the
+   "never-decay ≠ never-checked" note in §6), `.agent/schema.md` (the
+   `last_invariant_check` Project-State field + the policy knob).
+4. **Stamp** `.agent/version.md` → `version: 3.4.0`, `last_upgraded: <today>`,
+   preserving `enabled_with` and `mode`.
+5. **Report**: knob + tracker added, docs re-synced.
