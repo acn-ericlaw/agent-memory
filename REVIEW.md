@@ -74,6 +74,12 @@ it never fires more often than reviews do.
 7. **Stamp.** Set `last_review` to today + the latest session file name.
 8. **Summarise.** Write a `## Memory Review` block into *this* session's log.
 
+**Contradiction backstop.** The review reads every fact anyway, so give them a quick
+contradiction scan — the write-time check (`DECAY.md` §10) may have missed one, or two
+facts may have drifted into conflict over time. Surface any conflict as a
+`- [ ] Contradiction: <fact> conflicts with <id> — resolve (supersede one, or reconcile)`
+Open Thread; never silently reconcile or pick a winner.
+
 ## Full rebuild (the ground-truth path)
 
 Because metadata is *derived*, you can discard stored `uses`/`last_used`/`tier`

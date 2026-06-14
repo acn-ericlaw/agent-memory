@@ -12,6 +12,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 3.5.0, 6/14/2026
+
+> Write-time contradiction check — the migration-time "surface contradictions, never
+> pick a winner" rule now applies to normal sessions: a new fact is scanned against
+> existing ones *before* it's recorded. Closes the assessment's gap #3 (the last
+> "Partial"). Additive — a behavioral rule + a review backstop; no new fields or knobs.
+
+### Added
+
+1. `DECAY.md` §10 — write-time contradiction check: on adding/rewriting a fact, scan
+   `core`/invariants + active decisions in the same area; a clear replacement →
+   supersede (§9), a genuine conflict → a `Contradiction:` Open Thread, a clash with a
+   `core` invariant → stop and surface.
+2. A **contradiction backstop** in `REVIEW.md` (the review scans the facts it already
+   reads and flags conflicts it finds).
+3. The before-adding-a-fact check in the after-session step of `AGENTS.md` (root + template).
+
+### Removed
+
+N/A.
+
+### Changed
+
+1. `VERSION` → 3.5.0; `UPGRADE.md` 3.4.0→3.5.0 rung + version tables; `README`.
+   Assessment gap #3 flipped ⬜ → ✅ and the "Truth maintenance" scorecard row ◐ → ✅.
+
+---
 ## Version 3.4.0, 6/14/2026
 
 > Invariant verification — never-decay facts (`core` / Architectural Invariants) can

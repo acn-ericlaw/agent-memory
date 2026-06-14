@@ -80,6 +80,9 @@ expected (the decay math counts log files — `DECAY.md` §4).
      `created`, `tier: working` (or `core` for an invariant), and seed
      `last_used: today | uses: 1`. Don't hand-edit `uses`/`last_used`/`tier` after —
      the review owns them.
+   - **Check a new fact against existing ones first** (`DECAY.md` §10): supersede a
+     clear replacement (below), or raise a `- [ ] Contradiction: …` Open Thread for a
+     genuine conflict — don't silently keep both.
    - Update the substance of any changed fact (not its usage metadata).
    - **Reversed a decision / a fact became false?** Add the successor (born
      `tier: working`, `supersedes: <old>`), mark the old `tier: superseded` +

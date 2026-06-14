@@ -195,3 +195,27 @@ false, not dormant). Only a human can reverse a supersession by hand-editing it 
 > This is the markdown-native analogue of bi-temporal `valid_at`/`expired_at`/
 > `invalid_at`: `created` is "valid from"; supersession is "invalid from now,
 > replaced by <id>" — recorded as an event and a terminal tier, with no scoring.
+
+---
+
+## 10. Write-time contradiction check
+
+A fact is cheapest to validate the moment it's written. When you add or materially
+rewrite a fact, first scan the facts it might conflict with — `core` / Architectural
+Invariants and the active Key Decisions / Conventions in the same area — and act on any
+contradiction instead of silently letting both coexist:
+
+- **Clear replacement** → **supersede** (§9): the new fact wins, the old is marked
+  `superseded`. (E.g. "versioning now via the `Accept` header" replaces "version in the
+  URI path".)
+- **Genuine conflict, unclear winner** → **don't pick a winner.** Keep the existing
+  fact and raise an Open Thread for a human:
+  `- [ ] Contradiction: <new fact> conflicts with <id> — resolve (supersede one, or reconcile)`.
+- **Contradicts a `core` invariant** → surface it prominently and stop; a new fact must
+  not silently override an invariant. Either the invariant is being deliberately
+  superseded (a human-confirmed act, §9) or the new fact is wrong.
+
+This is "pre-consolidation validation," scaled to markdown — a cheap read-and-compare at
+write time, with the review as a periodic backstop (`REVIEW.md`). It is the same
+"surface contradictions, never pick a winner" rule the migration path already uses
+(`MIGRATE.md`), now applied to normal sessions too.

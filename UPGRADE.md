@@ -25,6 +25,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 3.2.0 | Protocol clarifications: session = one log-write (start best-effort); metadata ownership; stack-fact altitude; after-session checklist |
 | 3.3.0 | Supersession: a fact can be marked `superseded` (replaced/invalidated), archived flagged "superseded" not "faded", terminal (never reactivated) |
 | 3.4.0 | Invariant verification: `verify_invariants_every` prompts a human to re-confirm never-decay facts (`core` / Architectural Invariants) — never-decay ≠ never-checked |
+| 3.5.0 | Write-time contradiction check: a new fact is scanned against existing ones → supersede (§9) or raise a `Contradiction:` Open Thread; review backstop |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -205,3 +206,19 @@ knob + tracker field; no change to existing facts.
 4. **Stamp** `.agent/version.md` → `version: 3.4.0`, `last_upgraded: <today>`,
    preserving `enabled_with` and `mode`.
 5. **Report**: knob + tracker added, docs re-synced.
+
+---
+
+## Rung: 3.4.0 → 3.5.0 — write-time contradiction check
+
+Additive (a behavioral rule + a review backstop; no new fields, tiers, or knobs). It
+generalizes the migration-time contradiction check to normal sessions, resolving via
+supersession (§9) or an Open Thread.
+
+1. **Re-sync the generic protocol docs** (copy verbatim where different): `DECAY.md`
+   (new §10), `REVIEW.md` (the "Contradiction backstop" note after the routine), and
+   `AGENTS.md` (the before-adding-a-fact contradiction check in the after-session step).
+2. **No data migration, no new metadata.** Nothing to backfill.
+3. **Stamp** `.agent/version.md` → `version: 3.5.0`, `last_upgraded: <today>`,
+   preserving `enabled_with` and `mode`.
+4. **Report**: docs re-synced; the write-time contradiction check is now in effect.

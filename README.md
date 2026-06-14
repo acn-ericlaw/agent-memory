@@ -120,6 +120,7 @@ it in place** — additively, never destructively.
 | 3.2.0 | Protocol clarifications: session = one log-write; metadata ownership; stack-fact altitude; after-session checklist |
 | 3.3.0 | Supersession: facts that become *false* are marked `superseded` (replaced/invalidated) and archived flagged "superseded", not "faded" |
 | 3.4.0 | Invariant verification: the review periodically prompts a human to re-confirm never-decay facts (`verify_invariants_every`) |
+| 3.5.0 | Write-time contradiction check: a new fact is checked against existing ones → supersede or raise a `Contradiction:` Open Thread (review backstop) |
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the

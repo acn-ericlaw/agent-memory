@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v3.4.0 — evolving memory (v3.0.0) + `.gitignore` (v3.1.0) + protocol clarifications (v3.2.0) + supersession (v3.3.0) + invariant-verify (v3.4.0)
+- **status:** v3.5.0 — evolving memory (v3.0.0) + `.gitignore` (v3.1.0) + clarifications (v3.2.0) + supersession (v3.3.0) + invariant-verify (v3.4.0) + contradiction-check (v3.5.0)
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-14 | agent: Claude Code (2026-06-14-022030)
+- **last_session:** 2026-06-14 | agent: Claude Code (2026-06-14-022619)
 - **last_review:** 2026-06-13 | through 2026-06-13-223743
 - **last_invariant_check:** (none yet)
 
@@ -231,6 +231,17 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   + tables, `README`/`CHANGELOG`. Assessment gap #2 ⬜→✅. Pairs with v3.3.0: P1 retires
   a fact you *notice* is false; P2 makes you *check*.
   <!-- id: invariant-verify-v340 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working -->
+- [x] **P3 (write-time contradiction check) shipped as v3.5.0.** Generalized the
+  migration-time "surface contradictions, never pick a winner" rule to normal sessions:
+  `DECAY.md` §10 — on adding/rewriting a fact, scan `core`/invariants + active decisions
+  in the same area; a clear replacement → supersede (§9), a genuine conflict →
+  `Contradiction:` Open Thread, a clash with a `core` invariant → stop and surface.
+  Added a review contradiction-backstop (`REVIEW.md`) and the before-adding check in
+  both `AGENTS.md`. `VERSION`→3.5.0, `UPGRADE.md` 3.4.0→3.5.0 rung + tables,
+  `README`/`CHANGELOG`; assessment gap #3 ⬜→✅ and Truth-maintenance scorecard ◐→✅.
+  Completes the truth-maintenance trio: P3 catches a conflict at write time, P1
+  resolves it (supersede) or P3 raises a thread, P2 re-checks invariants periodically.
+  <!-- id: contradiction-check-v350 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working -->
 
 ### First real-work dogfood — enabled `~/sandbox/simple-proxy` (Mode A, 2026-06-13)
 - [x] **Real Mode A fresh enable** of a zero-dep Node.js TCP-proxy CLI (no prior AI
@@ -266,7 +277,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   to decay-policy.md; review prompts a human to confirm `core`/Architectural Invariants
   are still true (never-decay ≠ never-checked).
   <!-- id: backlog-invariant-verify-cadence | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
-- [ ] **P3 — Write-time contradiction flag.** Extend the migration-time contradiction
+- [x] **P3 — Write-time contradiction flag — SHIPPED v3.5.0** (see Shipped section above). Extend the migration-time contradiction
   check into REVIEW.md: when a fact is added, scan for one it contradicts → raise an
   Open Thread (SSGM "pre-consolidation validation", scaled down).
   <!-- id: backlog-contradiction-check | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->

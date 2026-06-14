@@ -51,6 +51,9 @@ expected (the decay math counts log files — `DECAY.md` §4).
    - Mark completed Open Threads `- [x]` and **leave them in place** — the review
      sweeps them once older than `archive_window`; don't archive them by hand.
    - Add new Open Threads surfaced during the session.
+   - **Before recording a new fact, check it against existing ones** (`DECAY.md` §10):
+     if it clearly replaces one, supersede that one (see below); if it genuinely
+     conflicts, raise a `- [ ] Contradiction: …` Open Thread rather than keeping both.
    - Give any new fact a kebab `id` + footer: set `id`, `created`, `tier: working`
      (or `core` for an Architectural Invariant), and seed `last_used: today | uses: 1`.
      Don't hand-edit `uses`/`last_used`/`tier` afterward — the review owns them.

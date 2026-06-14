@@ -28,7 +28,9 @@ counting session files (no floating-point math — see `DECAY.md` §4), the revi
 - **Superseded** `rest-versioning-uri` — the team reversed API versioning to be
   header-based today, so the URI-path decision is now *false* (not merely stale). It
   was marked `tier: superseded` at write time and archived flagged "superseded," its
-  successor `rest-versioning-header` carrying the `supersedes` link. (`DECAY.md` §9)
+  successor `rest-versioning-header` carrying the `supersedes` link. (`DECAY.md` §9) —
+  this is also a **write-time contradiction** (header vs. URI versioning) resolved *by*
+  supersession rather than an Open Thread (`DECAY.md` §10).
 - **Re-tiered**: `graphql-gateway` `working → active` (referenced again), and
   `jwt-15min-expiry` `active → archive-candidate` (going stale, not yet gone).
 - Left `core` facts and the open thread untouched — they never decay.
