@@ -19,8 +19,9 @@ Read these files before responding to anything:
 2. `memory/continuity.md`   — current project state, open threads, key decisions
 3. `memory/sessions/`       — scan the most recent 2–3 session logs
 
-If a topic seems unfamiliar, grep `memory/archive/INDEX.md` before saying you have
-no context — facts fade to the archive but are never deleted.
+If a topic seems unfamiliar, grep `memory/archive/INDEX.md` (and follow a fact's
+`origin` to its session) before saying you have no context — retrieval here is lexical
++ indexed by design (`DECAY.md` §11); facts fade to the archive but are never deleted.
 
 ## During the Session
 
@@ -55,8 +56,9 @@ expected (the decay math counts log files — `DECAY.md` §4).
      if it clearly replaces one, supersede that one (see below); if it genuinely
      conflicts, raise a `- [ ] Contradiction: …` Open Thread rather than keeping both.
    - Give any new fact a kebab `id` + footer: set `id`, `created`, `tier: working`
-     (or `core` for an Architectural Invariant), and seed `last_used: today | uses: 1`.
-     Don't hand-edit `uses`/`last_used`/`tier` afterward — the review owns them.
+     (or `core` for an Architectural Invariant), `origin: <this session's file>`, and
+     seed `last_used: today | uses: 1`. Don't hand-edit `uses`/`last_used`/`tier`
+     afterward — the review owns them.
    - Update the substance of any fact that changed (not its usage metadata).
    - **Reversed a decision / a fact became false?** Add the successor (born
      `tier: working`, `supersedes: <old>`), mark the old fact `tier: superseded` +

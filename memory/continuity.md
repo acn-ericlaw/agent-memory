@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v3.6.0 — evolving memory + `.gitignore` + clarifications + supersession (v3.3.0) + invariant-verify (v3.4.0) + contradiction-check (v3.5.0) + memory smoke test (v3.6.0)
+- **status:** v3.7.0 — evolving memory; truth-maintenance trio (supersession v3.3.0 / invariant-verify v3.4.0 / contradiction-check v3.5.0) + smoke test (v3.6.0) + provenance & retrieval (v3.7.0). vNext backlog (P1–P5) all shipped.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-14 | agent: Claude Code (2026-06-14-023301)
+- **last_session:** 2026-06-14 | agent: Claude Code (2026-06-14-024407)
 - **last_review:** 2026-06-13 | through 2026-06-13-223743
 - **last_invariant_check:** (none yet)
 
@@ -251,6 +251,16 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   created (dogfood, not yet run). `VERSION`→3.6.0, `UPGRADE.md` 3.5.0→3.6.0 rung + tables,
   `README`/`CHANGELOG`; assessment gap #5 + Evaluation scorecard ⬜→✅.
   <!-- id: memory-smoke-test-v360 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working -->
+- [x] **P5 (provenance + retrieval-at-scale) shipped as v3.7.0 — completes the vNext
+  backlog.** Event-sourcing already records a fact's source session; v3.7.0 *surfaces* it
+  as an optional `origin: <session-file>` footer (set at creation, repairable by review).
+  `DECAY.md` §11 also documents retrieval as deliberately lexical + indexed (grep +
+  `archive/INDEX.md` + `origin` pointers); vector/semantic retrieval stays out of scope
+  (would break no-code). Touched `DECAY.md` (§1 row + §11), `REVIEW.md`, `.agent/schema.md`,
+  both `AGENTS.md`, `ENABLE.md`, the worked example (origin on session-created facts),
+  `VERSION`→3.7.0, `UPGRADE.md` 3.6.0→3.7.0 rung + tables, `README`/`CHANGELOG`. Assessment
+  gap #6 ⬜→✅; gap #4 (lexical retrieval) ◐ by-design (semantic out of scope).
+  <!-- id: provenance-retrieval-v370 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working | origin: 2026-06-14-024407 -->
 
 ### First real-work dogfood — enabled `~/sandbox/simple-proxy` (Mode A, 2026-06-13)
 - [x] **Real Mode A fresh enable** of a zero-dep Node.js TCP-proxy CLI (no prior AI
@@ -293,7 +303,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - [x] **P4 — Minimal memory eval — SHIPPED v3.6.0** (see Shipped section above). `memory-smoke-test.md`: N questions a fresh agent
   should answer from memory alone. Manual, but app-level eval is unsolved industry-wide.
   <!-- id: backlog-memory-eval | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
-- [ ] **P5 — Provenance surfacing + retrieval-at-scale.** Surface each fact's originating
+- [x] **P5 — Provenance surfacing + retrieval-at-scale — SHIPPED v3.7.0** (see Shipped section above). Surface each fact's originating
   session; lean on archive/INDEX.md (+ optional sessions/INDEX.md) as the no-code
   mitigation if memory grows large. Full vector/semantic retrieval stays out of scope.
   <!-- id: backlog-provenance-retrieval | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->

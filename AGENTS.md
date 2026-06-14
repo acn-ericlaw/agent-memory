@@ -48,8 +48,9 @@ Read these files before responding to anything:
 2. `memory/continuity.md`   — current project state, open threads, decisions
 3. `memory/sessions/`       — scan the most recent 2–3 session files
 
-If a topic seems unfamiliar, grep `memory/archive/INDEX.md` before saying you have
-no context — facts fade to the archive but are never deleted.
+If a topic seems unfamiliar, grep `memory/archive/INDEX.md` (and follow a fact's
+`origin` to its session) before saying you have no context — retrieval here is lexical
++ indexed by design (`DECAY.md` §11); facts fade to the archive but are never deleted.
 
 ### During the Session
 
@@ -77,9 +78,9 @@ expected (the decay math counts log files — `DECAY.md` §4).
    - Mark completed Open Threads `- [x]` and **leave them** — the review sweeps them
      once older than `archive_window`; don't archive them by hand.
    - Add new Open Threads; give each new fact a kebab `id` + footer: set `id`,
-     `created`, `tier: working` (or `core` for an invariant), and seed
-     `last_used: today | uses: 1`. Don't hand-edit `uses`/`last_used`/`tier` after —
-     the review owns them.
+     `created`, `tier: working` (or `core` for an invariant), `origin: <this session's
+     file>`, and seed `last_used: today | uses: 1`. Don't hand-edit
+     `uses`/`last_used`/`tier` after — the review owns them.
    - **Check a new fact against existing ones first** (`DECAY.md` §10): supersede a
      clear replacement (below), or raise a `- [ ] Contradiction: …` Open Thread for a
      genuine conflict — don't silently keep both.

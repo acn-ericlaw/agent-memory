@@ -34,6 +34,7 @@ when rendered, readable and editable by any agent or human, diff-friendly.
 | `tier` | lifecycle bucket (see §3) | **yes** |
 | `superseded-by` | *(optional)* id of the fact that replaced this one; set when it is superseded (§9) | no |
 | `supersedes` | *(optional)* id of the fact this one replaced; set on the successor (§9) | no |
+| `origin` | *(optional)* the session-log file where the fact was `Created` — its provenance (§11) | repairable |
 
 There is no `strength` field. Importance is expressed structurally: `tier: core`,
 or membership in the `## Architectural Invariants` section.
@@ -219,3 +220,25 @@ This is "pre-consolidation validation," scaled to markdown — a cheap read-and-
 write time, with the review as a periodic backstop (`REVIEW.md`). It is the same
 "surface contradictions, never pick a winner" rule the migration path already uses
 (`MIGRATE.md`), now applied to normal sessions too.
+
+---
+
+## 11. Provenance & retrieval
+
+**Provenance.** The event log already records where each fact came from — its `Created`
+entry in some session's `## Memory References`. Surface that on the fact with an optional
+`origin: <session-file>` footer field, set at creation (the agent knows which session it's
+writing). It makes provenance one hop: read a fact → open its `origin` session → get the
+full "why." A review can repair/backfill `origin` deterministically — the earliest session
+whose `## Memory References` names the id under `Created`. Like `created`, it never changes
+once set. (This is also the cheap defence against memory poisoning: every fact is traceable
+to a session in the immutable ledger.)
+
+**Retrieval at scale.** Retrieval here is deliberately **lexical + indexed**, not
+vector/semantic — that keeps the layer no-code and human-auditable. As memory grows, find
+things by: (1) grep `continuity.md`; (2) grep `archive/INDEX.md` (every archived fact, one
+greppable line); (3) follow a fact's `origin` (or an id's `Created` event) to its session;
+(4) optionally keep `sessions/INDEX.md` for one-line-per-session orientation. This is
+bounded by project scale — one project's memory stays grep-sized. Full vector/semantic
+retrieval is intentionally out of scope: if a repo outgrows grep, that's a signal to split
+or archive, not to bolt on an index server.

@@ -39,6 +39,9 @@ counting session files (no floating-point math — see `DECAY.md` §4), the revi
   one-off Open Thread asking a human to re-confirm `post-only-mutations` and
   `utc-everywhere` (or supersede them). The review never auto-invalidates an invariant
   — never-decay ≠ never-checked. (`DECAY.md` §6/§9)
+- **Provenance**: facts created this session (`reporting-service-drizzle`,
+  `rest-versioning-header`) carry an `origin: 2026-06-20-141503` footer — trace any fact
+  back to its source session in one hop, no log-scan needed. (`DECAY.md` §11)
 
 Net effect: `continuity.md` got leaner, nothing was lost, and a still-relevant fact
 came back automatically.

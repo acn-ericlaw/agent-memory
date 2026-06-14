@@ -27,6 +27,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 3.4.0 | Invariant verification: `verify_invariants_every` prompts a human to re-confirm never-decay facts (`core` / Architectural Invariants) — never-decay ≠ never-checked |
 | 3.5.0 | Write-time contradiction check: a new fact is scanned against existing ones → supersede (§9) or raise a `Contradiction:` Open Thread; review backstop |
 | 3.6.0 | Memory smoke test: `memory/smoke-test.md` — manual eval, N questions a fresh agent should answer from memory alone |
+| 3.7.0 | Provenance + retrieval: optional `origin:` footer (the session a fact came from); retrieval documented as lexical + indexed by design |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -239,3 +240,21 @@ Additive: a new installed file, `memory/smoke-test.md` — a manual memory-quali
 3. **Stamp** `.agent/version.md` → `version: 3.6.0`, `last_upgraded: <today>`,
    preserving `enabled_with` and `mode`.
 4. **Report**: smoke test created; suggest running it once to set a baseline.
+
+---
+
+## Rung: 3.6.0 → 3.7.0 — provenance + retrieval-at-scale
+
+Additive: an optional `origin:` footer field (provenance) + retrieval guidance. No new
+machinery, no forced migration.
+
+1. **Re-sync the generic docs** (copy verbatim where different): `DECAY.md` (the `origin`
+   row in §1 + new §11 "Provenance & retrieval"), `REVIEW.md` (the `origin`-backfill
+   note), `.agent/schema.md` (the `origin` field + the retrieval note), and `AGENTS.md`
+   (set `origin` on new facts; the retrieval pointer in "Before Every Session").
+2. **No backfill required.** `origin` is optional; new facts get it going forward, and a
+   later review can repair it from the earliest `Created` event. Existing facts are fine
+   without it.
+3. **Stamp** `.agent/version.md` → `version: 3.7.0`, `last_upgraded: <today>`,
+   preserving `enabled_with` and `mode`.
+4. **Report**: docs re-synced; provenance pointers available on new facts.

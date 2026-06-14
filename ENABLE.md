@@ -251,6 +251,8 @@ Fill in:
   unchecked Open Threads get an id but never decay. `uses: 1` / `last_used: today` is
   the honest seed (the enable counts as the first reference) — the review owns those
   fields thereafter; don't hand-edit them. See `.agent/schema.md` and `DECAY.md` §1.
+  (The optional `origin` field is set when facts are created in normal sessions; omit
+  it at enable — there's no session log yet. A later review can backfill it.)
 
 ### 5c. `memory/sessions/`
 

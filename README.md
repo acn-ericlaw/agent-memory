@@ -122,6 +122,7 @@ it in place** — additively, never destructively.
 | 3.4.0 | Invariant verification: the review periodically prompts a human to re-confirm never-decay facts (`verify_invariants_every`) |
 | 3.5.0 | Write-time contradiction check: a new fact is checked against existing ones → supersede or raise a `Contradiction:` Open Thread (review backstop) |
 | 3.6.0 | Memory smoke test (`memory/smoke-test.md`): a manual check that a fresh agent can orient from memory alone |
+| 3.7.0 | Provenance + retrieval: optional `origin:` footer traces a fact to its source session; retrieval is lexical + indexed by design |
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the

@@ -71,6 +71,7 @@ Each fact carries a metadata footer (HTML comment), maintained by the review rit
   uses       count of sessions referencing the id                (recomputed at review)
   tier       lifecycle bucket — see DECAY.md / REVIEW.md at the repo root
   superseded-by / supersedes   (optional) supersession links when a fact is replaced or invalidated — see DECAY.md §9
+  origin                       (optional) the session-log file where the fact was Created — provenance; see DECAY.md §11
 ```
 
 **At creation** the agent sets only `id`, `created`, and `tier` — `working` for an
@@ -147,7 +148,9 @@ the most recent 2–3 files.
 A lightweight, one-line-per-session index so agents can orient without listing or
 opening files: `YYYY-MM-DD-HHMMSS — <agent> — <one-line summary>`. Optional and
 progressive — maintain it only if the team wants it. If kept, append one line each
-session. A stale index is worse than none, so skip it rather than let it drift.
+session. A stale index is worse than none, so skip it rather than let it drift. With
+`archive/INDEX.md` and fact `origin` pointers, this is the layer's retrieval-at-scale
+story — lexical + indexed, by design (see `DECAY.md` §11).
 
 ---
 

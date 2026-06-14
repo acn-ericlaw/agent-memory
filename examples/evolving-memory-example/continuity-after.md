@@ -41,9 +41,9 @@
 - Stay on Drizzle; do not adopt a second ORM (reaffirmed for the reporting service)
   <!-- id: drizzle-over-prisma | created: 2026-03-08 | last_used: 2026-06-20 | uses: 6 | tier: active -->
 - Reporting service reuses Drizzle (no second ORM)
-  <!-- id: reporting-service-drizzle | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: working -->
+  <!-- id: reporting-service-drizzle | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: working | origin: 2026-06-20-141503 -->
 - API version selected via the `Accept` header, not the URI path
-  <!-- id: rest-versioning-header | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: working | supersedes: rest-versioning-uri -->
+  <!-- id: rest-versioning-header | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: working | supersedes: rest-versioning-uri | origin: 2026-06-20-141503 -->
 - JWT access tokens expire in 15 minutes; refresh via cookie
   <!-- id: jwt-15min-expiry | created: 2026-04-01 | last_used: 2026-05-28 | uses: 4 | tier: archive-candidate -->
 

@@ -44,7 +44,7 @@
 - ~~API version in the URI path (`/v1/…`)~~ — **superseded** today by header-based versioning
   <!-- id: rest-versioning-uri | created: 2026-03-10 | last_used: 2026-06-20 | uses: 7 | tier: superseded | superseded-by: rest-versioning-header -->
 - API version selected via the `Accept` header, not the URI path
-  <!-- id: rest-versioning-header | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: working | supersedes: rest-versioning-uri -->
+  <!-- id: rest-versioning-header | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: working | supersedes: rest-versioning-uri | origin: 2026-06-20-141503 -->
 
 ## Conventions
 

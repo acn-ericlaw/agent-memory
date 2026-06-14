@@ -12,6 +12,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 3.7.0, 6/14/2026
+
+> Provenance + retrieval-at-scale — the last backlog item. Event-sourcing already records
+> which session each fact came from; v3.7.0 *surfaces* it as an optional `origin:` footer,
+> and documents retrieval as deliberately lexical + indexed (grep + `archive/INDEX.md` +
+> `origin` pointers), with vector/semantic retrieval intentionally out of scope. Closes
+> the assessment's provenance gap (#6); addresses the retrieval gap (#4) by design.
+
+### Added
+
+1. Optional **`origin: <session-file>`** footer field (`DECAY.md` §1 + new §11) — the
+   session where a fact was `Created`; set at creation, repairable by review (the earliest
+   `Created` event). Provenance becomes one hop, and is the cheap defence against memory
+   poisoning (every fact traces to an immutable session).
+2. `DECAY.md` §11 "Provenance & retrieval" documents the lexical+indexed retrieval strategy
+   (grep continuity → grep `archive/INDEX.md` → follow `origin` → optional
+   `sessions/INDEX.md`), bounded by project scale.
+
+### Removed
+
+N/A.
+
+### Changed
+
+1. `AGENTS.md` (root + template) set `origin` on new facts and point at the retrieval path;
+   `.agent/schema.md` documents `origin` + the retrieval note; `REVIEW.md` notes `origin`
+   backfill; `ENABLE.md` notes `origin` is omitted at enable. The worked example shows
+   `origin` on the facts created in its session.
+2. `VERSION` → 3.7.0; `UPGRADE.md` 3.6.0→3.7.0 rung + version tables; `README`. Assessment
+   gap #6 flipped ⬜ → ✅; gap #4 (lexical retrieval) marked ◐ by-design; Retrieval
+   scorecard row updated.
+
+---
 ## Version 3.6.0, 6/14/2026
 
 > Memory smoke test — a cheap, no-code answer to "memory evaluation is unsolved": a

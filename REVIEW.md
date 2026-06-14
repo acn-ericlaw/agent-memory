@@ -89,7 +89,8 @@ Because metadata is *derived*, you can discard stored `uses`/`last_used`/`tier`
 and recompute everything from scratch by scanning **all** session logs'
 `## Memory References`. Use this to repair drift, after heavy manual edits, or if
 reviews were skipped for a long stretch. The result is deterministic and
-reproducible by any agent.
+reproducible by any agent. The same scan repairs each fact's `origin` — the earliest
+session whose `## Memory References` names the id under `Created` (`DECAY.md` §11).
 
 ## Reactivation
 
