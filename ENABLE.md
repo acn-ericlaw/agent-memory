@@ -274,6 +274,15 @@ Install the layer so the repo's memory can decay, review, and archive over time:
 
 `DECAY.md` and `REVIEW.md` are installed at the repo root in Step 6.
 
+### 5f. `memory/smoke-test.md`
+
+Copy from `templates/memory/smoke-test.md`, filling `{{PROJECT_NAME}}` and `{{TODAY}}`.
+Seed `{{PROJECT_SMOKE_QUESTIONS}}` with **2–4 project-specific questions** drawn from your
+Step 4 analysis — things a newcomer should be able to learn from memory alone (e.g. "How
+does `<entry point>` discover/route X?", "What gates Y?"). They join the generic
+orientation questions already in the template. It's a manual memory-quality check — see
+the file's header for how it's run.
+
 ---
 
 ## Step 6 — Install Bootstrap Files
@@ -350,7 +359,7 @@ describe what was intended.
 
 1. **Files exist.** Confirm all of the following are present in the target repo:
    - `memory/instructions.md`, `memory/continuity.md`, `memory/sessions/`
-   - `memory/decay-policy.md`, `memory/archive/INDEX.md`
+   - `memory/decay-policy.md`, `memory/archive/INDEX.md`, `memory/smoke-test.md`
    - `.agent/schema.md`, `.agent/version.md`
    - `DECAY.md`, `REVIEW.md`
    - `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`,
@@ -398,6 +407,7 @@ Print a clear summary including migration details if Mode C ran:
   • memory/instructions.md
   • memory/continuity.md
   • memory/decay-policy.md
+  • memory/smoke-test.md
   • memory/sessions/   (N session files)
   • memory/archive/INDEX.md
   • .agent/schema.md, .agent/version.md  (v<version>)

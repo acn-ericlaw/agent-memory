@@ -80,6 +80,9 @@ facts may have drifted into conflict over time. Surface any conflict as a
 `- [ ] Contradiction: <fact> conflicts with <id> — resolve (supersede one, or reconcile)`
 Open Thread; never silently reconcile or pick a winner.
 
+**Smoke test.** A review is also a natural time to run `memory/smoke-test.md` — a quick
+manual check that memory still answers the orientation questions a newcomer would ask.
+
 ## Full rebuild (the ground-truth path)
 
 Because metadata is *derived*, you can discard stored `uses`/`last_used`/`tier`

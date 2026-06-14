@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v3.5.0 — evolving memory (v3.0.0) + `.gitignore` (v3.1.0) + clarifications (v3.2.0) + supersession (v3.3.0) + invariant-verify (v3.4.0) + contradiction-check (v3.5.0)
+- **status:** v3.6.0 — evolving memory + `.gitignore` + clarifications + supersession (v3.3.0) + invariant-verify (v3.4.0) + contradiction-check (v3.5.0) + memory smoke test (v3.6.0)
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-14 | agent: Claude Code (2026-06-14-022619)
+- **last_session:** 2026-06-14 | agent: Claude Code (2026-06-14-023301)
 - **last_review:** 2026-06-13 | through 2026-06-13-223743
 - **last_invariant_check:** (none yet)
 
@@ -242,6 +242,15 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   Completes the truth-maintenance trio: P3 catches a conflict at write time, P1
   resolves it (supersede) or P3 raises a thread, P2 re-checks invariants periodically.
   <!-- id: contradiction-check-v350 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working -->
+- [x] **P4 (memory smoke test) shipped as v3.6.0.** A cheap, no-code answer to the
+  "evaluation is unsolved" gap: `memory/smoke-test.md` — N questions (generic orientation
+  + project-specific, seeded at enable) a *fresh* agent should answer from `memory/`
+  alone; a ❌ is a memory gap to fill. New `templates/memory/smoke-test.md`; `ENABLE.md`
+  step 5f generates it (+ Step 8 verify, Step 9 report); `.agent/schema.md` documents it;
+  `REVIEW.md` notes running it at a review. This repo's own `memory/smoke-test.md`
+  created (dogfood, not yet run). `VERSION`→3.6.0, `UPGRADE.md` 3.5.0→3.6.0 rung + tables,
+  `README`/`CHANGELOG`; assessment gap #5 + Evaluation scorecard ⬜→✅.
+  <!-- id: memory-smoke-test-v360 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working -->
 
 ### First real-work dogfood — enabled `~/sandbox/simple-proxy` (Mode A, 2026-06-13)
 - [x] **Real Mode A fresh enable** of a zero-dep Node.js TCP-proxy CLI (no prior AI
@@ -281,7 +290,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   check into REVIEW.md: when a fact is added, scan for one it contradicts → raise an
   Open Thread (SSGM "pre-consolidation validation", scaled down).
   <!-- id: backlog-contradiction-check | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
-- [ ] **P4 — Minimal memory eval.** `memory-smoke-test.md`: N questions a fresh agent
+- [x] **P4 — Minimal memory eval — SHIPPED v3.6.0** (see Shipped section above). `memory-smoke-test.md`: N questions a fresh agent
   should answer from memory alone. Manual, but app-level eval is unsolved industry-wide.
   <!-- id: backlog-memory-eval | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
 - [ ] **P5 — Provenance surfacing + retrieval-at-scale.** Surface each fact's originating

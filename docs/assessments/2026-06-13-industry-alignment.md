@@ -78,7 +78,7 @@ own retreat toward deployment simplicity. The one real, addressable gap is
 | 2 | **Never-decay facts can go "confidently wrong"** | "High-relevance facts become confidently wrong when circumstances change" is a named open problem. `core` / Architectural Invariants never age out. | Medium-High | ✅ shipped v3.4.0 (`verify_invariants_every` prompt) |
 | 3 | **No write-time contradiction check** | SSGM "pre-consolidation validation" rejects updates contradicting core facts. Done at *migration* only, not normal sessions. | Medium | ✅ shipped v3.5.0 (write-time + review contradiction check) |
 | 4 | **Lexical-only retrieval** | Production leans multi-signal (semantic + BM25 + entity + rerank). Tool has grep + read-whole-file. | Low (bounded by project scale) | ⬜ open → P5 |
-| 5 | **No evaluation harness** | Even leaders admit "application-level evaluation is still a manual, bespoke process." | Low — but a cheap way to lead | ⬜ open → P4 |
+| 5 | **No evaluation harness** | Even leaders admit "application-level evaluation is still a manual, bespoke process." | Low — but a cheap way to lead | ✅ shipped v3.6.0 (`memory/smoke-test.md`) |
 | 6 | **Memory poisoning / provenance** | SSGM flags injected memory. Event-sourcing *gives* provenance (which session); it's just not surfaced. | Low (human-curated) | ⬜ open → P5 |
 
 ## Scorecard
@@ -98,7 +98,7 @@ own retreat toward deployment simplicity. The one real, addressable gap is
 | Stale pinned-fact handling | open problem | `verify_invariants_every` prompt (v3.4.0) | ✅ shipped v3.4.0 |
 | Retrieval sophistication | multi-signal + rerank | lexical grep + read | ◐ Partial (P5) |
 | Knowledge graph / entities | shift to built-in entity linking | flat markdown (graph deferred) | ◐ Partial / validated deferral |
-| Evaluation | bespoke, unsolved industry-wide | none | ⬜ Gap (P4) |
+| Evaluation | bespoke, unsolved industry-wide | `memory/smoke-test.md` (v3.6.0) | ✅ shipped v3.6.0 |
 | Privacy / access scoping | SSGM access-scoped retrieval | two-layer + target-scope boundary | ◐ Partial |
 
 Legend: ✅ aligned · ⭐ ahead/distinctive · ◐ partial · ⬜ gap

@@ -160,6 +160,16 @@ and `REVIEW.md` at the repo root.
 
 ---
 
+## memory/smoke-test.md
+
+A short, manual memory-quality check: N questions a *fresh* agent should answer from
+`memory/` alone (generic orientation questions + project-specific ones seeded at enable).
+Each run marks ✅/❌ and appends a result row; a ❌ is a memory gap to fill, not a question
+to soften. Run on demand or alongside a review. App-level memory eval is unsolved
+industry-wide — this is the no-code version.
+
+---
+
 ## memory/archive/
 
 Cold storage for archived facts and swept completed threads. Nothing here is

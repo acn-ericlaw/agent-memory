@@ -12,6 +12,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 3.6.0, 6/14/2026
+
+> Memory smoke test — a cheap, no-code answer to "memory evaluation is unsolved": a
+> `memory/smoke-test.md` whose questions a *fresh* agent should be able to answer from
+> the memory layer alone. A ❌ is a memory gap to fix, not a question to soften. Closes
+> the assessment's gap #5. Additive (a new installed file).
+
+### Added
+
+1. `templates/memory/smoke-test.md` — generic orientation questions (project & type,
+   stack, invariants, recent decisions + *why*, open threads, conventions, preferences,
+   supersessions) plus project-specific questions seeded at enable, a how-to-run, and a
+   result log.
+2. `ENABLE.md` step 5f generates it (seeding 2–4 project-specific questions from the
+   analysis); Step 8 verifies it; Step 9 reports it. `REVIEW.md` notes that a review is
+   a natural time to run it.
+
+### Removed
+
+N/A.
+
+### Changed
+
+1. `.agent/schema.md` documents the file. `VERSION` → 3.6.0; `UPGRADE.md` 3.5.0→3.6.0
+   rung + version tables; `README`. Assessment gap #5 flipped ⬜ → ✅ and the Evaluation
+   scorecard row ⬜ → ✅.
+
+---
 ## Version 3.5.0, 6/14/2026
 
 > Write-time contradiction check — the migration-time "surface contradictions, never
