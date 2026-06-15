@@ -273,3 +273,12 @@ memory layer enforces:
 - **Never fabricate the Vision** — it is the human's to set (like User Preferences).
   Enable/upgrade bootstrap a ⚠️ DRAFT stub and gate it; until it's confirmed,
   drift-detection stays advisory.
+- **Process-neutral — survives whatever the target chooses.** This loop is the
+  *lightweight default*; it neither requires nor forbids heavier process. A target repo's
+  owner may layer SDLC / scrum on top (sprints, standups, roles) — that is their call.
+  Keep that ceremony, and any **scoring** (velocity, story points, estimates), in the
+  *target's own space* (its tracker/docs), **never in `memory/`** — the substrate stays
+  determinism-pure (no floating-point, see the design principle up top). The loop is
+  cadence-agnostic: a "sprint boundary" is just "run a review," and extra tags (e.g.
+  `(sprint)`) on Blueprint threads coexist with the primitives. The tool stays lightweight
+  regardless of how heavy a process the target chooses to run on top.

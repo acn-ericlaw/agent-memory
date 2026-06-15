@@ -145,3 +145,34 @@ The first real loop: write **this tool's own Vision** (`memory/vision.md`) with 
 above, derive the **Blueprint** (Current State `v3.7.0` → Vision), and confirm the loop
 feels light. Using VBDI to build VBDI — if the bootstrap is clean, that is the strongest
 validation we can give it.
+
+## 13. Process neutrality — surviving an SDLC overlay
+
+The tool stays lightweight by design (no ceremony — a Vision non-goal). But the `memory/`
+layer is *enabled into a target repo*, and that target's owner is free to run heavier
+process — automated AI scrum, sprints, the works — if they want. The memory design must
+**survive that edge case** without breaking and without being dragged heavy. The rules
+(also in `DECAY.md` §12):
+
+- **Neither require nor forbid.** VBDI is the lean default; SDLC is an **opt-in overlay in
+  the target**, never imposed at enable and never in the tool's core — same pattern as
+  `docs/optional-ritual-hook.md`. The lightweight non-goal constrains the *tool*, not the
+  target's freedom to choose its own process weight.
+- **Ceremony + scoring stay out of `memory/`.** Velocity, story points, estimates, sprint
+  ritual → the target's own tracker/docs. `memory/` stays determinism-pure (no float) —
+  that's what keeps the substrate vendor-neutral and replayable. Crossing that line is the
+  failure mode to guard against.
+- **Reuse, don't reinvent.** Scrum maps onto the existing primitives: backlog = Blueprint;
+  sprint = a bounded subset of gaps (a `(sprint)` tag); Definition of Done = smoke test +
+  altitude trace; retro = the review ritual; PO/SM = the human gates. Extra tags coexist
+  with the rules (an unchecked `(blueprint) (sprint)` thread is still a pinned Open Thread).
+- **Cadence-agnostic loop.** A sprint boundary is just "run a review" (on demand). The loop
+  rides whatever rhythm the team uses; the decay windows count sessions, not sprints.
+
+Net: the tool is the *lightweight memory substrate*; the target owner decides the process
+weight on top. The design bends to that — the core never gets heavy, and the substrate
+never absorbs ceremony.
+
+> A dedicated **optional** scrum profile for targets (a `(sprint)` convention +
+> sprint-boundary review, no points/ceremony) is a possible future add-on — tracked as the
+> `bp-sdlc-overlay` Blueprint gap. Not core; only if a real target wants it.

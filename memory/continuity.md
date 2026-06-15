@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.0.0 — backward memory layer complete (v3.x) **+ forward cognitive layer (VBDI) shipped (v4.0.0)**: Current State → Vision → Blueprint → Design → Implementation → Feedback. The tool now has its own confirmed Vision + Blueprint.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-15 | agent: Claude Code (2026-06-15-004829)
+- **last_session:** 2026-06-15 | agent: Claude Code (2026-06-15-010142)
 - **last_review:** 2026-06-13 | through 2026-06-13-223743
 - **last_invariant_check:** (none yet)
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -325,6 +325,13 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   committed `memory/`, multi-agent continuity, collision-safe session filenames); validate
   and harden for *simultaneous* contributors. → serves: vision-agent-memory
   <!-- id: bp-multi-user | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-000531 -->
+- [ ] **(blueprint)** *(optional)* SDLC overlay for targets — a scrum-inspired profile a
+  target *owner* can opt into: a `(sprint)` tag over Blueprint gaps + a sprint-boundary
+  review, **no points/velocity/ceremony**. Not core; only if a real target wants it. The
+  memory design is already **process-neutral** and survives an overlay (`DECAY.md` §12 /
+  `docs/DESIGN-vbdi-lifecycle.md` §13): ceremony + scoring live in the target's own space,
+  never in `memory/`. → serves: vision-agent-memory
+  <!-- id: bp-sdlc-overlay | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-010142 -->
 
 ### First real-work dogfood — enabled `~/sandbox/simple-proxy` (Mode A, 2026-06-13)
 - [x] **Real Mode A fresh enable** of a zero-dep Node.js TCP-proxy CLI (no prior AI
