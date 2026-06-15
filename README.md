@@ -123,6 +123,7 @@ it in place** — additively, never destructively.
 | 3.5.0 | Write-time contradiction check: a new fact is checked against existing ones → supersede or raise a `Contradiction:` Open Thread (review backstop) |
 | 3.6.0 | Memory smoke test (`memory/smoke-test.md`): a manual check that a fresh agent can orient from memory alone |
 | 3.7.0 | Provenance + retrieval: optional `origin:` footer traces a fact to its source session; retrieval is lexical + indexed by design |
+| 4.0.0 | Forward layer (VBDI): `memory/vision.md` + `(blueprint)` gaps + altitude trace — a cognitive loop (Current State → Vision → Blueprint → Design → Implementation → Feedback) over the memory substrate |
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the

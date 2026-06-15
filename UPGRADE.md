@@ -28,6 +28,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 3.5.0 | Write-time contradiction check: a new fact is scanned against existing ones → supersede (§9) or raise a `Contradiction:` Open Thread; review backstop |
 | 3.6.0 | Memory smoke test: `memory/smoke-test.md` — manual eval, N questions a fresh agent should answer from memory alone |
 | 3.7.0 | Provenance + retrieval: optional `origin:` footer (the session a fact came from); retrieval documented as lexical + indexed by design |
+| 4.0.0 | Forward layer (VBDI): `memory/vision.md` + `(blueprint)` gap threads + altitude trace; the cognitive loop over the memory substrate. Upgrade bootstraps a DRAFT Vision + human gate |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -258,3 +259,32 @@ machinery, no forced migration.
 3. **Stamp** `.agent/version.md` → `version: 3.7.0`, `last_upgraded: <today>`,
    preserving `enabled_with` and `mode`.
 4. **Report**: docs re-synced; provenance pointers available on new facts.
+
+---
+
+## Rung: 3.7.0 → 4.0.0 — the forward layer (VBDI), with Vision bootstrap
+
+A **new layer**, but still **additive**: a repo with no Vision works exactly as before
+(an un-upgraded agent ignores `memory/vision.md` and `(blueprint)` threads). The catch
+is that existing repos have no Vision/Blueprint — so this rung **bootstraps** them rather
+than fabricating intent.
+
+1. **Re-sync the generic docs** (copy verbatim where different): `DECAY.md` (§10 altitude
+   drift + new §12 "The forward layer"), `REVIEW.md` (the Vision in the invariant-verify
+   step + altitude drift in the backstop), `.agent/schema.md` (the `memory/vision.md` +
+   Blueprint sections), and `AGENTS.md` (the "cognitive loop" section + Vision in the
+   session read-list).
+2. **Bootstrap the Vision — never fabricate it** (the target is the human's to set, like
+   User Preferences). Create `memory/vision.md` from `templates/memory/vision.md`: fill
+   `{{PROJECT_NAME}}` / `{{PROJECT_SLUG}}` / `{{TODAY}}` and the **Current-state context
+   only** (`{{PROJECT_DESCRIPTION}}` / `{{PROJECT_TYPE}}` from the existing
+   `instructions.md`); leave the target / success criteria / non-goals as the template's
+   `(…)` prompts; keep the ⚠️ DRAFT banner. Skip if `memory/vision.md` already exists.
+3. **Raise the human gate** in `continuity.md`:
+   `- [ ] (vision-bootstrap) Confirm the Vision in memory/vision.md — set the target / success criteria / non-goals; then derive the Blueprint.`
+   **Do not derive the Blueprint yet** (it needs the confirmed target). Until the Vision
+   is confirmed, VBDI drift-detection stays advisory.
+4. **Stamp** `.agent/version.md` → `version: 4.0.0`, `last_upgraded: <today>`,
+   preserving `enabled_with` and `mode`.
+5. **Report**: docs re-synced; Vision **bootstrapped as a DRAFT** — the maintainer must
+   confirm it (the `(vision-bootstrap)` thread), after which the Blueprint is derived.

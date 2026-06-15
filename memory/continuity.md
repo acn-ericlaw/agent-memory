@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v3.7.0 — evolving memory; truth-maintenance trio (supersession v3.3.0 / invariant-verify v3.4.0 / contradiction-check v3.5.0) + smoke test (v3.6.0) + provenance & retrieval (v3.7.0). vNext backlog (P1–P5) all shipped.
+- **status:** v4.0.0 — backward memory layer complete (v3.x) **+ forward cognitive layer (VBDI) shipped (v4.0.0)**: Current State → Vision → Blueprint → Design → Implementation → Feedback. The tool now has its own confirmed Vision + Blueprint.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-15 | agent: Claude Code (2026-06-15-000531)
+- **last_session:** 2026-06-15 | agent: Claude Code (2026-06-15-002837)
 - **last_review:** 2026-06-13 | through 2026-06-13-223743
 - **last_invariant_check:** (none yet)
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -285,20 +285,37 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   rewrite delivered deterministically with no drift — VBDI generalizes that to creation.
   <!-- id: vbdi-lifecycle-direction | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working | origin: 2026-06-14-030729 -->
 
+### Shipped — v4.0.0: the forward layer (VBDI) (2026-06-15)
+- [x] **VBDI forward layer shipped.** The cognitive loop (Current State → Vision →
+  Blueprint → Design → Implementation → Feedback) now lives in the protocol: new
+  `templates/memory/vision.md`; Blueprint = typed `(blueprint)` Open Threads; altitude
+  trace (`serves:` / `id`); `DECAY.md` §12 + §10 altitude-drift; `REVIEW.md` (Vision in
+  invariant-verify + drift backstop); `.agent/schema.md`; both `AGENTS.md` (cognitive-loop
+  section + Vision in the read-list); `ENABLE.md` Step 5g (+ verify + report).
+  **Bootstrap:** enable/upgrade create a ⚠️ DRAFT Vision (current-state context only; the
+  target is left to the human) + a `(vision-bootstrap)` gate — never fabricated.
+  `VERSION`→4.0.0 (new-layer milestone; additive); `UPGRADE.md` 3.7.0→4.0.0 rung + version
+  tables; `README`/`CHANGELOG`. **Vendor-neutrality fix** (maintainer caught it in review):
+  root `CLAUDE.md` thinned to a pointer like `GEMINI.md`; its project guide + architecture
+  map moved to vendor-neutral `memory/instructions.md` — the architecture had been
+  Claude-only, a drift from the vendor-neutral Vision. Closes `bp-vbdi-loop` + `bp-altitude-drift`.
+  Decisions locked with the maintainer: **4.0.0** + **context-only bootstrap**.
+  <!-- id: vbdi-shipped-v400 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-002837 -->
+
 ### Blueprint — gaps from Current State (v3.7.0) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
 > `(blueprint)`: each is a Vision↔reality gap that closes when delivered. The *backward*
 > memory layer is not here — it's done; every gap is *forward*. These operationalize the
 > `vbdi-lifecycle-direction` thread above. First real VBDI loop, dogfooded on the tool itself.
 
-- [ ] **(blueprint)** Build the forward cognitive loop (VBDI): the Blueprint mechanism,
+- [x] **(blueprint)** Build the forward cognitive loop (VBDI) — **SHIPPED v4.0.0**: the Blueprint mechanism,
   the altitude trace (id-linkage Implementation→Design→Blueprint→Vision), drift-detection,
   and human gates. Design drafted: `docs/DESIGN-vbdi-lifecycle.md`. → serves: vision-agent-memory
   <!-- id: bp-vbdi-loop | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-000531 -->
 - [ ] **(blueprint)** Greenfield path — the tool handles brownfield (enable/migrate) well
   but has no "start from a Vision, no code yet" flow. → serves: vision-agent-memory
   <!-- id: bp-greenfield | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-000531 -->
-- [ ] **(blueprint)** Altitude drift-detection — extend the §10 contradiction-check across
+- [x] **(blueprint)** Altitude drift-detection — **SHIPPED v4.0.0**: extend the §10 contradiction-check across
   Vision ↔ Blueprint ↔ Design ↔ Implementation. → serves: vision-agent-memory
   <!-- id: bp-altitude-drift | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-000531 -->
 - [ ] **(blueprint)** Multi-user concurrent contribution — mostly supported (shared

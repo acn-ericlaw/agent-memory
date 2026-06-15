@@ -64,9 +64,9 @@ it never fires more often than reviews do.
 6. **Verify invariants (cadence).** If `sessions_since_last_invariant_check ≥
    verify_invariants_every` (or `last_invariant_check` is unset and that many session
    files exist), raise **one** Open Thread listing every never-decay fact —
-   `tier: core` plus everything under `## Architectural Invariants` — for a human to
-   re-confirm:
-   `- [ ] Re-verify invariants (due): confirm <id>, <id>, … still hold, or supersede any that don't (DECAY.md §9)`.
+   `tier: core`, everything under `## Architectural Invariants`, **and the Vision
+   (`memory/vision.md`)** — for a human to re-confirm:
+   `- [ ] Re-verify invariants (due): confirm <id>, <id>, … and the Vision still hold, or supersede any that don't (DECAY.md §9)`.
    The review **never auto-invalidates** an invariant — it only prompts; the human
    confirms (checks the thread off) or supersedes the false ones (§9). Then set
    `last_invariant_check` to today + the latest session file. (Never-decay ≠
@@ -78,7 +78,9 @@ it never fires more often than reviews do.
 contradiction scan — the write-time check (`DECAY.md` §10) may have missed one, or two
 facts may have drifted into conflict over time. Surface any conflict as a
 `- [ ] Contradiction: <fact> conflicts with <id> — resolve (supersede one, or reconcile)`
-Open Thread; never silently reconcile or pick a winner.
+Open Thread; never silently reconcile or pick a winner. Extend the same scan **up the
+altitudes** (VBDI, `DECAY.md` §12): flag any Implementation / Design / Blueprint item that
+no longer serves the one above it — `- [ ] Drift: <item> doesn't serve <id>`.
 
 **Smoke test.** A review is also a natural time to run `memory/smoke-test.md` — a quick
 manual check that memory still answers the orientation questions a newcomer would ask.

@@ -12,6 +12,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.0.0, 6/15/2026
+
+> **The forward layer.** agent-memory gains a cognitive lifecycle loop on top of its
+> memory substrate: **Current State → Vision → Blueprint → Design → Implementation →
+> Feedback**. Memory was backward-looking (faithful to what happened); VBDI makes it
+> *goal-aware* (faithful to what was *intended*) — the "predictable innovation with human
+> partnership" mission. Integrates an independently-drafted cognitive framework
+> (`docs/agent-cognitive-framework.md`), designed in `docs/DESIGN-vbdi-lifecycle.md`.
+> **Additive** (a repo with no Vision is unchanged) — bumped to 4.0.0 to mark the new
+> layer, the forward counterpart to 3.0.0's evolving-memory layer.
+
+### Added
+
+1. **`memory/vision.md`** — the north-star artifact (`templates/memory/vision.md`): target
+   state, for whom, success criteria, non-goals. `core`, invariant-verified, one per repo.
+2. **Blueprint** — the Vision↔Current-State gap as typed `(blueprint)` Open Threads
+   (`… → serves: <vision-id>`); no new file.
+3. **Altitude trace** — Implementation → Design → Blueprint → Vision, linked by `id`; a
+   broken link is drift (`DECAY.md` §10/§12), grep-detectable.
+4. **Bootstrap, never fabricate** — `ENABLE.md` (Step 5g) and the `UPGRADE.md` 3.7.0→4.0.0
+   rung create a ⚠️ DRAFT Vision (Current-state context only; target left for the human)
+   and raise a `(vision-bootstrap)` human gate.
+
+### Removed
+
+N/A.
+
+### Changed
+
+1. `DECAY.md` (§10 altitude drift + new §12 "The forward layer"), `REVIEW.md` (Vision in
+   invariant-verification + altitude drift in the backstop), `.agent/schema.md`, `AGENTS.md`
+   (root + template: a "cognitive loop" section + Vision in the session read-list),
+   `ENABLE.md` (Step 5g + verify + report). `VERSION` → 4.0.0; `UPGRADE.md` rung + version
+   tables; `README`. The tool dogfoods its own confirmed Vision + Blueprint.
+
+---
 ## Version 3.7.0, 6/14/2026
 
 > Provenance + retrieval-at-scale — the last backlog item. Event-sourcing already records

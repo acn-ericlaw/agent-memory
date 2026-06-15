@@ -45,12 +45,22 @@ adding vendor support, etc.), follow the standard memory protocol below.
 Read these files before responding to anything:
 
 1. `memory/instructions.md` — persona, rules, project context
-2. `memory/continuity.md`   — current project state, open threads, decisions
-3. `memory/sessions/`       — scan the most recent 2–3 session files
+2. `memory/continuity.md`   — current state, open threads, decisions (+ Blueprint gaps)
+3. `memory/vision.md`       — the target the work serves (the VBDI north star)
+4. `memory/sessions/`       — scan the most recent 2–3 session files
 
 If a topic seems unfamiliar, grep `memory/archive/INDEX.md` (and follow a fact's
 `origin` to its session) before saying you have no context — retrieval here is lexical
 + indexed by design (`DECAY.md` §11); facts fade to the archive but are never deleted.
+
+### The cognitive loop (VBDI)
+
+A forward loop rides on the memory layer (`DECAY.md` §12; design:
+`docs/DESIGN-vbdi-lifecycle.md`): **Current State (`continuity.md`) → Vision
+(`memory/vision.md`) → Blueprint (gap) → Design → Implementation → Feedback → repeat.**
+Tie significant work to a `(blueprint)` Open Thread that `serves:` the Vision and to the
+Design it realizes; surface altitude drift; gate each transition with the human. Never
+fabricate the Vision.
 
 ### During the Session
 

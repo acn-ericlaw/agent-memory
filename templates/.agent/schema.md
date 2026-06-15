@@ -173,6 +173,23 @@ industry-wide — this is the no-code version.
 
 ---
 
+## memory/vision.md  (forward layer — VBDI)
+
+The **north star**: the project's target future state — what should exist, for whom,
+success criteria, explicit non-goals. One per repo. Carries a kebab `id`
+(`vision-<slug>`), tier `core` (never decays) but re-confirmed on the
+invariant-verification cadence (a vision can go stale). Created at enable/upgrade as a
+⚠️ DRAFT stub — Current-state context inferred, target left for the human — **never
+fabricated**. See `DECAY.md` §12 and `docs/DESIGN-vbdi-lifecycle.md`.
+
+The **Blueprint** (the Vision↔Current-State gap) is *not* a separate file — it is a set
+of typed Open Threads in `continuity.md`:
+`- [ ] (blueprint) <gap> → serves: <vision-id>`. Designs (Key Decisions) and
+Implementations (commits/sessions) trace up the altitude chain by `id`; a missing or
+broken link is drift, and it's grep-detectable.
+
+---
+
 ## memory/archive/
 
 Cold storage for archived facts and swept completed threads. Nothing here is

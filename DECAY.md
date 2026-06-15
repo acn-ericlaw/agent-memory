@@ -215,6 +215,10 @@ contradiction instead of silently letting both coexist:
 - **Contradicts a `core` invariant** → surface it prominently and stop; a new fact must
   not silently override an invariant. Either the invariant is being deliberately
   superseded (a human-confirmed act, §9) or the new fact is wrong.
+- **Drifts from a higher altitude (VBDI, §12)** → the same check runs *up the chain*: an
+  Implementation that doesn't serve its Design, a Design that doesn't serve its Blueprint
+  gap, or a Blueprint gap that doesn't serve the Vision is drift — surface it as a
+  `- [ ] Drift: <item> doesn't serve <id>` Open Thread.
 
 This is "pre-consolidation validation," scaled to markdown — a cheap read-and-compare at
 write time, with the review as a periodic backstop (`REVIEW.md`). It is the same
@@ -242,3 +246,30 @@ greppable line); (3) follow a fact's `origin` (or an id's `Created` event) to it
 bounded by project scale — one project's memory stays grep-sized. Full vector/semantic
 retrieval is intentionally out of scope: if a repo outgrows grep, that's a signal to split
 or archive, not to bolt on an index server.
+
+---
+
+## 12. The forward layer (VBDI) — Current State → Vision → Blueprint → Design → Implementation → Feedback
+
+Everything above is *backward*-looking — it keeps memory faithful to what happened. The
+**VBDI cognitive loop** is the *forward* complement: it keeps delivery faithful to what was
+*intended*. Full design: `docs/DESIGN-vbdi-lifecycle.md`. The rule-level essentials the
+memory layer enforces:
+
+- **The primitives.** *Current State* = `continuity.md` (read at session start). *Vision* =
+  `memory/vision.md` (the target; `core`, invariant-verified). *Blueprint* = typed
+  `(blueprint)` Open Threads = the Vision↔Current-State gap. *Design* = Key Decisions /
+  Architectural Invariants. *Implementation* = code/commits, traced in sessions. *Feedback*
+  = the review ritual. **Only Vision + Blueprint are new; the rest is the existing layer, named.**
+- **The trace is the determinism.** Implementation → Design → Blueprint (`serves: <gap>`)
+  → Vision (`serves: <vision-id>`), linked by `id`. A missing or broken link is drift
+  (§10, grep-detectable). The *trace and the gates* are deterministic; the *content* — the
+  vision, the design ideas — is the human–AI partnership. No scoring.
+- **Human gates.** Each altitude transition (confirm the Vision; open/close a Blueprint
+  gap) is a human gate — an Open Thread the human checks off, not a phase review. The agent
+  proposes; the human approves.
+- **The loop is the cadence, not new ceremony.** It rides the existing session → review
+  rhythm. Greenfield → brownfield: each delivered increment becomes the next Current State.
+- **Never fabricate the Vision** — it is the human's to set (like User Preferences).
+  Enable/upgrade bootstrap a ⚠️ DRAFT stub and gate it; until it's confirmed,
+  drift-detection stays advisory.

@@ -16,12 +16,23 @@ preferences). Project facts, decisions, and session logs go in this repo's
 Read these files before responding to anything:
 
 1. `memory/instructions.md` — project context, rules, and conventions
-2. `memory/continuity.md`   — current project state, open threads, key decisions
-3. `memory/sessions/`       — scan the most recent 2–3 session logs
+2. `memory/continuity.md`   — current state, open threads, key decisions (+ Blueprint gaps)
+3. `memory/vision.md`       — the target the work serves (the VBDI north star)
+4. `memory/sessions/`       — scan the most recent 2–3 session logs
 
 If a topic seems unfamiliar, grep `memory/archive/INDEX.md` (and follow a fact's
 `origin` to its session) before saying you have no context — retrieval here is lexical
 + indexed by design (`DECAY.md` §11); facts fade to the archive but are never deleted.
+
+## The cognitive loop (VBDI)
+
+This repo runs a forward loop on top of the memory layer (`DECAY.md` §12):
+**Current State (`continuity.md`) → Vision (`memory/vision.md`) → Blueprint (gap) →
+Design → Implementation → Feedback (review) → repeat.** When you propose significant
+work, tie it to a Blueprint gap (a `(blueprint)` Open Thread that `serves:` the Vision)
+and to the Design it realizes — so intent is traceable and drift is detectable. Each
+altitude transition (confirming the Vision, opening or closing a gap) is a **human
+gate**: propose, then let the human approve. Never fabricate the Vision.
 
 ## During the Session
 

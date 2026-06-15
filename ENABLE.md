@@ -285,6 +285,29 @@ does `<entry point>` discover/route X?", "What gates Y?"). They join the generic
 orientation questions already in the template. It's a manual memory-quality check — see
 the file's header for how it's run.
 
+### 5g. `memory/vision.md` (the forward layer — VBDI)
+
+Install the Vision artifact so the repo's memory becomes *goal-aware* (see `DECAY.md` §12
+and `docs/DESIGN-vbdi-lifecycle.md`). Copy from `templates/memory/vision.md`, filling
+`{{PROJECT_NAME}}`, `{{PROJECT_SLUG}}` (kebab project name, for the `id`), `{{TODAY}}`,
+`{{PROJECT_DESCRIPTION}}`, and `{{PROJECT_TYPE}}`.
+
+**Bootstrap rule — never fabricate the Vision.** A Vision is the *target* state, and the
+target is the human's to set (same principle as User Preferences: never infer). So:
+
+- Pre-fill **only** the safe *Current-state context* (`{{PROJECT_DESCRIPTION}}`,
+  `{{PROJECT_TYPE}}` from your Step 4 analysis — what the project *is* today).
+- Leave the **target, success criteria, and non-goals as prompts** (the template's `(…)`
+  placeholders) — do not infer the aspiration. Keep the ⚠️ DRAFT banner.
+- Raise a human-gate Open Thread in `memory/continuity.md`:
+  `- [ ] (vision-bootstrap) Confirm the Vision in memory/vision.md — set the target / success criteria / non-goals; then derive the Blueprint.`
+- **Do not derive the Blueprint yet** — Blueprint gaps depend on a confirmed target. The
+  gate thread carries that forward. Until the Vision is confirmed, VBDI drift-detection is
+  advisory.
+
+(Greenfield — an empty repo with no code — inverts this: ask the human for the Vision
+*first*, since there's no current state to read.)
+
 ---
 
 ## Step 6 — Install Bootstrap Files
@@ -361,7 +384,7 @@ describe what was intended.
 
 1. **Files exist.** Confirm all of the following are present in the target repo:
    - `memory/instructions.md`, `memory/continuity.md`, `memory/sessions/`
-   - `memory/decay-policy.md`, `memory/archive/INDEX.md`, `memory/smoke-test.md`
+   - `memory/decay-policy.md`, `memory/archive/INDEX.md`, `memory/smoke-test.md`, `memory/vision.md`
    - `.agent/schema.md`, `.agent/version.md`
    - `DECAY.md`, `REVIEW.md`
    - `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`,
@@ -381,6 +404,12 @@ describe what was intended.
 4. **Mode C — session files are well-formed.** Confirm each session file under
    `memory/sessions/` has a title line matching
    `# Session (YYYY-MM-DDThh:mm:ss.mmmZ - YYYY-MM-DDThh:mm:ss.mmmZ)`.
+
+5. **Vision bootstrapped (not fabricated).** `memory/vision.md` exists with the
+   Current-state context filled and the target / success criteria / non-goals left as
+   prompts. The ⚠️ DRAFT banner and the `(…)` prompts are **intentional** — not unfilled
+   placeholders. A `- [ ] (vision-bootstrap)` Open Thread is present in `continuity.md`,
+   and no Blueprint gaps were derived yet (they await the confirmed Vision).
 
 Log any issue you cannot fix as an Open Thread in `memory/continuity.md` and
 note it in the report.
@@ -410,6 +439,7 @@ Print a clear summary including migration details if Mode C ran:
   • memory/continuity.md
   • memory/decay-policy.md
   • memory/smoke-test.md
+  • memory/vision.md   (⚠️ DRAFT — maintainer to confirm the target; see the (vision-bootstrap) thread)
   • memory/sessions/   (N session files)
   • memory/archive/INDEX.md
   • .agent/schema.md, .agent/version.md  (v<version>)
