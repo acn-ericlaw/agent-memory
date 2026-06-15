@@ -29,6 +29,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 3.6.0 | Memory smoke test: `memory/smoke-test.md` — manual eval, N questions a fresh agent should answer from memory alone |
 | 3.7.0 | Provenance + retrieval: optional `origin:` footer (the session a fact came from); retrieval documented as lexical + indexed by design |
 | 4.0.0 | Forward layer (VBDI): `memory/vision.md` + `(blueprint)` gap threads + altitude trace; the cognitive loop over the memory substrate. Upgrade bootstraps a DRAFT Vision + human gate |
+| 4.1.0 | Cross-vendor skills layer: neutral committed `skills/<name>/SKILL.md` + an `AGENTS.md` baseline (agent-as-runtime) + regenerated Claude/Gemini/Cursor adapters. Migration promotes vendor `.claude/skills/` into `skills/`; upgrade promotes any existing vendor skills in place |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -288,3 +289,28 @@ than fabricating intent.
    preserving `enabled_with` and `mode`.
 5. **Report**: docs re-synced; Vision **bootstrapped as a DRAFT** — the maintainer must
    confirm it (the `(vision-bootstrap)` thread), after which the Blueprint is derived.
+
+---
+
+## Rung: 4.0.0 → 4.1.0 — the cross-vendor skills layer
+
+Additive (a new optional shared layer): a repo with no skills works exactly as before, and
+an un-upgraded agent simply ignores `skills/`. Design: `docs/DESIGN-skills-layer.md`.
+
+1. **Re-sync the generic docs** (copy verbatim where different): `.agent/schema.md` (the
+   new `skills/` section) and `AGENTS.md` (the new "Skills" section + the `skills/` entry
+   in Memory File Locations). `DECAY.md` / `REVIEW.md` are unchanged in 4.1.0.
+2. **`.gitignore` — no entry change needed.** The vendor adapter dirs (`.claude/`,
+   `.gemini/`, `.cursor/`) are already ignored by the v3.1.0 managed block, and `skills/`
+   is tracked by default (never ignored). Optionally refresh the managed-block comment to
+   mention `skills/` + adapters (cosmetic only).
+3. **Promote any existing vendor skills.** If the target has `.claude/skills/` (or another
+   vendor's skill bundle), promote each into `skills/<name>/SKILL.md` per `MIGRATE.md`
+   Section B2 (keep the procedure; normalize frontmatter to `name` + `description`; copy
+   bundled scripts to `skills/<name>/scripts/`), preserve the original under `legacy/`,
+   then regenerate the Claude / Gemini / Cursor adapters per `ENABLE.md` Step 5h. **If there
+   are no vendor skills, skip — do not create an empty `skills/`.**
+4. **Stamp** `.agent/version.md` → `version: 4.1.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+5. **Report**: docs re-synced; skills promoted (N) + adapters regenerated, or "no skills
+   found — skills layer available on demand."

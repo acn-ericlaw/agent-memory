@@ -1,7 +1,8 @@
 # DESIGN — Cross-Vendor Skills Layer (portable capabilities over the shared layer)
 
-> **Status:** design, under review. Sibling to `DESIGN-evolving-memory.md` and
-> `DESIGN-vbdi-lifecycle.md`.
+> **Status:** **implemented in v4.1.0** (2026-06-15). Sibling to `DESIGN-evolving-memory.md`
+> and `DESIGN-vbdi-lifecycle.md`. The maintainer chose **all-vendor adapters** at build time
+> (Claude + Gemini + Cursor), so §4c is fully realized rather than Claude-only.
 > **Source:** a real-work finding (2026-06-15) — a client repo enabled with agent-memory
 > carried user-defined **Claude skills** under `.claude/skills/`, which the tool neither
 > shares across vendors nor (today) even lets travel with the repo (`.claude/` is

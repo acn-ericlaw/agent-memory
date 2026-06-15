@@ -1,9 +1,12 @@
 # === agent-memory: AI infrastructure (personal / per-machine — do not commit) ===
 # Steering files (CLAUDE.md, GEMINI.md, AGENTS.md, .cursorrules, .windsurfrules,
-# .github/copilot-instructions.md) and the shared memory layer (memory/, .agent/,
-# legacy/) are intentionally TRACKED — they are committed and shared across the
-# team, so do NOT ignore them. Only personal AI-IDE runtime directories and local
-# history/caches are ignored below (the "infrastructure", not the steering).
+# .github/copilot-instructions.md), the shared memory layer (memory/, .agent/,
+# legacy/), and the shared skills layer (skills/) are intentionally TRACKED — they
+# are committed and shared across the team, so do NOT ignore them. Only personal
+# AI-IDE runtime directories and local history/caches are ignored below (the
+# "infrastructure", not the steering). The vendor dirs below also hold per-machine
+# skill *adapters* (.claude/skills/, .gemini/commands/, .cursor/rules/) regenerated
+# from skills/ — local only; the neutral skills/ is the shared source of truth.
 .kiro/
 .claude/
 .cursor/

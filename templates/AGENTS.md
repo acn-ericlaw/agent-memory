@@ -34,6 +34,19 @@ and to the Design it realizes — so intent is traceable and drift is detectable
 altitude transition (confirming the Vision, opening or closing a gap) is a **human
 gate**: propose, then let the human approve. Never fabricate the Vision.
 
+## Skills
+
+If a `skills/` directory exists, it holds the project's **capabilities** — committed,
+vendor-neutral `skills/<name>/SKILL.md` files (a `name`, a `description` that says *when*
+to use it, a procedure, and maybe helper scripts). **This is the runtime:** when a task
+matches a skill's `description`, read and follow that `SKILL.md` (and any scripts it
+references). The agent is the runtime — no engine required, so this works on any vendor.
+
+Some runtimes also auto-discover a native adapter (`.claude/skills/`, `.gemini/commands/`,
+`.cursor/rules/`); those are thin, regenerated pointers to `skills/` and are personal/
+per-machine (gitignored). The shared source of truth is always `skills/<name>/SKILL.md` —
+edit skills there, never in an adapter. See `.agent/schema.md`.
+
 ## During the Session
 
 - Treat `memory/continuity.md` as your working memory.
@@ -109,6 +122,8 @@ memory/
   sessions/           ← dated session logs (event log)   (append; never edit past logs)
   archive/            ← faded facts + swept threads       (cold storage; never deleted)
     INDEX.md          ← greppable index of archived facts
+skills/               ← cross-vendor capabilities          (committed; vendor-neutral)
+  <name>/SKILL.md     ← one skill: name + when-to-use + procedure (the source of truth)
 .agent/
   schema.md           ← file format reference
   version.md          ← which agent-memory version this repo is on

@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.0.0 — backward memory layer complete (v3.x) **+ forward cognitive layer (VBDI) shipped (v4.0.0)**: Current State → Vision → Blueprint → Design → Implementation → Feedback. The tool now has its own confirmed Vision + Blueprint.
+- **status:** v4.1.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.0)**: neutral committed `skills/` + AGENTS.md baseline + Claude/Gemini/Cursor adapters; migration promotes vendor `.claude/skills/`. Not yet validated on a real target.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-15 | agent: Claude Code (2026-06-15-231502)
+- **last_session:** 2026-06-15 | agent: Claude Code (2026-06-15-234801)
 - **last_review:** 2026-06-15 | through 2026-06-15-231502
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -272,6 +272,22 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   Decisions locked with the maintainer: **4.0.0** + **context-only bootstrap**.
   <!-- id: vbdi-shipped-v400 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 4 | tier: active | origin: 2026-06-15-002837 -->
 
+### Shipped — v4.1.0: cross-vendor skills layer (2026-06-15)
+- [x] **Skills layer shipped (additive MINOR).** The shared layer's third leg —
+  *capabilities* — beside memory and steering. Neutral, committed `skills/<name>/SKILL.md`
+  (name + when-to-use description + procedure + optional scripts); `AGENTS.md` "Skills"
+  section is the universal agent-as-runtime baseline; native adapters regenerated for
+  Claude (`.claude/skills/`), Gemini (`.gemini/commands/`), Cursor (`.cursor/rules/`) —
+  thin, gitignored, **Option A** (only `skills/` committed). Migration **promotes** vendor
+  `.claude/skills/` into `skills/` (preserve original under `legacy/`, never flatten into
+  steering). Maintainer chose all-vendor adapter scope at build. Touched: `ENABLE.md`
+  (Step 5h + verify/report/scope), `MIGRATE.md` (principle 6 + Section B2 + Claude protocol
+  + detection table + continuity note), `AGENTS.md` (root + template), `.agent/schema.md`,
+  `templates/.gitignore` (comment), `VERSION`→4.1.0, `UPGRADE.md` 4.0.0→4.1.0 rung + table,
+  `README`/`CHANGELOG`. `DECAY.md`/`REVIEW.md` unchanged. Design: `docs/DESIGN-skills-layer.md`.
+  Realizes `bp-skills-layer`. Not yet validated on a real target (next: upgrade the client).
+  <!-- id: skills-layer-v410 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-234801 -->
+
 ### Blueprint — gaps from Current State (v3.7.0) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
 > `(blueprint)`: each is a Vision↔reality gap that closes when delivered. The *backward*
@@ -299,14 +315,12 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `docs/DESIGN-vbdi-lifecycle.md` §13): ceremony + scoring live in the target's own space,
   never in `memory/`. → serves: vision-agent-memory
   <!-- id: bp-sdlc-overlay | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-010142 -->
-- [ ] **(blueprint)** Cross-vendor skills layer — the tool shares memory + steering across
-  vendors but not *capabilities/skills*. Add a neutral committed `skills/<name>/SKILL.md`
-  source of truth + an `AGENTS.md` "Skills" baseline (agent-as-runtime, works for any
-  vendor) + optional thin per-vendor adapters (regenerated locally; adapter dirs stay
-  gitignored — **Option A**, maintainer-confirmed 2026-06-15). Migration promotes existing
-  `.claude/skills/` into `skills/` (preserve under `legacy/`, don't flatten into
-  instructions). Found via a real client-repo enable. Design: `docs/DESIGN-skills-layer.md`.
-  → serves: vision-agent-memory
+- [x] **(blueprint)** Cross-vendor skills layer — **SHIPPED v4.1.0** (2026-06-15). Neutral
+  committed `skills/<name>/SKILL.md` source of truth + an `AGENTS.md` "Skills" baseline
+  (agent-as-runtime) + regenerated Claude/Gemini/Cursor adapters (gitignored — **Option A**,
+  all-vendor scope chosen at build). Migration promotes `.claude/skills/` into `skills/`
+  (preserve under `legacy/`, don't flatten). Design: `docs/DESIGN-skills-layer.md`. Realized
+  by `skills-layer-v410`. → serves: vision-agent-memory
   <!-- id: bp-skills-layer | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-231502 -->
 - [x] **Review artifacts authored (2026-06-15)** for peer / leadership review:
   `docs/agent-memory-whitepaper.md` (technical paper) + `docs/agent-memory-deck.html`

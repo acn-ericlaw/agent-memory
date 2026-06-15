@@ -62,6 +62,15 @@ Tie significant work to a `(blueprint)` Open Thread that `serves:` the Vision an
 Design it realizes; surface altitude drift; gate each transition with the human. Never
 fabricate the Vision.
 
+### Skills
+
+If a `skills/` directory exists, it holds the project's **capabilities** — committed,
+vendor-neutral `skills/<name>/SKILL.md` files. When a task matches a skill's
+`description`, read and follow that `SKILL.md` (and any scripts it references) — the agent
+is the runtime, so it works on any vendor. Native adapters (`.claude/skills/`,
+`.gemini/commands/`, `.cursor/rules/`) are thin, regenerated, gitignored pointers; the
+shared source of truth is always `skills/<name>/SKILL.md`. See `docs/DESIGN-skills-layer.md`.
+
 ### During the Session
 
 - Reference `memory/continuity.md` when relevant.
@@ -144,3 +153,7 @@ When AI-enabling a repo that already has AI tooling, these vendors are detected
 and migrated automatically: Claude Code, Cursor, Cline, Roo Code, Aider,
 Continue.dev, Codeium/Windsurf, GitHub Copilot, GPT/Codex agents, Zed AI,
 Gemini CLI. See `MIGRATE.md` for protocols.
+
+Vendor **skills/capabilities** (e.g. `.claude/skills/`) are also migrated — *promoted*
+into the neutral, committed `skills/` layer (not flattened into steering), with originals
+preserved under `legacy/` and native adapters regenerated. See `MIGRATE.md`.

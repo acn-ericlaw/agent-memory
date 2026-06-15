@@ -308,6 +308,50 @@ target is the human's to set (same principle as User Preferences: never infer). 
 (Greenfield — an empty repo with no code — inverts this: ask the human for the Vision
 *first*, since there's no current state to read.)
 
+### 5h. Skills layer (capabilities — cross-vendor)
+
+Skills are the project's portable **capabilities** — a third shared layer beside memory
+and steering: committed, vendor-neutral `skills/<name>/SKILL.md` files (a `name`, a
+`description` that says *when* to use it, a procedure, optional helper scripts). The
+`AGENTS.md` "Skills" section is the universal runtime (the agent reads the skill — works
+on any vendor). See `docs/DESIGN-skills-layer.md` and `.agent/schema.md`.
+
+- **Fresh enable (Mode A):** a repo with no AI footprint has no skills — **do not create
+  an empty `skills/`.** The installed `AGENTS.md` already handles a future `skills/` on
+  demand. Skip this step.
+- **Migration (Mode C):** if `MIGRATE.md` promoted vendor skill bundles into `skills/`
+  (e.g. from `.claude/skills/`), **(re)generate the per-vendor adapters** below. The
+  neutral `skills/<name>/SKILL.md` is the source of truth; adapters are thin pointers,
+  regenerated (never hand-edited), living in the gitignored vendor dirs (Step 7), so they
+  stay per-machine while only `skills/` is committed.
+
+**Adapter generation** — for each `skills/<name>/SKILL.md` (with its `name` + `description`),
+write all three (idempotent — overwrite the adapter, never the neutral skill):
+
+- **Claude Code** → `.claude/skills/<name>/SKILL.md`:
+  ```
+  ---
+  name: <name>
+  description: <description>
+  ---
+  Maintained vendor-neutrally. Read and follow `skills/<name>/SKILL.md` (repo root)
+  and any scripts it references.
+  ```
+- **Gemini CLI** → `.gemini/commands/<name>.toml`:
+  ```
+  description = "<description>"
+  prompt = "Read and follow the skill at skills/<name>/SKILL.md (repo root), including any scripts it references, then carry out: {{args}}"
+  ```
+- **Cursor** → `.cursor/rules/<name>.mdc`:
+  ```
+  ---
+  description: <description>
+  alwaysApply: false
+  ---
+  When this applies, read and follow `skills/<name>/SKILL.md` (repo root) and any
+  scripts it references.
+  ```
+
 ---
 
 ## Step 6 — Install Bootstrap Files
@@ -411,6 +455,12 @@ describe what was intended.
    placeholders. A `- [ ] (vision-bootstrap)` Open Thread is present in `continuity.md`,
    and no Blueprint gaps were derived yet (they await the confirmed Vision).
 
+6. **Skills promoted (Mode C, if any).** If the source repo had vendor skills (e.g.
+   `.claude/skills/`), confirm each was promoted to `skills/<name>/SKILL.md` (committed),
+   the original preserved under `legacy/`, and the three adapters regenerated
+   (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`). On a fresh enable with no
+   skills, confirm no empty `skills/` was created.
+
 Log any issue you cannot fix as an Open Thread in `memory/continuity.md` and
 note it in the report.
 
@@ -433,6 +483,7 @@ Print a clear summary including migration details if Mode C ran:
   Migrated (Mode C only):
   • <vendor>:  <files>  →  <where>
   • Sessions converted: N (from <oldest>  to  <newest>)
+  • Skills promoted: N → skills/  (+ Claude / Gemini / Cursor adapters regenerated)
 
   Created:
   • memory/instructions.md
@@ -480,9 +531,11 @@ Respond accordingly.
 
 - Never modify source code in the target repo.
 - Never modify `package.json`, `Cargo.toml`, etc.
-- Only create/modify files within: `memory/`, `.agent/`, `legacy/`, `DECAY.md`,
-  `REVIEW.md`, `.gitignore` (add-only, never remove existing entries),
-  `.github/copilot-instructions.md`, and the bootstrap files listed in Step 6.
-  (`UPGRADE.md` and `VERSION` are tool-only — never written into a target.)
+- Only create/modify files within: `memory/`, `.agent/`, `legacy/`, `skills/` (the
+  neutral capability layer) and its regenerated per-machine adapters (`.claude/skills/`,
+  `.gemini/commands/`, `.cursor/rules/`), `DECAY.md`, `REVIEW.md`, `.gitignore` (add-only,
+  never remove existing entries), `.github/copilot-instructions.md`, and the bootstrap
+  files listed in Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a
+  target.)
 - If the target repo is the agent-memory tool itself, say so and stop.
 - Always preserve vendor originals under `legacy/` — they are user data.

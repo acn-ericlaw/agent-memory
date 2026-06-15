@@ -49,6 +49,10 @@ selects Mode C (Migrate from Vendor).
    `> Migrated from <vendor> on <today's-date>`.
 5. **One pass per vendor.** Process each detected vendor independently —
    if one fails, continue with the others and report what was skipped.
+6. **Promote skills, don't flatten.** Vendor skill bundles (capabilities, e.g.
+   `.claude/skills/`) are *promoted* into the neutral, committed `skills/` layer
+   (Section B2) with per-vendor adapters regenerated — never folded into
+   `memory/instructions.md`.
 
 ---
 
@@ -59,7 +63,7 @@ the vendor is present. Apply the rules in that row's migration section.
 
 | Vendor | Indicator files / directories |
 |---|---|
-| Claude Code | `CLAUDE.md` (non-ours), `.claude/`, `.claude/settings.json`, `.claude/projects/` |
+| Claude Code | `CLAUDE.md` (non-ours), `.claude/`, `.claude/settings.json`, `.claude/projects/`, `.claude/skills/` |
 | Cursor | `.cursorrules`, `.cursor/`, `.cursor/rules/*.mdc` |
 | Cline | `.clinerules`, `.cline/` |
 | Roo Code | `.roorules`, `.roo/` |
@@ -142,6 +146,27 @@ project-specific context, append it to `memory/instructions.md` under:
 If `memory/instructions.md` does not yet exist, create it from the template and
 add the section after the standard headings.
 
+### B2. Promote skills (capabilities) → `skills/`
+
+Vendor **skill bundles** are *capabilities*, not steering and not history — currently
+Claude Code's `.claude/skills/<name>/SKILL.md` (each a `name` + `description` + a
+procedure, plus optional bundled scripts). Do **not** flatten them into
+`memory/instructions.md`. Instead **promote** each into the neutral, committed capability
+layer:
+
+- For each `<name>`, write `skills/<name>/SKILL.md` — keep the procedure as-is and
+  normalize the frontmatter to the neutral minimum (`name`, `description`). Copy any
+  bundled scripts to `skills/<name>/scripts/`, preserving relative references.
+- The verbatim original is preserved by Section A's move to `legacy/<vendor>/` — so
+  `skills/` is the promoted, shared copy and `legacy/` keeps the untouched original.
+- After promoting, **regenerate the per-vendor adapters** (Claude / Gemini / Cursor) from
+  each neutral skill exactly as `ENABLE.md` Step 5h specifies — thin pointers living in the
+  gitignored vendor dirs.
+
+`skills/` is tracked (Step 7 keeps it committed); the adapter dirs are ignored and
+regenerated per machine, so the neutral skill stays the single source of truth. See
+`docs/DESIGN-skills-layer.md`.
+
 ### C. Convert history → `memory/sessions/`
 
 Read the vendor's history/session data and convert each session or chat into
@@ -176,6 +201,7 @@ In `memory/continuity.md`, add to Open Threads:
 ```markdown
 - [ ] Review migrated sessions from <vendor> (under memory/sessions/)
 - [ ] Verify legacy/<vendor>/ contents — delete after confirming migration is complete
+- [ ] Review promoted skills under skills/ — confirm each SKILL.md + regenerated adapters (only if the vendor had skills)
 ```
 
 ---
@@ -202,6 +228,11 @@ In `memory/continuity.md`, add to Open Threads:
 
 **Settings:** `.claude/settings.json`
 - Archive verbatim. Do NOT attempt to map settings to our format — different concept.
+
+**Skills:** `.claude/skills/<name>/SKILL.md` (+ any bundled scripts)
+- **Promote** to the neutral `skills/` layer per Section B2 — do NOT flatten into
+  instructions (skills are *procedures*, not steering). Preserve the original under
+  `legacy/`; regenerate the Claude/Gemini/Cursor adapters per `ENABLE.md` Step 5h.
 
 ---
 

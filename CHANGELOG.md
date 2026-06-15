@@ -12,6 +12,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.1.0, 6/15/2026
+
+> **Cross-vendor skills layer.** The shared layer gains its third leg — *capabilities* —
+> beside memory and steering. A skill is committed, vendor-neutral markdown
+> (`skills/<name>/SKILL.md`: a `name`, a `description` = when-to-use, a procedure, optional
+> scripts). The `AGENTS.md` "Skills" section is the universal runtime (the agent reads the
+> skill — works on any vendor); native adapters (`.claude/skills/`, `.gemini/commands/`,
+> `.cursor/rules/`) are thin, regenerated, gitignored pointers. Migration **promotes**
+> vendor skill bundles (e.g. `.claude/skills/`) into `skills/` rather than flattening them
+> into steering. **Additive** (a repo with no skills is unchanged). Design:
+> `docs/DESIGN-skills-layer.md`.
+
+### Added
+
+1. **`skills/` layer** — neutral, committed `skills/<name>/SKILL.md` capabilities (the
+   shared source of truth), documented in `.agent/schema.md`.
+2. **`AGENTS.md` "Skills" baseline** (root + template) — the agent-as-runtime mechanism;
+   works on any vendor with no per-vendor engine.
+3. **Per-vendor adapters** — generated Claude (`.claude/skills/`), Gemini
+   (`.gemini/commands/`), and Cursor (`.cursor/rules/`) pointers; regenerated, gitignored.
+4. **Migration promotion** — `MIGRATE.md` Section B2 + the Claude Code skills protocol:
+   detect `.claude/skills/`, promote into `skills/` (originals preserved under `legacy/`),
+   regenerate adapters. `ENABLE.md` Step 5h defines adapter generation.
+
+### Removed
+
+N/A.
+
+### Changed
+
+1. `ENABLE.md` (Step 5h + verify/report/scope), `MIGRATE.md` (principle 6, Section B2,
+   Claude protocol, detection table, continuity note), `AGENTS.md` (root + template),
+   `.agent/schema.md`, `templates/.gitignore` (comment), `README`. `VERSION` → 4.1.0;
+   `UPGRADE.md` 4.0.0→4.1.0 rung + version table. `DECAY.md` / `REVIEW.md` unchanged.
+
+---
 ## Version 4.0.0, 6/15/2026
 
 > **The forward layer.** agent-memory gains a cognitive lifecycle loop on top of its
