@@ -10,8 +10,8 @@
 - **status:** v4.0.0 — backward memory layer complete (v3.x) **+ forward cognitive layer (VBDI) shipped (v4.0.0)**: Current State → Vision → Blueprint → Design → Implementation → Feedback. The tool now has its own confirmed Vision + Blueprint.
 - **last_enabled:** 2026-06-12
 - **last_session:** 2026-06-15 | agent: Claude Code (2026-06-15-231502)
-- **last_review:** 2026-06-13 | through 2026-06-13-223743
-- **last_invariant_check:** (none yet)
+- **last_review:** 2026-06-15 | through 2026-06-15-231502
+- **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
 
 ## What's Been Built
@@ -60,16 +60,16 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 - Target-repo scope only — never read/modify/move anything outside the resolved
   target-repo root (never `~`, `~/.claude/`, Application Support, AppData, system paths)
-  <!-- id: target-repo-scope-only | created: 2026-06-13 | last_used: 2026-06-13 | uses: 3 | tier: core -->
+  <!-- id: target-repo-scope-only | created: 2026-06-13 | last_used: 2026-06-15 | uses: 4 | tier: core -->
 - Never delete vendor files — move originals to `legacy/<vendor>/`, preserving paths
-  <!-- id: never-delete-vendor-files | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: core -->
+  <!-- id: never-delete-vendor-files | created: 2026-06-13 | last_used: 2026-06-15 | uses: 2 | tier: core -->
 - Never overwrite, never pick a winner — fold vendor steering under
   `## Migrated rules from <vendor>`; surface contradictions as Open Threads
-  <!-- id: never-pick-a-winner | created: 2026-06-13 | last_used: 2026-06-13 | uses: 2 | tier: core -->
+  <!-- id: never-pick-a-winner | created: 2026-06-13 | last_used: 2026-06-15 | uses: 4 | tier: core -->
 - No-code, markdown-only — the files are the product; the agent is the runtime
-  <!-- id: no-code-markdown-only | created: 2026-06-13 | last_used: 2026-06-13 | uses: 3 | tier: core -->
+  <!-- id: no-code-markdown-only | created: 2026-06-13 | last_used: 2026-06-15 | uses: 15 | tier: core -->
 - Upgrades are additive and non-destructive — enrich and add, never rewrite or delete
-  <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-13 | uses: 4 | tier: core -->
+  <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-15 | uses: 12 | tier: core -->
 
 ## Key Decisions
 
@@ -87,43 +87,10 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
-### Design improvements from first real test drive (mercury-composable, 2026-06-12)
-- [x] **MIGRATE.md: add an "integration" path for good steering files.** Section B
-  of the General Migration Workflow now has a quality gate: project instructions
-  (stack, architecture, purpose) → integrated into schema sections; AI rules only
-  → verbatim append. Per-vendor protocols have a cross-reference note so the gate
-  always applies.
-- [x] **Fix `legacy/` gitignore contradiction.** Removed `legacy/` from the
-  Step 7 gitignore block; it now commits to git, consistent with the "preserved"
-  promise in README/MIGRATE.
-- [x] **Add source-of-truth / version-drift guidance** to ENABLE.md Step 4
-  (prefer build manifest e.g. pom.xml/package.json; surface drift as an Open Thread).
-- [x] **Make migration git-aware** in MIGRATE.md (use `git mv` for tracked files to
-  preserve history; plain move otherwise).
-- [x] **Add a post-report verification step** to ENABLE.md (sanity-check generated
-  files exist and integration is faithful) instead of ending at the report.
-- [x] **Add monorepo/multi-module guidance** — templates are single-project shaped.
-- [x] Replace mockup examples with a REAL fixture: `examples/node-project` (mock,
-  taskflow-api) removed; `examples/rust-event-bus` added as the unedited output of a
-  real Mode A enable. (migrated-cursor-aider remains a mockup — still a candidate to
-  replace with a real Mode C run.)
-
-### Refinements from first-session agent feedback (mercury-composable, 2026-06-12)
-- [x] Document the two memory layers (repo `memory/` vs runtime `~/.claude/`) —
-  `templates/AGENTS.md` + tool `AGENTS.md`
-- [x] Inline project header (`{{PROJECT_NAME}}`/`{{PROJECT_ONELINE}}`) in
-  `templates/CLAUDE.md` + `GEMINI.md`; `ENABLE.md` Step 6 fills them (cold-start fix)
-- [x] Drop unreliable `Duration` field from the session schema
-- [x] Sharpen the different-agent check to compare agent *family*
-- [x] User Preferences "explicit only, never infer" guard (schema + continuity template)
-- [x] Document optional `sessions/INDEX.md` (kept optional to avoid stale-index drift)
-- [x] Retro-fit the live mercury-composable repo: inline header in CLAUDE.md +
-  GEMINI.md, re-synced AGENTS.md + .agent/schema.md from updated templates,
-  no-infer guard in continuity.md
-- [x] Align mockup examples with new schema. NOTE: verification showed the examples
-  never contained `Duration` (migrated-block format) and have no CLAUDE.md to carry
-  a stale header — the only real drift was the User Preferences line, now fixed in
-  both. (Earlier thread overstated the drift.)
+- [ ] Re-verify invariants (due): confirm target-repo-scope-only, never-delete-vendor-files, never-pick-a-winner, no-code-markdown-only, upgrades-additive and the Vision (vision-agent-memory) still hold, or supersede any that don't (DECAY.md §9)
+  <!-- id: ot-reverify-invariants-20260615 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-231502 -->
+- [ ] Drift: the Blueprint subsection header reads "gaps from Current State (v3.7.0) to the Vision" but Project State `status` is now v4.0.0 (the VBDI loop the Blueprint described has shipped). Stale altitude label — refresh the baseline version to v4.0.0 (or re-derive the gap set against the v4.0.0 Current State). Surfaced by the 2026-06-15 review backstop; not auto-rewritten.
+  <!-- id: ot-drift-blueprint-baseline-20260615 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-231502 -->
 
 ### Evolving long-term memory layer (v3.0.0) — BUILT 2026-06-13
 - [x] **Evolving-memory layer implemented.** Design: `docs/DESIGN-evolving-memory.md`.
@@ -181,7 +148,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   3.0.0→3.1.0 added; `VERSION`→3.1.0; version tables in `UPGRADE.md`/`README.md` and
   `CHANGELOG.md` updated. Steering files + `memory/` stay tracked (verified via
   `git check-ignore`).
-  <!-- id: gitignore-propagation-v310 | created: 2026-06-13 | last_used: 2026-06-13 | uses: 2 | tier: active -->
+  <!-- id: gitignore-propagation-v310 | created: 2026-06-13 | last_used: 2026-06-15 | uses: 3 | tier: active -->
 - [x] **Validated via Mode B upgrade of `~/sandbox/mercury-composable`** (3.0.0→3.1.0,
   2026-06-13). Two refinements surfaced and fixed during the run: (1) **de-dup** — the
   "no sentinel → append full block" wording would have duplicated `.kiro/` (already in
@@ -192,7 +159,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   pick a winner), not auto-fixed. Verified: no dup `.kiro/`, steering/memory tracked,
   runtime dirs ignored, idempotent re-run is a no-op, stamp 3.1.0 (enabled_with/mode
   preserved). Target not committed (separate repo; offered to user).
-  <!-- id: gitignore-v310-mercury-validation | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: working -->
+  <!-- id: gitignore-v310-mercury-validation | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: archive-candidate -->
 
 ### Shipped — v3.2.0: protocol clarifications from a real-work field report (2026-06-13)
 - [x] **Acted on a field report** from a separate Claude Code session that refactored
@@ -208,7 +175,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   hook recipe (`docs/optional-ritual-hook.md`). Touched DECAY, schema, both AGENTS,
   ENABLE, templates, UPGRADE (+3.1.0→3.2.0 rung), VERSION→3.2.0, README/CHANGELOG.
   Report archived at `docs/assessments/2026-06-13-protocol-field-report.md`.
-  <!-- id: field-report-v320 | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: working -->
+  <!-- id: field-report-v320 | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: archive-candidate -->
 
 ### Shipped — v3.3.0: supersession / fact-invalidation (2026-06-14)
 - [x] **P1 (supersession) shipped.** The evolving-memory layer can now represent a fact
@@ -221,7 +188,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `evolving-memory-example/` (a worked REST-versioning supersession), `VERSION`→3.3.0,
   `UPGRADE.md` 3.2.0→3.3.0 rung + tables, `README`/`CHANGELOG`. Flipped the
   industry-alignment assessment's gap #1 ⬜→✅ — the one "High" gap closed.
-  <!-- id: supersession-v330 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working -->
+  <!-- id: supersession-v330 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 3 | tier: archive-candidate -->
 - [x] **P2 (invariant-verification cadence) shipped as v3.4.0.** Never-decay facts
   (`core` / Architectural Invariants) can quietly go "confidently wrong"; the review now
   prompts a human to re-confirm them. Added `verify_invariants_every` (default 20) to
@@ -231,7 +198,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   example shows a first invariant prompt. `VERSION`→3.4.0, `UPGRADE.md` 3.3.0→3.4.0 rung
   + tables, `README`/`CHANGELOG`. Assessment gap #2 ⬜→✅. Pairs with v3.3.0: P1 retires
   a fact you *notice* is false; P2 makes you *check*.
-  <!-- id: invariant-verify-v340 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working -->
+  <!-- id: invariant-verify-v340 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 2 | tier: archive-candidate -->
 - [x] **P3 (write-time contradiction check) shipped as v3.5.0.** Generalized the
   migration-time "surface contradictions, never pick a winner" rule to normal sessions:
   `DECAY.md` §10 — on adding/rewriting a fact, scan `core`/invariants + active decisions
@@ -242,7 +209,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `README`/`CHANGELOG`; assessment gap #3 ⬜→✅ and Truth-maintenance scorecard ◐→✅.
   Completes the truth-maintenance trio: P3 catches a conflict at write time, P1
   resolves it (supersede) or P3 raises a thread, P2 re-checks invariants periodically.
-  <!-- id: contradiction-check-v350 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working -->
+  <!-- id: contradiction-check-v350 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: archive-candidate -->
 - [x] **P4 (memory smoke test) shipped as v3.6.0.** A cheap, no-code answer to the
   "evaluation is unsolved" gap: `memory/smoke-test.md` — N questions (generic orientation
   + project-specific, seeded at enable) a *fresh* agent should answer from `memory/`
@@ -251,7 +218,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `REVIEW.md` notes running it at a review. This repo's own `memory/smoke-test.md`
   created (dogfood, not yet run). `VERSION`→3.6.0, `UPGRADE.md` 3.5.0→3.6.0 rung + tables,
   `README`/`CHANGELOG`; assessment gap #5 + Evaluation scorecard ⬜→✅.
-  <!-- id: memory-smoke-test-v360 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working -->
+  <!-- id: memory-smoke-test-v360 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: active -->
 - [x] **P5 (provenance + retrieval-at-scale) shipped as v3.7.0 — completes the vNext
   backlog.** Event-sourcing already records a fact's source session; v3.7.0 *surfaces* it
   as an optional `origin: <session-file>` footer (set at creation, repairable by review).
@@ -261,7 +228,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   both `AGENTS.md`, `ENABLE.md`, the worked example (origin on session-created facts),
   `VERSION`→3.7.0, `UPGRADE.md` 3.6.0→3.7.0 rung + tables, `README`/`CHANGELOG`. Assessment
   gap #6 ⬜→✅; gap #4 (lexical retrieval) ◐ by-design (semantic out of scope).
-  <!-- id: provenance-retrieval-v370 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working | origin: 2026-06-14-024407 -->
+  <!-- id: provenance-retrieval-v370 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 2 | tier: active | origin: 2026-06-14-024407 -->
 
 ### Next major iteration — Vision → Blueprint → Design → Implementation (VBDI) lifecycle
 > Set 2026-06-14. The vNext backlog (P1–P5) is complete; this is the next headline direction.
@@ -283,7 +250,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   hand-waving); keep gates lightweight (Open-Thread-like, not Jira); the trace must be
   enforceable (grep/review), not just documented. Validated motivation: the Node→Rust
   rewrite delivered deterministically with no drift — VBDI generalizes that to creation.
-  <!-- id: vbdi-lifecycle-direction | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: working | origin: 2026-06-14-030729 -->
+  <!-- id: vbdi-lifecycle-direction | created: 2026-06-14 | last_used: 2026-06-15 | uses: 3 | tier: active | origin: 2026-06-14-030729 -->
 
 ### Shipped — v4.0.0: the forward layer (VBDI) (2026-06-15)
 - [x] **VBDI forward layer shipped.** The cognitive loop (Current State → Vision →
@@ -303,7 +270,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   the read-order now lives **only in `AGENTS.md`** (DRY), which also retroactively fixed the
   v4.0.0 `vision.md` miss in the template pointers. Closes `bp-vbdi-loop` + `bp-altitude-drift`.
   Decisions locked with the maintainer: **4.0.0** + **context-only bootstrap**.
-  <!-- id: vbdi-shipped-v400 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-002837 -->
+  <!-- id: vbdi-shipped-v400 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 4 | tier: active | origin: 2026-06-15-002837 -->
 
 ### Blueprint — gaps from Current State (v3.7.0) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
@@ -314,13 +281,13 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - [x] **(blueprint)** Build the forward cognitive loop (VBDI) — **SHIPPED v4.0.0**: the Blueprint mechanism,
   the altitude trace (id-linkage Implementation→Design→Blueprint→Vision), drift-detection,
   and human gates. Design drafted: `docs/DESIGN-vbdi-lifecycle.md`. → serves: vision-agent-memory
-  <!-- id: bp-vbdi-loop | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-000531 -->
+  <!-- id: bp-vbdi-loop | created: 2026-06-15 | last_used: 2026-06-15 | uses: 2 | tier: active | origin: 2026-06-15-000531 -->
 - [ ] **(blueprint)** Greenfield path — the tool handles brownfield (enable/migrate) well
   but has no "start from a Vision, no code yet" flow. → serves: vision-agent-memory
   <!-- id: bp-greenfield | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-000531 -->
 - [x] **(blueprint)** Altitude drift-detection — **SHIPPED v4.0.0**: extend the §10 contradiction-check across
   Vision ↔ Blueprint ↔ Design ↔ Implementation. → serves: vision-agent-memory
-  <!-- id: bp-altitude-drift | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-000531 -->
+  <!-- id: bp-altitude-drift | created: 2026-06-15 | last_used: 2026-06-15 | uses: 2 | tier: active | origin: 2026-06-15-000531 -->
 - [ ] **(blueprint)** Multi-user concurrent contribution — mostly supported (shared
   committed `memory/`, multi-agent continuity, collision-safe session filenames); validate
   and harden for *simultaneous* contributors. → serves: vision-agent-memory
@@ -331,7 +298,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   memory design is already **process-neutral** and survives an overlay (`DECAY.md` §12 /
   `docs/DESIGN-vbdi-lifecycle.md` §13): ceremony + scoring live in the target's own space,
   never in `memory/`. → serves: vision-agent-memory
-  <!-- id: bp-sdlc-overlay | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-010142 -->
+  <!-- id: bp-sdlc-overlay | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-010142 -->
 - [ ] **(blueprint)** Cross-vendor skills layer — the tool shares memory + steering across
   vendors but not *capabilities/skills*. Add a neutral committed `skills/<name>/SKILL.md`
   source of truth + an `AGENTS.md` "Skills" baseline (agent-as-runtime, works for any
@@ -340,14 +307,14 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `.claude/skills/` into `skills/` (preserve under `legacy/`, don't flatten into
   instructions). Found via a real client-repo enable. Design: `docs/DESIGN-skills-layer.md`.
   → serves: vision-agent-memory
-  <!-- id: bp-skills-layer | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-231502 -->
+  <!-- id: bp-skills-layer | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-231502 -->
 - [x] **Review artifacts authored (2026-06-15)** for peer / leadership review:
   `docs/agent-memory-whitepaper.md` (technical paper) + `docs/agent-memory-deck.html`
   (self-contained HTML deck, ~13 slides, keyboard/click nav). Built on the reference ACF
   framework (`docs/agent-cognitive-framework.md`), articulating the integrated v4.0.0
   (memory substrate + VBDI loop). **Company-neutral** per the personal-research rule —
   add organizational framing at presentation time, not in the repo.
-  <!-- id: review-artifacts-v400 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-012034 -->
+  <!-- id: review-artifacts-v400 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-012034 -->
 
 ### First real-work dogfood — enabled `~/sandbox/simple-proxy` (Mode A, 2026-06-13)
 - [x] **Real Mode A fresh enable** of a zero-dep Node.js TCP-proxy CLI (no prior AI
@@ -357,7 +324,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   code across the two entry points; per-connection signal handlers; no tests). This
   enable is what surfaced the `.gitignore` gap above. Target later stamped 3.1.0.
   Refactor of the target is the user's planned next step.
-  <!-- id: dogfood-simple-proxy-enable | created: 2026-06-13 | last_used: 2026-06-13 | uses: 2 | tier: active -->
+  <!-- id: dogfood-simple-proxy-enable | created: 2026-06-13 | last_used: 2026-06-13 | uses: 2 | tier: archive-candidate -->
 - [x] **Design validated: enabled target repos are self-contained.** The user chose to
   run the simple-proxy refactor in a *separate* Claude Code session launched inside the
   target — driven by simple-proxy's own `CLAUDE.md`→`AGENTS.md`→`memory/`, needing no
@@ -365,7 +332,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   enablement; the enabled repo then stands on its own. Baselines committed cleanly
   (simple-proxy: source import + AI-enable; mercury: v3.1.0 upgrade) so the new
   sessions start from committed state. (2026-06-13)
-  <!-- id: dogfood-target-repo-self-contained | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: working -->
+  <!-- id: dogfood-target-repo-self-contained | created: 2026-06-13 | last_used: 2026-06-14 | uses: 2 | tier: active -->
 
 ### Backlog — vNext (temporal & supersession) + beyond
 > From the 2026-06-13 industry-alignment assessment:
@@ -378,22 +345,22 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   archive it flagged "superseded", not "faded". Markdown-native `expired_at`/`invalid_at`
   (cf. Zep); closes assessment gaps #1+#2; buys the "knowledge updates" ability.
   Touches DECAY.md, REVIEW.md, schema, examples. Highest-value next step.
-  <!-- id: backlog-supersession | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+  <!-- id: backlog-supersession | created: 2026-06-13 | last_used: 2026-06-14 | uses: 2 | tier: archive-candidate -->
 - [x] **P2 — Invariant-verification cadence — SHIPPED v3.4.0** (see Shipped section above). Add `verify_invariants_every: N`
   to decay-policy.md; review prompts a human to confirm `core`/Architectural Invariants
   are still true (never-decay ≠ never-checked).
-  <!-- id: backlog-invariant-verify-cadence | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+  <!-- id: backlog-invariant-verify-cadence | created: 2026-06-13 | last_used: 2026-06-14 | uses: 2 | tier: archive-candidate -->
 - [x] **P3 — Write-time contradiction flag — SHIPPED v3.5.0** (see Shipped section above). Extend the migration-time contradiction
   check into REVIEW.md: when a fact is added, scan for one it contradicts → raise an
   Open Thread (SSGM "pre-consolidation validation", scaled down).
-  <!-- id: backlog-contradiction-check | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+  <!-- id: backlog-contradiction-check | created: 2026-06-13 | last_used: 2026-06-14 | uses: 2 | tier: archive-candidate -->
 - [x] **P4 — Minimal memory eval — SHIPPED v3.6.0** (see Shipped section above). `memory-smoke-test.md`: N questions a fresh agent
   should answer from memory alone. Manual, but app-level eval is unsolved industry-wide.
-  <!-- id: backlog-memory-eval | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+  <!-- id: backlog-memory-eval | created: 2026-06-13 | last_used: 2026-06-14 | uses: 2 | tier: active -->
 - [x] **P5 — Provenance surfacing + retrieval-at-scale — SHIPPED v3.7.0** (see Shipped section above). Surface each fact's originating
   session; lean on archive/INDEX.md (+ optional sessions/INDEX.md) as the no-code
   mitigation if memory grows large. Full vector/semantic retrieval stays out of scope.
-  <!-- id: backlog-provenance-retrieval | created: 2026-06-13 | last_used: 2026-06-13 | uses: 1 | tier: active -->
+  <!-- id: backlog-provenance-retrieval | created: 2026-06-13 | last_used: 2026-06-14 | uses: 2 | tier: active -->
 - [ ] **Dogfooding on real work (ongoing).** Already delivering: the simple-proxy
   enable surfaced v3.1.0 (`.gitignore`), and the simple-proxy Node→Rust refactor's
   field report drove v3.2.0 (protocol clarifications). Keep feeding real-work insights
@@ -417,8 +384,6 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - [ ] Keep root `CLAUDE.md` architecture section in sync when file shapes or
   vendor support change (also touches `templates/`, `MIGRATE.md`, `README.md`,
   `examples/`)
-- [x] v1 — Fresh enable from templates
-- [x] v2 — Detection + migration from vendor AI files
 
 ## User Preferences
 
