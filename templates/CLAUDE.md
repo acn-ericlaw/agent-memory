@@ -2,11 +2,7 @@
 
 {{PROJECT_ONELINE}}
 
-This project uses the agent-memory shared memory system.
-
-**Full context:** read [`AGENTS.md`](./AGENTS.md) for the memory protocol, then:
-1. `memory/instructions.md`
-2. `memory/continuity.md`
-3. `memory/sessions/` (latest 2–3 files)
+This project uses the agent-memory shared memory system. **Read [`AGENTS.md`](./AGENTS.md)
+first** — it is the hub: it carries the memory protocol and what to read under `memory/`.
 
 Identify yourself as **Claude Code** in all session logs.

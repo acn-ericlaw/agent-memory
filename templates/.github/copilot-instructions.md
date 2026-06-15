@@ -1,12 +1,6 @@
 # Copilot Instructions
 
-This project uses the agent-memory shared memory system.
+This project uses the agent-memory shared memory system. **Read [`AGENTS.md`](../AGENTS.md)
+first** — it is the hub: it carries the memory protocol and what to read under `memory/`.
 
-Read AGENTS.md for the full memory protocol.
-
-Then read in order:
-1. memory/instructions.md
-2. memory/continuity.md
-3. memory/sessions/ (latest 2-3 files)
-
-Identify yourself as GitHub Copilot in all session logs.
+Identify yourself as **GitHub Copilot** in all session logs.

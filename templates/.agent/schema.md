@@ -213,8 +213,13 @@ ladder — see the tool's `UPGRADE.md` (reached only via `ENABLE.md` Mode B).
 
 ## Bootstrap Files
 
-Thin pointers to `AGENTS.md`. `CLAUDE.md` and `GEMINI.md` additionally carry an
-inline one-line project header (`{{PROJECT_NAME}}` + `{{PROJECT_ONELINE}}`) so
-eagerly-loaded runtimes get immediate context without an extra hop; the enable step
-fills those placeholders. The dotfile rules (`.cursorrules`, `.windsurfrules`,
-`.github/copilot-instructions.md`) stay as plain pointers.
+**Minimal, parallel pointers to `AGENTS.md`** — one per vendor. Each says only: a project
+one-liner, "read `AGENTS.md` first" (the hub — it carries the protocol *and* the read
+order), and "identify as `<vendor>`". They differ only by vendor name, comment syntax
+(`.md` vs the plain `.cursorrules` / `.windsurfrules`), and the `AGENTS.md` path
+(`.github/copilot-instructions.md` uses `../AGENTS.md`).
+
+`CLAUDE.md` and `GEMINI.md` carry the inline `{{PROJECT_NAME}}` + `{{PROJECT_ONELINE}}`
+header (eager-load runtimes get immediate context); the dotfile rules stay plain. **The
+read order lives only in `AGENTS.md`** — a pointer never duplicates it, so a change to
+what agents read (e.g. adding `memory/vision.md`) touches one file, not ten.

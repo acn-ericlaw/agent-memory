@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.0.0 — backward memory layer complete (v3.x) **+ forward cognitive layer (VBDI) shipped (v4.0.0)**: Current State → Vision → Blueprint → Design → Implementation → Feedback. The tool now has its own confirmed Vision + Blueprint.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-15 | agent: Claude Code (2026-06-15-002837)
+- **last_session:** 2026-06-15 | agent: Claude Code (2026-06-15-004829)
 - **last_review:** 2026-06-13 | through 2026-06-13-223743
 - **last_invariant_check:** (none yet)
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -298,7 +298,10 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   tables; `README`/`CHANGELOG`. **Vendor-neutrality fix** (maintainer caught it in review):
   root `CLAUDE.md` thinned to a pointer like `GEMINI.md`; its project guide + architecture
   map moved to vendor-neutral `memory/instructions.md` — the architecture had been
-  Claude-only, a drift from the vendor-neutral Vision. Closes `bp-vbdi-loop` + `bp-altitude-drift`.
+  Claude-only, a drift from the vendor-neutral Vision. **Follow-on (2026-06-15):**
+  standardized all 10 bootstrap pointers (root + templates) to one minimal parallel form —
+  the read-order now lives **only in `AGENTS.md`** (DRY), which also retroactively fixed the
+  v4.0.0 `vision.md` miss in the template pointers. Closes `bp-vbdi-loop` + `bp-altitude-drift`.
   Decisions locked with the maintainer: **4.0.0** + **context-only bootstrap**.
   <!-- id: vbdi-shipped-v400 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-002837 -->
 

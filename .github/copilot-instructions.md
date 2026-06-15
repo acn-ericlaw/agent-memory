@@ -1,9 +1,9 @@
-# Copilot Instructions
+# Copilot Instructions — agent-memory
 
-This repo is both a **shared memory system** and an **AI-enablement tool**.
+Both a shared AI memory layer and an AI-enablement / migration tool — no-code, markdown.
 
-Read [`AGENTS.md`](../AGENTS.md) first — it tells you which mode applies.
-
-If the user wants to AI-enable another repo, read [`ENABLE.md`](../ENABLE.md).
+**Read [`AGENTS.md`](../AGENTS.md) first.** It is the hub: it says which mode applies
+(working *within* this repo vs. AI-enabling another) and what to read. If AI-enabling
+another repo, it routes you to [`ENABLE.md`](../ENABLE.md).
 
 Identify yourself as **GitHub Copilot** in all session logs.
