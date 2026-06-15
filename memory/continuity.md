@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.0.0 — backward memory layer complete (v3.x) **+ forward cognitive layer (VBDI) shipped (v4.0.0)**: Current State → Vision → Blueprint → Design → Implementation → Feedback. The tool now has its own confirmed Vision + Blueprint.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-15 | agent: Claude Code (2026-06-15-012034)
+- **last_session:** 2026-06-15 | agent: Claude Code (2026-06-15-231502)
 - **last_review:** 2026-06-13 | through 2026-06-13-223743
 - **last_invariant_check:** (none yet)
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -332,6 +332,15 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `docs/DESIGN-vbdi-lifecycle.md` §13): ceremony + scoring live in the target's own space,
   never in `memory/`. → serves: vision-agent-memory
   <!-- id: bp-sdlc-overlay | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-010142 -->
+- [ ] **(blueprint)** Cross-vendor skills layer — the tool shares memory + steering across
+  vendors but not *capabilities/skills*. Add a neutral committed `skills/<name>/SKILL.md`
+  source of truth + an `AGENTS.md` "Skills" baseline (agent-as-runtime, works for any
+  vendor) + optional thin per-vendor adapters (regenerated locally; adapter dirs stay
+  gitignored — **Option A**, maintainer-confirmed 2026-06-15). Migration promotes existing
+  `.claude/skills/` into `skills/` (preserve under `legacy/`, don't flatten into
+  instructions). Found via a real client-repo enable. Design: `docs/DESIGN-skills-layer.md`.
+  → serves: vision-agent-memory
+  <!-- id: bp-skills-layer | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-231502 -->
 - [x] **Review artifacts authored (2026-06-15)** for peer / leadership review:
   `docs/agent-memory-whitepaper.md` (technical paper) + `docs/agent-memory-deck.html`
   (self-contained HTML deck, ~13 slides, keyboard/click nav). Built on the reference ACF
