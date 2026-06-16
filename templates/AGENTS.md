@@ -110,11 +110,14 @@ If a skill was authored natively in a vendor folder (e.g. a built-in skill creat
 **Adopt it** into the shared layer (the reverse of sync — the same move migration makes at
 enable):
 
-1. Copy its content into `agent-skills/<name>/SKILL.md` — normalize the frontmatter to
+1. Copy its content into `agent-skills/<name>/SKILL.md` — **preserve the procedure, but
+   neutralize any vendor-specific phrasing in the body**; normalize the frontmatter to
    `name` + `description`; move any bundled scripts to `agent-skills/<name>/scripts/`.
 2. Run **"sync skill adapters"** — regenerates the vendor adapter as a *pointer*, replacing
    the hand-authored native file (now redundant).
-3. Commit `agent-skills/<name>/`. It is now the shared source of truth; teammates pull + sync.
+3. `agent-skills/<name>/` is now the shared source of truth (teammates pull + sync). **Stage**
+   it with the rest of the commit — run on demand you may commit directly; **at session close,
+   leave it for the session-end commit reminder** (the agent doesn't self-commit mid-ritual).
 
 Run it on demand ("adopt skill `<name>`"), and it is **checked at session close** (see "After
 Every Session") so a natively-authored skill never silently stays unshared.
@@ -168,7 +171,9 @@ expected (the decay math counts log files — `DECAY.md` §4).
    `.cursor/rules/<name>.mdc`) with **no matching `agent-skills/<name>/`**? If so it is
    stranded (gitignored, unshared) — **adopt it** before committing: promote it into
    `agent-skills/<name>/SKILL.md`, then "sync skill adapters" (see "Skills" → "Adopt a
-   skill"). If nothing was authored in a vendor folder, this is a no-op.
+   skill"). If nothing was authored in a vendor folder, this is a no-op. (These steps are not
+   strictly sequential: if you adopt a skill, do it **before** writing the session log in
+   step 1, so the log and `continuity.md` record the adoption.)
 4. **Review cadence.** If `sessions_since_last_review ≥ review_every`
    (`memory/decay-policy.md`), or `continuity.md` has grown past
    `continuity_max_lines`, run the review ritual now — see `REVIEW.md`. (Also run it

@@ -33,6 +33,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.1.1 | Skills-layer refinements (PATCH): folder finalized as `agent-skills/` (collision-safe); Cursor adapter uses the agent-requested type (`description` + empty `globs` + `alwaysApply: false`); collision guard; vendor-dir double-duty clarified |
 | 4.2.0 | "Sync skill adapters" operation: regenerate the per-vendor adapters from `agent-skills/` on demand (needed after clone/pull — adapters are gitignored, don't travel). The adapter recipe + sync steps now live in the installed `AGENTS.md` "Skills" section (canonical); `ENABLE.md` Step 5h references it |
 | 4.3.0 | Skill **authoring convention** (create in `agent-skills/`, never a vendor folder) + **"adopt skill"** safety-net (promote a vendor-folder-authored skill into `agent-skills/`), wired into the session-close ritual so a natively-authored skill is never left unshared |
+| 4.3.1 | Skills-layer doc fixes (PATCH, from a session-close test-drive): "Adopt a skill" no longer says "commit" mid-ritual (stage for the session-end commit); session-close check notes adopt-before-log ordering; body-normalization + detection clarified |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -374,3 +375,18 @@ the shared `agent-skills/` layer.
 3. **Stamp** `.agent/version.md` → `version: 4.3.0`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 4. **Report**: `AGENTS.md` re-synced (authoring convention + adopt safety-net + session-close check).
+
+---
+
+## Rung: 4.3.0 → 4.3.1 — skills-layer doc fixes (PATCH)
+
+Wording/clarity only — surfaced by a fresh-agent test-drive of the session-close ritual. No
+shape, data, or behavior change.
+
+1. **Re-sync `AGENTS.md`** (verbatim where different): "Skills" → "Adopt a skill" no longer
+   instructs a mid-ritual commit (stage the neutral skill for the session-end commit; the
+   agent doesn't self-commit), and clarifies body normalization; the "After Every Session"
+   skills safety check notes the adopt-before-log ordering. `DECAY.md` / `REVIEW.md` unchanged.
+2. **Stamp** `.agent/version.md` → `version: 4.3.1`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+3. **Report**: `AGENTS.md` re-synced (adopt/commit + ordering + body clarifications).

@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.3.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.x)** + **"sync skill adapters" (v4.2.0)** + **authoring convention & "adopt skill" safety-net (v4.3.0, session-close checked)**: neutral committed `agent-skills/` + AGENTS.md baseline (now the canonical adapter recipe + sync op) + Claude/Gemini/Cursor adapters (gitignored, regenerated on demand); migration promotes vendor `.claude/skills/`. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project to v4.1.1 succeeded.
+- **status:** v4.3.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.x)** + **"sync skill adapters" (v4.2.0)** + **authoring convention & "adopt skill" safety-net (v4.3.0, session-close checked; doc-refined v4.3.1)**: neutral committed `agent-skills/` + AGENTS.md baseline (now the canonical adapter recipe + sync op) + Claude/Gemini/Cursor adapters (gitignored, regenerated on demand); migration promotes vendor `.claude/skills/`. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project to v4.1.1 succeeded.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-182101)
+- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-183825)
 - **last_review:** 2026-06-15 | through 2026-06-15-231502
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -362,6 +362,17 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (promote+sync), re-detection resolved, cleaned up; the real session-close check on this repo
   passes (hello-world maps to `agent-skills/`). → serves: vision-agent-memory
   <!-- id: authoring-adopt-v430 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-182101 -->
+- [x] **v4.3.1 (PATCH): skills-layer doc fixes from a session-close test-drive.** A fresh
+  agent test-drove the v4.3.0 session-close ritual on `simple-proxy` (authored a skill in
+  `.claude/skills/` → safety check flagged it stranded → adopt promoted it to `agent-skills/`
+  + re-synced; verified). It surfaced 4 doc issues, all fixed in `templates/AGENTS.md`:
+  (1) **real contradiction** — "Adopt a skill" step 3 said "commit" but the session-close
+  ritual only *reminds* → now "stage for the session-end commit; agent doesn't self-commit";
+  (2) **ordering** — adopt before writing the session log so the log records it; (3) body
+  normalization clarified; (4) detection locations. `VERSION`→4.3.1; `UPGRADE.md` 4.3.0→4.3.1
+  rung + table; `README`/`CHANGELOG`. `DECAY.md`/`REVIEW.md` unchanged. The dogfood loop
+  catching its own doc bug. → serves: vision-agent-memory
+  <!-- id: skills-docs-v431-fixes | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-183825 -->
 
 ### Blueprint — gaps from Current State (v4.1.1) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads

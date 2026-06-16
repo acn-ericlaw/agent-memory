@@ -12,6 +12,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.3.1, 6/16/2026
+
+> **Skills-layer doc fixes**, surfaced by a fresh-agent test-drive of the v4.3.0 session-close
+> ritual (dogfooded on a real target). Wording/clarity only — no shape, data, or behavior change.
+
+### Changed
+
+1. **"Adopt a skill" no longer instructs a mid-ritual commit** — it conflicted with the
+   session-close ritual (which only *reminds* to commit). Adopt now says to stage the neutral
+   skill for the session-end commit; the agent doesn't self-commit mid-ritual.
+2. **Session-close skills check** notes that adoption (which changes the tree) should run
+   **before** writing the session log, so the log records it.
+3. Clarified adopt **body normalization** (preserve the procedure, neutralize vendor phrasing)
+   and the detection locations.
+
+`VERSION` → 4.3.1; `UPGRADE.md` 4.3.0→4.3.1 rung + table; `README`. `templates/AGENTS.md`
+re-synced; `DECAY.md` / `REVIEW.md` unchanged.
+
+---
 ## Version 4.3.0, 6/16/2026
 
 > **Skill authoring convention + "adopt skill" safety-net.** Closes a footgun in the skills
