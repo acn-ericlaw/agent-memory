@@ -42,10 +42,57 @@ to use it, a procedure, and maybe helper scripts). **This is the runtime:** when
 matches a skill's `description`, read and follow that `SKILL.md` (and any scripts it
 references). The agent is the runtime — no engine required, so this works on any vendor.
 
-Some runtimes also auto-discover a native adapter (`.claude/skills/`, `.gemini/commands/`,
-`.cursor/rules/`); those are thin, regenerated pointers to `agent-skills/` and are personal/
-per-machine (gitignored). The shared source of truth is always `agent-skills/<name>/SKILL.md` —
-edit skills there, never in an adapter. See `.agent/schema.md`.
+### Adapters — optional, local, regenerated
+
+Some runtimes auto-discover a *native* adapter for ergonomic auto-trigger. Adapters are
+**thin pointers** to the neutral skill, **gitignored** (personal/per-machine), and
+**regenerated** — never hand-edited, never a copy. The source of truth is always
+`agent-skills/<name>/SKILL.md`; edit skills there. For each `agent-skills/<name>/SKILL.md`
+(using its `name` + `description`), the adapters are:
+
+- **Claude Code** → `.claude/skills/<name>/SKILL.md`:
+  ```
+  ---
+  name: <name>
+  description: <description>
+  ---
+  Maintained vendor-neutrally. Read and follow `agent-skills/<name>/SKILL.md` (repo root)
+  and any scripts it references.
+  ```
+- **Gemini CLI** → `.gemini/commands/<name>.toml`:
+  ```
+  description = "<description>"
+  prompt = "Read and follow the skill at agent-skills/<name>/SKILL.md (repo root), including any scripts it references, then carry out: {{args}}"
+  ```
+- **Cursor** → `.cursor/rules/<name>.mdc` (the "agent-requested" type — description-matched,
+  so `globs` is empty and `alwaysApply` is false):
+  ```
+  ---
+  description: <description>
+  globs:
+  alwaysApply: false
+  ---
+  When this applies, read and follow `agent-skills/<name>/SKILL.md` (repo root) and any
+  scripts it references.
+  ```
+
+### Sync skill adapters
+
+Adapters are gitignored, so a freshly **cloned or pulled** repo has the neutral skills but
+**no adapters on this machine** — native `/`-commands / auto-trigger won't exist until you
+regenerate them. (The runtime baseline above always works regardless; this is only for
+native ergonomics.) When the user says **"sync skill adapters"** — or after cloning a repo
+that has `agent-skills/` — regenerate them:
+
+1. For **each** `agent-skills/<name>/SKILL.md`, (re)write all three adapters above
+   (idempotent — overwrite the adapter; never touch the neutral skill or its scripts).
+2. **Prune** orphans: remove any *generated adapter* (one whose body points at
+   `agent-skills/<name>/`) whose neutral skill no longer exists, so adapters stay in
+   lockstep. Never delete other files in those vendor dirs.
+3. Report what was regenerated / pruned. This touches no committed file (adapters are
+   gitignored) and is **not** a version change.
+
+See `.agent/schema.md` and `docs/DESIGN-skills-layer.md`.
 
 ## During the Session
 

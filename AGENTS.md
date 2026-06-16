@@ -69,7 +69,13 @@ vendor-neutral `agent-skills/<name>/SKILL.md` files. When a task matches a skill
 `description`, read and follow that `SKILL.md` (and any scripts it references) — the agent
 is the runtime, so it works on any vendor. Native adapters (`.claude/skills/`,
 `.gemini/commands/`, `.cursor/rules/`) are thin, regenerated, gitignored pointers; the
-shared source of truth is always `agent-skills/<name>/SKILL.md`. See `docs/DESIGN-skills-layer.md`.
+shared source of truth is always `agent-skills/<name>/SKILL.md`.
+
+Because adapters are gitignored they don't travel — a freshly cloned/pulled repo has the
+neutral skills but no adapters on this machine (the baseline still works; only native
+auto-trigger is missing). Say **"sync skill adapters"** to regenerate them. The canonical
+adapter recipe + sync steps live in `templates/AGENTS.md` → "Skills" (the copy installed
+into every enabled repo). See `docs/DESIGN-skills-layer.md`.
 
 ### During the Session
 

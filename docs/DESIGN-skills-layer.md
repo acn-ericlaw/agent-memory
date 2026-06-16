@@ -152,8 +152,11 @@ and the version ladder (`VERSION` / `UPGRADE.md` — additive ⇒ **MINOR**, e.g
 
 - **Normalized frontmatter** — exact minimal key set, and how an adapter declares richer
   vendor-specific fields without polluting the neutral file.
-- **Adapter generation locus** — a dedicated `skills`-aware sync step vs. folding it into
-  the existing enable flow; idempotent regeneration semantics.
+- **Adapter generation locus** — **RESOLVED v4.2.0:** a "sync skill adapters" operation lives
+  in the installed `AGENTS.md` "Skills" section (so a target's own agent, any vendor, can
+  self-sync), idempotent (overwrite adapters, prune orphans, never touch the neutral skill);
+  `ENABLE.md` Step 5h references that single recipe. Surfaced by a real cross-machine test
+  (adapters are gitignored → don't travel with a clone/pull).
 - **Per-vendor fidelity** — Gemini/Cursor mechanisms differ in trigger semantics; how
   faithfully a single `description` maps to each (or whether the baseline §4b suffices and
   adapters are best-effort).

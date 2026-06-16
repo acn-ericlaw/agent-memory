@@ -325,34 +325,12 @@ on any vendor). See `docs/DESIGN-skills-layer.md` and `.agent/schema.md`.
   regenerated (never hand-edited), living in the gitignored vendor dirs (Step 7), so they
   stay per-machine while only `agent-skills/` is committed.
 
-**Adapter generation** — for each `agent-skills/<name>/SKILL.md` (with its `name` + `description`),
-write all three (idempotent — overwrite the adapter, never the neutral skill):
-
-- **Claude Code** → `.claude/skills/<name>/SKILL.md`:
-  ```
-  ---
-  name: <name>
-  description: <description>
-  ---
-  Maintained vendor-neutrally. Read and follow `agent-skills/<name>/SKILL.md` (repo root)
-  and any scripts it references.
-  ```
-- **Gemini CLI** → `.gemini/commands/<name>.toml`:
-  ```
-  description = "<description>"
-  prompt = "Read and follow the skill at agent-skills/<name>/SKILL.md (repo root), including any scripts it references, then carry out: {{args}}"
-  ```
-- **Cursor** → `.cursor/rules/<name>.mdc` (the "agent-requested" rule type — description-
-  matched, so `globs` is empty and `alwaysApply` is false):
-  ```
-  ---
-  description: <description>
-  globs:
-  alwaysApply: false
-  ---
-  When this applies, read and follow `agent-skills/<name>/SKILL.md` (repo root) and any
-  scripts it references.
-  ```
+**Adapter generation** uses the canonical recipe in `templates/AGENTS.md` → "Skills" (the
+same recipe that ships into the target): for each `agent-skills/<name>/SKILL.md`, write the
+Claude / Gemini / Cursor pointers — idempotent, gitignored. After enable/migrate, a
+contributor on another machine regenerates *their* local adapters with the **"sync skill
+adapters"** operation documented in that installed `AGENTS.md` (adapters are gitignored, so
+they don't travel with a clone/pull).
 
 **Collision guard.** `agent-skills/` is namespaced to make a clash with a pre-existing
 project dir unlikely, but if a top-level `agent-skills/` already exists with unrelated

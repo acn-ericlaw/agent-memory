@@ -224,7 +224,9 @@ For vendors with a native skill/command system, thin **adapters** auto-trigger t
 in that runtime — each a generated *pointer* to the neutral skill, never a copy:
 `.claude/skills/<name>/SKILL.md`, `.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc`.
 Adapter dirs are personal/per-machine (gitignored) and are **regenerated locally** on
-enable/migrate; only the neutral `agent-skills/` is shared. See `docs/DESIGN-skills-layer.md`.
+enable/migrate, and **on demand** — say **"sync skill adapters"** (`AGENTS.md` → "Skills")
+to (re)create them after a clone/pull, since they're gitignored and don't travel. Only the
+neutral `agent-skills/` is shared. See `docs/DESIGN-skills-layer.md`.
 
 ---
 

@@ -31,6 +31,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.0.0 | Forward layer (VBDI): `memory/vision.md` + `(blueprint)` gap threads + altitude trace; the cognitive loop over the memory substrate. Upgrade bootstraps a DRAFT Vision + human gate |
 | 4.1.0 | Cross-vendor skills layer: neutral committed `agent-skills/<name>/SKILL.md` + an `AGENTS.md` baseline (agent-as-runtime) + regenerated Claude/Gemini/Cursor adapters. Migration promotes vendor `.claude/skills/` into `agent-skills/`; upgrade promotes any existing vendor skills in place |
 | 4.1.1 | Skills-layer refinements (PATCH): folder finalized as `agent-skills/` (collision-safe); Cursor adapter uses the agent-requested type (`description` + empty `globs` + `alwaysApply: false`); collision guard; vendor-dir double-duty clarified |
+| 4.2.0 | "Sync skill adapters" operation: regenerate the per-vendor adapters from `agent-skills/` on demand (needed after clone/pull — adapters are gitignored, don't travel). The adapter recipe + sync steps now live in the installed `AGENTS.md` "Skills" section (canonical); `ENABLE.md` Step 5h references it |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -336,3 +337,21 @@ the original 4.1.0, where the folder was briefly named `skills/`.)
 3. **Stamp** `.agent/version.md` → `version: 4.1.1`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 4. **Report**: folder renamed (if applicable), adapters refreshed, docs re-synced.
+
+---
+
+## Rung: 4.1.1 → 4.2.0 — "sync skill adapters" operation
+
+Additive: a new agent-driven operation to regenerate per-vendor skill adapters from the
+committed neutral skills — needed because adapters are gitignored and don't travel with a
+clone/pull. No data, skill, or shape change.
+
+1. **Re-sync the generic docs** (verbatim where different): `AGENTS.md` — its "Skills"
+   section now carries the **canonical adapter recipe + the "sync skill adapters" operation**
+   (the recipe moved here from `ENABLE.md` Step 5h, which now references it); and
+   `.agent/schema.md` (notes the on-demand sync). `DECAY.md` / `REVIEW.md` unchanged.
+2. **No data migration.** Existing skills/adapters are untouched. Optionally run "sync skill
+   adapters" now to (re)generate this machine's adapters — it's on-demand and local.
+3. **Stamp** `.agent/version.md` → `version: 4.2.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: `AGENTS.md` re-synced (now documents adapter sync); the operation is available.

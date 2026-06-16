@@ -126,6 +126,7 @@ it in place** — additively, never destructively.
 | 4.0.0 | Forward layer (VBDI): `memory/vision.md` + `(blueprint)` gaps + altitude trace — a cognitive loop (Current State → Vision → Blueprint → Design → Implementation → Feedback) over the memory substrate |
 | 4.1.0 | Cross-vendor skills layer: neutral committed `agent-skills/<name>/SKILL.md` + an `AGENTS.md` baseline (agent-as-runtime) + regenerated Claude/Gemini/Cursor adapters; migration promotes vendor `.claude/skills/` into `agent-skills/` |
 | 4.1.1 | Skills-layer refinements: folder finalized as `agent-skills/` (collision-safe), Cursor adapter `globs` fix (agent-requested type), collision guard, vendor-dir double-duty clarified |
+| 4.2.0 | "Sync skill adapters": regenerate the per-vendor adapters from `agent-skills/` on demand (after clone/pull, since adapters are gitignored and don't travel). Adapter recipe + sync steps now live in the installed `AGENTS.md` "Skills" section |
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the

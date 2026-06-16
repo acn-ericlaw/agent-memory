@@ -12,6 +12,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.2.0, 6/16/2026
+
+> **"Sync skill adapters."** Closes a gap surfaced by a real cross-machine test: the neutral
+> `agent-skills/<name>/SKILL.md` travels via git, but the per-vendor adapters are gitignored
+> and **don't travel** — so a freshly cloned/pulled repo has no native `/`-command /
+> auto-trigger until they're regenerated locally, and re-running "AI enable" on an
+> up-to-date repo is a no-op. v4.2.0 adds an on-demand operation to regenerate them, and
+> moves the adapter recipe into the installed `AGENTS.md` so a target's own agent (any
+> vendor) can self-sync. **Additive** (the runtime baseline always worked without adapters).
+
+### Added
+
+1. **"Sync skill adapters" operation** — for each `agent-skills/<name>/SKILL.md`, regenerate
+   the Claude/Gemini/Cursor adapters (idempotent) and prune orphaned ones. Invoked by saying
+   "sync skill adapters"; touches no committed file (adapters are gitignored).
+2. **Canonical adapter recipe relocated** to the installed `AGENTS.md` "Skills" section, so a
+   contributor's agent — on any vendor, on any machine — can self-sync by reading its own
+   `AGENTS.md`. `ENABLE.md` Step 5h now references this single recipe (DRY).
+
+### Removed
+
+N/A.
+
+### Changed
+
+1. `AGENTS.md` (root + template): "Skills" section gains the adapter recipe + the sync
+   operation. `ENABLE.md` Step 5h references the recipe instead of duplicating it.
+   `.agent/schema.md` notes on-demand sync. `VERSION` → 4.2.0; `UPGRADE.md` 4.1.1→4.2.0 rung
+   + version table; `README`. `DECAY.md` / `REVIEW.md` unchanged.
+
+---
 ## Version 4.1.1, 6/16/2026
 
 > **Skills-layer refinements** — pre-adoption corrections to v4.1.0 (which shipped the same

@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.1.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.0, refined v4.1.1)**: neutral committed `agent-skills/` + AGENTS.md baseline + Claude/Gemini/Cursor adapters; migration promotes vendor `.claude/skills/`. v4.1.1 = folder finalized as `agent-skills/` (collision-safe) + Cursor adapter `globs` fix + collision guard + vendor-dir double-duty clarified. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project to v4.1.1 succeeded (vendor skills promoted → `agent-skills/`).
+- **status:** v4.2.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.x)** + **"sync skill adapters" (v4.2.0)**: neutral committed `agent-skills/` + AGENTS.md baseline (now the canonical adapter recipe + sync op) + Claude/Gemini/Cursor adapters (gitignored, regenerated on demand); migration promotes vendor `.claude/skills/`. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project to v4.1.1 succeeded.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-152327)
+- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-171539)
 - **last_review:** 2026-06-15 | through 2026-06-15-231502
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -329,6 +329,21 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   Closes the "skills layer shipped with no example/dogfood fixture" follow-on; the tool now
   dogfoods `agent-skills/` the way it dogfoods `memory/`.
   <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-152327 -->
+
+### Shipped — v4.2.0: "sync skill adapters" (2026-06-16)
+- [x] **"Sync skill adapters" operation shipped (additive MINOR).** Closes the cross-machine
+  gap (surfaced while prepping the simple-proxy Gemini-CLI test): adapters are gitignored, so
+  they don't travel with a clone/pull, and re-running "AI enable" on an up-to-date repo is a
+  no-op. New on-demand operation: regenerate the Claude/Gemini/Cursor adapters from each
+  `agent-skills/<name>/SKILL.md` (idempotent; prune orphans; never touch the neutral skill).
+  The **canonical adapter recipe moved into the installed `AGENTS.md` "Skills" section** (so a
+  target's own agent — any vendor — self-syncs by reading its own AGENTS.md); `ENABLE.md`
+  Step 5h now references it (DRY). Touched: `AGENTS.md` (root + template), `ENABLE.md`,
+  `.agent/schema.md`, `VERSION`→4.2.0, `UPGRADE.md` 4.1.1→4.2.0 rung + table, `README`/`CHANGELOG`,
+  `docs/DESIGN-skills-layer.md` (§9 resolved). `DECAY.md`/`REVIEW.md` unchanged. Dogfooded:
+  deleted the tool's hello-world Gemini adapter and regenerated it via the operation. Supports
+  multi-machine contributors (`bp-multi-user`). → serves: vision-agent-memory
+  <!-- id: sync-adapters-v420 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-171539 -->
 
 ### Blueprint — gaps from Current State (v4.1.1) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
