@@ -5,6 +5,10 @@
 # .github/copilot-instructions.md — and the templates/ that ship them. Those are
 # the product and must stay tracked. Only the personal runtime/IDE directories and
 # local history/caches below are ignored (the "infrastructure", not the steering).
+#
+# The shared skills layer (agent-skills/) is likewise TRACKED. The runtime dirs below
+# also hold local, regenerated skill *adapters* (.claude/skills/, .gemini/commands/,
+# .cursor/rules/) — local-only; the neutral agent-skills/ is the shared source of truth.
 
 # Agent / AI-IDE runtime directories
 .kiro/

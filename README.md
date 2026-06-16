@@ -237,6 +237,9 @@ agent-memory/
     sessions/                        ← dated logs (immutable event log)
     archive/                         ← faded facts (cold storage, never deleted)
 
+  agent-skills/                      ← this tool's own portable skills (dogfood)
+    hello-world/SKILL.md             ← demo skill: neutral source of truth (adapters gitignored)
+
   examples/
     rust-event-bus/                  ← Mode A: REAL fresh enable on a Rust repo
       memory/                        ← actual generated output (unedited)

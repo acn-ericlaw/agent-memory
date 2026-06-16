@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.1.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.0, refined v4.1.1)**: neutral committed `agent-skills/` + AGENTS.md baseline + Claude/Gemini/Cursor adapters; migration promotes vendor `.claude/skills/`. v4.1.1 = folder finalized as `agent-skills/` (collision-safe) + Cursor adapter `globs` fix + collision guard + vendor-dir double-duty clarified. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project to v4.1.1 succeeded (vendor skills promoted → `agent-skills/`).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-141614)
+- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-152327)
 - **last_review:** 2026-06-15 | through 2026-06-15-231502
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -321,6 +321,14 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   pre-adoption correction, not a breaking change. Closes the (a)+(b) follow-ups to
   `skills-layer-v410`.
   <!-- id: skills-layer-v411-fixes | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-001342 -->
+- [x] **Dogfood: `hello-world` portable skill (2026-06-16).** The tool now carries its own
+  skill — `agent-skills/hello-world/SKILL.md` (neutral source of truth, committed) + a bundled
+  `scripts/hello.sh` (agent-invoked helper, exercises `no-build-step-agent-run`) + the three
+  regenerated, gitignored adapters (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`).
+  Tested end-to-end via the `AGENTS.md` baseline (read the SKILL.md → ran the helper).
+  Closes the "skills layer shipped with no example/dogfood fixture" follow-on; the tool now
+  dogfoods `agent-skills/` the way it dogfoods `memory/`.
+  <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-152327 -->
 
 ### Blueprint — gaps from Current State (v4.1.1) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
