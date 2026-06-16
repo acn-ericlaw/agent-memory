@@ -132,6 +132,7 @@ it in place** — additively, never destructively.
 | 4.3.2 | Skills-layer description hardening (from a lifecycle sanity check): adapter `description` mirrors the neutral skill verbatim; descriptions kept single-line & quote-free so they embed safely in TOML/MDC/YAML |
 | 4.3.3 | Skills-layer description guidance: keep `description` concise + trigger-phrase-rich (small discovery budget); YAML `>`/`|` are YAML-only, so the value stays one logical line (it mirrors into TOML too) |
 | 4.4.0 | Lightweight skills: per-session `AGENTS.md` keeps only the runtime baseline + a pointer; the recipe + **sync**/**adopt**/**sanity-check** ops move to an on-demand `SKILLS.md`. Per-session "skills safety check" removed (skill work is conscious/on-demand); upgrades do a read-only filename check that *recommends* sync |
+| 4.5.0 | Kiro support: a 4th skills adapter target `.kiro/skills/<name>/SKILL.md` (Kiro follows the open Agent Skills standard — same shape as the Claude adapter) + Kiro in the Mode C detection/migration table (steering → instructions, skills → `agent-skills/`, specs → `legacy/`). Kiro auto-reads root `AGENTS.md`, so the memory layer needs no pointer file |
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the
@@ -155,6 +156,7 @@ The tool detects and migrates from these vendors:
 | GPT / Codex | `AGENTS.md` (non-ours), `.codex/` | Steering, history |
 | Zed AI | `.rules`, `.zed/` | Steering, history (with safety check) |
 | Gemini CLI | `GEMINI.md` (non-ours), `.gemini/` | Steering, history |
+| Kiro | `.kiro/` (`steering/`, `skills/`, `specs/`); also auto-reads root `AGENTS.md` | Steering → instructions, **skills → `agent-skills/`**, specs preserved under `legacy/` |
 
 Migration rules per vendor: see [`MIGRATE.md`](./MIGRATE.md).
 
@@ -171,9 +173,9 @@ Migration rules per vendor: see [`MIGRATE.md`](./MIGRATE.md).
   section inside `memory/instructions.md`. Nothing is discarded.
 - **History becomes sessions.** Chat logs and JSONL files are parsed and split
   into dated `memory/sessions/YYYY-MM-DD-HHMMSS.md` files in our standard format.
-- **Skills promoted.** Vendor skill bundles (e.g. `.claude/skills/`) become neutral,
-  committed `agent-skills/<name>/SKILL.md` capabilities — not flattened into steering — with
-  Claude/Gemini/Cursor adapters regenerated. See [`docs/DESIGN-skills-layer.md`](./docs/DESIGN-skills-layer.md).
+- **Skills promoted.** Vendor skill bundles (e.g. `.claude/skills/`, `.kiro/skills/`) become
+  neutral, committed `agent-skills/<name>/SKILL.md` capabilities — not flattened into steering —
+  with Claude/Gemini/Cursor/Kiro adapters regenerated. See [`docs/DESIGN-skills-layer.md`](./docs/DESIGN-skills-layer.md).
 - **Contradictions surfaced.** If two vendors had conflicting rules, both are
   preserved and an Open Thread is added asking the user to resolve.
 - **Idempotent.** Running enable on an already-migrated repo detects our format

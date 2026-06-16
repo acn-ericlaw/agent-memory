@@ -7,10 +7,13 @@
 > never a vendor folder; promote a natively-authored skill back into `agent-skills/`),
 > **+ description guidance v4.3.1–4.3.3**, **+ lightweight-skills v4.4.0** (recipe + sync/adopt/
 > sanity ops moved to an on-demand `SKILLS.md`; per-session safety check removed — skill work
-> is conscious/on-demand; upgrades do a read-only filename check that *recommends* sync).
+> is conscious/on-demand; upgrades do a read-only filename check that *recommends* sync),
+> **+ Kiro adapter v4.5.0** (4th adapter target `.kiro/skills/<name>/SKILL.md` — Kiro follows
+> the open Agent Skills standard, same shape as the Claude adapter; Kiro added to the Mode C
+> detection table; Kiro auto-reads root `AGENTS.md`, so the memory layer needs no pointer file).
 > Sibling to `DESIGN-evolving-memory.md` and `DESIGN-vbdi-lifecycle.md`.
-> The maintainer chose **all-vendor adapters** at build time (Claude + Gemini + Cursor), so
-> §4c is fully realized rather than Claude-only.
+> The maintainer chose **all-vendor adapters** at build time (Claude + Gemini + Cursor + Kiro),
+> so §4c is fully realized rather than Claude-only.
 > **Source:** a real-work finding (2026-06-15) — a client repo enabled with agent-memory
 > carried user-defined **Claude skills** under `.claude/skills/`, which the tool neither
 > shares across vendors nor (today) even lets travel with the repo (`.claude/` is
@@ -100,11 +103,12 @@ lives only in `AGENTS.md`):
 | Claude Code | `.claude/skills/<n>/SKILL.md` (Skill tool auto-discovers) | frontmatter + body "follow `agent-skills/<n>/SKILL.md`" |
 | Gemini CLI | custom command (`.gemini/commands/…`) | command that reads the neutral skill |
 | Cursor | rule (`.cursor/rules/*.mdc`) | rule referencing the neutral skill |
-| Codex / AGENTS.md-only | *(none)* | nothing needed — uses the §4b baseline |
+| Kiro | `.kiro/skills/<n>/SKILL.md` (open Agent Skills standard — auto-matched) | same shape as Claude: frontmatter + body "follow `agent-skills/<n>/SKILL.md`" |
+| Codex / Kiro / AGENTS.md-only | *(none)* | nothing needed — auto-reads root `AGENTS.md`, uses the §4b baseline |
 
 ### 4d. The committed-vs-personal decision — **Option A (chosen)**
 
-`.claude/`, `.gemini/`, `.cursor/` are personal/per-machine and stay **gitignored**. So:
+`.claude/`, `.gemini/`, `.cursor/`, `.kiro/` are personal/per-machine and stay **gitignored**. So:
 
 - **Option A (chosen):** the neutral `agent-skills/` is committed; per-vendor adapter dirs stay
   gitignored and are **regenerated locally** by the enable/sync step. The only fully

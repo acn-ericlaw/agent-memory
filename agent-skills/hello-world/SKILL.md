@@ -31,8 +31,8 @@ greeting that confirms skills are wired up.
 3. **Report which path invoked you**, so the test is legible:
    - the **`AGENTS.md` baseline** — you read this `SKILL.md` because the task matched the
      `description` (works on every vendor, no engine), or
-   - a **vendor adapter** (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`) that
-     pointed here.
+   - a **vendor adapter** (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`,
+     `.kiro/skills/`) that pointed here.
 
 ## Notes — this *is* the design demo
 

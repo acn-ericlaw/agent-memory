@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.4.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.4)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor adapters (gitignored, regenerated); single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/`; upgrades do a read-only filename check that recommends sync. **Validated on a real target 2026-06-16** (Mode B upgrade of a large pre-existing project).
+- **status:** v4.5.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated); single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/`; upgrades do a read-only filename check that recommends sync. **Validated on a real target 2026-06-16** (Mode B upgrade of a large pre-existing project).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-201531)
+- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-221832)
 - **last_review:** 2026-06-16 | through 2026-06-16-201531
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -388,7 +388,28 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.4.0, `README`/`CHANGELOG`, `DESIGN`. `DECAY.md`/`REVIEW.md` unchanged. → serves: vision-agent-memory
   <!-- id: lightweight-skills-v440 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-194434 -->
 
-### Blueprint — gaps from Current State (v4.4.0) to the Vision  (serves: vision-agent-memory)
+- **Shipped v4.5.0 — Kiro support (a 4th adapter + Mode C detection).** Investigated the impact
+  of a target repo on Amazon's **Kiro IDE** (maintainer's own project; matters for evangelizing
+  this tool to leadership). Finding: **Kiro converges on the two open standards this tool already
+  bets on** — it auto-reads a root **`AGENTS.md`** (so the memory layer works with *no* pointer
+  file) and its Agent Skills follow the **open Agent Skills standard** (same `SKILL.md` shape as
+  Claude). So enabling a Kiro repo needs almost nothing new. Added: (1) a 4th skills **adapter**
+  target `.kiro/skills/<name>/SKILL.md` in the `SKILLS.md` recipe (identical to the Claude
+  adapter — frontmatter `name`+`description` + pointer body); `sync` writes four adapters; the
+  standing upgrade-time filename check scans for it. (2) **Kiro in the Mode C detection table**
+  (`MIGRATE.md`) + a per-vendor protocol: `.kiro/steering/*.md` → `memory/instructions.md`,
+  `.kiro/skills/` → promote to `agent-skills/`, `.kiro/specs/` → preserve verbatim under
+  `legacy/` (never auto-flatten — folding a spec into Vision/Blueprint is a human, altitude-gated
+  call). **Kiro Powers need no special handling** — they are partner-published bundles (MCP +
+  steering + hooks) that *consume* open-standard skills, which ours already are; the tool never
+  emits a Power. `.gitignore` unchanged (`.kiro/` was already in the managed block; it doubles as
+  the adapter target). Dogfooded: regenerated the `hello-world` `.kiro/skills/` adapter locally.
+  Touched: `SKILLS.md`, `AGENTS.md` (root+template), `ENABLE.md`, `MIGRATE.md`, `UPGRADE.md`
+  (4.4.0→4.5.0 rung + table + standing check), `VERSION`→4.5.0, `README`/`CHANGELOG`, `DESIGN`,
+  `.gitignore` comment, `agent-skills/hello-world/SKILL.md`. → serves: vision-agent-memory
+  <!-- id: kiro-adapter-v450 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-221832 -->
+
+### Blueprint — gaps from Current State (v4.5.0) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
 > `(blueprint)`: each is a Vision↔reality gap that closes when delivered. The *backward*
 > memory layer is not here — it's done; every gap is *forward*. These operationalize the

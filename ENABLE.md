@@ -327,7 +327,7 @@ on any vendor). See `docs/DESIGN-skills-layer.md` and `.agent/schema.md`.
 
 **Adapter generation** uses the canonical recipe in **`SKILLS.md`** (the skills reference
 that ships into the target): for each `agent-skills/<name>/SKILL.md`, write the
-Claude / Gemini / Cursor pointers — idempotent, gitignored. After enable/migrate, a
+Claude / Gemini / Cursor / Kiro pointers — idempotent, gitignored. After enable/migrate, a
 contributor on another machine regenerates *their* local adapters with the **"sync skill
 adapters"** operation in `SKILLS.md` (adapters are gitignored, so they don't travel with a
 clone/pull). `SKILLS.md` is read on demand — it's not in the per-session path.
@@ -443,9 +443,9 @@ describe what was intended.
 
 6. **Skills promoted (Mode C, if any).** If the source repo had vendor skills (e.g.
    `.claude/skills/`), confirm each was promoted to `agent-skills/<name>/SKILL.md` (committed),
-   the original preserved under `legacy/`, and the three adapters regenerated
-   (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`). On a fresh enable with no
-   skills, confirm no empty `agent-skills/` was created.
+   the original preserved under `legacy/`, and the four adapters regenerated
+   (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`). On a fresh enable
+   with no skills, confirm no empty `agent-skills/` was created.
 
 Log any issue you cannot fix as an Open Thread in `memory/continuity.md` and
 note it in the report.
@@ -469,7 +469,7 @@ Print a clear summary including migration details if Mode C ran:
   Migrated (Mode C only):
   • <vendor>:  <files>  →  <where>
   • Sessions converted: N (from <oldest>  to  <newest>)
-  • Skills promoted: N → agent-skills/  (+ Claude / Gemini / Cursor adapters regenerated)
+  • Skills promoted: N → agent-skills/  (+ Claude / Gemini / Cursor / Kiro adapters regenerated)
 
   Created:
   • memory/instructions.md
@@ -519,7 +519,7 @@ Respond accordingly.
 - Never modify `package.json`, `Cargo.toml`, etc.
 - Only create/modify files within: `memory/`, `.agent/`, `legacy/`, `agent-skills/` (the
   neutral capability layer) and its regenerated per-machine adapters (`.claude/skills/`,
-  `.gemini/commands/`, `.cursor/rules/`), `DECAY.md`, `REVIEW.md`, `SKILLS.md`, `.gitignore` (add-only,
+  `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`), `DECAY.md`, `REVIEW.md`, `SKILLS.md`, `.gitignore` (add-only,
   never remove existing entries), `.github/copilot-instructions.md`, and the bootstrap
   files listed in Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a
   target.)

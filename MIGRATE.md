@@ -74,6 +74,7 @@ the vendor is present. Apply the rules in that row's migration section.
 | GPT / Codex | `AGENTS.md` (non-ours), `.codex/` |
 | Zed AI | `.rules` (when not a different tool's file), `.zed/` |
 | Gemini CLI | `GEMINI.md` (non-ours), `.gemini/` |
+| Kiro | `.kiro/`, `.kiro/steering/*.md`, `.kiro/skills/`, `.kiro/specs/` (Kiro also auto-reads a root `AGENTS.md`) |
 
 **How to tell "ours" vs "non-ours" for shared filenames (CLAUDE.md, AGENTS.md, etc.):**
 Open the file. If it contains the line `This project uses the agent-memory
@@ -148,28 +149,28 @@ add the section after the standard headings.
 
 ### B2. Promote skills (capabilities) → `agent-skills/`
 
-Vendor **skill bundles** are *capabilities*, not steering and not history — currently
-Claude Code's `.claude/skills/<name>/SKILL.md` (each a `name` + `description` + a
-procedure, plus optional bundled scripts). Do **not** flatten them into
-`memory/instructions.md`. Instead **promote** each into the neutral, committed capability
-layer:
+Vendor **skill bundles** are *capabilities*, not steering and not history — Claude Code's
+`.claude/skills/<name>/SKILL.md` and Kiro's `.kiro/skills/<name>/SKILL.md` (both follow the
+open Agent Skills standard: a `name` + `description` + a procedure, plus optional bundled
+scripts). Do **not** flatten them into `memory/instructions.md`. Instead **promote** each into
+the neutral, committed capability layer:
 
 - For each `<name>`, write `agent-skills/<name>/SKILL.md` — keep the procedure as-is and
   normalize the frontmatter to the neutral minimum (`name`, `description`). Copy any
   bundled scripts to `agent-skills/<name>/scripts/`, preserving relative references.
 - The verbatim original is preserved by Section A's move to `legacy/<vendor>/` — so
   `agent-skills/` is the promoted, shared copy and `legacy/` keeps the untouched original.
-- After promoting, **regenerate the per-vendor adapters** (Claude / Gemini / Cursor) from
-  each neutral skill per the adapter recipe in `SKILLS.md` — thin pointers living in the
+- After promoting, **regenerate the per-vendor adapters** (Claude / Gemini / Cursor / Kiro)
+  from each neutral skill per the adapter recipe in `SKILLS.md` — thin pointers living in the
   gitignored vendor dirs.
 
 `agent-skills/` is tracked (Step 7 keeps it committed); the adapter dirs are ignored and
 regenerated per machine, so the neutral skill stays the single source of truth. See
 `docs/DESIGN-skills-layer.md`.
 
-**Vendor dirs serve double duty — order matters.** `.cursor/rules/` and `.gemini/` are
-both *migration sources* (their existing steering/history is archived to `legacy/` in
-Section A) **and** *adapter targets* (Step 5h writes fresh adapters there). Always do
+**Vendor dirs serve double duty — order matters.** `.cursor/rules/`, `.gemini/`, and `.kiro/`
+are both *migration sources* (their existing steering/skills/history is archived to `legacy/`
+in Section A) **and** *adapter targets* (Step 5h writes fresh adapters there). Always do
 Section A first (move the originals to `legacy/`), then generate adapters into the
 now-cleared vendor dirs — so a migrated rule and a regenerated adapter never collide. A
 migrated Cursor rule lives in `legacy/cursor/`; a generated skill adapter lives in
@@ -249,7 +250,7 @@ In `memory/continuity.md`, add to Open Threads:
 **Skills:** `.claude/skills/<name>/SKILL.md` (+ any bundled scripts)
 - **Promote** to the neutral `agent-skills/` layer per Section B2 — do NOT flatten into
   instructions (skills are *procedures*, not steering). Preserve the original under
-  `legacy/`; regenerate the Claude/Gemini/Cursor adapters per the recipe in `SKILLS.md`.
+  `legacy/`; regenerate the Claude/Gemini/Cursor/Kiro adapters per the recipe in `SKILLS.md`.
 
 ---
 
@@ -363,6 +364,35 @@ Note this in the report.
 - Append under `## Migrated rules from Gemini`.
 
 **History:** `.gemini/` (if present) — apply general workflow.
+
+---
+
+### Kiro
+
+Kiro auto-reads a root `AGENTS.md` (the open standard our hub uses), so once enabled it needs
+no pointer file. Migrate its repo-local artifacts:
+
+**Steering:** `.kiro/steering/*.md` (e.g. `product.md`, `tech.md`, `structure.md`)
+- Each is project steering. Append each under `## Migrated rules from Kiro` in
+  `memory/instructions.md` (one subsection per file: `### Migrated steering: <filename without
+  extension>`). Ignore Kiro's `inclusion:` frontmatter modes — our layer is always-on.
+
+**Skills:** `.kiro/skills/<name>/SKILL.md` (+ any bundled `scripts/`)
+- **Promote** to the neutral `agent-skills/` layer per Section B2 (same open Agent Skills
+  format as Claude). Preserve the original under `legacy/`; regenerate the adapters per
+  `SKILLS.md`.
+
+**Specs:** `.kiro/specs/<feature>/` (`requirements.md`, `design.md`, `tasks.md`)
+- Spec-driven artifacts. **Preserve verbatim** under `legacy/kiro/specs/` (Section A) — do
+  **not** flatten or auto-map them into `memory/`. If a spec encodes live intent worth tracking,
+  surface a `- [ ]` Open Thread suggesting the maintainer fold it into the Vision/Blueprint;
+  never auto-convert (that is a human, altitude-gated decision).
+
+> **`.kiro/` gitignore note.** Our managed block ignores `.kiro/` (it is the adapter target
+> for `.kiro/skills/`). Kiro normally commits `.kiro/steering/` + `.kiro/specs/`; after
+> migration those live in `memory/instructions.md` + `legacy/`, so ignoring `.kiro/` is
+> consistent — `memory/` becomes the shared source of truth. Already-tracked `.kiro/` files
+> stay tracked in git history even once ignored; this is add-only and never deletes them.
 
 ---
 

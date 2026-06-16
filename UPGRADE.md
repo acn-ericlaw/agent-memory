@@ -37,6 +37,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.3.2 | Skills-layer description hardening (PATCH, from a lifecycle sanity check): adapter `description` mirrors the neutral skill's verbatim; skill descriptions kept single-line & quote-free (escape/quote if unavoidable) so they embed safely in TOML/MDC/YAML — prevents invalid or drifted adapters |
 | 4.3.3 | Skills-layer description guidance (PATCH): `description` should be **concise** + trigger-phrase-rich (~1–2 sentences — matched within a small discovery budget, so long abstract paragraphs weaken activation); YAML `>`/`|` blocks are YAML-only, so the canonical value stays one logical line (it also mirrors into TOML) |
 | 4.4.0 | Lightweight skills: per-session `AGENTS.md` keeps only the runtime baseline + a pointer; the adapter recipe + **sync**/**adopt**/**sanity-check** ops move to an on-demand installed `SKILLS.md`. The per-session "skills safety check" is **removed** (skill work is a conscious, on-demand action); upgrades do a read-only filename check that *recommends* sync |
+| 4.5.0 | Kiro adapter: a 4th skills adapter target `.kiro/skills/<name>/SKILL.md` (Kiro follows the open Agent Skills standard — same shape as the Claude adapter); Kiro added to the Mode C detection table (steering/specs/skills). Kiro auto-reads root `AGENTS.md`, so the memory layer needs no pointer file |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -83,7 +84,7 @@ Independent of the version ladder and **read-only**: skill adapters are gitignor
 clone/pull (or a teammate's machine) may simply be missing them. On **any** Mode B re-enable —
 including "already up to date" — do a **filename-only** scan (no file contents):
 - **missing:** for each `agent-skills/<name>/`, any of `.claude/skills/<name>/SKILL.md`,
-  `.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc` absent;
+  `.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc`, `.kiro/skills/<name>/SKILL.md` absent;
 - **orphan:** any of those adapter files whose `<name>` has no `agent-skills/<name>/`.
 
 If either is non-empty, **recommend (don't run):** *"Skill adapters are out of sync on this
@@ -469,3 +470,27 @@ developer action, so it leaves the per-session path. No skill data changes.
    `enabled_with` and `mode`.
 5. **Report**: `SKILLS.md` installed; `AGENTS.md` slimmed (per-session skills footprint cut;
    no per-session skills check); skills adapter check result.
+
+---
+
+## Rung: 4.4.0 → 4.5.0 — Kiro skills adapter (+ Mode C detection)
+
+Additive: a 4th adapter target plus Kiro in the migration detection table. No skill data
+changes; a repo with no skills (or no Kiro) works exactly as before. Design:
+`docs/DESIGN-skills-layer.md`.
+
+1. **Re-sync the generic docs** (copy verbatim where different): `SKILLS.md` (the adapter
+   recipe now lists a **Kiro** target — `.kiro/skills/<name>/SKILL.md`, same shape as the
+   Claude adapter, since Kiro follows the open Agent Skills standard), `AGENTS.md` (root +
+   template: the adapter list now includes `.kiro/skills/`). `DECAY.md` / `REVIEW.md` unchanged.
+2. **`.gitignore` — no entry change needed.** `.kiro/` is already in the v3.1.0 managed block
+   (it is the adapter target for `.kiro/skills/`). Optionally refresh the managed-block comment
+   to name `.kiro/skills/` among the adapters (cosmetic only).
+3. **No forced skill regeneration.** Existing `agent-skills/` and adapters are untouched. If
+   the target has skills but no `.kiro/skills/` adapters, the standing read-only **Skills
+   adapter check** (above) will now flag them missing and *recommend* `sync skill adapters`
+   (which writes the Kiro adapter too) — it never acts on its own.
+4. **Stamp** `.agent/version.md` → `version: 4.5.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+5. **Report**: docs re-synced; Kiro adapter now in the recipe; skills adapter check result
+   (whether `.kiro/skills/` adapters are recommended for sync on this machine).

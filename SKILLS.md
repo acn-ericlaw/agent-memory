@@ -62,6 +62,16 @@ drifts). For each `agent-skills/<name>/SKILL.md` (using its `name` + `descriptio
   When this applies, read and follow `agent-skills/<name>/SKILL.md` (repo root) and any
   scripts it references.
   ```
+- **Kiro** → `.kiro/skills/<name>/SKILL.md` (Kiro follows the open Agent Skills standard, so
+  this is the **same shape as the Claude adapter** — workspace skills live under `.kiro/skills/`):
+  ```
+  ---
+  name: <name>
+  description: <description>
+  ---
+  Maintained vendor-neutrally. Read and follow `agent-skills/<name>/SKILL.md` (repo root)
+  and any scripts it references.
+  ```
 
 Keep descriptions single-line and free of `"` so they embed safely into TOML / `.mdc` / YAML
 frontmatter; if a `"` is unavoidable, escape it for the target format (TOML: a single-quoted
@@ -72,7 +82,7 @@ literal string; `.mdc`/YAML: quote the whole value). YAML `>`/`|` folded/literal
 ## Operations
 
 ### `sync skill adapters`
-For **each** `agent-skills/<name>/SKILL.md`, (re)write the three adapters above — idempotent;
+For **each** `agent-skills/<name>/SKILL.md`, (re)write the four adapters above — idempotent;
 overwrite the adapter, never the neutral skill — and **prune** orphaned *generated* adapters
 (one whose `agent-skills/<name>/` no longer exists; never touch other files in a vendor dir).
 Touches no committed file (adapters are gitignored); not a version change. Run it after

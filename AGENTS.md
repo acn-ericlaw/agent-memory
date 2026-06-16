@@ -68,8 +68,8 @@ If a `agent-skills/` directory exists, it holds the project's **capabilities** �
 vendor-neutral `agent-skills/<name>/SKILL.md` files. When a task matches a skill's
 `description`, read and follow that `SKILL.md` (and any scripts it references) — the agent
 is the runtime, so it works on any vendor. Native adapters (`.claude/skills/`,
-`.gemini/commands/`, `.cursor/rules/`) are thin, gitignored, regenerated pointers; the source
-of truth is always `agent-skills/<name>/SKILL.md`.
+`.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`) are thin, gitignored, regenerated
+pointers; the source of truth is always `agent-skills/<name>/SKILL.md`.
 
 **Authoring, syncing, adopting, or sanity-checking a skill?** See **`SKILLS.md`** (read on
 demand — not part of the per-session read). Skill work is a deliberate, occasional action,
@@ -156,7 +156,7 @@ log in full before responding.
 When AI-enabling a repo that already has AI tooling, these vendors are detected
 and migrated automatically: Claude Code, Cursor, Cline, Roo Code, Aider,
 Continue.dev, Codeium/Windsurf, GitHub Copilot, GPT/Codex agents, Zed AI,
-Gemini CLI. See `MIGRATE.md` for protocols.
+Gemini CLI, Kiro. See `MIGRATE.md` for protocols.
 
 Vendor **agent-skills/capabilities** (e.g. `.claude/skills/`) are also migrated — *promoted*
 into the neutral, committed `agent-skills/` layer (not flattened into steering), with originals

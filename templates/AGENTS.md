@@ -41,8 +41,8 @@ vendor-neutral `agent-skills/<name>/SKILL.md` files. **This is the runtime:** wh
 matches a skill's `description`, read and follow that `SKILL.md` (and any scripts it
 references). The agent is the runtime — works on any vendor, no engine.
 
-Per-vendor adapters (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`) are thin,
-gitignored, regenerated pointers; the source of truth is always `agent-skills/<name>/SKILL.md`.
+Per-vendor adapters (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`)
+are thin, gitignored, regenerated pointers; the source of truth is always `agent-skills/<name>/SKILL.md`.
 
 **Authoring, syncing, adopting, or sanity-checking a skill?** See **`SKILLS.md`** (read on
 demand — it is *not* part of this per-session read). Skill work is a deliberate, occasional

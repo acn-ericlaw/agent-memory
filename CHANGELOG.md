@@ -12,6 +12,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.5.0, 6/16/2026
+
+> **Kiro support — convergence on open standards.** Amazon's Kiro IDE adopts the two open
+> standards this tool already bets on: it auto-reads a root **`AGENTS.md`** (so the memory
+> layer works with no pointer file) and its Agent Skills follow the **open Agent Skills
+> standard** (the same `SKILL.md` shape as Claude). So enabling a Kiro repo needs almost
+> nothing new — this release adds a 4th skills **adapter** target and teaches Mode C to
+> detect/migrate Kiro's repo-local artifacts. **Kiro Powers need no special handling**: they
+> are partner-published bundles (MCP + steering + hooks) that *consume* open-standard skills,
+> which ours already are — the tool never emits a Power.
+
+### Added
+
+1. **Kiro skills adapter** (`SKILLS.md` recipe): a 4th target `.kiro/skills/<name>/SKILL.md` —
+   identical shape to the Claude adapter (frontmatter `name` + `description` + a pointer body),
+   since Kiro follows the open Agent Skills standard. `sync skill adapters` now writes four
+   adapters; the standing read-only **Skills adapter check** (`UPGRADE.md`) now scans for it too.
+2. **Kiro in the Mode C detection table** (`MIGRATE.md`) + a per-vendor **Kiro** protocol:
+   `.kiro/steering/*.md` → `memory/instructions.md`; `.kiro/skills/` → promoted to
+   `agent-skills/` (open-standard, same as Claude); `.kiro/specs/` preserved verbatim under
+   `legacy/kiro/specs/` (never auto-flattened — folding a spec into the Vision/Blueprint is a
+   human, altitude-gated decision).
+
+### Changed
+
+1. Adapter lists across the living docs now include `.kiro/skills/` (`AGENTS.md` root + template,
+   `ENABLE.md` Step 5h / Step 8 / scope, `docs/DESIGN-skills-layer.md` recipe table + Option A).
+   `.gitignore` needs no change — `.kiro/` was already in the managed block; the comment now
+   names `.kiro/skills/` among the adapters. `VERSION` → 4.5.0; `UPGRADE.md` 4.4.0→4.5.0 rung +
+   table; `README`. `DECAY.md` / `REVIEW.md` unchanged.
+
+---
 ## Version 4.4.0, 6/16/2026
 
 > **Lightweight skills — conscious, not per-session.** Skill creation is a deliberate,
