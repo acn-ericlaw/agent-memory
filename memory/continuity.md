@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.2.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.x)** + **"sync skill adapters" (v4.2.0)**: neutral committed `agent-skills/` + AGENTS.md baseline (now the canonical adapter recipe + sync op) + Claude/Gemini/Cursor adapters (gitignored, regenerated on demand); migration promotes vendor `.claude/skills/`. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project to v4.1.1 succeeded.
+- **status:** v4.3.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.x)** + **"sync skill adapters" (v4.2.0)** + **authoring convention & "adopt skill" safety-net (v4.3.0, session-close checked)**: neutral committed `agent-skills/` + AGENTS.md baseline (now the canonical adapter recipe + sync op) + Claude/Gemini/Cursor adapters (gitignored, regenerated on demand); migration promotes vendor `.claude/skills/`. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project to v4.1.1 succeeded.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-171539)
+- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-182101)
 - **last_review:** 2026-06-15 | through 2026-06-15-231502
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -344,6 +344,24 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   deleted the tool's hello-world Gemini adapter and regenerated it via the operation. Supports
   multi-machine contributors (`bp-multi-user`). → serves: vision-agent-memory
   <!-- id: sync-adapters-v420 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-171539 -->
+
+### Shipped — v4.3.0: skill authoring convention + "adopt skill" safety-net (2026-06-16)
+- [x] **Authoring convention + adopt safety-net shipped (additive; docs/protocol).** Closes
+  the footgun where a skill authored natively in a vendor folder (e.g. a built-in skill
+  creator → `.claude/skills/`) is gitignored → never shared, not the source of truth.
+  (1) **Authoring convention** in `AGENTS.md` "Skills" → "Authoring a skill": create in
+  `agent-skills/<name>/SKILL.md`, never a vendor folder. (2) **"Adopt a skill" operation**
+  (`AGENTS.md` "Skills" → "Adopt a skill"): promote a vendor-folder-authored skill into
+  `agent-skills/` then sync — the on-demand reverse of sync / ongoing complement to
+  migration's one-time promote. (3) **Session-close safety check**: "After Every Session"
+  gains a step + checklist line that detects a stranded vendor-folder skill and prompts adopt
+  before commit. Touched: `AGENTS.md` (root+template), `MIGRATE.md`, `.agent/schema.md`,
+  `VERSION`→4.3.0, `UPGRADE.md` 4.2.0→4.3.0 rung + table, `README`/`CHANGELOG`,
+  `docs/DESIGN-skills-layer.md`. `DECAY.md`/`REVIEW.md` unchanged. **Dogfooded end-to-end:**
+  simulated an orphan `.claude/skills/demo-adopt/`, detection flagged it, adopted it
+  (promote+sync), re-detection resolved, cleaned up; the real session-close check on this repo
+  passes (hello-world maps to `agent-skills/`). → serves: vision-agent-memory
+  <!-- id: authoring-adopt-v430 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-182101 -->
 
 ### Blueprint — gaps from Current State (v4.1.1) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads

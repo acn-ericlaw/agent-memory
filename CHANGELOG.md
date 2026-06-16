@@ -12,6 +12,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.3.0, 6/16/2026
+
+> **Skill authoring convention + "adopt skill" safety-net.** Closes a footgun in the skills
+> layer: the source of truth is `agent-skills/<name>/SKILL.md`, but a user — or a vendor's
+> built-in skill creator — might author a skill directly in a vendor folder (`.claude/skills/`,
+> …), which is gitignored, so it's never shared and isn't the source of truth. v4.3.0 makes
+> the authoring convention explicit and adds a reverse "adopt" operation, checked at session
+> close. Additive (docs/protocol only).
+
+### Added
+
+1. **Authoring convention** (`AGENTS.md` "Skills" → "Authoring a skill"): create skills in
+   `agent-skills/<name>/SKILL.md`, then "sync skill adapters"; never author in a vendor folder.
+2. **"Adopt a skill" operation** (`AGENTS.md` "Skills" → "Adopt a skill"): promote a skill
+   authored natively in a vendor folder into `agent-skills/` (the reverse of sync — the same
+   move migration makes at enable), then sync. The on-demand complement to migration's
+   one-time promote.
+3. **Session-close safety check**: the "After Every Session" ritual gains a step (+ checklist
+   line) that detects a skill stranded in a vendor folder and prompts adoption before commit.
+
+### Removed
+
+N/A.
+
+### Changed
+
+1. `AGENTS.md` (root + template), `MIGRATE.md` (on-demand-adopt note), `.agent/schema.md`,
+   `docs/DESIGN-skills-layer.md`. `VERSION` → 4.3.0; `UPGRADE.md` 4.2.0→4.3.0 rung + table;
+   `README`. `DECAY.md` / `REVIEW.md` unchanged.
+
+---
 ## Version 4.2.0, 6/16/2026
 
 > **"Sync skill adapters."** Closes a gap surfaced by a real cross-machine test: the neutral

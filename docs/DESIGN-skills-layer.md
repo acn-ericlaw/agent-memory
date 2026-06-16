@@ -1,10 +1,13 @@
 # DESIGN — Cross-Vendor Skills Layer (portable capabilities over the shared layer)
 
-> **Status:** **implemented in v4.1.0** (2026-06-15), **refined in v4.1.1** — folder
-> finalized as `agent-skills/` (collision-safe; was `skills/`) and the Cursor adapter fixed
-> to the agent-requested type. Sibling to `DESIGN-evolving-memory.md` and
-> `DESIGN-vbdi-lifecycle.md`. The maintainer chose **all-vendor adapters** at build time
-> (Claude + Gemini + Cursor), so §4c is fully realized rather than Claude-only.
+> **Status:** **implemented v4.1.0** (2026-06-15), **refined v4.1.1** (folder finalized as
+> `agent-skills/`; Cursor adapter fixed), **+ "sync skill adapters" v4.2.0** (regenerate
+> adapters from the neutral skill on demand — adapters are gitignored, so they don't travel),
+> **+ authoring convention & "adopt skill" safety-net v4.3.0** (author in `agent-skills/`,
+> never a vendor folder; promote a natively-authored skill back into `agent-skills/`, checked
+> at session close). Sibling to `DESIGN-evolving-memory.md` and `DESIGN-vbdi-lifecycle.md`.
+> The maintainer chose **all-vendor adapters** at build time (Claude + Gemini + Cursor), so
+> §4c is fully realized rather than Claude-only.
 > **Source:** a real-work finding (2026-06-15) — a client repo enabled with agent-memory
 > carried user-defined **Claude skills** under `.claude/skills/`, which the tool neither
 > shares across vendors nor (today) even lets travel with the repo (`.claude/` is
@@ -118,6 +121,14 @@ On enable (Mode C) of a repo with `.claude/skills/` (or another vendor's skill b
 - **Preserve originals** under `legacy/<vendor>/skills/…` per `never-delete-vendor-files`.
 - **Regenerate** the native adapter(s) from the promoted neutral skill.
 - Use `git mv` for tracked files (history-preserving), per the existing migration rule.
+
+**Authoring convention & the reverse path (v4.2.0–4.3.0).** Going forward, skills are
+authored directly in `agent-skills/<name>/SKILL.md` (never a vendor folder) and forward-synced
+to adapters via **"sync skill adapters"**. The migration promote above is the *one-time*
+vendor→neutral import; its ongoing complement is **"adopt skill"** — the same promote, run on
+demand when a skill is authored natively in a vendor folder (e.g. by a built-in skill
+creator). The **session-close ritual** checks for stranded vendor-folder skills and prompts
+adoption, so the neutral `agent-skills/` layer stays the single source of truth.
 
 ## 6. Alignment with the Architectural Invariants
 

@@ -32,6 +32,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.1.0 | Cross-vendor skills layer: neutral committed `agent-skills/<name>/SKILL.md` + an `AGENTS.md` baseline (agent-as-runtime) + regenerated Claude/Gemini/Cursor adapters. Migration promotes vendor `.claude/skills/` into `agent-skills/`; upgrade promotes any existing vendor skills in place |
 | 4.1.1 | Skills-layer refinements (PATCH): folder finalized as `agent-skills/` (collision-safe); Cursor adapter uses the agent-requested type (`description` + empty `globs` + `alwaysApply: false`); collision guard; vendor-dir double-duty clarified |
 | 4.2.0 | "Sync skill adapters" operation: regenerate the per-vendor adapters from `agent-skills/` on demand (needed after clone/pull — adapters are gitignored, don't travel). The adapter recipe + sync steps now live in the installed `AGENTS.md` "Skills" section (canonical); `ENABLE.md` Step 5h references it |
+| 4.3.0 | Skill **authoring convention** (create in `agent-skills/`, never a vendor folder) + **"adopt skill"** safety-net (promote a vendor-folder-authored skill into `agent-skills/`), wired into the session-close ritual so a natively-authored skill is never left unshared |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -355,3 +356,21 @@ clone/pull. No data, skill, or shape change.
 3. **Stamp** `.agent/version.md` → `version: 4.2.0`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 4. **Report**: `AGENTS.md` re-synced (now documents adapter sync); the operation is available.
+
+---
+
+## Rung: 4.2.0 → 4.3.0 — skill authoring convention + "adopt skill" safety-net
+
+Additive (docs/protocol; no data or shape change). Closes the footgun where a skill authored
+natively in a vendor folder (e.g. a built-in skill creator) is gitignored and never reaches
+the shared `agent-skills/` layer.
+
+1. **Re-sync the generic docs** (verbatim where different): `AGENTS.md` — its "Skills"
+   section gains **"Authoring a skill"** (create in `agent-skills/`, never a vendor folder)
+   and **"Adopt a skill"** (promote a vendor-authored skill into `agent-skills/`, then sync);
+   the **"After Every Session"** ritual gains a **skills safety check** step + checklist line.
+   `.agent/schema.md` notes it. `DECAY.md` / `REVIEW.md` unchanged.
+2. **No data migration.** Existing skills/adapters untouched.
+3. **Stamp** `.agent/version.md` → `version: 4.3.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: `AGENTS.md` re-synced (authoring convention + adopt safety-net + session-close check).

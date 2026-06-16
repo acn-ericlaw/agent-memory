@@ -226,7 +226,12 @@ in that runtime — each a generated *pointer* to the neutral skill, never a cop
 Adapter dirs are personal/per-machine (gitignored) and are **regenerated locally** on
 enable/migrate, and **on demand** — say **"sync skill adapters"** (`AGENTS.md` → "Skills")
 to (re)create them after a clone/pull, since they're gitignored and don't travel. Only the
-neutral `agent-skills/` is shared. See `docs/DESIGN-skills-layer.md`.
+neutral `agent-skills/` is shared.
+
+**Author** skills in `agent-skills/<name>/SKILL.md` — never in a vendor folder. A skill
+authored natively in a vendor folder is **adopted** (promoted) into `agent-skills/`; the
+session-close ritual checks for stranded ones. See `AGENTS.md` → "Skills" and
+`docs/DESIGN-skills-layer.md`.
 
 ---
 

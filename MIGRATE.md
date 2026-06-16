@@ -179,6 +179,11 @@ migrated Cursor rule lives in `legacy/cursor/`; a generated skill adapter lives 
 unrelated content, do **not** overwrite — raise a `- [ ] Contradiction:` Open Thread
 (`never-pick-a-winner`) and stop.
 
+**On-demand adopt.** This same promote (vendor folder → `agent-skills/`) is available
+*outside* migration as the **"adopt skill"** operation (see `AGENTS.md` → "Skills") — use it
+whenever a skill is authored natively in a vendor folder after enable; the session-close
+ritual prompts it so such a skill never silently stays unshared.
+
 ### C. Convert history → `memory/sessions/`
 
 Read the vendor's history/session data and convert each session or chat into

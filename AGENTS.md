@@ -77,6 +77,11 @@ auto-trigger is missing). Say **"sync skill adapters"** to regenerate them. The 
 adapter recipe + sync steps live in `templates/AGENTS.md` → "Skills" (the copy installed
 into every enabled repo). See `docs/DESIGN-skills-layer.md`.
 
+**Author** a skill in `agent-skills/<name>/SKILL.md` (never in a vendor folder — those are
+gitignored pointers). If a skill was authored natively in a vendor folder (e.g. a built-in
+skill creator), **adopt** it: promote it into `agent-skills/`, then sync. The session-close
+ritual checks for this. Full authoring / adopt / sync recipe: `templates/AGENTS.md` → "Skills".
+
 ### During the Session
 
 - Reference `memory/continuity.md` when relevant.
@@ -115,15 +120,20 @@ expected (the decay math counts log files — `DECAY.md` §4).
      `superseded-by: <new>` (omit the link for pure invalidation), and record
      `Superseded: <old> → <new>` in `## Memory References` — a truth-state edit you
      own; the review archives it flagged "superseded" (`DECAY.md` §9).
-3. **Review cadence.** If `sessions_since_last_review ≥ review_every`
+3. **Skills safety check.** If a skill was authored this session in a **vendor folder**
+   (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`) with no matching
+   `agent-skills/<name>/`, it is stranded (gitignored) — **adopt** it (promote →
+   `agent-skills/<name>/SKILL.md`, then "sync skill adapters") before committing. No-op if none.
+4. **Review cadence.** If `sessions_since_last_review ≥ review_every`
    (`memory/decay-policy.md`) or `continuity.md` exceeds `continuity_max_lines`, run
    the review ritual (`REVIEW.md`). Also run on demand if the user says "review memory".
-4. Remind the user to commit: `git add memory/ && git commit -m "session YYYY-MM-DD [agent]"`
+5. Remind the user to commit: `git add memory/ && git commit -m "session YYYY-MM-DD [agent]"`
 
 **After-session checklist** (the ritual is convention — run it each time):
 - [ ] session log written (persist-time filename + `## Memory References`)
 - [ ] `continuity.md`: `last_session` set, threads checked, new facts have footers
 - [ ] review run if cadence/size triggered (`REVIEW.md`)
+- [ ] skills safety check — any vendor-folder-authored skill adopted into `agent-skills/`?
 - [ ] reminded the user to commit `memory/`
 
 > Optional reinforcement: wire a lightweight Stop or pre-commit hook so this ritual

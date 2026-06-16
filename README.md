@@ -127,6 +127,7 @@ it in place** — additively, never destructively.
 | 4.1.0 | Cross-vendor skills layer: neutral committed `agent-skills/<name>/SKILL.md` + an `AGENTS.md` baseline (agent-as-runtime) + regenerated Claude/Gemini/Cursor adapters; migration promotes vendor `.claude/skills/` into `agent-skills/` |
 | 4.1.1 | Skills-layer refinements: folder finalized as `agent-skills/` (collision-safe), Cursor adapter `globs` fix (agent-requested type), collision guard, vendor-dir double-duty clarified |
 | 4.2.0 | "Sync skill adapters": regenerate the per-vendor adapters from `agent-skills/` on demand (after clone/pull, since adapters are gitignored and don't travel). Adapter recipe + sync steps now live in the installed `AGENTS.md` "Skills" section |
+| 4.3.0 | Skill authoring convention (create in `agent-skills/`, never a vendor folder) + **"adopt skill"** safety-net: promote a skill authored natively in a vendor folder back into `agent-skills/`, checked at session close so it's never left unshared |
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the
