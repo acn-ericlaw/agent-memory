@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.3.2 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.x)** + **"sync skill adapters" (v4.2.0)** + **authoring convention & "adopt skill" safety-net (v4.3.0, session-close checked; doc-refined v4.3.1; description-hardened v4.3.2)**: neutral committed `agent-skills/` + AGENTS.md baseline (now the canonical adapter recipe + sync op) + Claude/Gemini/Cursor adapters (gitignored, regenerated on demand); migration promotes vendor `.claude/skills/`. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project to v4.1.1 succeeded.
+- **status:** v4.3.3 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.3.3)**: neutral committed `agent-skills/` + `AGENTS.md` baseline (canonical adapter recipe + **sync** & **adopt** ops) + Claude/Gemini/Cursor adapters (gitignored, regenerated); authoring convention (single-line, quote-free, **concise** descriptions; adapter mirrors verbatim); **session-close safety check**; migration promotes vendor `.claude/skills/`. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project succeeded.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-185423)
+- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-190758)
 - **last_review:** 2026-06-15 | through 2026-06-15-231502
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -384,6 +384,17 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   verbatim). `VERSION`→4.3.2; `UPGRADE.md` 4.3.1→4.3.2 rung + table; `README`/`CHANGELOG`;
   `DESIGN-skills-layer` §9 note. `DECAY.md`/`REVIEW.md` unchanged. → serves: vision-agent-memory
   <!-- id: skills-desc-hardening-v432 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-185423 -->
+- [x] **v4.3.3 (PATCH): skill description guidance** (reviewed from external/Copilot feedback).
+  A `description` is a model-matched activation signal read within a small discovery budget →
+  keep it **concise + trigger-phrase-rich** (~1–2 sentences, not a long abstract paragraph).
+  Reviewed Copilot's `>`-marker idea and **declined it as the rule**: YAML `>`/`|` folded
+  blocks are YAML-only; the description also mirrors into the **Gemini TOML** adapter (no `>`),
+  and folded YAML can still carry newlines → the canonical value stays one logical line (a
+  clean `>` folds to that anyway). Added the conciseness guidance + the `>`-YAML-only caveat to
+  `AGENTS.md`; tightened the `hello-world` description (~35 words) + regenerated its adapters.
+  `VERSION`→4.3.3; `UPGRADE.md` 4.3.2→4.3.3 rung + table; `README`/`CHANGELOG`; `DESIGN` §9.
+  `DECAY.md`/`REVIEW.md` unchanged. → serves: vision-agent-memory
+  <!-- id: skills-desc-guidance-v433 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-190758 -->
 
 ### Blueprint — gaps from Current State (v4.1.1) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads

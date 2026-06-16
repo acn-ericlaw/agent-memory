@@ -1,6 +1,6 @@
 ---
 name: hello-world
-description: Demonstration / self-test skill for the agent-memory portable skills layer. Use when the user asks to run the hello-world skill, to test or verify that portable skills work, or wants a friendly greeting (with local + UTC time) that proves the skills layer is wired up.
+description: Demo / self-test of the agent-memory portable skills layer. Use when the user asks to run hello-world, test or verify portable skills work, or wants a greeting that proves the skills layer is wired up.
 ---
 
 # hello-world

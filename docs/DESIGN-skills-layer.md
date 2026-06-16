@@ -166,7 +166,10 @@ and the version ladder (`VERSION` / `UPGRADE.md` — additive ⇒ **MINOR**, e.g
   `description` is single-line + quote-free; the adapter `description` mirrors the neutral
   skill's **verbatim**; escape/quote for the target format only if a special char is
   unavoidable — a lifecycle sanity check showed a quoted description otherwise emits invalid
-  TOML/`.mdc`.)
+  TOML/`.mdc`. **v4.3.3:** also keep it **concise + trigger-phrase-rich** (matched within a
+  small discovery budget — long abstract paragraphs weaken activation); YAML `>`/`|` blocks
+  are YAML-only and don't carry into the TOML adapter, so the canonical value is one logical
+  line.)
 - **Adapter generation locus** — **RESOLVED v4.2.0:** a "sync skill adapters" operation lives
   in the installed `AGENTS.md` "Skills" section (so a target's own agent, any vendor, can
   self-sync), idempotent (overwrite adapters, prune orphans, never touch the neutral skill);

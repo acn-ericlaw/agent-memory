@@ -35,6 +35,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.3.0 | Skill **authoring convention** (create in `agent-skills/`, never a vendor folder) + **"adopt skill"** safety-net (promote a vendor-folder-authored skill into `agent-skills/`), wired into the session-close ritual so a natively-authored skill is never left unshared |
 | 4.3.1 | Skills-layer doc fixes (PATCH, from a session-close test-drive): "Adopt a skill" no longer says "commit" mid-ritual (stage for the session-end commit); session-close check notes adopt-before-log ordering; body-normalization + detection clarified |
 | 4.3.2 | Skills-layer description hardening (PATCH, from a lifecycle sanity check): adapter `description` mirrors the neutral skill's verbatim; skill descriptions kept single-line & quote-free (escape/quote if unavoidable) so they embed safely in TOML/MDC/YAML — prevents invalid or drifted adapters |
+| 4.3.3 | Skills-layer description guidance (PATCH): `description` should be **concise** + trigger-phrase-rich (~1–2 sentences — matched within a small discovery budget, so long abstract paragraphs weaken activation); YAML `>`/`|` blocks are YAML-only, so the canonical value stays one logical line (it also mirrors into TOML) |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -410,3 +411,20 @@ special characters (e.g. `"`) producing invalid TOML / `.mdc`.
 3. **Stamp** `.agent/version.md` → `version: 4.3.2`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 4. **Report**: `AGENTS.md` re-synced; adapters re-synced if skills present.
+
+---
+
+## Rung: 4.3.2 → 4.3.3 — skill description guidance (PATCH)
+
+Wording/clarity only — a discovery-budget refinement (a `description` is a model-matched
+activation signal read within a small budget). No shape, data, or behavior change.
+
+1. **Re-sync `AGENTS.md`** (verbatim where different): "Authoring a skill" now asks for a
+   **concise**, trigger-phrase-rich `description` (~1–2 sentences, not a long abstract
+   paragraph); the recipe notes YAML `>`/`|` blocks are YAML-only (the description also lands
+   in a TOML adapter), so the canonical value is one logical line. `DECAY.md`/`REVIEW.md` unchanged.
+2. **(If the target has skills)** optionally tighten any over-long `description` and re-run
+   **"sync skill adapters"**. No committed change (adapters gitignored).
+3. **Stamp** `.agent/version.md` → `version: 4.3.3`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: `AGENTS.md` re-synced; descriptions tightened if any were over-long.

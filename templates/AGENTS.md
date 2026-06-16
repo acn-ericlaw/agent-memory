@@ -46,8 +46,9 @@ references). The agent is the runtime — no engine required, so this works on a
 
 To add a skill, create **`agent-skills/<name>/SKILL.md`** (the committed source of truth):
 frontmatter `name` + a sharp `description` (the *when-to-use* trigger) — keep it a **single
-line with no double-quotes** so it embeds cleanly in every adapter format (rephrase, or use
-single quotes, if needed) — then the procedure;
+line, quote-free, and concise**: a compact, trigger-phrase-rich summary (~1–2 sentences). It's
+matched within a small discovery budget, so avoid long, abstract paragraphs (they weaken
+activation) and embed it cleanly in every adapter format — then the procedure;
 put any helper scripts in `agent-skills/<name>/scripts/`. Then run **"sync skill adapters"**
 to generate your vendor's adapter. **Never author a skill directly in a vendor folder**
 (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`) — those are gitignored, regenerated
@@ -93,7 +94,9 @@ Some runtimes auto-discover a *native* adapter for ergonomic auto-trigger. Adapt
 `description` verbatim** — never abbreviate it (that silently drifts the adapter from the
 skill). Keep skill descriptions single-line and free of `"` so they embed safely into TOML /
 `.mdc` / YAML frontmatter; if a `"` is unavoidable, escape it for the target format (TOML: a
-single-quoted literal string; `.mdc`/YAML: quote the whole value).
+single-quoted literal string; `.mdc`/YAML: quote the whole value). YAML `>`/`|` folded/literal
+blocks work *only* in YAML frontmatter — since the description also lands in a TOML adapter,
+the canonical value stays **one logical line** (a clean `>` block folds to that anyway).
 
 ### Sync skill adapters
 

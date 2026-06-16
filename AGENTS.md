@@ -78,8 +78,9 @@ adapter recipe + sync steps live in `templates/AGENTS.md` → "Skills" (the copy
 into every enabled repo). See `docs/DESIGN-skills-layer.md`.
 
 **Author** a skill in `agent-skills/<name>/SKILL.md` (never in a vendor folder — those are
-gitignored pointers); keep its `description` **single-line and quote-free** so it embeds
-cleanly in every adapter (the adapter mirrors it verbatim). If a skill was authored natively in a vendor folder (e.g. a built-in
+gitignored pointers); keep its `description` **single-line, quote-free, and concise** (a
+compact trigger summary, matched within a small discovery budget) so it embeds cleanly in
+every adapter (the adapter mirrors it verbatim). If a skill was authored natively in a vendor folder (e.g. a built-in
 skill creator), **adopt** it: promote it into `agent-skills/`, then sync. The session-close
 ritual checks for this. Full authoring / adopt / sync recipe: `templates/AGENTS.md` → "Skills".
 

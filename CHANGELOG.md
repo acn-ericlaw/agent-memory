@@ -12,6 +12,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.3.3, 6/16/2026
+
+> **Skill description guidance** (reviewed from external feedback). A `description` is a
+> model-matched activation signal read within a small discovery budget, so it should be a
+> **concise, trigger-phrase-rich summary** — not a long abstract paragraph (which weakens
+> activation). Also clarified that YAML `>`/`|` folded/literal blocks are YAML-only and don't
+> carry into the TOML adapter, so the canonical value stays one logical line. Wording only.
+
+### Changed
+
+1. `AGENTS.md` "Authoring a skill" asks for a concise (~1–2 sentence), trigger-rich
+   `description`; the recipe notes the `>`/`|` YAML-only caveat.
+2. Tightened the dogfood `hello-world` description (~35 words) and regenerated its adapters.
+
+`VERSION` → 4.3.3; `UPGRADE.md` 4.3.2→4.3.3 rung + table; `README`; `docs/DESIGN-skills-layer.md`
+§9 note. `DECAY.md` / `REVIEW.md` unchanged.
+
+---
 ## Version 4.3.2, 6/16/2026
 
 > **Skill description hardening**, surfaced by a deliberate skill-lifecycle sanity check
