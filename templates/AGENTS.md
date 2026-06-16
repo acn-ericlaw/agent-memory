@@ -45,7 +45,9 @@ references). The agent is the runtime — no engine required, so this works on a
 ### Authoring a skill
 
 To add a skill, create **`agent-skills/<name>/SKILL.md`** (the committed source of truth):
-frontmatter `name` + a sharp `description` (the *when-to-use* trigger), then the procedure;
+frontmatter `name` + a sharp `description` (the *when-to-use* trigger) — keep it a **single
+line with no double-quotes** so it embeds cleanly in every adapter format (rephrase, or use
+single quotes, if needed) — then the procedure;
 put any helper scripts in `agent-skills/<name>/scripts/`. Then run **"sync skill adapters"**
 to generate your vendor's adapter. **Never author a skill directly in a vendor folder**
 (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`) — those are gitignored, regenerated
@@ -86,6 +88,12 @@ Some runtimes auto-discover a *native* adapter for ergonomic auto-trigger. Adapt
   When this applies, read and follow `agent-skills/<name>/SKILL.md` (repo root) and any
   scripts it references.
   ```
+
+**Description handling.** The adapter's `description` **mirrors the neutral skill's
+`description` verbatim** — never abbreviate it (that silently drifts the adapter from the
+skill). Keep skill descriptions single-line and free of `"` so they embed safely into TOML /
+`.mdc` / YAML frontmatter; if a `"` is unavoidable, escape it for the target format (TOML: a
+single-quoted literal string; `.mdc`/YAML: quote the whole value).
 
 ### Sync skill adapters
 

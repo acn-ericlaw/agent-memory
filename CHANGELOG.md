@@ -12,6 +12,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.3.2, 6/16/2026
+
+> **Skill description hardening**, surfaced by a deliberate skill-lifecycle sanity check
+> (dogfood). The check confirmed the mechanics (git split / pointer integrity / per-vendor
+> format / adopt / prune all correct) but found two **hard-to-spot** `description` hazards.
+> Wording/clarity only — no shape, data, or behavior change.
+
+### Changed
+
+1. **Adapter `description` mirrors the neutral skill's verbatim** — never abbreviate it (the
+   prior hand-made `hello-world` adapters had abbreviated descriptions that silently drifted
+   from the skill).
+2. **Skill descriptions must be single-line and quote-free** — a `description` containing a
+   `"` would otherwise emit invalid TOML (Gemini) or `.mdc`/YAML frontmatter (Cursor) when
+   synced. The recipe adds an escape/quote fallback for unavoidable cases.
+3. Fixed the dogfooded `hello-world` skill's description (dropped inner quotes) and regenerated
+   its adapters to mirror it.
+
+`VERSION` → 4.3.2; `UPGRADE.md` 4.3.1→4.3.2 rung + table; `README`. `templates/AGENTS.md`
+(+ root `AGENTS.md`) re-synced; `docs/DESIGN-skills-layer.md` §9 note; `DECAY.md` / `REVIEW.md`
+unchanged.
+
+---
 ## Version 4.3.1, 6/16/2026
 
 > **Skills-layer doc fixes**, surfaced by a fresh-agent test-drive of the v4.3.0 session-close

@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.3.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.x)** + **"sync skill adapters" (v4.2.0)** + **authoring convention & "adopt skill" safety-net (v4.3.0, session-close checked; doc-refined v4.3.1)**: neutral committed `agent-skills/` + AGENTS.md baseline (now the canonical adapter recipe + sync op) + Claude/Gemini/Cursor adapters (gitignored, regenerated on demand); migration promotes vendor `.claude/skills/`. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project to v4.1.1 succeeded.
+- **status:** v4.3.2 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.x)** + **"sync skill adapters" (v4.2.0)** + **authoring convention & "adopt skill" safety-net (v4.3.0, session-close checked; doc-refined v4.3.1; description-hardened v4.3.2)**: neutral committed `agent-skills/` + AGENTS.md baseline (now the canonical adapter recipe + sync op) + Claude/Gemini/Cursor adapters (gitignored, regenerated on demand); migration promotes vendor `.claude/skills/`. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project to v4.1.1 succeeded.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-183825)
+- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-185423)
 - **last_review:** 2026-06-15 | through 2026-06-15-231502
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -373,6 +373,17 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   rung + table; `README`/`CHANGELOG`. `DECAY.md`/`REVIEW.md` unchanged. The dogfood loop
   catching its own doc bug. → serves: vision-agent-memory
   <!-- id: skills-docs-v431-fixes | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-183825 -->
+- [x] **v4.3.2 (PATCH): skill description hardening from a lifecycle sanity check.** Ran a full
+  skill-lifecycle sanity check (on simple-proxy): mechanics all PASS (git split, pointer
+  integrity, per-vendor format, adopt, prune), but found two hard-to-spot `description` hazards:
+  (1) a `description` with a `"` would emit **invalid TOML/`.mdc`** when synced; (2) the hand-made
+  `hello-world` adapters used an **abbreviated** description that drifted from the neutral skill.
+  Fix: `AGENTS.md` now requires a **single-line, quote-free `description`** and states the adapter
+  `description` **mirrors the neutral verbatim** (+ escape/quote fallback); fixed the dogfood
+  `hello-world` description (dropped quotes) + regenerated its adapters (now valid TOML, mirror
+  verbatim). `VERSION`→4.3.2; `UPGRADE.md` 4.3.1→4.3.2 rung + table; `README`/`CHANGELOG`;
+  `DESIGN-skills-layer` §9 note. `DECAY.md`/`REVIEW.md` unchanged. → serves: vision-agent-memory
+  <!-- id: skills-desc-hardening-v432 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-185423 -->
 
 ### Blueprint — gaps from Current State (v4.1.1) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads

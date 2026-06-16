@@ -162,7 +162,11 @@ and the version ladder (`VERSION` / `UPGRADE.md` — additive ⇒ **MINOR**, e.g
 ## 9. Open questions (deferred to build time)
 
 - **Normalized frontmatter** — exact minimal key set, and how an adapter declares richer
-  vendor-specific fields without polluting the neutral file.
+  vendor-specific fields without polluting the neutral file. **(refined v4.3.2:** a skill
+  `description` is single-line + quote-free; the adapter `description` mirrors the neutral
+  skill's **verbatim**; escape/quote for the target format only if a special char is
+  unavoidable — a lifecycle sanity check showed a quoted description otherwise emits invalid
+  TOML/`.mdc`.)
 - **Adapter generation locus** — **RESOLVED v4.2.0:** a "sync skill adapters" operation lives
   in the installed `AGENTS.md` "Skills" section (so a target's own agent, any vendor, can
   self-sync), idempotent (overwrite adapters, prune orphans, never touch the neutral skill);

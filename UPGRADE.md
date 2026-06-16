@@ -34,6 +34,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.2.0 | "Sync skill adapters" operation: regenerate the per-vendor adapters from `agent-skills/` on demand (needed after clone/pull — adapters are gitignored, don't travel). The adapter recipe + sync steps now live in the installed `AGENTS.md` "Skills" section (canonical); `ENABLE.md` Step 5h references it |
 | 4.3.0 | Skill **authoring convention** (create in `agent-skills/`, never a vendor folder) + **"adopt skill"** safety-net (promote a vendor-folder-authored skill into `agent-skills/`), wired into the session-close ritual so a natively-authored skill is never left unshared |
 | 4.3.1 | Skills-layer doc fixes (PATCH, from a session-close test-drive): "Adopt a skill" no longer says "commit" mid-ritual (stage for the session-end commit); session-close check notes adopt-before-log ordering; body-normalization + detection clarified |
+| 4.3.2 | Skills-layer description hardening (PATCH, from a lifecycle sanity check): adapter `description` mirrors the neutral skill's verbatim; skill descriptions kept single-line & quote-free (escape/quote if unavoidable) so they embed safely in TOML/MDC/YAML — prevents invalid or drifted adapters |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -390,3 +391,22 @@ shape, data, or behavior change.
 2. **Stamp** `.agent/version.md` → `version: 4.3.1`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 3. **Report**: `AGENTS.md` re-synced (adopt/commit + ordering + body clarifications).
+
+---
+
+## Rung: 4.3.1 → 4.3.2 — skill description hardening (PATCH)
+
+Wording/clarity only — surfaced by a skill-lifecycle sanity check. Prevents two hard-to-spot
+sync hazards: an adapter `description` drifting from the neutral skill, and a description with
+special characters (e.g. `"`) producing invalid TOML / `.mdc`.
+
+1. **Re-sync `AGENTS.md`** (verbatim where different): "Skills" → "Authoring a skill" now
+   requires a **single-line, quote-free `description`**; the adapter recipe states the adapter
+   `description` **mirrors the skill's verbatim** + an escape/quote fallback. `DECAY.md` /
+   `REVIEW.md` unchanged.
+2. **(If the target has skills)** re-run **"sync skill adapters"** so adapters pick up the
+   verbatim description; if any skill `description` contains a `"`, rephrase it single-line and
+   quote-free (or rely on the escape fallback). No committed change (adapters gitignored).
+3. **Stamp** `.agent/version.md` → `version: 4.3.2`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: `AGENTS.md` re-synced; adapters re-synced if skills present.
