@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.1.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.0, refined v4.1.1)**: neutral committed `agent-skills/` + AGENTS.md baseline + Claude/Gemini/Cursor adapters; migration promotes vendor `.claude/skills/`. v4.1.1 = folder finalized as `agent-skills/` (collision-safe) + Cursor adapter `globs` fix + collision guard + vendor-dir double-duty clarified. Not yet validated on a real target (client run pending).
+- **status:** v4.1.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.0, refined v4.1.1)**: neutral committed `agent-skills/` + AGENTS.md baseline + Claude/Gemini/Cursor adapters; migration promotes vendor `.claude/skills/`. v4.1.1 = folder finalized as `agent-skills/` (collision-safe) + Cursor adapter `globs` fix + collision guard + vendor-dir double-duty clarified. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project to v4.1.1 succeeded (vendor skills promoted → `agent-skills/`).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-002134)
+- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-141614)
 - **last_review:** 2026-06-15 | through 2026-06-15-231502
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -94,6 +94,11 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [ ] Incorporate findings from the first **real-world v4.1.1 enablement** (a large pre-existing
+  project, in-place Mode B upgrade — succeeded 2026-06-16). Maintainer will report back; refine
+  the skills layer if issues surface. This is the dogfood-feedback loop that drove v3.1.0/v3.2.0.
+  <!-- id: ot-realworld-v411-findings | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-141614 -->
 
 - [x] Re-verify invariants — **done 2026-06-16** (maintainer): `target-repo-scope-only`,
   `never-delete-vendor-files`, `never-pick-a-winner`, `upgrades-additive`, and the Vision

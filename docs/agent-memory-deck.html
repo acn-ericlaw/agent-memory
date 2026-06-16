@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>agent-memory — v4.0.0</title>
+<title>agent-memory — v4.1.1</title>
 <style>
   :root{
     --bg:#0b1020; --bg2:#0e1530; --panel:#131c3a; --panel2:#18224a;
@@ -71,7 +71,7 @@
 
   <!-- 1 -->
   <section class="slide active">
-    <div class="kicker">agent-memory · v4.0.0</div>
+    <div class="kicker">agent-memory · v4.1.1</div>
     <h1>A lightweight, vendor-neutral<br><span class="grad">AI memory + cognitive loop</span></h1>
     <p class="lead" style="margin-top:.6em">Turning shared project context into <b>deterministic delivery with near-zero drift</b> — for human–AI collaboration, across any AI vendor.</p>
     <div class="foot">Peer / leadership review · June 2026</div>
@@ -188,7 +188,20 @@
     </ul>
   </section>
 
-  <!-- 9 -->
+  <!-- 9 · skills (new in v4.1.0) -->
+  <section class="slide">
+    <div class="kicker">v4.1.0 · capability layer</div>
+    <h2>A third shared leg: <span class="grad">cross-vendor skills</span></h2>
+    <p class="lead">Memory and steering were already shared across vendors. <b>Skills</b> — reusable capabilities — are the third leg: one neutral, committed source of truth, runnable by any agent.</p>
+    <div class="grid g3" style="margin-top:.6em">
+      <div class="card"><h3>Neutral source</h3><p>Committed <code>agent-skills/&lt;name&gt;/SKILL.md</code> — a name, a when-to-use description, a procedure. The single source of truth; travels with the repo.</p></div>
+      <div class="card"><h3>Universal runtime</h3><p>The <code>AGENTS.md</code> "Skills" baseline: when a task matches, the agent reads &amp; follows the skill. The agent <i>is</i> the runtime — any vendor, no engine.</p></div>
+      <div class="card"><h3>Thin adapters</h3><p>Regenerated, gitignored pointers for Claude, Gemini &amp; Cursor give native auto-trigger — never copies, so the neutral skill never drifts.</p></div>
+    </div>
+    <p class="lead" style="margin-top:1em">Migration <b>promotes</b> a vendor's skills (e.g. <code>.claude/skills/</code>) into the shared layer — originals preserved under <code>legacy/</code>, never flattened into steering.</p>
+  </section>
+
+  <!-- 10 -->
   <section class="slide">
     <div class="kicker">Principles</div>
     <h2>Lightweight by design</h2>
@@ -202,7 +215,7 @@
     </div>
   </section>
 
-  <!-- 10 -->
+  <!-- 11 -->
   <section class="slide">
     <div class="kicker">Proof</div>
     <h2>It earned its thesis on real work</h2>
@@ -213,7 +226,7 @@
     <p class="lead" style="margin-top:1em">An industry-alignment self-assessment's known gaps — supersession, invariant re-checking, contradiction, evaluation, provenance — all shipped as additive, versioned releases.</p>
   </section>
 
-  <!-- 11 -->
+  <!-- 12 -->
   <section class="slide">
     <div class="kicker">Differentiators</div>
     <h2>vs. common practice</h2>
@@ -225,10 +238,11 @@
       <tr><td class="us">Intent → delivery</td><td class="t">unmanaged</td><td>VBDI trace, grep-detectable drift</td></tr>
       <tr><td class="us">Governance</td><td class="t">opaque</td><td>git history + markdown + human gates</td></tr>
       <tr><td class="us">Vendor coupling</td><td class="t">locked to one tool</td><td>neutral; one hub</td></tr>
+      <tr><td class="us">Capabilities</td><td class="t">per-vendor skill files</td><td>neutral <code>agent-skills/</code> + regenerated adapters; any agent</td></tr>
     </table>
   </section>
 
-  <!-- 12 -->
+  <!-- 13 -->
   <section class="slide">
     <div class="kicker">Adoption</div>
     <h2>Point it at a repo</h2>
@@ -244,13 +258,13 @@
     </ul>
   </section>
 
-  <!-- 13 -->
+  <!-- 14 -->
   <section class="slide">
     <div class="kicker">Roadmap &amp; mission</div>
     <p class="quote"><span class="grad">Memory is the deterministic substrate.<br>The loop is the lightweight control layer.</span></p>
     <p class="lead" style="margin-top:1em">Next (tracked as Blueprint gaps): greenfield flow · multi-user hardening · an optional SDLC overlay for teams that want it.</p>
     <p class="big" style="margin-top:1em"><b>Predictable innovation with human partnership</b> — bold ideas, faithful delivery, the human in the loop at every altitude.</p>
-    <div class="foot">agent-memory · v4.0.0</div>
+    <div class="foot">agent-memory · v4.1.1</div>
   </section>
 
 </div>

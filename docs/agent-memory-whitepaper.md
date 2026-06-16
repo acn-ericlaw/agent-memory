@@ -2,9 +2,9 @@
 
 ## Deterministic memory as a substrate; a lightweight cognitive loop as the control layer
 
-**Version:** 1.0 (describes agent-memory **v4.0.0**)
+**Version:** 1.1 (describes agent-memory **v4.1.1**)
 **Status:** Draft for peer / leadership review
-**Date:** June 15, 2026
+**Date:** June 16, 2026
 
 ---
 
@@ -37,6 +37,10 @@ The system is **vendor-neutral** (one shared memory; any agent — Claude, Gemin
 …), **deterministic** (no floating-point scoring — every agent reaches the same result by
 counting, never estimating), **lightweight** (you "point it at a repo"; there is no
 ceremony), and it **migrates** existing vendor AI files into the unified format.
+
+The shared, committed layer carries three things across vendors: **memory**, **steering**,
+and — as of **v4.1.0** — **portable skills** (reusable capabilities authored once and run
+by any agent; see §5).
 
 Its central claim: pairing a **deterministic memory substrate** with a **lightweight
 cognitive loop** yields **predictable innovation with human partnership** — bold ideas,
@@ -80,6 +84,9 @@ A **no-code, markdown-only** system with three jobs in one repository:
    system there ("AI enable this repo").
 3. **A migration tool** — when the target already has vendor AI files, it folds them into
    the unified format (originals preserved under `legacy/`, never deleted).
+
+As of **v4.1.0**, the shared layer also carries **portable skills** (§5) — reusable
+capabilities beside memory and steering.
 
 There is **no build, lint, or test step**: the markdown files *are* the product, and the
 "runtime" is an AI agent reading and acting on them. Two memory layers coexist by design —
@@ -163,7 +170,33 @@ Four properties make the loop work without becoming heavyweight:
 
 ---
 
-## 5. Design Principles
+## 5. The Capability Layer — Cross-Vendor Skills
+
+Memory and steering were already shared across vendors. **v4.1.0** adds the third shared
+leg — **skills**: reusable *capabilities* (a `name`, a *when-to-use* `description`, a
+procedure, optionally helper scripts) authored once and usable by any agent.
+
+- **Neutral source of truth.** A committed `agent-skills/<name>/SKILL.md` — vendor-neutral
+  markdown — is the single definition; it travels with the repo, like `memory/`.
+- **Universal runtime.** The `AGENTS.md` "Skills" section is the baseline: when a task
+  matches a skill's `description`, the agent reads and follows that `SKILL.md`. Because the
+  agent *is* the runtime, this works on **any** vendor with no engine.
+- **Thin per-vendor adapters.** For runtimes with a native skill/command system, the tool
+  regenerates *pointers* — `.claude/skills/`, `.gemini/commands/`, `.cursor/rules/` — for
+  native auto-trigger. Adapters are gitignored and regenerated (never copies), so the
+  neutral skill never drifts.
+- **Migration promotes, never flattens.** A vendor's existing skills (e.g.
+  `.claude/skills/`) are *promoted* into `agent-skills/` (originals preserved under
+  `legacy/`), not folded into steering — skills are procedures, not rules.
+
+The layer honors the same invariants as the rest of the tool — vendor-neutral,
+never-pick-a-winner, additive/non-destructive — and it refined the tool's own "no-code"
+invariant into **"no build step; agent-run"**: the *tool* runs no code, while a skill may
+carry optional, **agent-invoked** helper scripts.
+
+---
+
+## 6. Design Principles
 
 - **No-code, markdown-only.** The files are the product; the agent is the runtime.
 - **Vendor-neutral.** One shared memory; thin per-vendor bootstrap pointers route every
@@ -181,7 +214,7 @@ Four properties make the loop work without becoming heavyweight:
 
 ---
 
-## 6. How It Works in Practice
+## 7. How It Works in Practice
 
 - **Enable a repo.** "AI enable this repo `/path`." The tool detects any existing AI
   footprint and chooses a mode: **Fresh** (generate from analysis), **Already-Ours**
@@ -199,7 +232,7 @@ Four properties make the loop work without becoming heavyweight:
 
 ---
 
-## 7. Evidence & Validation
+## 8. Evidence & Validation
 
 - **A real rewrite, no drift.** A Node.js→Rust rewrite of a TCP-proxy CLI was delivered
   against recorded intent (invariants, decisions, and their *why* were pinned and
@@ -211,10 +244,14 @@ Four properties make the loop work without becoming heavyweight:
 - **Closing the known gaps.** An industry-alignment self-assessment identified the real
   gaps (supersession, invariant re-checking, write-time contradiction, evaluation,
   provenance); each shipped as an additive, versioned release.
+- **Real-world cross-vendor validation.** The skills layer (v4.1.0–4.1.1) was exercised
+  end-to-end by an in-place upgrade of a large, pre-existing project — promoting that
+  project's vendor skills into the shared `agent-skills/` layer and regenerating the
+  per-vendor adapters — confirming the migration path on a real codebase, not just a fixture.
 
 ---
 
-## 8. Relationship to the Literature
+## 9. Relationship to the Literature
 
 agent-memory is not a new agent paradigm; it is a **concrete, file-first, deterministic
 realization** of patterns the field already endorses:
@@ -235,7 +272,7 @@ loop with human gates.**
 
 ---
 
-## 9. What Makes It Different
+## 10. What Makes It Different
 
 | Dimension | Common practice | agent-memory |
 |---|---|---|
@@ -246,11 +283,12 @@ loop with human gates.**
 | Intent → delivery | unmanaged | VBDI altitude trace, grep-detectable drift |
 | Governance | opaque | git history + markdown + human gates |
 | Vendor coupling | locked to one tool | neutral; thin pointers to one hub |
+| Capabilities / skills | per-vendor skill files, not shared | neutral `agent-skills/` + regenerated per-vendor adapters; authored once, any agent |
 | Process weight | often heavy | lightweight default; SDLC is the target's opt-in |
 
 ---
 
-## 10. Roadmap
+## 11. Roadmap
 
 Tracked as Blueprint gaps against the Vision:
 
@@ -262,7 +300,7 @@ Tracked as Blueprint gaps against the Vision:
 
 ---
 
-## 11. Conclusion
+## 12. Conclusion
 
 As agents become persistent, memory-driven systems, they need scaffolds that are both
 operationally useful and light enough to embed in real repositories. agent-memory pairs a
