@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.1.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.0, refined v4.1.1)**: neutral committed `agent-skills/` + AGENTS.md baseline + Claude/Gemini/Cursor adapters; migration promotes vendor `.claude/skills/`. v4.1.1 = folder finalized as `agent-skills/` (collision-safe) + Cursor adapter `globs` fix + collision guard + vendor-dir double-duty clarified. Not yet validated on a real target (client run pending).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-001342)
+- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-002134)
 - **last_review:** 2026-06-15 | through 2026-06-15-231502
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -66,8 +66,16 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Never overwrite, never pick a winner — fold vendor steering under
   `## Migrated rules from <vendor>`; surface contradictions as Open Threads
   <!-- id: never-pick-a-winner | created: 2026-06-13 | last_used: 2026-06-15 | uses: 4 | tier: core -->
-- No-code, markdown-only — the files are the product; the agent is the runtime
-  <!-- id: no-code-markdown-only | created: 2026-06-13 | last_used: 2026-06-15 | uses: 15 | tier: core -->
+- No build step; agent-run — the tool itself runs no code and needs none (no install, no
+  daemon). The markdown files are the product and the agent is the runtime. A skill MAY
+  bundle optional helper scripts, but those are invoked by the agent/vendor at the user's
+  direction, never executed by the tool.
+  <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
+- ~~No-code, markdown-only — the files are the product; the agent is the runtime~~
+  **Superseded by `no-build-step-agent-run`** (2026-06-16): the v4.1.x skills layer can
+  bundle helper `scripts/`, so the absolute "markdown-only" no longer strictly held; the
+  refined invariant above preserves the intent (the *tool* runs no code). Pending review archival.
+  <!-- id: no-code-markdown-only | created: 2026-06-13 | last_used: 2026-06-15 | uses: 15 | tier: superseded | superseded-by: no-build-step-agent-run -->
 - Upgrades are additive and non-destructive — enrich and add, never rewrite or delete
   <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-15 | uses: 12 | tier: core -->
 
@@ -87,7 +95,11 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
-- [ ] Re-verify invariants (due): confirm target-repo-scope-only, never-delete-vendor-files, never-pick-a-winner, no-code-markdown-only, upgrades-additive and the Vision (vision-agent-memory) still hold, or supersede any that don't (DECAY.md §9)
+- [x] Re-verify invariants — **done 2026-06-16** (maintainer): `target-repo-scope-only`,
+  `never-delete-vendor-files`, `never-pick-a-winner`, `upgrades-additive`, and the Vision
+  (`vision-agent-memory`) **still hold (confirmed)**; `no-code-markdown-only` **superseded
+  by `no-build-step-agent-run`** (DECAY §9) — the skills layer's helper scripts made the
+  absolute "markdown-only" wording false.
   <!-- id: ot-reverify-invariants-20260615 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-231502 -->
 - [x] Drift: Blueprint subsection header was stale ("Current State (v3.7.0)"). **Resolved
   2026-06-16** — refreshed the baseline label to v4.1.1 (current state); the gap set itself
