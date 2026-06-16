@@ -311,21 +311,21 @@ target is the human's to set (same principle as User Preferences: never infer). 
 ### 5h. Skills layer (capabilities — cross-vendor)
 
 Skills are the project's portable **capabilities** — a third shared layer beside memory
-and steering: committed, vendor-neutral `skills/<name>/SKILL.md` files (a `name`, a
+and steering: committed, vendor-neutral `agent-skills/<name>/SKILL.md` files (a `name`, a
 `description` that says *when* to use it, a procedure, optional helper scripts). The
 `AGENTS.md` "Skills" section is the universal runtime (the agent reads the skill — works
 on any vendor). See `docs/DESIGN-skills-layer.md` and `.agent/schema.md`.
 
 - **Fresh enable (Mode A):** a repo with no AI footprint has no skills — **do not create
-  an empty `skills/`.** The installed `AGENTS.md` already handles a future `skills/` on
+  an empty `agent-skills/`.** The installed `AGENTS.md` already handles a future `agent-skills/` on
   demand. Skip this step.
-- **Migration (Mode C):** if `MIGRATE.md` promoted vendor skill bundles into `skills/`
+- **Migration (Mode C):** if `MIGRATE.md` promoted vendor skill bundles into `agent-skills/`
   (e.g. from `.claude/skills/`), **(re)generate the per-vendor adapters** below. The
-  neutral `skills/<name>/SKILL.md` is the source of truth; adapters are thin pointers,
+  neutral `agent-skills/<name>/SKILL.md` is the source of truth; adapters are thin pointers,
   regenerated (never hand-edited), living in the gitignored vendor dirs (Step 7), so they
-  stay per-machine while only `skills/` is committed.
+  stay per-machine while only `agent-skills/` is committed.
 
-**Adapter generation** — for each `skills/<name>/SKILL.md` (with its `name` + `description`),
+**Adapter generation** — for each `agent-skills/<name>/SKILL.md` (with its `name` + `description`),
 write all three (idempotent — overwrite the adapter, never the neutral skill):
 
 - **Claude Code** → `.claude/skills/<name>/SKILL.md`:
@@ -334,23 +334,30 @@ write all three (idempotent — overwrite the adapter, never the neutral skill):
   name: <name>
   description: <description>
   ---
-  Maintained vendor-neutrally. Read and follow `skills/<name>/SKILL.md` (repo root)
+  Maintained vendor-neutrally. Read and follow `agent-skills/<name>/SKILL.md` (repo root)
   and any scripts it references.
   ```
 - **Gemini CLI** → `.gemini/commands/<name>.toml`:
   ```
   description = "<description>"
-  prompt = "Read and follow the skill at skills/<name>/SKILL.md (repo root), including any scripts it references, then carry out: {{args}}"
+  prompt = "Read and follow the skill at agent-skills/<name>/SKILL.md (repo root), including any scripts it references, then carry out: {{args}}"
   ```
-- **Cursor** → `.cursor/rules/<name>.mdc`:
+- **Cursor** → `.cursor/rules/<name>.mdc` (the "agent-requested" rule type — description-
+  matched, so `globs` is empty and `alwaysApply` is false):
   ```
   ---
   description: <description>
+  globs:
   alwaysApply: false
   ---
-  When this applies, read and follow `skills/<name>/SKILL.md` (repo root) and any
+  When this applies, read and follow `agent-skills/<name>/SKILL.md` (repo root) and any
   scripts it references.
   ```
+
+**Collision guard.** `agent-skills/` is namespaced to make a clash with a pre-existing
+project dir unlikely, but if a top-level `agent-skills/` already exists with unrelated
+content, **do not overwrite it** — surface it as a `- [ ] Contradiction:` Open Thread
+(`never-pick-a-winner`) and stop, rather than merging blindly.
 
 ---
 
@@ -456,10 +463,10 @@ describe what was intended.
    and no Blueprint gaps were derived yet (they await the confirmed Vision).
 
 6. **Skills promoted (Mode C, if any).** If the source repo had vendor skills (e.g.
-   `.claude/skills/`), confirm each was promoted to `skills/<name>/SKILL.md` (committed),
+   `.claude/skills/`), confirm each was promoted to `agent-skills/<name>/SKILL.md` (committed),
    the original preserved under `legacy/`, and the three adapters regenerated
    (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`). On a fresh enable with no
-   skills, confirm no empty `skills/` was created.
+   skills, confirm no empty `agent-skills/` was created.
 
 Log any issue you cannot fix as an Open Thread in `memory/continuity.md` and
 note it in the report.
@@ -483,7 +490,7 @@ Print a clear summary including migration details if Mode C ran:
   Migrated (Mode C only):
   • <vendor>:  <files>  →  <where>
   • Sessions converted: N (from <oldest>  to  <newest>)
-  • Skills promoted: N → skills/  (+ Claude / Gemini / Cursor adapters regenerated)
+  • Skills promoted: N → agent-skills/  (+ Claude / Gemini / Cursor adapters regenerated)
 
   Created:
   • memory/instructions.md
@@ -531,7 +538,7 @@ Respond accordingly.
 
 - Never modify source code in the target repo.
 - Never modify `package.json`, `Cargo.toml`, etc.
-- Only create/modify files within: `memory/`, `.agent/`, `legacy/`, `skills/` (the
+- Only create/modify files within: `memory/`, `.agent/`, `legacy/`, `agent-skills/` (the
   neutral capability layer) and its regenerated per-machine adapters (`.claude/skills/`,
   `.gemini/commands/`, `.cursor/rules/`), `DECAY.md`, `REVIEW.md`, `.gitignore` (add-only,
   never remove existing entries), `.github/copilot-instructions.md`, and the bootstrap

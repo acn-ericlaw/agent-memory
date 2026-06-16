@@ -12,6 +12,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.1.1, 6/16/2026
+
+> **Skills-layer refinements** — pre-adoption corrections to v4.1.0 (which shipped the same
+> day and was not yet consumed by any repo), so the first real target run starts clean. The
+> adapter formats were verified against current vendor docs in the process.
+
+### Changed
+
+1. **Folder renamed `skills/` → `agent-skills/`.** `skills/` is a common top-level dir;
+   `agent-skills/` is namespaced to avoid collision (and stays visible/discoverable, a peer
+   to `memory/`). All living docs updated; vendor `.claude/skills/` references unchanged.
+2. **Cursor adapter fixed.** `.cursor/rules/<name>.mdc` now emits the **agent-requested**
+   rule type — `description` + empty `globs:` + `alwaysApply: false` — verified against
+   current Cursor docs. (Gemini `.gemini/commands/*.toml` with `description`/`prompt`/
+   `{{args}}`, and Claude `.claude/skills/<name>/SKILL.md`, were verified correct as shipped.)
+3. **Collision guard.** Enable/migrate never overwrite a pre-existing `agent-skills/` — they
+   raise a `Contradiction:` Open Thread (`never-pick-a-winner`) and stop.
+4. **Vendor-dir double-duty clarified** (`MIGRATE.md`): `.cursor/rules/` and `.gemini/` are
+   both migration sources and adapter targets — archive originals to `legacy/` first, then
+   generate adapters, so they never collide.
+
+`VERSION` → 4.1.1; `UPGRADE.md` 4.1.0→4.1.1 rung + version table; `README`. `DECAY.md` /
+`REVIEW.md` unchanged.
+
+---
 ## Version 4.1.0, 6/15/2026
 
 > **Cross-vendor skills layer.** The shared layer gains its third leg — *capabilities* —

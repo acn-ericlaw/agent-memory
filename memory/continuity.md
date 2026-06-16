@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.1.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.0)**: neutral committed `skills/` + AGENTS.md baseline + Claude/Gemini/Cursor adapters; migration promotes vendor `.claude/skills/`. Not yet validated on a real target.
+- **status:** v4.1.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1.0, refined v4.1.1)**: neutral committed `agent-skills/` + AGENTS.md baseline + Claude/Gemini/Cursor adapters; migration promotes vendor `.claude/skills/`. v4.1.1 = folder finalized as `agent-skills/` (collision-safe) + Cursor adapter `globs` fix + collision guard + vendor-dir double-duty clarified. Not yet validated on a real target (client run pending).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-15 | agent: Claude Code (2026-06-15-234801)
+- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-001342)
 - **last_review:** 2026-06-15 | through 2026-06-15-231502
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -89,7 +89,9 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 - [ ] Re-verify invariants (due): confirm target-repo-scope-only, never-delete-vendor-files, never-pick-a-winner, no-code-markdown-only, upgrades-additive and the Vision (vision-agent-memory) still hold, or supersede any that don't (DECAY.md §9)
   <!-- id: ot-reverify-invariants-20260615 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-231502 -->
-- [ ] Drift: the Blueprint subsection header reads "gaps from Current State (v3.7.0) to the Vision" but Project State `status` is now v4.0.0 (the VBDI loop the Blueprint described has shipped). Stale altitude label — refresh the baseline version to v4.0.0 (or re-derive the gap set against the v4.0.0 Current State). Surfaced by the 2026-06-15 review backstop; not auto-rewritten.
+- [x] Drift: Blueprint subsection header was stale ("Current State (v3.7.0)"). **Resolved
+  2026-06-16** — refreshed the baseline label to v4.1.1 (current state); the gap set itself
+  is still valid (bp-greenfield, bp-multi-user, bp-sdlc-overlay remain open).
   <!-- id: ot-drift-blueprint-baseline-20260615 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-231502 -->
 
 ### Evolving long-term memory layer (v3.0.0) — BUILT 2026-06-13
@@ -274,12 +276,12 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ### Shipped — v4.1.0: cross-vendor skills layer (2026-06-15)
 - [x] **Skills layer shipped (additive MINOR).** The shared layer's third leg —
-  *capabilities* — beside memory and steering. Neutral, committed `skills/<name>/SKILL.md`
+  *capabilities* — beside memory and steering. Neutral, committed `agent-skills/<name>/SKILL.md`
   (name + when-to-use description + procedure + optional scripts); `AGENTS.md` "Skills"
   section is the universal agent-as-runtime baseline; native adapters regenerated for
   Claude (`.claude/skills/`), Gemini (`.gemini/commands/`), Cursor (`.cursor/rules/`) —
-  thin, gitignored, **Option A** (only `skills/` committed). Migration **promotes** vendor
-  `.claude/skills/` into `skills/` (preserve original under `legacy/`, never flatten into
+  thin, gitignored, **Option A** (only `agent-skills/` committed). Migration **promotes** vendor
+  `.claude/skills/` into `agent-skills/` (preserve original under `legacy/`, never flatten into
   steering). Maintainer chose all-vendor adapter scope at build. Touched: `ENABLE.md`
   (Step 5h + verify/report/scope), `MIGRATE.md` (principle 6 + Section B2 + Claude protocol
   + detection table + continuity note), `AGENTS.md` (root + template), `.agent/schema.md`,
@@ -288,7 +290,22 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   Realizes `bp-skills-layer`. Not yet validated on a real target (next: upgrade the client).
   <!-- id: skills-layer-v410 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: working | origin: 2026-06-15-234801 -->
 
-### Blueprint — gaps from Current State (v3.7.0) to the Vision  (serves: vision-agent-memory)
+### Shipped — v4.1.1: skills-layer refinements (2026-06-16)
+- [x] **Skills layer refined (PATCH)** — pre-adoption corrections before the first real
+  target run (the client Mode B tonight): (1) **folder renamed `skills/` → `agent-skills/`**
+  (collision-safe — `skills/` is too common a top-level dir); (2) **Cursor adapter fix** —
+  `.cursor/rules/*.mdc` now emits the "agent-requested" type (`description` + empty `globs:`
+  + `alwaysApply: false`), verified against current Cursor docs (Gemini `.toml` + Claude
+  formats verified correct as-is); (3) **collision guard** — never overwrite a pre-existing
+  `agent-skills/`, surface a Contradiction thread; (4) **vendor-dir double-duty clarified**
+  in MIGRATE.md (archive originals to `legacy/` first, then generate adapters). `VERSION`→
+  4.1.1; `UPGRADE.md` 4.1.0→4.1.1 rung + table; `README`/`CHANGELOG`; all living docs
+  renamed (perl, `.claude/skills/` preserved). v4.1.0 was same-day + unconsumed → a
+  pre-adoption correction, not a breaking change. Closes the (a)+(b) follow-ups to
+  `skills-layer-v410`.
+  <!-- id: skills-layer-v411-fixes | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-001342 -->
+
+### Blueprint — gaps from Current State (v4.1.1) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
 > `(blueprint)`: each is a Vision↔reality gap that closes when delivered. The *backward*
 > memory layer is not here — it's done; every gap is *forward*. These operationalize the
@@ -316,9 +333,9 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   never in `memory/`. → serves: vision-agent-memory
   <!-- id: bp-sdlc-overlay | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-010142 -->
 - [x] **(blueprint)** Cross-vendor skills layer — **SHIPPED v4.1.0** (2026-06-15). Neutral
-  committed `skills/<name>/SKILL.md` source of truth + an `AGENTS.md` "Skills" baseline
+  committed `agent-skills/<name>/SKILL.md` source of truth + an `AGENTS.md` "Skills" baseline
   (agent-as-runtime) + regenerated Claude/Gemini/Cursor adapters (gitignored — **Option A**,
-  all-vendor scope chosen at build). Migration promotes `.claude/skills/` into `skills/`
+  all-vendor scope chosen at build). Migration promotes `.claude/skills/` into `agent-skills/`
   (preserve under `legacy/`, don't flatten). Design: `docs/DESIGN-skills-layer.md`. Realized
   by `skills-layer-v410`. → serves: vision-agent-memory
   <!-- id: bp-skills-layer | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-231502 -->

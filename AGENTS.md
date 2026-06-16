@@ -64,12 +64,12 @@ fabricate the Vision.
 
 ### Skills
 
-If a `skills/` directory exists, it holds the project's **capabilities** — committed,
-vendor-neutral `skills/<name>/SKILL.md` files. When a task matches a skill's
+If a `agent-skills/` directory exists, it holds the project's **capabilities** — committed,
+vendor-neutral `agent-skills/<name>/SKILL.md` files. When a task matches a skill's
 `description`, read and follow that `SKILL.md` (and any scripts it references) — the agent
 is the runtime, so it works on any vendor. Native adapters (`.claude/skills/`,
 `.gemini/commands/`, `.cursor/rules/`) are thin, regenerated, gitignored pointers; the
-shared source of truth is always `skills/<name>/SKILL.md`. See `docs/DESIGN-skills-layer.md`.
+shared source of truth is always `agent-skills/<name>/SKILL.md`. See `docs/DESIGN-skills-layer.md`.
 
 ### During the Session
 
@@ -154,6 +154,6 @@ and migrated automatically: Claude Code, Cursor, Cline, Roo Code, Aider,
 Continue.dev, Codeium/Windsurf, GitHub Copilot, GPT/Codex agents, Zed AI,
 Gemini CLI. See `MIGRATE.md` for protocols.
 
-Vendor **skills/capabilities** (e.g. `.claude/skills/`) are also migrated — *promoted*
-into the neutral, committed `skills/` layer (not flattened into steering), with originals
+Vendor **agent-skills/capabilities** (e.g. `.claude/skills/`) are also migrated — *promoted*
+into the neutral, committed `agent-skills/` layer (not flattened into steering), with originals
 preserved under `legacy/` and native adapters regenerated. See `MIGRATE.md`.

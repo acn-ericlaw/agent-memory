@@ -124,7 +124,8 @@ it in place** — additively, never destructively.
 | 3.6.0 | Memory smoke test (`memory/smoke-test.md`): a manual check that a fresh agent can orient from memory alone |
 | 3.7.0 | Provenance + retrieval: optional `origin:` footer traces a fact to its source session; retrieval is lexical + indexed by design |
 | 4.0.0 | Forward layer (VBDI): `memory/vision.md` + `(blueprint)` gaps + altitude trace — a cognitive loop (Current State → Vision → Blueprint → Design → Implementation → Feedback) over the memory substrate |
-| 4.1.0 | Cross-vendor skills layer: neutral committed `skills/<name>/SKILL.md` + an `AGENTS.md` baseline (agent-as-runtime) + regenerated Claude/Gemini/Cursor adapters; migration promotes vendor `.claude/skills/` into `skills/` |
+| 4.1.0 | Cross-vendor skills layer: neutral committed `agent-skills/<name>/SKILL.md` + an `AGENTS.md` baseline (agent-as-runtime) + regenerated Claude/Gemini/Cursor adapters; migration promotes vendor `.claude/skills/` into `agent-skills/` |
+| 4.1.1 | Skills-layer refinements: folder finalized as `agent-skills/` (collision-safe), Cursor adapter `globs` fix (agent-requested type), collision guard, vendor-dir double-duty clarified |
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the
@@ -137,7 +138,7 @@ The tool detects and migrates from these vendors:
 
 | Vendor | Detected via | What's migrated |
 |---|---|---|
-| Claude Code | `CLAUDE.md` (non-ours), `.claude/`, `.claude/skills/` | Steering, JSONL session history, **skills → `skills/`** |
+| Claude Code | `CLAUDE.md` (non-ours), `.claude/`, `.claude/skills/` | Steering, JSONL session history, **skills → `agent-skills/`** |
 | Cursor | `.cursorrules`, `.cursor/rules/*.mdc` | All steering files |
 | Cline | `.clinerules`, `.cline/` | Steering, history |
 | Roo Code | `.roorules`, `.roo/` | Steering, history |
@@ -165,7 +166,7 @@ Migration rules per vendor: see [`MIGRATE.md`](./MIGRATE.md).
 - **History becomes sessions.** Chat logs and JSONL files are parsed and split
   into dated `memory/sessions/YYYY-MM-DD-HHMMSS.md` files in our standard format.
 - **Skills promoted.** Vendor skill bundles (e.g. `.claude/skills/`) become neutral,
-  committed `skills/<name>/SKILL.md` capabilities — not flattened into steering — with
+  committed `agent-skills/<name>/SKILL.md` capabilities — not flattened into steering — with
   Claude/Gemini/Cursor adapters regenerated. See [`docs/DESIGN-skills-layer.md`](./docs/DESIGN-skills-layer.md).
 - **Contradictions surfaced.** If two vendors had conflicting rules, both are
   preserved and an Open Thread is added asking the user to resolve.

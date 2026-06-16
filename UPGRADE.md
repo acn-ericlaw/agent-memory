@@ -29,7 +29,8 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 3.6.0 | Memory smoke test: `memory/smoke-test.md` — manual eval, N questions a fresh agent should answer from memory alone |
 | 3.7.0 | Provenance + retrieval: optional `origin:` footer (the session a fact came from); retrieval documented as lexical + indexed by design |
 | 4.0.0 | Forward layer (VBDI): `memory/vision.md` + `(blueprint)` gap threads + altitude trace; the cognitive loop over the memory substrate. Upgrade bootstraps a DRAFT Vision + human gate |
-| 4.1.0 | Cross-vendor skills layer: neutral committed `skills/<name>/SKILL.md` + an `AGENTS.md` baseline (agent-as-runtime) + regenerated Claude/Gemini/Cursor adapters. Migration promotes vendor `.claude/skills/` into `skills/`; upgrade promotes any existing vendor skills in place |
+| 4.1.0 | Cross-vendor skills layer: neutral committed `agent-skills/<name>/SKILL.md` + an `AGENTS.md` baseline (agent-as-runtime) + regenerated Claude/Gemini/Cursor adapters. Migration promotes vendor `.claude/skills/` into `agent-skills/`; upgrade promotes any existing vendor skills in place |
+| 4.1.1 | Skills-layer refinements (PATCH): folder finalized as `agent-skills/` (collision-safe); Cursor adapter uses the agent-requested type (`description` + empty `globs` + `alwaysApply: false`); collision guard; vendor-dir double-duty clarified |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -295,22 +296,43 @@ than fabricating intent.
 ## Rung: 4.0.0 → 4.1.0 — the cross-vendor skills layer
 
 Additive (a new optional shared layer): a repo with no skills works exactly as before, and
-an un-upgraded agent simply ignores `skills/`. Design: `docs/DESIGN-skills-layer.md`.
+an un-upgraded agent simply ignores `agent-skills/`. Design: `docs/DESIGN-skills-layer.md`.
 
 1. **Re-sync the generic docs** (copy verbatim where different): `.agent/schema.md` (the
-   new `skills/` section) and `AGENTS.md` (the new "Skills" section + the `skills/` entry
+   new `agent-skills/` section) and `AGENTS.md` (the new "Skills" section + the `agent-skills/` entry
    in Memory File Locations). `DECAY.md` / `REVIEW.md` are unchanged in 4.1.0.
 2. **`.gitignore` — no entry change needed.** The vendor adapter dirs (`.claude/`,
-   `.gemini/`, `.cursor/`) are already ignored by the v3.1.0 managed block, and `skills/`
+   `.gemini/`, `.cursor/`) are already ignored by the v3.1.0 managed block, and `agent-skills/`
    is tracked by default (never ignored). Optionally refresh the managed-block comment to
-   mention `skills/` + adapters (cosmetic only).
+   mention `agent-skills/` + adapters (cosmetic only).
 3. **Promote any existing vendor skills.** If the target has `.claude/skills/` (or another
-   vendor's skill bundle), promote each into `skills/<name>/SKILL.md` per `MIGRATE.md`
+   vendor's skill bundle), promote each into `agent-skills/<name>/SKILL.md` per `MIGRATE.md`
    Section B2 (keep the procedure; normalize frontmatter to `name` + `description`; copy
-   bundled scripts to `skills/<name>/scripts/`), preserve the original under `legacy/`,
+   bundled scripts to `agent-skills/<name>/scripts/`), preserve the original under `legacy/`,
    then regenerate the Claude / Gemini / Cursor adapters per `ENABLE.md` Step 5h. **If there
-   are no vendor skills, skip — do not create an empty `skills/`.**
+   are no vendor skills, skip — do not create an empty `agent-skills/`.**
 4. **Stamp** `.agent/version.md` → `version: 4.1.0`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 5. **Report**: docs re-synced; skills promoted (N) + adapters regenerated, or "no skills
    found — skills layer available on demand."
+
+---
+
+## Rung: 4.1.0 → 4.1.1 — skills-layer refinements (PATCH)
+
+Wording/format corrections to the 4.1.0 skills layer; no shape change. (4.1.0 shipped
+same-day and was unconsumed, so a target on 4.0.0 reaches 4.1.1 via the 4.0.0→4.1.0 rung
+above — which already produces `agent-skills/`. This rung only matters for a repo that ran
+the original 4.1.0, where the folder was briefly named `skills/`.)
+
+1. **Rename the folder if needed.** If the target has a top-level `skills/` created by the
+   original 4.1.0, rename it to `agent-skills/` (preserve history with `git mv` if tracked)
+   and update the regenerated adapters' pointers. If it is already `agent-skills/` — or
+   there are no skills — this is a no-op.
+2. **Apply the doc/format fixes** (verbatim where different): `.agent/schema.md` and
+   `AGENTS.md` now say `agent-skills/`; the Cursor adapter uses the agent-requested type
+   (`description` + empty `globs:` + `alwaysApply: false`) — refresh any `.cursor/rules/`
+   skill adapters accordingly.
+3. **Stamp** `.agent/version.md` → `version: 4.1.1`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: folder renamed (if applicable), adapters refreshed, docs re-synced.

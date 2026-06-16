@@ -1,7 +1,9 @@
 # DESIGN — Cross-Vendor Skills Layer (portable capabilities over the shared layer)
 
-> **Status:** **implemented in v4.1.0** (2026-06-15). Sibling to `DESIGN-evolving-memory.md`
-> and `DESIGN-vbdi-lifecycle.md`. The maintainer chose **all-vendor adapters** at build time
+> **Status:** **implemented in v4.1.0** (2026-06-15), **refined in v4.1.1** — folder
+> finalized as `agent-skills/` (collision-safe; was `skills/`) and the Cursor adapter fixed
+> to the agent-requested type. Sibling to `DESIGN-evolving-memory.md` and
+> `DESIGN-vbdi-lifecycle.md`. The maintainer chose **all-vendor adapters** at build time
 > (Claude + Gemini + Cursor), so §4c is fully realized rather than Claude-only.
 > **Source:** a real-work finding (2026-06-15) — a client repo enabled with agent-memory
 > carried user-defined **Claude skills** under `.claude/skills/`, which the tool neither
@@ -39,7 +41,7 @@ This is the missing third leg of the shared layer: **memory + steering + skills*
   thin vendor files), the `legacy/` preservation rule, and the personal-vs-shared split.
 - **Target-repo scope only** — skills live in the repo; `~/` and `~/.claude/` are untouched.
 - **Additive / non-destructive** — a repo with no skills works exactly as before; an
-  un-upgraded agent simply ignores `skills/`.
+  un-upgraded agent simply ignores `agent-skills/`.
 
 ## 3. Observation: a skill is ~90% already neutral
 
@@ -52,18 +54,18 @@ tool defining the neutral substrate is the pragmatic move, exactly as it did for
 
 ## 4. The design
 
-### 4a. Neutral source of truth — `skills/` (committed)
+### 4a. Neutral source of truth — `agent-skills/` (committed)
 
 A new top-level shared layer, parallel to `memory/`:
 
 ```
-skills/
+agent-skills/
   <skill-name>/
     SKILL.md        # frontmatter: name + description(when-to-use); body: the procedure
     scripts/…       # optional portable helpers (sh / python), referenced by relative path
 ```
 
-`skills/` is **committed** — it travels with the repo and reaches every contributor
+`agent-skills/` is **committed** — it travels with the repo and reaches every contributor
 regardless of vendor. Normalized frontmatter is deliberately minimal (`name`,
 `description`); Claude's existing `SKILL.md` frontmatter already matches, so Claude is the
 trivial case and other vendors adapt.
@@ -73,7 +75,7 @@ trivial case and other vendors adapt.
 `AGENTS.md` — which every bootstrap file already points to — gains a short **Skills**
 section:
 
-> *Capabilities live in `skills/`. When a task matches a skill's `description`, read and
+> *Capabilities live in `agent-skills/`. When a task matches a skill's `description`, read and
 > follow its `SKILL.md` (and any scripts it references).*
 
 Because **the agent is the runtime**, this works for *every* vendor, including those with
@@ -89,7 +91,7 @@ lives only in `AGENTS.md`):
 
 | Vendor | Native mechanism | Adapter |
 |---|---|---|
-| Claude Code | `.claude/skills/<n>/SKILL.md` (Skill tool auto-discovers) | frontmatter + body "follow `skills/<n>/SKILL.md`" |
+| Claude Code | `.claude/skills/<n>/SKILL.md` (Skill tool auto-discovers) | frontmatter + body "follow `agent-skills/<n>/SKILL.md`" |
 | Gemini CLI | custom command (`.gemini/commands/…`) | command that reads the neutral skill |
 | Cursor | rule (`.cursor/rules/*.mdc`) | rule referencing the neutral skill |
 | Codex / AGENTS.md-only | *(none)* | nothing needed — uses the §4b baseline |
@@ -98,7 +100,7 @@ lives only in `AGENTS.md`):
 
 `.claude/`, `.gemini/`, `.cursor/` are personal/per-machine and stay **gitignored**. So:
 
-- **Option A (chosen):** the neutral `skills/` is committed; per-vendor adapter dirs stay
+- **Option A (chosen):** the neutral `agent-skills/` is committed; per-vendor adapter dirs stay
   gitignored and are **regenerated locally** by the enable/sync step. The only fully
   vendor-neutral option — every vendor's user gets the skill — and it keeps the
   personal-vs-shared split clean (`.claude/` stays entirely personal, consistent with the
@@ -111,7 +113,7 @@ lives only in `AGENTS.md`):
 
 On enable (Mode C) of a repo with `.claude/skills/` (or another vendor's skill bundles):
 
-- **Promote** them into `skills/` — they are *procedures*, so they must **not** be
+- **Promote** them into `agent-skills/` — they are *procedures*, so they must **not** be
   flattened into `memory/instructions.md` (that home is for *steering rules*).
 - **Preserve originals** under `legacy/<vendor>/skills/…` per `never-delete-vendor-files`.
 - **Regenerate** the native adapter(s) from the promoted neutral skill.
@@ -121,11 +123,11 @@ On enable (Mode C) of a repo with `.claude/skills/` (or another vendor's skill b
 
 | Invariant | How this honors it |
 |---|---|
-| `target-repo-scope-only` | `skills/` and adapters live in the repo; `~/.claude/` untouched |
+| `target-repo-scope-only` | `agent-skills/` and adapters live in the repo; `~/.claude/` untouched |
 | `never-delete-vendor-files` | original skill bundles preserved under `legacy/` |
 | `never-pick-a-winner` | neutral source of truth; vendors adapt; no vendor privileged |
 | `no-code-markdown-only` | skills are markdown + portable scripts; agent is the runtime |
-| `upgrades-additive` | new optional layer; absent `skills/` ⇒ no behavior change |
+| `upgrades-additive` | new optional layer; absent `agent-skills/` ⇒ no behavior change |
 
 ## 7. Scope / non-goals
 
@@ -140,10 +142,10 @@ On enable (Mode C) of a repo with `.claude/skills/` (or another vendor's skill b
 ## 8. Integration points (when built — not in this doc)
 
 A future implementation rung would touch, additively:
-`ENABLE.md` (a Step to generate `skills/` baseline + adapters), `MIGRATE.md` (detect &
-promote vendor skill bundles → `skills/`, preserve under `legacy/`), `templates/AGENTS.md`
+`ENABLE.md` (a Step to generate `agent-skills/` baseline + adapters), `MIGRATE.md` (detect &
+promote vendor skill bundles → `agent-skills/`, preserve under `legacy/`), `templates/AGENTS.md`
 + root `AGENTS.md` (the §4b Skills section), `templates/.gitignore` (confirm adapter dirs
-stay ignored under Option A; `skills/` tracked), `.agent/schema.md` (document `skills/`),
+stay ignored under Option A; `agent-skills/` tracked), `.agent/schema.md` (document `agent-skills/`),
 and the version ladder (`VERSION` / `UPGRADE.md` — additive ⇒ **MINOR**, e.g. a 4.x rung).
 
 ## 9. Open questions (deferred to build time)

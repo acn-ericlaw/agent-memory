@@ -203,19 +203,19 @@ archive/
 
 ---
 
-## skills/  (capability layer — cross-vendor)
+## agent-skills/  (capability layer — cross-vendor)
 
 Portable, committed **capabilities** — the third shared leg alongside memory and
 steering. Each skill is vendor-neutral markdown:
 
 ```
-skills/
+agent-skills/
   <skill-name>/
     SKILL.md     frontmatter (name + description = the when-to-use trigger) + the procedure
     scripts/     (optional) portable helpers (sh / python), referenced by relative path
 ```
 
-`skills/` is **committed** — it travels with the repo and reaches every contributor, on
+`agent-skills/` is **committed** — it travels with the repo and reaches every contributor, on
 any vendor. The `AGENTS.md` "Skills" section is the **universal runtime**: when a task
 matches a skill's `description`, the agent reads and follows that `SKILL.md` — no
 per-vendor engine needed (the agent is the runtime).
@@ -224,7 +224,7 @@ For vendors with a native skill/command system, thin **adapters** auto-trigger t
 in that runtime — each a generated *pointer* to the neutral skill, never a copy:
 `.claude/skills/<name>/SKILL.md`, `.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc`.
 Adapter dirs are personal/per-machine (gitignored) and are **regenerated locally** on
-enable/migrate; only the neutral `skills/` is shared. See `docs/DESIGN-skills-layer.md`.
+enable/migrate; only the neutral `agent-skills/` is shared. See `docs/DESIGN-skills-layer.md`.
 
 ---
 
