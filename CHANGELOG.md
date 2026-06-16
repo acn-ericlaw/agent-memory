@@ -12,6 +12,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.4.0, 6/16/2026
+
+> **Lightweight skills — conscious, not per-session.** Skill creation is a deliberate,
+> occasional developer action, so it leaves the per-session path. The per-session `AGENTS.md`
+> now carries only the **runtime baseline** (read & follow a matching skill) + a pointer; the
+> adapter recipe and the **sync** / **adopt** / **sanity-check** operations move to a new
+> on-demand **`SKILLS.md`** (installed like `DECAY.md`/`REVIEW.md`). The v4.3.0 per-session
+> "skills safety check" is **removed**; upgrades instead do a read-only filename check that
+> *recommends* `sync skill adapters` if an adapter is missing/orphaned. Trims the per-session
+> bootstrap (the skills recipe was ~1.3K tokens read every session).
+
+### Added
+
+1. **`SKILLS.md`** (installed at repo root) — the on-demand skills reference: authoring
+   convention, adapter recipe, and the `sync` / `adopt` / `skill sanity check` operations.
+2. **Standing "Skills adapter check"** in `UPGRADE.md` — read-only, filename-only; runs on any
+   Mode B re-enable (incl. "up to date") and *recommends* sync if adapters are missing/orphaned.
+
+### Removed
+
+1. The per-session **"Skills safety check"** step from "After Every Session" (both `AGENTS.md`
+   files) + its checklist line — superseded by the on-demand + upgrade-time model.
+
+### Changed
+
+1. `AGENTS.md` (root + template): "Skills" reduced to the runtime baseline + a pointer to
+   `SKILLS.md`. `ENABLE.md` (Step 5h references `SKILLS.md`; Step 6 installs it; Step 8 verifies),
+   `MIGRATE.md`, `.agent/schema.md` now point at `SKILLS.md`. `VERSION` → 4.4.0; `UPGRADE.md`
+   4.3.3→4.4.0 rung + standing check + table; `README`. `DECAY.md` / `REVIEW.md` unchanged.
+
+---
 ## Version 4.3.3, 6/16/2026
 
 > **Skill description guidance** (reviewed from external feedback). A `description` is a

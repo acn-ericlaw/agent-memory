@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.3.3 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.3.3)**: neutral committed `agent-skills/` + `AGENTS.md` baseline (canonical adapter recipe + **sync** & **adopt** ops) + Claude/Gemini/Cursor adapters (gitignored, regenerated); authoring convention (single-line, quote-free, **concise** descriptions; adapter mirrors verbatim); **session-close safety check**; migration promotes vendor `.claude/skills/`. **Validated on a real target 2026-06-16** — in-place Mode B upgrade of a large pre-existing project succeeded.
+- **status:** v4.4.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.4)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor adapters (gitignored, regenerated); single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/`; upgrades do a read-only filename check that recommends sync. **Validated on a real target 2026-06-16** (Mode B upgrade of a large pre-existing project).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-190758)
+- **last_session:** 2026-06-16 | agent: Claude Code (2026-06-16-194434)
 - **last_review:** 2026-06-15 | through 2026-06-15-231502
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -360,7 +360,9 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `docs/DESIGN-skills-layer.md`. `DECAY.md`/`REVIEW.md` unchanged. **Dogfooded end-to-end:**
   simulated an orphan `.claude/skills/demo-adopt/`, detection flagged it, adopted it
   (promote+sync), re-detection resolved, cleaned up; the real session-close check on this repo
-  passes (hello-world maps to `agent-skills/`). → serves: vision-agent-memory
+  passes (hello-world maps to `agent-skills/`). **[v4.4.0 update]** part (3), the per-session
+  safety check, was **removed** — skill work is on-demand (see `lightweight-skills-v440`);
+  parts (1) authoring convention + (2) adopt **stand**. → serves: vision-agent-memory
   <!-- id: authoring-adopt-v430 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-182101 -->
 - [x] **v4.3.1 (PATCH): skills-layer doc fixes from a session-close test-drive.** A fresh
   agent test-drove the v4.3.0 session-close ritual on `simple-proxy` (authored a skill in
@@ -395,6 +397,19 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.3.3; `UPGRADE.md` 4.3.2→4.3.3 rung + table; `README`/`CHANGELOG`; `DESIGN` §9.
   `DECAY.md`/`REVIEW.md` unchanged. → serves: vision-agent-memory
   <!-- id: skills-desc-guidance-v433 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-190758 -->
+- [x] **v4.4.0 (MINOR): lightweight skills — conscious, not per-session.** Maintainer's frame:
+  "skill creation is a conscious developer act; don't do heavy skill work every session." The
+  adapter recipe + **sync** / **adopt** / **sanity-check** ops moved OUT of the per-session
+  `AGENTS.md` into a new on-demand installed **`SKILLS.md`** (sibling of DECAY/REVIEW); the
+  per-session `AGENTS.md` "Skills" section is now just the runtime baseline + a pointer.
+  **Removed the v4.3.0 per-session "skills safety check"** from the ritual (partially supersedes
+  `authoring-adopt-v430` — authoring + adopt stand; only the per-session check is gone). Upgrades
+  run a **read-only filename check** that *recommends* `sync` if adapters are missing/orphaned
+  (never regenerates). Trims ~1.3K tok off every-session bootstrap. Came directly from the
+  lightweight-overhead analysis. Touched: `SKILLS.md` (new root doc), `AGENTS.md` (root+template),
+  `ENABLE.md`, `MIGRATE.md`, `.agent/schema.md`, `UPGRADE.md` (4.3.3→4.4.0 rung + standing check),
+  `VERSION`→4.4.0, `README`/`CHANGELOG`, `DESIGN`. `DECAY.md`/`REVIEW.md` unchanged. → serves: vision-agent-memory
+  <!-- id: lightweight-skills-v440 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-194434 -->
 
 ### Blueprint — gaps from Current State (v4.1.1) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads

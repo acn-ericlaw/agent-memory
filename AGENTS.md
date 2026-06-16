@@ -68,21 +68,12 @@ If a `agent-skills/` directory exists, it holds the project's **capabilities** �
 vendor-neutral `agent-skills/<name>/SKILL.md` files. When a task matches a skill's
 `description`, read and follow that `SKILL.md` (and any scripts it references) — the agent
 is the runtime, so it works on any vendor. Native adapters (`.claude/skills/`,
-`.gemini/commands/`, `.cursor/rules/`) are thin, regenerated, gitignored pointers; the
-shared source of truth is always `agent-skills/<name>/SKILL.md`.
+`.gemini/commands/`, `.cursor/rules/`) are thin, gitignored, regenerated pointers; the source
+of truth is always `agent-skills/<name>/SKILL.md`.
 
-Because adapters are gitignored they don't travel — a freshly cloned/pulled repo has the
-neutral skills but no adapters on this machine (the baseline still works; only native
-auto-trigger is missing). Say **"sync skill adapters"** to regenerate them. The canonical
-adapter recipe + sync steps live in `templates/AGENTS.md` → "Skills" (the copy installed
-into every enabled repo). See `docs/DESIGN-skills-layer.md`.
-
-**Author** a skill in `agent-skills/<name>/SKILL.md` (never in a vendor folder — those are
-gitignored pointers); keep its `description` **single-line, quote-free, and concise** (a
-compact trigger summary, matched within a small discovery budget) so it embeds cleanly in
-every adapter (the adapter mirrors it verbatim). If a skill was authored natively in a vendor folder (e.g. a built-in
-skill creator), **adopt** it: promote it into `agent-skills/`, then sync. The session-close
-ritual checks for this. Full authoring / adopt / sync recipe: `templates/AGENTS.md` → "Skills".
+**Authoring, syncing, adopting, or sanity-checking a skill?** See **`SKILLS.md`** (read on
+demand — not part of the per-session read). Skill work is a deliberate, occasional action,
+never part of the session ritual.
 
 ### During the Session
 
@@ -122,20 +113,15 @@ expected (the decay math counts log files — `DECAY.md` §4).
      `superseded-by: <new>` (omit the link for pure invalidation), and record
      `Superseded: <old> → <new>` in `## Memory References` — a truth-state edit you
      own; the review archives it flagged "superseded" (`DECAY.md` §9).
-3. **Skills safety check.** If a skill was authored this session in a **vendor folder**
-   (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`) with no matching
-   `agent-skills/<name>/`, it is stranded (gitignored) — **adopt** it (promote →
-   `agent-skills/<name>/SKILL.md`, then "sync skill adapters") before committing. No-op if none.
-4. **Review cadence.** If `sessions_since_last_review ≥ review_every`
+3. **Review cadence.** If `sessions_since_last_review ≥ review_every`
    (`memory/decay-policy.md`) or `continuity.md` exceeds `continuity_max_lines`, run
    the review ritual (`REVIEW.md`). Also run on demand if the user says "review memory".
-5. Remind the user to commit: `git add memory/ && git commit -m "session YYYY-MM-DD [agent]"`
+4. Remind the user to commit: `git add memory/ && git commit -m "session YYYY-MM-DD [agent]"`
 
 **After-session checklist** (the ritual is convention — run it each time):
 - [ ] session log written (persist-time filename + `## Memory References`)
 - [ ] `continuity.md`: `last_session` set, threads checked, new facts have footers
 - [ ] review run if cadence/size triggered (`REVIEW.md`)
-- [ ] skills safety check — any vendor-folder-authored skill adopted into `agent-skills/`?
 - [ ] reminded the user to commit `memory/`
 
 > Optional reinforcement: wire a lightweight Stop or pre-commit hook so this ritual

@@ -160,7 +160,7 @@ layer:
 - The verbatim original is preserved by Section A's move to `legacy/<vendor>/` — so
   `agent-skills/` is the promoted, shared copy and `legacy/` keeps the untouched original.
 - After promoting, **regenerate the per-vendor adapters** (Claude / Gemini / Cursor) from
-  each neutral skill exactly as `ENABLE.md` Step 5h specifies — thin pointers living in the
+  each neutral skill per the adapter recipe in `SKILLS.md` — thin pointers living in the
   gitignored vendor dirs.
 
 `agent-skills/` is tracked (Step 7 keeps it committed); the adapter dirs are ignored and
@@ -180,7 +180,7 @@ unrelated content, do **not** overwrite — raise a `- [ ] Contradiction:` Open 
 (`never-pick-a-winner`) and stop.
 
 **On-demand adopt.** This same promote (vendor folder → `agent-skills/`) is available
-*outside* migration as the **"adopt skill"** operation (see `AGENTS.md` → "Skills") — use it
+*outside* migration as the **"adopt skill"** operation (see `SKILLS.md`) — use it
 whenever a skill is authored natively in a vendor folder after enable; the session-close
 ritual prompts it so such a skill never silently stays unshared.
 
@@ -249,7 +249,7 @@ In `memory/continuity.md`, add to Open Threads:
 **Skills:** `.claude/skills/<name>/SKILL.md` (+ any bundled scripts)
 - **Promote** to the neutral `agent-skills/` layer per Section B2 — do NOT flatten into
   instructions (skills are *procedures*, not steering). Preserve the original under
-  `legacy/`; regenerate the Claude/Gemini/Cursor adapters per `ENABLE.md` Step 5h.
+  `legacy/`; regenerate the Claude/Gemini/Cursor adapters per the recipe in `SKILLS.md`.
 
 ---
 

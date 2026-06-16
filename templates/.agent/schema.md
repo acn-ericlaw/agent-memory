@@ -224,13 +224,13 @@ For vendors with a native skill/command system, thin **adapters** auto-trigger t
 in that runtime — each a generated *pointer* to the neutral skill, never a copy:
 `.claude/skills/<name>/SKILL.md`, `.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc`.
 Adapter dirs are personal/per-machine (gitignored) and are **regenerated locally** on
-enable/migrate, and **on demand** — say **"sync skill adapters"** (`AGENTS.md` → "Skills")
-to (re)create them after a clone/pull, since they're gitignored and don't travel. Only the
-neutral `agent-skills/` is shared.
+enable/migrate, and **on demand** — say **"sync skill adapters"** to (re)create them after a
+clone/pull, since they're gitignored and don't travel. Only the neutral `agent-skills/` is shared.
 
-**Author** skills in `agent-skills/<name>/SKILL.md` — never in a vendor folder. A skill
-authored natively in a vendor folder is **adopted** (promoted) into `agent-skills/`; the
-session-close ritual checks for stranded ones. See `AGENTS.md` → "Skills" and
+**Author** skills in `agent-skills/<name>/SKILL.md` — never in a vendor folder; a skill
+authored natively in a vendor folder is **adopted** (promoted) into `agent-skills/`. Skill
+work is on-demand, not per-session: authoring, the adapter recipe, **sync**, **adopt**, and
+the heavyweight **sanity check** all live in **`SKILLS.md`** (read on demand). See also
 `docs/DESIGN-skills-layer.md`.
 
 ---

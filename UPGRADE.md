@@ -36,6 +36,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.3.1 | Skills-layer doc fixes (PATCH, from a session-close test-drive): "Adopt a skill" no longer says "commit" mid-ritual (stage for the session-end commit); session-close check notes adopt-before-log ordering; body-normalization + detection clarified |
 | 4.3.2 | Skills-layer description hardening (PATCH, from a lifecycle sanity check): adapter `description` mirrors the neutral skill's verbatim; skill descriptions kept single-line & quote-free (escape/quote if unavoidable) so they embed safely in TOML/MDC/YAML — prevents invalid or drifted adapters |
 | 4.3.3 | Skills-layer description guidance (PATCH): `description` should be **concise** + trigger-phrase-rich (~1–2 sentences — matched within a small discovery budget, so long abstract paragraphs weaken activation); YAML `>`/`|` blocks are YAML-only, so the canonical value stays one logical line (it also mirrors into TOML) |
+| 4.4.0 | Lightweight skills: per-session `AGENTS.md` keeps only the runtime baseline + a pointer; the adapter recipe + **sync**/**adopt**/**sanity-check** ops move to an on-demand installed `SKILLS.md`. The per-session "skills safety check" is **removed** (skill work is a conscious, on-demand action); upgrades do a read-only filename check that *recommends* sync |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -59,6 +60,7 @@ if installed <  current:  run each rung below from installed up to current, in o
                           then re-stamp .agent/version.md (version=current, last_upgraded=today);
                           report what changed.
 if installed >  current:  the repo is newer than this tool checkout — stop and tell the user.
+either branch (incl. "up to date"):  also run the Skills adapter check (below) — read-only, recommend-only.
 ```
 
 A **missing** `.agent/version.md` means the repo was enabled before versioning
@@ -72,6 +74,23 @@ and skip if so. Re-running an upgrade must be safe.
 Target-repo only. Never touch `~/`, `~/.claude/`, `~/.cursor/`, Application
 Support, AppData, or system paths. Never delete; preserve/append. Never modify
 source code or package manifests.
+
+---
+
+## Skills adapter check (lightweight — every Mode B re-enable)
+
+Independent of the version ladder and **read-only**: skill adapters are gitignored, so a
+clone/pull (or a teammate's machine) may simply be missing them. On **any** Mode B re-enable —
+including "already up to date" — do a **filename-only** scan (no file contents):
+- **missing:** for each `agent-skills/<name>/`, any of `.claude/skills/<name>/SKILL.md`,
+  `.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc` absent;
+- **orphan:** any of those adapter files whose `<name>` has no `agent-skills/<name>/`.
+
+If either is non-empty, **recommend (don't run):** *"Skill adapters are out of sync on this
+machine (N missing, M orphaned) — run `sync skill adapters` (see `SKILLS.md`)."* Plus a nudge:
+*"edited a skill since the last sync? run the heavyweight `skill sanity check`."* **Never
+regenerate as part of the upgrade** — skill creation/sync is a conscious, on-demand action,
+not per-session or per-upgrade work.
 
 ---
 
@@ -428,3 +447,25 @@ activation signal read within a small budget). No shape, data, or behavior chang
 3. **Stamp** `.agent/version.md` → `version: 4.3.3`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 4. **Report**: `AGENTS.md` re-synced; descriptions tightened if any were over-long.
+
+---
+
+## Rung: 4.3.3 → 4.4.0 — lightweight skills (recipe → on-demand `SKILLS.md`)
+
+Additive relocation + a deliberate simplification: skill work is a *conscious, occasional*
+developer action, so it leaves the per-session path. No skill data changes.
+
+1. **Install `SKILLS.md`** at the target root (copied verbatim from this tool's root, like
+   `DECAY.md`/`REVIEW.md`). It holds the authoring convention, the adapter recipe, and the
+   **sync** / **adopt** / **sanity-check** operations — read on demand, not per-session.
+2. **Re-sync `AGENTS.md`** (verbatim where different): the "Skills" section is now just the
+   runtime baseline + a pointer to `SKILLS.md`; the verbose recipe/ops are gone from it. The
+   **"After Every Session" ritual no longer has a skills safety-check step** (removed — see
+   the standing read-only "Skills adapter check" this doc runs at Mode B instead).
+3. **No skill regeneration.** Existing `agent-skills/` and adapters are untouched. The
+   standing Skills adapter check (above) will *recommend* `sync skill adapters` if anything's
+   missing/orphaned on this machine.
+4. **Stamp** `.agent/version.md` → `version: 4.4.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+5. **Report**: `SKILLS.md` installed; `AGENTS.md` slimmed (per-session skills footprint cut;
+   no per-session skills check); skills adapter check result.

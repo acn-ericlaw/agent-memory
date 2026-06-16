@@ -4,8 +4,11 @@
 > `agent-skills/`; Cursor adapter fixed), **+ "sync skill adapters" v4.2.0** (regenerate
 > adapters from the neutral skill on demand — adapters are gitignored, so they don't travel),
 > **+ authoring convention & "adopt skill" safety-net v4.3.0** (author in `agent-skills/`,
-> never a vendor folder; promote a natively-authored skill back into `agent-skills/`, checked
-> at session close). Sibling to `DESIGN-evolving-memory.md` and `DESIGN-vbdi-lifecycle.md`.
+> never a vendor folder; promote a natively-authored skill back into `agent-skills/`),
+> **+ description guidance v4.3.1–4.3.3**, **+ lightweight-skills v4.4.0** (recipe + sync/adopt/
+> sanity ops moved to an on-demand `SKILLS.md`; per-session safety check removed — skill work
+> is conscious/on-demand; upgrades do a read-only filename check that *recommends* sync).
+> Sibling to `DESIGN-evolving-memory.md` and `DESIGN-vbdi-lifecycle.md`.
 > The maintainer chose **all-vendor adapters** at build time (Claude + Gemini + Cursor), so
 > §4c is fully realized rather than Claude-only.
 > **Source:** a real-work finding (2026-06-15) — a client repo enabled with agent-memory

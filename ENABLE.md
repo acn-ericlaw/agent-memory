@@ -274,7 +274,7 @@ Install the layer so the repo's memory can decay, review, and archive over time:
   `{{AGENT_MEMORY_VERSION}}` from this tool's root `VERSION`, `{{TODAY}}`, and
   `{{ENABLE_MODE}}` (`A` for fresh, `C` for migrate).
 
-`DECAY.md` and `REVIEW.md` are installed at the repo root in Step 6.
+`DECAY.md`, `REVIEW.md`, and `SKILLS.md` are installed at the repo root in Step 6.
 
 ### 5f. `memory/smoke-test.md`
 
@@ -325,12 +325,12 @@ on any vendor). See `docs/DESIGN-skills-layer.md` and `.agent/schema.md`.
   regenerated (never hand-edited), living in the gitignored vendor dirs (Step 7), so they
   stay per-machine while only `agent-skills/` is committed.
 
-**Adapter generation** uses the canonical recipe in `templates/AGENTS.md` → "Skills" (the
-same recipe that ships into the target): for each `agent-skills/<name>/SKILL.md`, write the
+**Adapter generation** uses the canonical recipe in **`SKILLS.md`** (the skills reference
+that ships into the target): for each `agent-skills/<name>/SKILL.md`, write the
 Claude / Gemini / Cursor pointers — idempotent, gitignored. After enable/migrate, a
 contributor on another machine regenerates *their* local adapters with the **"sync skill
-adapters"** operation documented in that installed `AGENTS.md` (adapters are gitignored, so
-they don't travel with a clone/pull).
+adapters"** operation in `SKILLS.md` (adapters are gitignored, so they don't travel with a
+clone/pull). `SKILLS.md` is read on demand — it's not in the per-session path.
 
 **Collision guard.** `agent-skills/` is namespaced to make a clash with a pre-existing
 project dir unlikely, but if a top-level `agent-skills/` already exists with unrelated
@@ -360,9 +360,10 @@ verbatim from this tool's root** (they are generic — no placeholders):
 
 - `DECAY.md`
 - `REVIEW.md`
+- `SKILLS.md`
 
-These must travel into the target because the review ritual runs *inside* the
-enabled repo. (`UPGRADE.md` is tool-operator-only — do **not** install it.)
+These must travel into the target because the review ritual (and skill sync/adopt) run
+*inside* the enabled repo. (`UPGRADE.md` is tool-operator-only — do **not** install it.)
 
 **Conflict handling:**
 - If Mode C ran and a vendor bootstrap file was migrated, the migration step
@@ -415,7 +416,7 @@ describe what was intended.
    - `memory/instructions.md`, `memory/continuity.md`, `memory/sessions/`
    - `memory/decay-policy.md`, `memory/archive/INDEX.md`, `memory/smoke-test.md`, `memory/vision.md`
    - `.agent/schema.md`, `.agent/version.md`
-   - `DECAY.md`, `REVIEW.md`
+   - `DECAY.md`, `REVIEW.md`, `SKILLS.md`
    - `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`,
      `.github/copilot-instructions.md`
    - `.gitignore` exists and contains the agent-memory sentinel line plus the
@@ -518,7 +519,7 @@ Respond accordingly.
 - Never modify `package.json`, `Cargo.toml`, etc.
 - Only create/modify files within: `memory/`, `.agent/`, `legacy/`, `agent-skills/` (the
   neutral capability layer) and its regenerated per-machine adapters (`.claude/skills/`,
-  `.gemini/commands/`, `.cursor/rules/`), `DECAY.md`, `REVIEW.md`, `.gitignore` (add-only,
+  `.gemini/commands/`, `.cursor/rules/`), `DECAY.md`, `REVIEW.md`, `SKILLS.md`, `.gitignore` (add-only,
   never remove existing entries), `.github/copilot-instructions.md`, and the bootstrap
   files listed in Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a
   target.)

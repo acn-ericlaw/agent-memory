@@ -131,6 +131,7 @@ it in place** — additively, never destructively.
 | 4.3.1 | Skills-layer doc fixes (from a session-close test-drive): "Adopt" no longer says "commit" mid-ritual; adopt-before-log ordering noted; body-normalization clarified |
 | 4.3.2 | Skills-layer description hardening (from a lifecycle sanity check): adapter `description` mirrors the neutral skill verbatim; descriptions kept single-line & quote-free so they embed safely in TOML/MDC/YAML |
 | 4.3.3 | Skills-layer description guidance: keep `description` concise + trigger-phrase-rich (small discovery budget); YAML `>`/`|` are YAML-only, so the value stays one logical line (it mirrors into TOML too) |
+| 4.4.0 | Lightweight skills: per-session `AGENTS.md` keeps only the runtime baseline + a pointer; the recipe + **sync**/**adopt**/**sanity-check** ops move to an on-demand `SKILLS.md`. Per-session "skills safety check" removed (skill work is conscious/on-demand); upgrades do a read-only filename check that *recommends* sync |
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the
@@ -220,6 +221,7 @@ agent-memory/
   UPGRADE.md                         ← in-place version-upgrade ladder (tool-only)
   DECAY.md                           ← evolving-memory rules (installed into targets)
   REVIEW.md                          ← the review ritual (installed into targets)
+  SKILLS.md                          ← skills reference: author/sync/adopt/sanity (installed; on-demand)
   AGENTS.md                          ← memory protocol + enable dispatch
   CLAUDE.md / GEMINI.md              ← vendor bootstraps for this repo
   .cursorrules / .windsurfrules      ← Cursor / Windsurf bootstraps
