@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.7.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0–4.7.1:** + a **lightweight mode** keyed to the *objective* "did a file change?" test — **read-only** sessions write **no log**; **any file change** (even one line) writes at least a one-line **lite log**; a memory-relevant event → full ritual ("trivial" is a judgment call, so it never decides the skip). **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run; cloned + bootstrapped under enterprise Kiro on Windows).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-185504)
+- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-190301)
 - **last_review:** 2026-06-16 | through 2026-06-16-201531
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -90,10 +90,22 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
-- [ ] Incorporate findings from the first **real-world v4.1.1 enablement** (a large pre-existing
-  project, in-place Mode B upgrade — succeeded 2026-06-16). Maintainer will report back; refine
-  the skills layer if issues surface. This is the dogfood-feedback loop that drove v3.1.0/v3.2.0.
-  <!-- id: ot-realworld-v411-findings | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: active | origin: 2026-06-16-141614 -->
+- [x] Incorporate findings from real-world enablement / validation. **Closed 2026-06-17
+  (maintainer):** the validation loop is satisfied — a **team demo of "AI enable" drew member
+  support**, and the v4.x upgrade was exercised across real targets and **three non-Claude vendors**
+  (Gemini cross-machine run, enterprise-Kiro bootstrap on Windows, Kiro enablement of a new
+  source-code repo with an honest "helps more than it interferes" assessment). No blocking issues;
+  findings drove the **v4.5.1–v4.7.1** refinements (Gemini slash-command + commit guard; Kiro
+  hooks; commit attribution; lightweight mode). The dogfood-feedback loop did its job.
+  <!-- id: ot-realworld-v411-findings | created: 2026-06-16 | last_used: 2026-06-17 | uses: 1 | tier: active | origin: 2026-06-16-141614 -->
+
+- [ ] Validate the memory + skills layer with **GitHub Copilot CLI**. Maintainer's account was
+  **approved 2026-06-17**, activating in ~1–2 days (≈2026-06-18/19); they'll then test and report.
+  Copilot is already in the Mode C detection table (`.github/copilot-instructions.md`) and gets a
+  bootstrap pointer — this validates whether Copilot CLI actually reads `AGENTS.md` / follows the
+  protocol, and whether skills need a Copilot adapter (today the recipe covers Claude/Gemini/Cursor/Kiro).
+  Last open cross-vendor validation; same dogfood loop.
+  <!-- id: ot-copilot-cli-validation | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: active | origin: 2026-06-17-190301 -->
 
 - [x] Drift: the Blueprint subsection header said "Current State (**v4.1.1**)" while status
   is now **v4.4.0**. **Resolved 2026-06-16** — refreshed the baseline label to v4.4.0 (the gap
