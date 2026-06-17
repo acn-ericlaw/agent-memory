@@ -117,13 +117,17 @@ expected (the decay math counts log files — `DECAY.md` §4).
 3. **Review cadence.** If `sessions_since_last_review ≥ review_every`
    (`memory/decay-policy.md`) or `continuity.md` exceeds `continuity_max_lines`, run
    the review ritual (`REVIEW.md`). Also run on demand if the user says "review memory".
-4. Remind the user to commit: `git add memory/ && git commit -m "session YYYY-MM-DD [agent]"`
+4. Remind the user to commit: `git add memory/ && git commit -m "session YYYY-MM-DD [agent]"`.
+   **Commits are deliberate and human-initiated.** When you commit at the human's direction,
+   **identify yourself** the same way you do in session logs — e.g. a `Co-Authored-By: <your agent
+   name>` trailer — so authorship is traceable across vendors. (If your runtime already adds one,
+   nothing to do.)
 
 **After-session checklist** (the ritual is convention — run it each time):
 - [ ] session log written (persist-time filename + `## Memory References`)
 - [ ] `continuity.md`: `last_session` set, threads checked, new facts have footers
 - [ ] review run if cadence/size triggered (`REVIEW.md`)
-- [ ] reminded the user to commit `memory/`
+- [ ] reminded the user to commit `memory/` (deliberate, human-initiated, with a self-identifying co-author trailer)
 
 > Optional reinforcement: wire a lightweight Stop or pre-commit hook so this ritual
 > is *prompted*, not merely documented (see `docs/optional-ritual-hook.md`). It stays

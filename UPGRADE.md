@@ -40,6 +40,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.5.0 | Kiro adapter: a 4th skills adapter target `.kiro/skills/<name>/SKILL.md` (Kiro follows the open Agent Skills standard — same shape as the Claude adapter); Kiro added to the Mode C detection table (steering/specs/skills). Kiro auto-reads root `AGENTS.md`, so the memory layer needs no pointer file |
 | 4.5.1 | Skills-layer guidance (PATCH, from a Gemini CLI dogfood): the Gemini adapter is a **slash command** `/<name>` (explicit, not natural-language auto-matched) — NL routes through the baseline to the same skill; trigger semantics differ per vendor; and `sync skill adapters` must **never commit / recommend committing** the gitignored adapter dirs (only `agent-skills/` is shared) |
 | 4.5.2 | Kiro hooks in Mode C (PATCH, from a Windows/Kiro enable): the `MIGRATE.md` Kiro protocol now handles `.kiro/hooks/*.kiro.hook` — preserved verbatim under `legacy/kiro/hooks/`, never converted/run. Human-gated commit hooks (like Kiro's) align with agent-memory; only an *unprompted* auto-commit/push is surfaced as an Open Thread. README gains a bootstrap edge-case note ("Start from `AGENTS.md`" when an enterprise IDE self-bootstraps) |
+| 4.6.0 | Vendor-neutral **commit attribution**: `AGENTS.md` extends "identify yourself" (already true for session logs) to commits — deliberate, human-initiated, with a `Co-Authored-By: <agent>` trailer. Encodes once in the shared layer what Claude Code does automatically and Kiro needed a per-machine hook for; soft guidance, a no-op where the runtime already does it |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -529,3 +530,20 @@ Additive migration sub-case + a usage note; no shape change, no skill data chang
 3. **Stamp** `.agent/version.md` → `version: 4.5.2`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 4. **Report**: Kiro migration now handles hooks (preserve, never run).
+
+---
+
+## Rung: 4.5.2 → 4.6.0 — vendor-neutral commit attribution (MINOR)
+
+Additive convention; no shape change, no skill data changes. Makes any vendor add the deliberate,
+self-identifying commit trailer that Claude Code does automatically and Kiro needed a hook for.
+
+1. **Re-sync `AGENTS.md`** (root + template, verbatim where different): the "After Every Session"
+   step 4 + checklist now carry the **commit-attribution convention** — *"commits are deliberate
+   and human-initiated; identify yourself (e.g. a `Co-Authored-By: <agent>` trailer) the way you do
+   in session logs."* Soft guidance, a no-op for runtimes that already do it. `SKILLS.md` /
+   `DECAY.md` / `REVIEW.md` unchanged.
+2. **No skill regeneration; no `.gitignore` change.**
+3. **Stamp** `.agent/version.md` → `version: 4.6.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: `AGENTS.md` re-synced; commit-attribution convention now applies to every vendor.

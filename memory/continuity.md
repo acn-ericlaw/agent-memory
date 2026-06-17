@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.5.2 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run; cloned + bootstrapped under enterprise Kiro on Windows).
+- **status:** v4.6.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run; cloned + bootstrapped under enterprise Kiro on Windows).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-180514)
+- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-181607)
 - **last_review:** 2026-06-16 | through 2026-06-16-201531
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -488,7 +488,22 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   unchanged. → serves: vision-agent-memory (multi-vendor, multi-machine without drift)
   <!-- id: kiro-hooks-edgecase-v452 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: working | origin: 2026-06-17-175728 -->
 
-### Blueprint — gaps from Current State (v4.5.2) to the Vision  (serves: vision-agent-memory)
+- **Shipped v4.6.0 — vendor-neutral commit attribution (MINOR).** Came from the maintainer's
+  observation: **Claude Code adds a deliberate, human-gated `Co-Authored-By:` trailer
+  automatically** (it's in its harness), **Kiro needed a per-machine hook + steering** to do the
+  same, and Gemini/Cursor do nothing by default. That vendor-by-vendor inconsistency is exactly the
+  gap the shared layer closes. So `AGENTS.md` (root + template) now **extends its existing "identify
+  yourself" principle** (already true for session logs) **to commits**: "After Every Session" step 4
+  + checklist say *commits are deliberate and human-initiated; identify yourself the way you do in
+  session logs — e.g. a `Co-Authored-By: <agent>` trailer.* **Soft by design** (guides, doesn't
+  prescribe git workflow; a no-op for runtimes that already do it). Now any vendor gets Claude's
+  behavior with **no per-vendor hook** — a concrete "encode once in the shared layer vs. N
+  per-vendor configs" proof point. Touched: `AGENTS.md` (root + template), `VERSION`→4.6.0,
+  `UPGRADE.md` 4.5.2→4.6.0 rung + table, `README`/`CHANGELOG`. `SKILLS.md`/`DECAY.md`/`REVIEW.md`
+  unchanged. → serves: vision-agent-memory (`bp-multi-user` — multi-contributor traceability + provenance)
+  <!-- id: commit-attribution-v460 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: working | origin: 2026-06-17-181607 -->
+
+### Blueprint — gaps from Current State (v4.6.0) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
 > `(blueprint)`: each is a Vision↔reality gap that closes when delivered. The *backward*
 > memory layer is not here — it's done; every gap is *forward*. These operationalize the

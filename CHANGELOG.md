@@ -12,6 +12,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.6.0, 6/17/2026
+
+> **Vendor-neutral commit attribution — encode the convention once, every vendor follows.** A
+> Kiro observation crystallized it: Claude Code adds a deliberate, human-gated `Co-Authored-By:`
+> trailer *automatically* (it's in its harness), Kiro needed a per-machine **hook + steering** to
+> do the same, and Gemini/Cursor do nothing by default. That's exactly the gap the shared layer
+> closes — so `AGENTS.md` now extends its existing **"identify yourself"** principle (already true
+> for session logs) to **commits**: any vendor's agent gets Claude's behavior with **no per-vendor
+> hook**. Serves multi-contributor traceability (`bp-multi-user`) + provenance.
+
+### Added
+
+1. **Commit-attribution convention** in `AGENTS.md` (root + template), in the "After Every
+   Session" step 4 + checklist: *"Commits are deliberate and human-initiated. When you commit at
+   the human's direction, identify yourself the same way you do in session logs — e.g. a
+   `Co-Authored-By: <your agent name>` trailer — so authorship is traceable across vendors. (If
+   your runtime already adds one, nothing to do.)"* Soft by design — guides, doesn't prescribe git
+   workflow; a no-op for runtimes (like Claude Code) that already do it.
+
+### Changed
+
+1. `VERSION` → 4.6.0; `UPGRADE.md` 4.5.2→4.6.0 rung (re-sync `AGENTS.md`) + table; `README`.
+   `SKILLS.md` / `DECAY.md` / `REVIEW.md` unchanged.
+
+---
 ## Version 4.5.2, 6/17/2026
 
 > **Kiro hooks in Mode C + a bootstrap edge-case note — from a Windows/Kiro enable.** Cloning an
