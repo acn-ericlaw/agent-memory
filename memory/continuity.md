@@ -70,7 +70,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   daemon). The markdown files are the product and the agent is the runtime. A skill MAY
   bundle optional helper scripts, but those are invoked by the agent/vendor at the user's
   direction, never executed by the tool.
-  <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-16 | uses: 4 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
+  <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-17 | uses: 5 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
 - Upgrades are additive and non-destructive — enrich and add, never rewrite or delete
   <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-16 | uses: 15 | tier: core -->
 
@@ -305,7 +305,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   Tested end-to-end via the `AGENTS.md` baseline (read the SKILL.md → ran the helper).
   Closes the "skills layer shipped with no example/dogfood fixture" follow-on; the tool now
   dogfoods `agent-skills/` the way it dogfoods `memory/`.
-  <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-16 | uses: 4 | tier: active | origin: 2026-06-16-152327 -->
+  <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-17 | uses: 5 | tier: active | origin: 2026-06-16-152327 -->
 
 ### Shipped — v4.2.0: "sync skill adapters" (2026-06-16)
 - [x] **"Sync skill adapters" operation shipped (additive MINOR).** Closes the cross-machine
