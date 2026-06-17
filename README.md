@@ -20,43 +20,58 @@ Three things in one:
 
 ---
 
-## Quickstart — Enable + Migrate Any Repo
+## Quickstart
+
+Three short phases: **install the tool**, **enable a repo**, then **work in that repo**.
+
+### 1 · Install agent-memory (one-time)
 
 ```bash
-# 1. Clone this tool
 git clone https://github.com/your-org/agent-memory
 cd agent-memory
+```
 
-# 2. Open with your AI agent
-claude        # or gemini, cursor, etc.
+Open the cloned folder with your AI agent (Claude Code, Gemini CLI, Cursor, Kiro, …), and make
+your **first prompt**:
 
-# 3. Say:
-"AI enable this repo /path/to/your-project"
+> **"Start from `AGENTS.md`."**
 
-# 4. The agent will:
-#    - Detect existing AI footprint (Cursor, Aider, etc.)
-#    - Offer migration (with dry-run option)
-#    - Analyse the repo (language, stack, type)
-#    - Generate tailored memory files
-#    - Install bootstrap files for all major agents
-#    - Preserve originals under legacy/
-#    - Report exactly what happened
+This points the agent at the hub so it loads the agent-memory protocol *before* doing anything
+else. It's the reliable entry point on every vendor — and it's **required** in enterprise IDEs
+(e.g. Kiro) that otherwise self-bootstrap from their own onboarding before reading `AGENTS.md`.
 
-# 5. Commit the result
+### 2 · Enable a target repo
+
+> **VS Code / Kiro:** add the target repo to the **same workspace** as this tool, so the agent can
+> read both. Other CLIs (Claude Code, Gemini CLI, …) work fine without this.
+
+Then ask:
+
+> **"AI enable `/path/to/your-project`."**
+
+The agent will detect any existing AI footprint (Cursor, Aider, Copilot, Kiro, …) and offer
+migration (with a dry-run option), analyse the repo (language, stack, type), generate tailored
+`memory/` files, install bootstrap files for all major agents, preserve originals under `legacy/`,
+and report exactly what happened.
+
+### 3 · Work in your AI-enabled repo
+
+```bash
+# Commit the freshly enabled repo
 cd /path/to/your-project
 git add . && git commit -m "chore: AI-enable repo"
 ```
 
-> **Edge case — bootstrapping inside an enterprise IDE (e.g. Kiro).** On a fresh clone the
-> per-machine vendor dirs (`.kiro/`, `.claude/`, …) don't exist — they're gitignored. Some
-> enterprise IDE setups **self-bootstrap from their own onboarding/MCP before reading
-> `AGENTS.md`**. If that happens, just tell the agent **"Start from `AGENTS.md`"** — it will then
-> follow the agent-memory protocol; afterward run **`sync skill adapters`** to regenerate your
-> local adapters. Any hooks/steering the IDE later deposits into `.kiro/` stay **gitignored and
-> per-machine**, so they never touch the shared `memory/` layer. (Commit hooks like Kiro's are
-> typically **human-gated** — they fire only when *you* say "commit" and add a co-author trailer,
-> which matches agent-memory's deliberate-commit model. Only a hook that commits or pushes
-> **unprompted** would be worth scoping; the tool won't fight it either way.)
+From now on, **open the target repo with any AI agent and just work** — it reads `memory/`
+automatically, orients without re-explaining, and records decisions as it goes. Commits stay
+deliberate and human-initiated, with a self-identifying `Co-Authored-By:` trailer.
+
+> **Note for enterprise IDEs (e.g. Kiro).** Per-machine vendor dirs (`.kiro/`, `.claude/`, …) are
+> gitignored, so a fresh clone won't have them — after the agent loads the protocol, run
+> **`sync skill adapters`** to regenerate your local skill adapters. Anything the IDE later deposits
+> in `.kiro/` (hooks, steering) stays gitignored and per-machine, so it never touches the shared
+> `memory/` layer; human-gated commit hooks (like Kiro's) align with agent-memory's
+> deliberate-commit model.
 
 ---
 
