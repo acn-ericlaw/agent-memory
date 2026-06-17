@@ -69,7 +69,8 @@ vendor-neutral `agent-skills/<name>/SKILL.md` files. When a task matches a skill
 `description`, read and follow that `SKILL.md` (and any scripts it references) — the agent
 is the runtime, so it works on any vendor. Native adapters (`.claude/skills/`,
 `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`) are thin, gitignored, regenerated
-pointers; the source of truth is always `agent-skills/<name>/SKILL.md`.
+pointers — **never commit them** (only `agent-skills/` is shared); the source of truth is
+always `agent-skills/<name>/SKILL.md`.
 
 **Authoring, syncing, adopting, or sanity-checking a skill?** See **`SKILLS.md`** (read on
 demand — not part of the per-session read). Skill work is a deliberate, occasional action,

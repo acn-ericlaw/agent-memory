@@ -10,7 +10,11 @@
 > is conscious/on-demand; upgrades do a read-only filename check that *recommends* sync),
 > **+ Kiro adapter v4.5.0** (4th adapter target `.kiro/skills/<name>/SKILL.md` — Kiro follows
 > the open Agent Skills standard, same shape as the Claude adapter; Kiro added to the Mode C
-> detection table; Kiro auto-reads root `AGENTS.md`, so the memory layer needs no pointer file).
+> detection table; Kiro auto-reads root `AGENTS.md`, so the memory layer needs no pointer file),
+> **+ trigger-semantics & commit-guard clarifications v4.5.1** (from a Gemini CLI dogfood: the
+> Gemini adapter is a *slash command* `/<name>`, not a natural-language auto-trigger — NL routes
+> through the baseline to the same skill; and `sync` must never commit / recommend committing the
+> gitignored adapter dirs).
 > Sibling to `DESIGN-evolving-memory.md` and `DESIGN-vbdi-lifecycle.md`.
 > The maintainer chose **all-vendor adapters** at build time (Claude + Gemini + Cursor + Kiro),
 > so §4c is fully realized rather than Claude-only.
@@ -101,10 +105,18 @@ lives only in `AGENTS.md`):
 | Vendor | Native mechanism | Adapter |
 |---|---|---|
 | Claude Code | `.claude/skills/<n>/SKILL.md` (Skill tool auto-discovers) | frontmatter + body "follow `agent-skills/<n>/SKILL.md`" |
-| Gemini CLI | custom command (`.gemini/commands/…`) | command that reads the neutral skill |
+| Gemini CLI | custom command (`.gemini/commands/<n>.toml`) — **slash command `/<n>`, explicit (not NL-matched)** | command that reads the neutral skill |
 | Cursor | rule (`.cursor/rules/*.mdc`) | rule referencing the neutral skill |
 | Kiro | `.kiro/skills/<n>/SKILL.md` (open Agent Skills standard — auto-matched) | same shape as Claude: frontmatter + body "follow `agent-skills/<n>/SKILL.md`" |
 | Codex / Kiro / AGENTS.md-only | *(none)* | nothing needed — auto-reads root `AGENTS.md`, uses the §4b baseline |
+
+> **Trigger semantics differ (v4.5.1, from a Gemini dogfood).** "Auto-triggers" above holds for
+> the *description-matched* mechanisms (Claude Skill tool, Cursor agent-requested rules, Kiro's
+> open-standard skills). **Gemini is the exception**: a custom command fires only on an explicit
+> `/<name>`, never on natural-language prose — so a phrase like "run hello-world" correctly routes
+> through the §4b baseline to the same neutral skill (identical result; not a missing adapter).
+> Because every adapter is a pointer back to `agent-skills/`, no path can diverge. **Adapters are
+> never committed** (Option A, §4d) — `sync` must not stage or recommend committing them.
 
 ### 4d. The committed-vs-personal decision — **Option A (chosen)**
 

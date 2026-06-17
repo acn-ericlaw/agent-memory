@@ -133,6 +133,7 @@ it in place** — additively, never destructively.
 | 4.3.3 | Skills-layer description guidance: keep `description` concise + trigger-phrase-rich (small discovery budget); YAML `>`/`|` are YAML-only, so the value stays one logical line (it mirrors into TOML too) |
 | 4.4.0 | Lightweight skills: per-session `AGENTS.md` keeps only the runtime baseline + a pointer; the recipe + **sync**/**adopt**/**sanity-check** ops move to an on-demand `SKILLS.md`. Per-session "skills safety check" removed (skill work is conscious/on-demand); upgrades do a read-only filename check that *recommends* sync |
 | 4.5.0 | Kiro support: a 4th skills adapter target `.kiro/skills/<name>/SKILL.md` (Kiro follows the open Agent Skills standard — same shape as the Claude adapter) + Kiro in the Mode C detection/migration table (steering → instructions, skills → `agent-skills/`, specs → `legacy/`). Kiro auto-reads root `AGENTS.md`, so the memory layer needs no pointer file |
+| 4.5.1 | Skills-layer guidance (from a Gemini CLI dogfood): documents that the Gemini adapter is a **slash command** `/<name>` (explicit, not natural-language auto-matched) while Claude/Cursor/Kiro adapters are description-matched — all point to the same neutral skill; and a **never-commit-the-adapters** guard on `sync skill adapters` (only `agent-skills/` is shared) |
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the

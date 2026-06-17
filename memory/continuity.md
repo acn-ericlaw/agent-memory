@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.5.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated); single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/`; upgrades do a read-only filename check that recommends sync. **Validated on a real target 2026-06-16** (Mode B upgrade of a large pre-existing project).
+- **status:** v4.5.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/`; upgrades do a read-only filename check that recommends sync. **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-17 | agent: Gemini CLI (2026-06-17-042634)
+- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-044933)
 - **last_review:** 2026-06-16 | through 2026-06-16-201531
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -418,7 +418,25 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `.gitignore` comment, `agent-skills/hello-world/SKILL.md`. → serves: vision-agent-memory
   <!-- id: kiro-adapter-v450 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-221832 -->
 
-### Blueprint — gaps from Current State (v4.5.0) to the Vision  (serves: vision-agent-memory)
+- **Shipped v4.5.1 — skills-layer guidance (PATCH, from the Gemini CLI cross-machine dogfood).**
+  Two rough edges surfaced by a real Gemini CLI run (see `dogfood-hello-world-skill`), both
+  wording/guidance — no shape change: **(1)** after `sync`, a natural-language "run hello-world"
+  kept reading `agent-skills/` rather than the new `.gemini/commands/` command. **Root cause:**
+  Gemini custom commands are **slash commands** (`/<name>`, explicit) — *not* NL auto-triggers
+  like Claude/Cursor/Kiro — so NL correctly routes through the `AGENTS.md` baseline to the **same**
+  neutral skill (identical result; both the slash command and the baseline are pointers to
+  `agent-skills/`, so nothing can diverge). **(2)** the agent told the user to **commit** the
+  vendor adapter dirs — wrong: adapters are gitignored/per-machine/regenerated; only
+  `agent-skills/` is committed (the `.gitignore` already blocks it, but the agent shouldn't
+  recommend it). **Fixes:** `SKILLS.md` — Gemini adapter documented as a slash command + a
+  "trigger semantics differ per vendor" note + a **never-commit-the-adapters** guard on the
+  `sync` op; `AGENTS.md` (root + template) adapter line now says "never commit them"; `DESIGN`
+  recipe table + note. `VERSION`→4.5.1, `UPGRADE.md` 4.5.0→4.5.1 rung + table, `README`/`CHANGELOG`.
+  `DECAY.md`/`REVIEW.md` unchanged. The dogfood-feedback loop (drove v3.1.0/v3.2.0/v4.2.0) again.
+  → serves: vision-agent-memory
+  <!-- id: skills-gemini-dogfood-v451 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: working | origin: 2026-06-17-044933 -->
+
+### Blueprint — gaps from Current State (v4.5.1) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
 > `(blueprint)`: each is a Vision↔reality gap that closes when delivered. The *backward*
 > memory layer is not here — it's done; every gap is *forward*. These operationalize the

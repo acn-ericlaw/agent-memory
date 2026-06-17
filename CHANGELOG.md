@@ -12,6 +12,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.5.1, 6/17/2026
+
+> **Skills-layer guidance — from a cross-machine Gemini CLI dogfood.** A real Gemini CLI run
+> (different machine) surfaced two rough edges, both wording/guidance, no shape change:
+> (1) after `sync`, a natural-language "run hello-world" kept reading `agent-skills/` instead of
+> the freshly-generated `.gemini/commands/` command; (2) the agent told the user to **commit** the
+> vendor adapter dirs. Root causes: Gemini custom commands are **slash commands** (`/<name>`,
+> explicit) — *not* natural-language auto-triggers like Claude/Cursor/Kiro — so NL correctly
+> routes through the `AGENTS.md` baseline to the **same** neutral skill (identical result, not a
+> defect); and our docs stated adapters are gitignored but never explicitly said *don't commit /
+> recommend committing them*.
+
+### Changed
+
+1. **`SKILLS.md`** — the Gemini adapter is now documented as a **slash command `/<name>`**
+   (explicit, not NL-matched); added a "trigger semantics differ per vendor" note (Claude /
+   Cursor / Kiro are description-matched, Gemini is slash-invoked, all pointing to the same
+   neutral skill); and a **never-commit-the-adapters** guard on the `sync skill adapters`
+   operation (report adapters as "gitignored — do not commit; only `agent-skills/` is shared").
+2. **`AGENTS.md`** (root + template) — the adapter line now says **"never commit them"**.
+3. **`docs/DESIGN-skills-layer.md`** — recipe table flags Gemini as slash-invoked; a trigger-
+   semantics + commit-guard note under the table; status line. `VERSION` → 4.5.1; `UPGRADE.md`
+   4.5.0→4.5.1 rung + table; `README`. `DECAY.md` / `REVIEW.md` unchanged.
+
+---
 ## Version 4.5.0, 6/16/2026
 
 > **Kiro support — convergence on open standards.** Amazon's Kiro IDE adopts the two open
