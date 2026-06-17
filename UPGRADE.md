@@ -41,6 +41,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.5.1 | Skills-layer guidance (PATCH, from a Gemini CLI dogfood): the Gemini adapter is a **slash command** `/<name>` (explicit, not natural-language auto-matched) — NL routes through the baseline to the same skill; trigger semantics differ per vendor; and `sync skill adapters` must **never commit / recommend committing** the gitignored adapter dirs (only `agent-skills/` is shared) |
 | 4.5.2 | Kiro hooks in Mode C (PATCH, from a Windows/Kiro enable): the `MIGRATE.md` Kiro protocol now handles `.kiro/hooks/*.kiro.hook` — preserved verbatim under `legacy/kiro/hooks/`, never converted/run. Human-gated commit hooks (like Kiro's) align with agent-memory; only an *unprompted* auto-commit/push is surfaced as an Open Thread. README gains a bootstrap edge-case note ("Start from `AGENTS.md`" when an enterprise IDE self-bootstraps) |
 | 4.6.0 | Vendor-neutral **commit attribution**: `AGENTS.md` extends "identify yourself" (already true for session logs) to commits — deliberate, human-initiated, with a `Co-Authored-By: <agent>` trailer. Encodes once in the shared layer what Claude Code does automatically and Kiro needed a per-machine hook for; soft guidance, a no-op where the runtime already does it |
+| 4.7.0 | **Lightweight mode** for memory-neutral tasks (from a Kiro enablement): a trivial task (no new fact/decision/thread/state change) writes a **one-line "lite" session log** (`## Memory References` → `(none)`) and skips the full template / fact-footers / continuity edits. Ledger stays continuous; the review handles it as a normal reference-free session. Scales the per-session ceremony to the actual memory impact |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -547,3 +548,21 @@ self-identifying commit trailer that Claude Code does automatically and Kiro nee
 3. **Stamp** `.agent/version.md` → `version: 4.6.0`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 4. **Report**: `AGENTS.md` re-synced; commit-attribution convention now applies to every vendor.
+
+---
+
+## Rung: 4.6.0 → 4.7.0 — lightweight mode for memory-neutral tasks (MINOR)
+
+Additive ritual carve-out; no shape change, no skill/memory data changes. From a Kiro enablement
+finding (per-session write ceremony is heavy for trivial tasks).
+
+1. **Re-sync `AGENTS.md`** (root + template, verbatim where different): "After Every Session" now
+   has a **Lightweight mode** note — for a **memory-neutral** task (no new/changed fact, no
+   decision, no Open Thread touched, no project-state change) write a **one-line "lite" session
+   log** (`## Memory References` → `(none)`) and skip the full template / fact-footers / continuity
+   edits. The ledger stays continuous; the review handles a lite log as a normal session with no
+   references. `SKILLS.md` / `DECAY.md` / `REVIEW.md` unchanged.
+2. **No skill regeneration; no `.gitignore` change.**
+3. **Stamp** `.agent/version.md` → `version: 4.7.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: `AGENTS.md` re-synced; lightweight mode available for trivial tasks.

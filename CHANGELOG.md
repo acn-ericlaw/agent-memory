@@ -12,6 +12,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.7.0, 6/17/2026
+
+> **Lightweight mode — scale the ceremony to the memory impact.** From a real cross-vendor
+> enablement: **Kiro** used the installed tool to AI-enable a new source-code repo and gave an
+> honest assessment — the protocol "helps more than it interferes" (immediate orientation from
+> `memory/`, actionable `SKILLS.md`, real multi-agent-continuity value), but the **per-session write
+> ceremony is disproportionate for trivial tasks** ("for a two-line script and a skill file, the
+> protocol's weight is noticeable") and "could benefit from a lightweight mode." This release adds
+> exactly that — without breaking the event-sourced ledger.
+
+### Added
+
+1. **Lightweight mode (memory-neutral tasks)** in `AGENTS.md` (root + template), in "After Every
+   Session": if a task produced **no memory-relevant event** (no new/changed fact, no decision, no
+   Open Thread touched, no project-state change), write a **one-line "lite" session log**
+   (persist-time filename + `**Agent:**` + a *lightweight*-marked summary + `## Memory References` →
+   `(none)`) and **skip** the full template, fact-footer bookkeeping, and continuity edits. The
+   **ledger stays continuous** (every session still logged), so multi-agent continuity is preserved;
+   the review counts a lite log like any session but it carries no references, so usage is
+   unaffected. When unsure, write the full log; Vision/Blueprint/invariant/supersession changes are
+   never memory-neutral. **`DECAY.md` / `REVIEW.md` need no change** — a lite log is just a session
+   file with no `## Memory References`.
+
+### Changed
+
+1. `VERSION` → 4.7.0; `UPGRADE.md` 4.6.0→4.7.0 rung (re-sync `AGENTS.md`) + table; `README`.
+   `SKILLS.md` / `DECAY.md` / `REVIEW.md` unchanged.
+
+---
 ## Version 4.6.0, 6/17/2026
 
 > **Vendor-neutral commit attribution — encode the convention once, every vendor follows.** A

@@ -107,6 +107,16 @@ expected (the decay math counts log files — `DECAY.md` §4).
 - [ ] review run if cadence/size triggered (`REVIEW.md`)
 - [ ] reminded the user to commit `memory/` (deliberate, human-initiated, with a self-identifying co-author trailer)
 
+> **Lightweight mode (memory-neutral tasks).** Scale the ceremony to the memory impact. If a task
+> produced **no memory-relevant event** — no new/changed fact, no decision worth recording, no Open
+> Thread touched, no project-state change (a typo, a two-line fix, a trivial skill edit) — write a
+> **one-line "lite" session log** (persist-time filename + `**Agent:**` + a single summary line
+> marked *lightweight* + `## Memory References` → `(none)`) and **skip the rest**: no full template,
+> no fact-footer bookkeeping, no continuity edits (you may leave `last_session` — it's derivable from
+> the newest session file). The ledger stays continuous; the review counts a lite log like any
+> session but it carries no references, so usage is unaffected. **When unsure, write the full log.**
+> Vision / Blueprint / invariant / supersession changes are **never** memory-neutral.
+
 > Optional reinforcement: wire a lightweight Stop or pre-commit hook in your runtime
 > so this ritual is *prompted*, not merely documented. It stays optional — the
 > protocol itself is no-code.

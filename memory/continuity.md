@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.6.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run; cloned + bootstrapped under enterprise Kiro on Windows).
+- **status:** v4.7.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0:** + a **lightweight mode** — memory-neutral tasks write a one-line "lite" session log and skip the full close ritual (ledger stays continuous). **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run; cloned + bootstrapped under enterprise Kiro on Windows).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-181607)
+- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-184652)
 - **last_review:** 2026-06-16 | through 2026-06-16-201531
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -503,7 +503,26 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   unchanged. → serves: vision-agent-memory (`bp-multi-user` — multi-contributor traceability + provenance)
   <!-- id: commit-attribution-v460 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: working | origin: 2026-06-17-181607 -->
 
-### Blueprint — gaps from Current State (v4.6.0) to the Vision  (serves: vision-agent-memory)
+- **Shipped v4.7.0 — lightweight mode for memory-neutral tasks (MINOR).** From a **real
+  cross-vendor enablement**: the maintainer used the *installed* tool to AI-enable a **new
+  source-code repo via Kiro IDE**, and Kiro gave an honest assessment (strong validation — the
+  full text is a notable artifact): the protocol "helps more than it interferes," praising immediate
+  orientation from `instructions.md`/`continuity.md` ("no archaeology"), the directly-actionable
+  `SKILLS.md`, and the multi-session/multi-agent continuity value. **The one critique:** the
+  per-session *write* ceremony is disproportionate for trivial tasks ("for a two-line script and a
+  skill file, the protocol's weight is noticeable") → suggested a **"lightweight mode."** Shipped it
+  (maintainer chose the conservative **lite-log** variant): for a memory-neutral task (no
+  fact/decision/thread/state change), write a **one-line "lite" session log** (`## Memory References`
+  → `(none)`) and **skip** the full template / fact-footers / continuity edits — the **ledger stays
+  continuous** (multi-agent continuity preserved), and the review treats a lite log as a normal
+  reference-free session (so `DECAY.md`/`REVIEW.md` need no change). Scales ceremony to memory
+  impact — same "lightweight" north star that drove v4.4.0. Touched: `AGENTS.md` (root + template),
+  `VERSION`→4.7.0, `UPGRADE.md` 4.6.0→4.7.0 rung + table, `README`/`CHANGELOG`. → serves:
+  vision-agent-memory (lightweight; multi-contributor). **Independent third-vendor endorsement —
+  good leadership/demo evidence.**
+  <!-- id: lightweight-mode-v470 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: working | origin: 2026-06-17-184652 -->
+
+### Blueprint — gaps from Current State (v4.7.0) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
 > `(blueprint)`: each is a Vision↔reality gap that closes when delivered. The *backward*
 > memory layer is not here — it's done; every gap is *forward*. These operationalize the
