@@ -19,17 +19,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > (1) `.kiro/` doesn't exist on a fresh clone (gitignored, per-machine), and an enterprise IDE may
 > **self-bootstrap from its own onboarding/MCP before reading `AGENTS.md`** — the fix is the human
 > nudge *"Start from `AGENTS.md`"*; and (2) once Kiro is running it deposits **hooks** and steering
-> into `.kiro/` (e.g. an auto-commit hook). Those stay gitignored/per-machine and don't touch the
-> shared `memory/` layer, but the migration protocol didn't cover hooks for *other* repos being
-> enabled.
+> into `.kiro/` (e.g. a commit-signature hook). Those stay gitignored/per-machine and don't touch
+> the shared `memory/` layer, but the migration protocol didn't cover hooks for *other* repos being
+> enabled. (The Kiro commit hook is **human-gated** — it fires only when the human says "commit" and
+> adds a co-author trailer — so it *aligns* with agent-memory's deliberate-commit model; no tension.)
 
 ### Changed
 
 1. **`MIGRATE.md`** — the Kiro per-vendor protocol gains a **Hooks** sub-case:
    `.kiro/hooks/*.kiro.hook` are **preserved verbatim under `legacy/kiro/hooks/`, never converted
-   or run** (automation is a human, gated decision). If a hook could conflict with agent-memory's
-   deliberate, human-gated commits (an **auto-commit** hook is the common case), it's surfaced as
-   an Open Thread (`never-pick-a-winner`), not disabled.
+   or run** (automation is a human, gated decision). **Human-gated** commit hooks (like Kiro's,
+   triggered by the human saying "commit") align with agent-memory and need no action; only a hook
+   that commits or pushes **unprompted** is surfaced as an Open Thread (`never-pick-a-winner`).
 2. **`README.md`** — a bootstrap **edge-case note**: on a fresh clone the vendor dirs are
    gitignored, so an enterprise IDE may self-bootstrap first; tell the agent *"Start from
    `AGENTS.md`"*, then run `sync skill adapters`. Enterprise hooks/steering in `.kiro/` stay

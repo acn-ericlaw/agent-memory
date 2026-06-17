@@ -39,7 +39,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.4.0 | Lightweight skills: per-session `AGENTS.md` keeps only the runtime baseline + a pointer; the adapter recipe + **sync**/**adopt**/**sanity-check** ops move to an on-demand installed `SKILLS.md`. The per-session "skills safety check" is **removed** (skill work is a conscious, on-demand action); upgrades do a read-only filename check that *recommends* sync |
 | 4.5.0 | Kiro adapter: a 4th skills adapter target `.kiro/skills/<name>/SKILL.md` (Kiro follows the open Agent Skills standard — same shape as the Claude adapter); Kiro added to the Mode C detection table (steering/specs/skills). Kiro auto-reads root `AGENTS.md`, so the memory layer needs no pointer file |
 | 4.5.1 | Skills-layer guidance (PATCH, from a Gemini CLI dogfood): the Gemini adapter is a **slash command** `/<name>` (explicit, not natural-language auto-matched) — NL routes through the baseline to the same skill; trigger semantics differ per vendor; and `sync skill adapters` must **never commit / recommend committing** the gitignored adapter dirs (only `agent-skills/` is shared) |
-| 4.5.2 | Kiro hooks in Mode C (PATCH, from a Windows/Kiro enable): the `MIGRATE.md` Kiro protocol now handles `.kiro/hooks/*.kiro.hook` — preserved verbatim under `legacy/kiro/hooks/`, never converted/run; an auto-commit hook that could conflict with deliberate commits is surfaced as an Open Thread, not disabled. README gains a bootstrap edge-case note ("Start from `AGENTS.md`" when an enterprise IDE self-bootstraps) |
+| 4.5.2 | Kiro hooks in Mode C (PATCH, from a Windows/Kiro enable): the `MIGRATE.md` Kiro protocol now handles `.kiro/hooks/*.kiro.hook` — preserved verbatim under `legacy/kiro/hooks/`, never converted/run. Human-gated commit hooks (like Kiro's) align with agent-memory; only an *unprompted* auto-commit/push is surfaced as an Open Thread. README gains a bootstrap edge-case note ("Start from `AGENTS.md`" when an enterprise IDE self-bootstraps) |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -522,8 +522,8 @@ Additive migration sub-case + a usage note; no shape change, no skill data chang
 
 1. **Re-sync the generic docs** (copy verbatim where different): `MIGRATE.md` (the Kiro protocol
    now has a **Hooks** sub-case — `.kiro/hooks/*.kiro.hook` are preserved verbatim under
-   `legacy/kiro/hooks/`, never converted/run; if a hook could conflict with deliberate commits —
-   e.g. an auto-commit hook — surface an Open Thread, don't disable it). `AGENTS.md` / `SKILLS.md`
+   `legacy/kiro/hooks/`, never converted/run; human-gated commit hooks like Kiro's align — only an
+   *unprompted* auto-commit/push is surfaced as an Open Thread, never disabled). `AGENTS.md` / `SKILLS.md`
    / `DECAY.md` / `REVIEW.md` unchanged.
 2. **No skill regeneration; no `.gitignore` change.** `.kiro/` is already ignored.
 3. **Stamp** `.agent/version.md` → `version: 4.5.2`, `last_upgraded: <today>`, preserving

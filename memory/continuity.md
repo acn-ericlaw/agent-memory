@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.5.2 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run; cloned + bootstrapped under enterprise Kiro on Windows).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-175728)
+- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-180514)
 - **last_review:** 2026-06-16 | through 2026-06-16-201531
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -475,11 +475,15 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `auto-commit-prompt.md`). **Compatibility verdict: no hard incompatibility** — all of `.kiro/` is
   gitignored (verified `git check-ignore` on hooks/steering/skills paths), so enterprise content
   stays per-machine and never enters the shared `memory/`/`agent-skills/` layer, and `sync` only
-  writes `.kiro/skills/<name>/` ("never touch other files in a vendor dir"). **One soft tension:**
-  an enterprise **auto-commit** hook vs. agent-memory's deliberate, human-gated commits — surfaced,
-  not auto-resolved (human chooses). **Changes:** `MIGRATE.md` Kiro protocol gains a **Hooks**
-  sub-case (`.kiro/hooks/*.kiro.hook` → preserve verbatim under `legacy/kiro/hooks/`, never
-  convert/run; auto-commit overlap → Open Thread); `README` bootstrap edge-case note;
+  writes `.kiro/skills/<name>/` ("never touch other files in a vendor dir"). **No tension after
+  all (maintainer-clarified):** my first "auto-commit" worry was a wrong inference from the
+  filename — the Kiro commit hook is **human-gated** (fires only when the human says "commit"; Kiro
+  writes a context-aware message + a "co-authored by Kiro" trailer), which *matches* agent-memory's
+  deliberate-commit model (agent-memory itself uses co-author trailers). The only hypothetical
+  concern would be a hook that commits/pushes **unprompted** — none here. **Changes:** `MIGRATE.md`
+  Kiro protocol gains a **Hooks** sub-case (`.kiro/hooks/*.kiro.hook` → preserve verbatim under
+  `legacy/kiro/hooks/`, never convert/run; human-gated commit hooks align, only unprompted
+  auto-commit/push → Open Thread); `README` bootstrap edge-case note;
   `VERSION`→4.5.2, `UPGRADE.md` rung + table. `AGENTS.md`/`SKILLS.md`/`DECAY.md`/`REVIEW.md`
   unchanged. → serves: vision-agent-memory (multi-vendor, multi-machine without drift)
   <!-- id: kiro-hooks-edgecase-v452 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: working | origin: 2026-06-17-175728 -->
