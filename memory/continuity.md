@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.5.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/`; upgrades do a read-only filename check that recommends sync. **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-055435)
+- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-055923)
 - **last_review:** 2026-06-16 | through 2026-06-16-201531
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -331,8 +331,8 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   gitignored so folder listings hide them ("0 items (1 ignored)"). Lesson: don't tell an agent to
   "check for the adapter file" when the file is gitignored — the invocation syntax is the reliable
   signal.
-  **3rd Gemini re-test (session `2026-06-17-053003` + screenshot `gemini-test/gemini-hello-world-test-2.png`)
-  mis-attributed AGAIN → root cause found + design decision "B".** Definitive root cause: a Gemini
+  **3rd Gemini re-test (session `2026-06-17-053003`; maintainer screenshots — since removed from the
+  repo post-diagnosis, in git history) mis-attributed AGAIN → root cause found + design decision "B".** Definitive root cause: a Gemini
   `/hello-world` is **expanded into the adapter's `prompt` text before the model sees anything** —
   the model never receives the slash token, only the expanded prompt (indistinguishable from a
   typed request), and the `SKILL.md` is read *after* the trigger. So **agents structurally cannot
