@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.5.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/`; upgrades do a read-only filename check that recommends sync. **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-17 | agent: Gemini CLI (2026-06-17-053003)
+- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-055435)
 - **last_review:** 2026-06-16 | through 2026-06-16-201531
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -331,6 +331,18 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   gitignored so folder listings hide them ("0 items (1 ignored)"). Lesson: don't tell an agent to
   "check for the adapter file" when the file is gitignored — the invocation syntax is the reliable
   signal.
+  **3rd Gemini re-test (session `2026-06-17-053003` + screenshot `gemini-test/gemini-hello-world-test-2.png`)
+  mis-attributed AGAIN → root cause found + design decision "B".** Definitive root cause: a Gemini
+  `/hello-world` is **expanded into the adapter's `prompt` text before the model sees anything** —
+  the model never receives the slash token, only the expanded prompt (indistinguishable from a
+  typed request), and the `SKILL.md` is read *after* the trigger. So **agents structurally cannot
+  self-report the path**, and no `SKILL.md` prose can fix it (both prior fixes were doomed). Per the
+  maintainer's choice (**option B — drop the self-report**): rewrote `hello-world` step 3 to report
+  the *result, not the trigger* ("don't guess your invocation path; the proof of native wiring is
+  that the invocation ran the skill"); added the finding to `docs/DESIGN-skills-layer.md` §4c with a
+  "don't re-add path self-reporting; carry provenance in the adapter prompt if ever needed" note.
+  Demo/design-doc content only — **no VERSION bump** (neither `agent-skills/hello-world` nor the
+  DESIGN doc is installed into targets).
   <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-17 | uses: 9 | tier: active | origin: 2026-06-16-152327 -->
 
 ### Shipped — v4.2.0: "sync skill adapters" (2026-06-16)

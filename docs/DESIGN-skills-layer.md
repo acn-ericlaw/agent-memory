@@ -117,6 +117,16 @@ lives only in `AGENTS.md`):
 > through the §4b baseline to the same neutral skill (identical result; not a missing adapter).
 > Because every adapter is a pointer back to `agent-skills/`, no path can diverge. **Adapters are
 > never committed** (Option A, §4d) — `sync` must not stage or recommend committing them.
+>
+> **Agents can't self-report the trigger (2026-06-17, three dogfood runs).** A Gemini `/<name>` is
+> *expanded into the adapter's `prompt` text before the model sees anything* — the model never
+> receives the slash token, only the expanded prompt, indistinguishable from a typed request. So an
+> agent **cannot** reliably tell "native adapter" from "baseline," and no instruction inside the
+> neutral `SKILL.md` can fix it (the `SKILL.md` is read *after* the trigger). The `hello-world` demo
+> therefore **does not ask the agent to narrate its invocation path** (self-report dropped — the
+> "B" option): the proof of native wiring is that the user's invocation *ran the skill at all*. Do
+> not re-add path self-reporting; if a future demo truly needs deterministic path proof, carry it in
+> the **adapter's own prompt text** (the only thing injected on a native trigger), not agent introspection.
 
 ### 4d. The committed-vs-personal decision — **Option A (chosen)**
 

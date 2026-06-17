@@ -28,21 +28,16 @@ greeting that confirms skills are wired up.
 2. **No shell available?** Print the greeting directly —
    `Hello from the agent-memory portable skills layer 👋` — and still tell the user the
    current **local time** and **UTC time**, and that **session logs are recorded in UTC**.
-3. **Report which path invoked you**, so the test is legible. **Attribute by *how you were
-   invoked* — not by the file you read, and never by a directory scan.** Both paths read this same
-   neutral `SKILL.md`, so "I read the neutral skill" is **not** evidence of the baseline. Decide
-   from the trigger:
-   - **Vendor adapter (native trigger).** You were invoked by a **slash command** — e.g. the user
-     typed `/hello-world` (Gemini `.gemini/commands/hello-world.toml`) — or your runtime
-     **auto-matched a description** (Claude `.claude/skills/`, Cursor `.cursor/rules/`, Kiro
-     `.kiro/skills/`). A slash command **cannot exist unless its adapter is loaded**, so the
-     invocation itself *proves* the adapter fired — name it; don't second-guess it.
-   - **`AGENTS.md` baseline.** *Only* a plain **natural-language** request ("run hello-world") with
-     no slash command and no auto-match. (On Gemini, natural language always takes this path — the
-     `.toml` is a slash command, not an NL auto-trigger.)
-   **Do not infer "no adapter" from a directory scan.** Adapters are **gitignored**, so file/folder
-   tools routinely hide them — a listing may report *"0 items (1 ignored)"* while the adapter is
-   right there. Trust the invocation method, not the folder listing.
+3. **Report the result — not your invocation path.** Confirm the skill ran (show the greeting +
+   timestamps) and that you read the single neutral source `agent-skills/hello-world/SKILL.md` —
+   that is the demonstration: the portable layer works on this vendor.
+   **Do not try to report *which* path triggered you** (native adapter vs. `AGENTS.md` baseline).
+   You can't tell reliably: a vendor like Gemini **expands a `/hello-world` slash command into this
+   prompt *before you see it***, so the trigger is invisible to you, and the neutral skill reads
+   identically on every path. The proof of native wiring is simply that the user's invocation *ran
+   this skill*; **how** they invoked it (a `/`-command, a description match, or plain language) is
+   theirs to know, not yours to guess. (Don't re-introduce path self-reporting — three cross-vendor
+   dogfood runs showed agents get it wrong because the signal isn't available to them.)
 
 ## Notes — this *is* the design demo
 
