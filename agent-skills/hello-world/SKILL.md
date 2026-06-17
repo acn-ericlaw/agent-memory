@@ -28,18 +28,21 @@ greeting that confirms skills are wired up.
 2. **No shell available?** Print the greeting directly —
    `Hello from the agent-memory portable skills layer 👋` — and still tell the user the
    current **local time** and **UTC time**, and that **session logs are recorded in UTC**.
-3. **Report which path invoked you**, so the test is legible. **Attribute by the *entry point*
-   that triggered you, not by the file you read** — both paths read this same neutral `SKILL.md`,
-   so "I read the neutral skill" is **not** evidence of the baseline. Before reporting "baseline,"
-   check whether a vendor adapter for *your* runtime fired:
-   - **Vendor adapter** — a native trigger pointed here: you were invoked by a **slash command**
-     `/hello-world` (Gemini `.gemini/commands/hello-world.toml`), or your runtime **auto-matched
-     a description** in `.claude/skills/`, `.cursor/rules/`, or `.kiro/skills/`. Name the adapter.
-   - **`AGENTS.md` baseline** — *only* when no adapter fired: a natural-language request (e.g.
-     Gemini "run hello-world", or any vendor with no synced adapter) led you here via the
-     `AGENTS.md` "Skills" baseline. (Reminder: on Gemini, natural language always takes this path —
-     the `.toml` is a slash command, not an NL auto-trigger.)
-   If unsure which fired, check for a matching adapter file first, then report.
+3. **Report which path invoked you**, so the test is legible. **Attribute by *how you were
+   invoked* — not by the file you read, and never by a directory scan.** Both paths read this same
+   neutral `SKILL.md`, so "I read the neutral skill" is **not** evidence of the baseline. Decide
+   from the trigger:
+   - **Vendor adapter (native trigger).** You were invoked by a **slash command** — e.g. the user
+     typed `/hello-world` (Gemini `.gemini/commands/hello-world.toml`) — or your runtime
+     **auto-matched a description** (Claude `.claude/skills/`, Cursor `.cursor/rules/`, Kiro
+     `.kiro/skills/`). A slash command **cannot exist unless its adapter is loaded**, so the
+     invocation itself *proves* the adapter fired — name it; don't second-guess it.
+   - **`AGENTS.md` baseline.** *Only* a plain **natural-language** request ("run hello-world") with
+     no slash command and no auto-match. (On Gemini, natural language always takes this path — the
+     `.toml` is a slash command, not an NL auto-trigger.)
+   **Do not infer "no adapter" from a directory scan.** Adapters are **gitignored**, so file/folder
+   tools routinely hide them — a listing may report *"0 items (1 ignored)"* while the adapter is
+   right there. Trust the invocation method, not the folder listing.
 
 ## Notes — this *is* the design demo
 

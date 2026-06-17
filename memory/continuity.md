@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.5.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/`; upgrades do a read-only filename check that recommends sync. **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-050243)
+- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-052143)
 - **last_review:** 2026-06-16 | through 2026-06-16-201531
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -321,6 +321,16 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   that with the baseline *trigger*). **Fix:** sharpened `hello-world` SKILL.md step 3 to attribute
   by the **entry point, not the file read** (per-vendor trigger cues; "check for a matching adapter
   before reporting baseline"). Demo-skill content only — **no VERSION bump** (not protocol/templates).
+  **2nd Gemini re-test (post-fix, ~2026-06-17T05:11Z — maintainer screenshot, not committed as a
+  session) still mis-attributed** — and showed *my* fix backfired: invoked by the `/hello-world`
+  **slash command** (native adapter), the agent
+  did a `ReadFolder` of the adapter dirs, saw `.gemini/commands → 0 items (1 ignored)` (the
+  gitignored `.toml` **hidden by the folder tool**), concluded "no adapter," and reported
+  "baseline / natural-language request." **Re-fixed step 3:** attribute **from the invocation
+  method, never a directory scan** — a `/`-command *proves* the adapter is loaded; adapters are
+  gitignored so folder listings hide them ("0 items (1 ignored)"). Lesson: don't tell an agent to
+  "check for the adapter file" when the file is gitignored — the invocation syntax is the reliable
+  signal.
   <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-17 | uses: 8 | tier: active | origin: 2026-06-16-152327 -->
 
 ### Shipped — v4.2.0: "sync skill adapters" (2026-06-16)
