@@ -129,15 +129,20 @@ expected (the decay math counts log files — `DECAY.md` §4).
 - [ ] review run if cadence/size triggered (`REVIEW.md`)
 - [ ] reminded the user to commit `memory/` (deliberate, human-initiated, with a self-identifying co-author trailer)
 
-> **Lightweight mode (memory-neutral tasks).** Scale the ceremony to the memory impact. If a task
-> produced **no memory-relevant event** — no new/changed fact, no decision worth recording, no Open
-> Thread touched, no project-state change (a typo, a two-line fix, a trivial skill edit) — write a
-> **one-line "lite" session log** (persist-time filename + `**Agent:**` + a single summary line
-> marked *lightweight* + `## Memory References` → `(none)`) and **skip the rest**: no full template,
-> no fact-footer bookkeeping, no continuity edits (you may leave `last_session` — it's derivable from
-> the newest session file). The ledger stays continuous; the review counts a lite log like any
-> session but it carries no references, so usage is unaffected. **When unsure, write the full log.**
-> Vision / Blueprint / invariant / supersession changes are **never** memory-neutral.
+> **Lightweight mode — key the write to whether a file actually changed (an *objective* test, not
+> a "trivial" judgment; both AI and human misjudge "trivial").**
+> - **Read-only session** (no file changes — orientation, Q&A, exploration): **no session log** —
+>   nothing changed, nothing to commit, no event to record.
+> - **A file changed but produced no memory-relevant event** (no new/changed fact, no decision worth
+>   recording, no Open Thread touched, no project-state change — e.g. a one-line fix, a typo): write
+>   a **one-line "lite" session log** (persist-time filename + `**Agent:**` + a *lightweight*-marked
+>   summary + `## Memory References` → `(none)`) and skip the rest (full template, fact-footers,
+>   continuity edits; `last_session` is derivable from the newest session file). **Don't skip the log
+>   just because it felt "trivial"** — a misjudged change that actually mattered must still be logged.
+> - **A memory-relevant event** (fact / decision / Open Thread / project-state change, or anything
+>   touching Vision / Blueprint / invariant / supersession): the **full** ritual.
+> The ledger stays continuous for anything that touched a file; the review treats a lite log as a
+> normal reference-free session, so usage is unaffected.
 
 > Optional reinforcement: wire a lightweight Stop or pre-commit hook so this ritual
 > is *prompted*, not merely documented (see `docs/optional-ritual-hook.md`). It stays

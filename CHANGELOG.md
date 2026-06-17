@@ -12,6 +12,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.7.1, 6/17/2026
+
+> **Lightweight mode — sharpen the skip criterion to an *objective* test.** v4.7.0 let any
+> "memory-neutral" task drop to a lite log. But **"trivial" is a judgment call — both AI and human
+> misjudge it**, and a misjudged change that actually mattered would slip out of the ledger. So the
+> distinction is now keyed to the **objective question "did a file change?"**, not a subjective
+> "is this trivial?":
+> - **Read-only** (no file changes — orientation, Q&A, exploration) → **no session log**.
+> - **Any file change, however small** (a one-line fix, a typo) with no memory-relevant event →
+>   a **one-line "lite" session log** (never skipped on a "felt trivial" call; the git diff anchors it).
+> - **Memory-relevant event** → the full ritual.
+
+### Changed
+
+1. `AGENTS.md` (root + template) "Lightweight mode" note rewritten to the three-tier,
+   file-change-keyed form above. `VERSION` → 4.7.1; `UPGRADE.md` 4.7.0→4.7.1 rung + table; `README`.
+   `SKILLS.md` / `DECAY.md` / `REVIEW.md` unchanged.
+
+---
 ## Version 4.7.0, 6/17/2026
 
 > **Lightweight mode — scale the ceremony to the memory impact.** From a real cross-vendor

@@ -42,6 +42,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.5.2 | Kiro hooks in Mode C (PATCH, from a Windows/Kiro enable): the `MIGRATE.md` Kiro protocol now handles `.kiro/hooks/*.kiro.hook` — preserved verbatim under `legacy/kiro/hooks/`, never converted/run. Human-gated commit hooks (like Kiro's) align with agent-memory; only an *unprompted* auto-commit/push is surfaced as an Open Thread. README gains a bootstrap edge-case note ("Start from `AGENTS.md`" when an enterprise IDE self-bootstraps) |
 | 4.6.0 | Vendor-neutral **commit attribution**: `AGENTS.md` extends "identify yourself" (already true for session logs) to commits — deliberate, human-initiated, with a `Co-Authored-By: <agent>` trailer. Encodes once in the shared layer what Claude Code does automatically and Kiro needed a per-machine hook for; soft guidance, a no-op where the runtime already does it |
 | 4.7.0 | **Lightweight mode** for memory-neutral tasks (from a Kiro enablement): a trivial task (no new fact/decision/thread/state change) writes a **one-line "lite" session log** (`## Memory References` → `(none)`) and skips the full template / fact-footers / continuity edits. Ledger stays continuous; the review handles it as a normal reference-free session. Scales the per-session ceremony to the actual memory impact |
+| 4.7.1 | Lightweight mode keyed to **file-change, not "trivial"** (a judgment call both AI and human misjudge): **read-only** sessions (no file changes) write **no log**; **any file change** (even one line) writes at least a **lite log** (never skipped on a "felt trivial" call); a memory-relevant event → full ritual |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -566,3 +567,20 @@ finding (per-session write ceremony is heavy for trivial tasks).
 3. **Stamp** `.agent/version.md` → `version: 4.7.0`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 4. **Report**: `AGENTS.md` re-synced; lightweight mode available for trivial tasks.
+
+---
+
+## Rung: 4.7.0 → 4.7.1 — lightweight mode keyed to file-change, not "trivial" (PATCH)
+
+Refinement of the v4.7.0 carve-out; no shape change. "Trivial" is a judgment call (both AI and
+human misjudge), so the skip is keyed to the **objective** "did a file change?" test.
+
+1. **Re-sync `AGENTS.md`** (root + template, verbatim where different): the "Lightweight mode" note
+   is now three-tier — **read-only** (no file changes) → **no session log**; **any file change** with
+   no memory-relevant event → a **one-line lite log** (never skipped on a "felt trivial" call);
+   **memory-relevant event** → full ritual. `SKILLS.md` / `DECAY.md` / `REVIEW.md` unchanged.
+2. **No skill regeneration; no `.gitignore` change.**
+3. **Stamp** `.agent/version.md` → `version: 4.7.1`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: `AGENTS.md` re-synced; lightweight mode now keyed to file-change (read-only = no log,
+   any change = at least a lite log).
