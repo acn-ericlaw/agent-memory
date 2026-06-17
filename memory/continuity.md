@@ -305,6 +305,15 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   Tested end-to-end via the `AGENTS.md` baseline (read the SKILL.md → ran the helper).
   Closes the "skills layer shipped with no example/dogfood fixture" follow-on; the tool now
   dogfoods `agent-skills/` the way it dogfoods `memory/`.
+  **Cross-vendor + cross-machine validated 2026-06-17** (`Gemini CLI`, a different machine,
+  sessions `2026-06-17-032043` → `-042634`): first ran `hello-world` via the **`AGENTS.md`
+  baseline with no `.gemini/commands/` adapter present** — the strongest proof yet of
+  agent-as-runtime portability (non-Claude vendor, no engine). The missing adapter was the
+  **known gitignored cross-machine behavior** (`sync-adapters-v420`), **not a defect**: adapters
+  don't travel with a clone/pull. After `sync skill adapters` on that machine, the **retry
+  triggered natively** via `.gemini/commands/hello-world.toml` (session `2026-06-17-042634`) —
+  loop closed. Confirms the lightweight design: the baseline always works; native auto-trigger is
+  an opt-in sync away (so we do **not** add a per-session sync nudge, per `lightweight-skills-v440`).
   <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-17 | uses: 8 | tier: active | origin: 2026-06-16-152327 -->
 
 ### Shipped — v4.2.0: "sync skill adapters" (2026-06-16)
