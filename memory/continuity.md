@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.5.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/`; upgrades do a read-only filename check that recommends sync. **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-052143)
+- **last_session:** 2026-06-17 | agent: Gemini CLI (2026-06-17-053003)
 - **last_review:** 2026-06-16 | through 2026-06-16-201531
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -70,7 +70,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   daemon). The markdown files are the product and the agent is the runtime. A skill MAY
   bundle optional helper scripts, but those are invoked by the agent/vendor at the user's
   direction, never executed by the tool.
-  <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-17 | uses: 8 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
+  <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-17 | uses: 9 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
 - Upgrades are additive and non-destructive — enrich and add, never rewrite or delete
   <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-16 | uses: 15 | tier: core -->
 
@@ -331,7 +331,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   gitignored so folder listings hide them ("0 items (1 ignored)"). Lesson: don't tell an agent to
   "check for the adapter file" when the file is gitignored — the invocation syntax is the reliable
   signal.
-  <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-17 | uses: 8 | tier: active | origin: 2026-06-16-152327 -->
+  <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-17 | uses: 9 | tier: active | origin: 2026-06-16-152327 -->
 
 ### Shipped — v4.2.0: "sync skill adapters" (2026-06-16)
 - [x] **"Sync skill adapters" operation shipped (additive MINOR).** Closes the cross-machine
@@ -451,7 +451,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   recipe table + note. `VERSION`→4.5.1, `UPGRADE.md` 4.5.0→4.5.1 rung + table, `README`/`CHANGELOG`.
   `DECAY.md`/`REVIEW.md` unchanged. The dogfood-feedback loop (drove v3.1.0/v3.2.0/v4.2.0) again.
   → serves: vision-agent-memory
-  <!-- id: skills-gemini-dogfood-v451 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: working | origin: 2026-06-17-044933 -->
+  <!-- id: skills-gemini-dogfood-v451 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 2 | tier: working | origin: 2026-06-17-044933 -->
 
 ### Blueprint — gaps from Current State (v4.5.1) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
