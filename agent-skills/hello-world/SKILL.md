@@ -28,11 +28,18 @@ greeting that confirms skills are wired up.
 2. **No shell available?** Print the greeting directly —
    `Hello from the agent-memory portable skills layer 👋` — and still tell the user the
    current **local time** and **UTC time**, and that **session logs are recorded in UTC**.
-3. **Report which path invoked you**, so the test is legible:
-   - the **`AGENTS.md` baseline** — you read this `SKILL.md` because the task matched the
-     `description` (works on every vendor, no engine), or
-   - a **vendor adapter** (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`,
-     `.kiro/skills/`) that pointed here.
+3. **Report which path invoked you**, so the test is legible. **Attribute by the *entry point*
+   that triggered you, not by the file you read** — both paths read this same neutral `SKILL.md`,
+   so "I read the neutral skill" is **not** evidence of the baseline. Before reporting "baseline,"
+   check whether a vendor adapter for *your* runtime fired:
+   - **Vendor adapter** — a native trigger pointed here: you were invoked by a **slash command**
+     `/hello-world` (Gemini `.gemini/commands/hello-world.toml`), or your runtime **auto-matched
+     a description** in `.claude/skills/`, `.cursor/rules/`, or `.kiro/skills/`. Name the adapter.
+   - **`AGENTS.md` baseline** — *only* when no adapter fired: a natural-language request (e.g.
+     Gemini "run hello-world", or any vendor with no synced adapter) led you here via the
+     `AGENTS.md` "Skills" baseline. (Reminder: on Gemini, natural language always takes this path —
+     the `.toml` is a slash command, not an NL auto-trigger.)
+   If unsure which fired, check for a matching adapter file first, then report.
 
 ## Notes — this *is* the design demo
 
