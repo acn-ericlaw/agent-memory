@@ -12,6 +12,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.5.2, 6/17/2026
+
+> **Kiro hooks in Mode C + a bootstrap edge-case note — from a Windows/Kiro enable.** Cloning an
+> agent-memory repo on a fresh machine and opening it in an **enterprise Kiro** surfaced two things:
+> (1) `.kiro/` doesn't exist on a fresh clone (gitignored, per-machine), and an enterprise IDE may
+> **self-bootstrap from its own onboarding/MCP before reading `AGENTS.md`** — the fix is the human
+> nudge *"Start from `AGENTS.md`"*; and (2) once Kiro is running it deposits **hooks** and steering
+> into `.kiro/` (e.g. an auto-commit hook). Those stay gitignored/per-machine and don't touch the
+> shared `memory/` layer, but the migration protocol didn't cover hooks for *other* repos being
+> enabled.
+
+### Changed
+
+1. **`MIGRATE.md`** — the Kiro per-vendor protocol gains a **Hooks** sub-case:
+   `.kiro/hooks/*.kiro.hook` are **preserved verbatim under `legacy/kiro/hooks/`, never converted
+   or run** (automation is a human, gated decision). If a hook could conflict with agent-memory's
+   deliberate, human-gated commits (an **auto-commit** hook is the common case), it's surfaced as
+   an Open Thread (`never-pick-a-winner`), not disabled.
+2. **`README.md`** — a bootstrap **edge-case note**: on a fresh clone the vendor dirs are
+   gitignored, so an enterprise IDE may self-bootstrap first; tell the agent *"Start from
+   `AGENTS.md`"*, then run `sync skill adapters`. Enterprise hooks/steering in `.kiro/` stay
+   gitignored and per-machine.
+3. `VERSION` → 4.5.2; `UPGRADE.md` 4.5.1→4.5.2 rung + table. `AGENTS.md` / `SKILLS.md` /
+   `DECAY.md` / `REVIEW.md` unchanged.
+
+---
 ## Version 4.5.1, 6/17/2026
 
 > **Skills-layer guidance — from a cross-machine Gemini CLI dogfood.** A real Gemini CLI run

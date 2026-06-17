@@ -388,6 +388,15 @@ no pointer file. Migrate its repo-local artifacts:
   surface a `- [ ]` Open Thread suggesting the maintainer fold it into the Vision/Blueprint;
   never auto-convert (that is a human, altitude-gated decision).
 
+**Hooks:** `.kiro/hooks/*.kiro.hook` (executable agent automation — e.g. an auto-commit /
+commit-signature hook)
+- These are **automation, not steering or capability**. **Preserve verbatim** under
+  `legacy/kiro/hooks/` (Section A) — **never convert them, never run them, and never fold them
+  into `memory/`.** Enabling automation is a human, gated decision. If a hook's behavior could
+  conflict with agent-memory's deliberate, human-gated commits (an **auto-commit** hook is the
+  common case), surface a `- [ ]` Open Thread flagging the overlap for the maintainer to resolve
+  (`never-pick-a-winner`) rather than disabling it yourself.
+
 > **`.kiro/` gitignore note.** Our managed block ignores `.kiro/` (it is the adapter target
 > for `.kiro/skills/`). Kiro normally commits `.kiro/steering/` + `.kiro/specs/`; after
 > migration those live in `memory/instructions.md` + `legacy/`, so ignoring `.kiro/` is

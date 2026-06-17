@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.5.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/`; upgrades do a read-only filename check that recommends sync. **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run).
+- **status:** v4.5.2 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run; cloned + bootstrapped under enterprise Kiro on Windows).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-055923)
+- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-175728)
 - **last_review:** 2026-06-16 | through 2026-06-16-201531
 - **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -465,7 +465,26 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   → serves: vision-agent-memory
   <!-- id: skills-gemini-dogfood-v451 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 2 | tier: working | origin: 2026-06-17-044933 -->
 
-### Blueprint — gaps from Current State (v4.5.1) to the Vision  (serves: vision-agent-memory)
+- **Shipped v4.5.2 — Kiro hooks in Mode C + a bootstrap edge-case note (PATCH, from a Windows/Kiro
+  enable).** The maintainer cloned this repo on a fresh Windows 11 machine and opened it in
+  **enterprise Kiro**. Two findings: **(1) chicken-and-egg bootstrap** — on a fresh clone `.kiro/`
+  doesn't exist (gitignored, per-machine), and enterprise Kiro **self-bootstraps from its
+  onboarding/MCP before reading `AGENTS.md`**; the human nudge **"Start from `AGENTS.md`"** puts the
+  agent-memory protocol in charge (works — then `sync skill adapters` regenerates local adapters).
+  **(2) Kiro deposits hooks + steering** into `.kiro/` (e.g. `kiro-commit-signature.kiro.hook` +
+  `auto-commit-prompt.md`). **Compatibility verdict: no hard incompatibility** — all of `.kiro/` is
+  gitignored (verified `git check-ignore` on hooks/steering/skills paths), so enterprise content
+  stays per-machine and never enters the shared `memory/`/`agent-skills/` layer, and `sync` only
+  writes `.kiro/skills/<name>/` ("never touch other files in a vendor dir"). **One soft tension:**
+  an enterprise **auto-commit** hook vs. agent-memory's deliberate, human-gated commits — surfaced,
+  not auto-resolved (human chooses). **Changes:** `MIGRATE.md` Kiro protocol gains a **Hooks**
+  sub-case (`.kiro/hooks/*.kiro.hook` → preserve verbatim under `legacy/kiro/hooks/`, never
+  convert/run; auto-commit overlap → Open Thread); `README` bootstrap edge-case note;
+  `VERSION`→4.5.2, `UPGRADE.md` rung + table. `AGENTS.md`/`SKILLS.md`/`DECAY.md`/`REVIEW.md`
+  unchanged. → serves: vision-agent-memory (multi-vendor, multi-machine without drift)
+  <!-- id: kiro-hooks-edgecase-v452 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: working | origin: 2026-06-17-175728 -->
+
+### Blueprint — gaps from Current State (v4.5.2) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
 > `(blueprint)`: each is a Vision↔reality gap that closes when delivered. The *backward*
 > memory layer is not here — it's done; every gap is *forward*. These operationalize the

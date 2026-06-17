@@ -47,6 +47,16 @@ cd /path/to/your-project
 git add . && git commit -m "chore: AI-enable repo"
 ```
 
+> **Edge case — bootstrapping inside an enterprise IDE (e.g. Kiro).** On a fresh clone the
+> per-machine vendor dirs (`.kiro/`, `.claude/`, …) don't exist — they're gitignored. Some
+> enterprise IDE setups **self-bootstrap from their own onboarding/MCP before reading
+> `AGENTS.md`**. If that happens, just tell the agent **"Start from `AGENTS.md`"** — it will then
+> follow the agent-memory protocol; afterward run **`sync skill adapters`** to regenerate your
+> local adapters. Any hooks/steering the IDE later deposits into `.kiro/` stay **gitignored and
+> per-machine**, so they never touch the shared `memory/` layer. (One thing to watch: an
+> enterprise **auto-commit** hook can commit changes without agent-memory's deliberate, human-
+> gated review — keep or scope it as you prefer; the tool won't fight it.)
+
 ---
 
 ## Design Philosophy — Two Layers That Coexist
@@ -134,6 +144,7 @@ it in place** — additively, never destructively.
 | 4.4.0 | Lightweight skills: per-session `AGENTS.md` keeps only the runtime baseline + a pointer; the recipe + **sync**/**adopt**/**sanity-check** ops move to an on-demand `SKILLS.md`. Per-session "skills safety check" removed (skill work is conscious/on-demand); upgrades do a read-only filename check that *recommends* sync |
 | 4.5.0 | Kiro support: a 4th skills adapter target `.kiro/skills/<name>/SKILL.md` (Kiro follows the open Agent Skills standard — same shape as the Claude adapter) + Kiro in the Mode C detection/migration table (steering → instructions, skills → `agent-skills/`, specs → `legacy/`). Kiro auto-reads root `AGENTS.md`, so the memory layer needs no pointer file |
 | 4.5.1 | Skills-layer guidance (from a Gemini CLI dogfood): documents that the Gemini adapter is a **slash command** `/<name>` (explicit, not natural-language auto-matched) while Claude/Cursor/Kiro adapters are description-matched — all point to the same neutral skill; and a **never-commit-the-adapters** guard on `sync skill adapters` (only `agent-skills/` is shared) |
+| 4.5.2 | Kiro hooks in Mode C (from a Windows/Kiro enable): migration preserves `.kiro/hooks/*.kiro.hook` verbatim under `legacy/` — never converted or run; an auto-commit hook that could clash with deliberate commits is surfaced as an Open Thread, not disabled. Plus a README bootstrap edge-case note ("Start from `AGENTS.md`" when an enterprise IDE self-bootstraps) |
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the
