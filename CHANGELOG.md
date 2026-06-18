@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.10.4, 6/18/2026
+
+> **memory-lint nested list fix (PATCH).** Hardened the verifier script to handle deeply-nested lists correctly.
+
+### Fixed
+- **`memory-lint` pinned Open Threads:** Fixed a bug where `pinned_open_threads()` incorrectly reset its state on any standard list bullet, causing it to lose track of the "pinned" state if a parent Open Thread contained deeply nested sub-items. It now correctly checks indentation level. (tracked via `ot-memlint-pinned-nested`.)
+
+---
+
 ---
 ## Version 4.10.3, 6/18/2026
 

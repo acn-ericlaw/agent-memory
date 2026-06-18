@@ -21,10 +21,11 @@ script, so the riskiest operation is verified against observable evidence.
 ## What to do
 
 1. Run the bundled checker from the repo root (needs **Python 3**, stdlib only — no install):
-   ```
+   ```bash
    python3 agent-skills/memory-lint/scripts/memory-lint.py
    ```
    Flags: `--strict` (also fail on warnings), `--root PATH` (point at a specific repo).
+   *To run the script's own tests:* `python3 -m unittest agent-skills/memory-lint/scripts/test_memory_lint.py`
 2. It checks, deterministically:
    - **no id lives in both `continuity.md` and the archive** (a fact exists in exactly one place);
    - **no archived-as-faded fact was referenced within `archive_window` sessions** — the decay-miscount

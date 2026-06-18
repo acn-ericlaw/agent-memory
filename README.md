@@ -198,6 +198,8 @@ it in place** — additively, never destructively.
 | 4.10.1 | **`memory-lint` fix:** line-anchor its Memory-References parser so a session log that *quotes* the heading in prose no longer trips a false `over-archived` error (found while running the verifier during a review). Script-only |
 | 4.10.2 | **Fresh-context-review critique fixes:** harden `memory-lint`'s footer parse against an *unclosed* footer (bind to one line); the install protocol now **warns before overwriting a locally-modified built-in** rather than silently clobbering it; the `upgrades-additive` invariant carries its tool-managed-built-ins exception inline; `second-opinion` notes that a *different* vendor adds epistemic diversity a same-vendor session can't. Applied via the `apply-critique` loop |
 | 4.10.3 | **Lightweight-mode wording fix:** the session-log test is now keyed to whether a **tracked** file changed (the objective test is the **git diff**), and runs whose only writes are **gitignored, regenerated artifacts** (`sync skill adapters`, `review-scratch/`, the compiled lint artifact) are explicitly **no log** — aligning the note with what `SKILLS.md` already says (sync touches no committed file). Wording-only |
+| 4.10.4 | **`memory-lint` nested list fix:** hardened the script's `pinned_open_threads` parsing to track indentation level, preventing standard sub-bullets from dropping a parent Open Thread's pinned state. |
+
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the

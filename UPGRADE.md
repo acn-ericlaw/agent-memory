@@ -49,6 +49,8 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.10.1 | **`memory-lint` bug fix:** its Memory-References parser is now **line-anchored** (`(?m)^## +Memory References[ \t]*$`) instead of `find("## Memory References")`, so a session log that *quotes* the heading in prose no longer trips a false `over-archived` error. Script-only; no description/shape change |
 | 4.10.2 | **Fresh-context-review critique fixes (PATCH):** `memory-lint`'s `FOOTER_RE` now binds to a single line so an *unclosed* footer can't silently swallow the file and misparse decay metadata; the install protocol (`ENABLE.md` §5i) **warns before overwriting a locally-modified built-in** instead of silently clobbering it; the `upgrades-additive` invariant text carries its tool-managed-built-ins exception inline; and `second-opinion` gains a same-vendor-vs-different-vendor caveat. No description/shape change |
 | 4.10.3 | **Lightweight-mode wording fix (PATCH):** `AGENTS.md` now keys the session-log test to whether a **tracked** file changed (the *objective* test is the **git diff**, not any filesystem write), and explicitly exempts runs whose only writes are **gitignored, regenerated artifacts** (`sync skill adapters`, `review-scratch/`, the compiled lint artifact) → **no log**. Aligns the lightweight-mode note with what `SKILLS.md` already states (sync "touches no committed file"); prevents a spurious lite log after every adapter sync. Wording-only |
+| 4.10.4 | **`memory-lint` nested list fix (PATCH):** hardened the verifier script to handle deeply-nested lists correctly. `pinned_open_threads` now checks indentation level so a parent Open Thread's pinned state isn't dropped by a standard sub-bullet. |
+
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -740,3 +742,12 @@ script changes — only the installed `AGENTS.md` text.
    `enabled_with` and `mode`.
 4. **Report**: lightweight-mode test re-keyed to tracked changes (git diff); gitignored regenerated
    artifacts (adapter sync, `review-scratch/`, lint artifact) are explicitly no-log.
+
+## Rung: 4.10.3 → 4.10.4 — memory-lint nested list fix (PATCH)
+
+Updates the bundled `memory-lint` script to correctly parse deeply-nested lists in continuity.md Open Threads. No memory-file shape or procedural changes.
+
+1. **Re-copy the `memory-lint` script.** Overwrite the target's `agent-skills/memory-lint/scripts/memory-lint.py` and its new test file with the ones from the tool's `agent-skills/memory-lint/scripts/` directory. **If the target's script was locally modified, WARN the human first** ("The built-in memory-lint skill has been updated in v4.10.4, but you have local modifications...") and ask before overwriting (this enforces the built-in exception to the `upgrades-additive` invariant).
+2. **Re-copy the memory-lint `SKILL.md`.** It now contains a note about running the test harness. Same warn-before-overwrite rule applies.
+3. **Stamp** `.agent/version.md` → `version: 4.10.4`, `last_upgraded: <today>`, preserving `enabled_with` and `mode`.
+4. **Report**: `memory-lint` hardened to correctly preserve the pinned state of Open Threads containing deeply-nested sub-items.

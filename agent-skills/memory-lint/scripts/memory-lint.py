@@ -54,15 +54,28 @@ def parse_footers(text):
 
 def pinned_open_threads(text):
     """ids whose nearest preceding list bullet is an unchecked '- [ ]' (never decay)."""
-    pinned, state = set(), None
+    pinned = set()
+    state = None  # None, "open", "done"
+    indent_level = 0
+
     for ln in text.split("\n"):
         st = ln.lstrip()
+        if not st:
+            continue
+
+        current_indent = len(ln) - len(st)
+
         if st.startswith("- [ ]"):
             state = "open"
+            indent_level = current_indent
         elif st.startswith(("- [x]", "- [X]")):
             state = "done"
+            indent_level = current_indent
         elif st.startswith(("- ", "* ")):
-            state = None
+            # Only reset state if this bullet is at the same or higher level than the parent open thread
+            if state is not None and current_indent <= indent_level:
+                state = None
+
         m = re.search(r"<!--\s*id:\s*([a-z0-9-]+)", ln)
         if m and state == "open":
             pinned.add(m.group(1))
