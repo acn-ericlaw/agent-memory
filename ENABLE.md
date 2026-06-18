@@ -316,9 +316,10 @@ and steering: committed, vendor-neutral `agent-skills/<name>/SKILL.md` files (a 
 `AGENTS.md` "Skills" section is the universal runtime (the agent reads the skill — works
 on any vendor). See `docs/DESIGN-skills-layer.md` and `.agent/schema.md`.
 
-- **Fresh enable (Mode A):** a repo with no AI footprint has no skills — **do not create
-  an empty `agent-skills/`.** The installed `AGENTS.md` already handles a future `agent-skills/` on
-  demand. Skip this step.
+- **Fresh enable (Mode A):** a repo with no AI footprint has no *vendor* skills to promote —
+  **skip the promotion/adapter work in this step** (don't create an *empty* `agent-skills/`
+  here). Mode A still **receives the built-in skills** via **5i**, which populates
+  `agent-skills/` — so a fresh enable does end up with a (non-empty) `agent-skills/`.
 - **Migration (Mode C):** if `MIGRATE.md` promoted vendor skill bundles into `agent-skills/`
   (e.g. from `.claude/skills/`), **(re)generate the per-vendor adapters** below. The
   neutral `agent-skills/<name>/SKILL.md` is the source of truth; adapters are thin pointers,
@@ -336,6 +337,35 @@ clone/pull). `SKILLS.md` is read on demand — it's not in the per-session path.
 project dir unlikely, but if a top-level `agent-skills/` already exists with unrelated
 content, **do not overwrite it** — surface it as a `- [ ] Contradiction:` Open Thread
 (`never-pick-a-winner`) and stop, rather than merging blindly.
+
+### 5i. Built-in skills (installed — all modes)
+
+agent-memory ships portable, vendor-neutral skills of its own that **every enabled repo
+gets**, because they support the core workflow:
+
+- **`memory-lint`** — deterministic integrity check for the memory layer (Python 3 stdlib, no
+  install — **Python 3 is its one soft prerequisite**; absent it, the agent simply doesn't invoke
+  it); the periodic **review ritual** relies on it to verify decay arithmetic. Wire it to a
+  pre-commit hook / CI.
+- **`second-opinion`** + **`apply-critique`** — the fresh-context review pair: snapshot the
+  current task for a clean-memory reviewer (any vendor / a fresh session), then apply the
+  returned critique through a bounded, validated, human-gated loop. See
+  `docs/DESIGN-fresh-context-review.md`.
+
+**Install all three** (every mode, including a fresh Mode A enable): copy `agent-skills/<name>/`
+**verbatim from this tool's root** into the target's `agent-skills/` (including `memory-lint`'s
+bundled `scripts/`), then regenerate their adapters via the 5h recipe. Add **`review-scratch/`**
+to the target `.gitignore` (Step 7) for the review pair's personal, per-machine
+snapshots/critiques (never committed); `second-opinion` writes a README there on first run.
+Idempotent on re-enable — overwrite these built-ins (they are ours); never touch unrelated
+`agent-skills/` content (`never-pick-a-winner`). This is the one case where a fresh Mode A
+enable **does** create `agent-skills/` — populated with these built-ins, never empty.
+
+> **The built-ins are tool-managed copies.** Re-enable/upgrade **overwrites** them, so do **not**
+> customize an installed built-in — if you need a variant, fork it under a **new skill name**
+> (your own `agent-skills/<your-name>/`, which is never overwritten). The overwrite is scoped to
+> these three tool-owned skills, so `upgrades-additive` still holds for everything else in
+> `agent-skills/`.
 
 ---
 
@@ -441,11 +471,13 @@ describe what was intended.
    placeholders. A `- [ ] (vision-bootstrap)` Open Thread is present in `continuity.md`,
    and no Blueprint gaps were derived yet (they await the confirmed Vision).
 
-6. **Skills promoted (Mode C, if any).** If the source repo had vendor skills (e.g.
-   `.claude/skills/`), confirm each was promoted to `agent-skills/<name>/SKILL.md` (committed),
-   the original preserved under `legacy/`, and the four adapters regenerated
-   (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`). On a fresh enable
-   with no skills, confirm no empty `agent-skills/` was created.
+6. **Skills installed + promoted.** Confirm the **built-in skills** (`memory-lint`,
+   `second-opinion`, `apply-critique`) were installed into `agent-skills/` (Step 5i) with
+   adapters regenerated and `review-scratch/` gitignored. Additionally (Mode C), if the source
+   repo had vendor skills (e.g. `.claude/skills/`), confirm each was promoted to
+   `agent-skills/<name>/SKILL.md` (committed), the original preserved under `legacy/`, and the
+   four adapters regenerated (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`,
+   `.kiro/skills/`).
 
 Log any issue you cannot fix as an Open Thread in `memory/continuity.md` and
 note it in the report.
@@ -481,9 +513,10 @@ Print a clear summary including migration details if Mode C ran:
   • memory/archive/INDEX.md
   • .agent/schema.md, .agent/version.md  (v<version>)
   • DECAY.md, REVIEW.md
+  • agent-skills/  (built-in skills: memory-lint, second-opinion, apply-critique — + regenerated adapters)
   • AGENTS.md, CLAUDE.md, GEMINI.md, .cursorrules,
     .windsurfrules, .github/copilot-instructions.md
-  • .gitignore  (created | updated — AI-infrastructure entries)
+  • .gitignore  (created | updated — AI-infrastructure entries; + review-scratch/ for the review pair)
 
   Preserved (Mode C only):
   • legacy/<original-files>  (originals, do not edit)
@@ -519,9 +552,10 @@ Respond accordingly.
 - Never modify `package.json`, `Cargo.toml`, etc.
 - Only create/modify files within: `memory/`, `.agent/`, `legacy/`, `agent-skills/` (the
   neutral capability layer) and its regenerated per-machine adapters (`.claude/skills/`,
-  `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`), `DECAY.md`, `REVIEW.md`, `SKILLS.md`, `.gitignore` (add-only,
-  never remove existing entries), `.github/copilot-instructions.md`, and the bootstrap
-  files listed in Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a
+  `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`), `review-scratch/` (gitignored
+  fresh-context review scratch, if the review pair is accepted), `DECAY.md`, `REVIEW.md`,
+  `SKILLS.md`, `.gitignore` (add-only, never remove existing entries),
+  `.github/copilot-instructions.md`, and the bootstrap files listed in Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a
   target.)
 - If the target repo is the agent-memory tool itself, say so and stop.
 - Always preserve vendor originals under `legacy/` — they are user data.

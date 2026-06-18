@@ -12,6 +12,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.10.0, 6/18/2026
+
+> **Fresh-context second opinion — a clean-memory reviewer as a deliberate gate.** A long
+> session accumulates self-trust; the agent that built a solution over-trusts its own
+> trajectory. This release adds a skill pair for the highest-value antidote: at a
+> milestone or risk point, hand a compact snapshot to an AI with **clean memory** (a fresh
+> session or a different vendor) and ask it to challenge the work. It folds an external
+> brainstorming idea (the "Agent Interchange Format" draft) into the existing **skills layer +
+> VBDI** rather than a standalone spec — the net-new surface is small: a **security advisory**
+> on export, the handoff ritual, and the critique shape. Everything else reuses `continuity.md`
+> + session logs, the VBDI human gate, and `memory-lint`/build-tests. It carries the hard-won
+> v4.8/v4.9 lesson in its bones: **the fresh reviewer is a hypothesis generator, not an
+> authority** (a clean-context reviewer once over-archived still-referenced facts here), so
+> critique is advisory and gated by deterministic checks + a human.
+
+### Added
+
+1. **`agent-skills/second-opinion/`** — generates a review snapshot **derived from**
+   `continuity.md` + recent session logs (decision-relevant deltas only — never a parallel
+   committed state file), behind a **security advisory** the human must acknowledge before any
+   state is exported. Supports *milestone* mode (challenge a done-looking milestone) and
+   *reactive* mode (blocked / uncertain / risky). Writes to gitignored `review-scratch/`.
+2. **`agent-skills/apply-critique/`** — consumes the reviewer's critique through a **bounded,
+   validated, human-gated** loop: parse → plan a few scoped fixes → apply → validate
+   (build/tests + `memory-lint` if memory changed) → summarize applied vs. rejected. Conflicts
+   become Open Threads (`never-pick-a-winner`); the cycle writes a normal session log.
+3. **`review-scratch/`** — a gitignored, per-machine scratch dir for snapshots/critiques, with
+   a README marking the files personal. Sharing one is a conscious human decision. Added to the
+   root and `templates/.gitignore`; documented in `.agent/schema.md`.
+
+### Changed
+
+1. **Built-in skills now installed (`ENABLE.md` Step 5i + the 4.10.0 upgrade rung).** Every
+   enabled repo gets the built-in skills — `second-opinion` + `apply-critique` **and
+   `memory-lint`** — copied into `agent-skills/` with adapters regenerated; `review-scratch/`
+   added to the target `.gitignore`. `memory-lint` is installed too because the **review ritual
+   relies on it** — this supersedes its v4.9.0 "tool-local / not auto-installed" stance. Install
+   is idempotent and never touches unrelated `agent-skills/` content; a fresh Mode A enable now
+   creates a populated (never empty) `agent-skills/`. Report + scope + verify notes updated.
+2. `VERSION` → 4.10.0; `UPGRADE.md` 4.9.0→4.10.0 rung + table; `README` version table.
+   `AGENTS.md` / `SKILLS.md` / `DECAY.md` / `REVIEW.md` unchanged — the critique→repair loop
+   reuses the existing ritual. Design: `docs/DESIGN-fresh-context-review.md`.
+
+---
 ## Version 4.9.0, 6/18/2026
 
 > **`memory-lint` — a deterministic verifier skill (move the decay arithmetic off the LLM).**

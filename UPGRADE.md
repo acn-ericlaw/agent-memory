@@ -45,6 +45,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.7.1 | Lightweight mode keyed to **file-change, not "trivial"** (a judgment call both AI and human misjudge): **read-only** sessions (no file changes) write **no log**; **any file change** (even one line) writes at least a **lite log** (never skipped on a "felt trivial" call); a memory-relevant event → full ritual |
 | 4.8.0 | Review **self-verify guard** (from a Copilot review that over-archived recent facts): a new `REVIEW.md` step greps the last `archive_window` sessions for each about-to-be-archived id — any hit ⇒ the `sessions_since_last_used` count was wrong, keep the fact — and confirms no id lives in both `continuity.md` and the archive. Replaces a hand-counted judgment with a checkable signal for the riskiest operation |
 | 4.9.0 | **`memory-lint`** — a portable, optional verifier skill (`agent-skills/memory-lint/` + `scripts/memory-lint.py`, Python 3 stdlib) that runs the decay-integrity checks *deterministically* (id-in-both-places, archived-but-recently-referenced, overdue advisory, supersession links). Moves the arithmetic off the LLM; `REVIEW.md` step 6 points to it. Caught a real over-archival on first run. The tool never runs it (`no-build-step-agent-run`) — agent/human/CI-invoked |
+| 4.10.0 | **Fresh-context second opinion** — a skill pair (`second-opinion` + `apply-critique`): snapshot the current task (derived from `continuity.md` + recent sessions, never a parallel state file) for a clean-memory reviewer (any vendor / fresh session) behind a **security advisory**, then apply the returned critique through a **bounded, validated, human-gated** loop (build/tests + `memory-lint`; critique is advisory). Snapshots/critiques live in gitignored `review-scratch/`. ENABLE and the upgrade ladder now **install** the built-in skills (this pair + `memory-lint`, which the review ritual relies on). Folds the "AIF" idea into skills + VBDI |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -624,3 +625,32 @@ still the in-ritual default; this adds the deterministic, CI-able version.
 4. **Stamp** `.agent/version.md` → `version: 4.9.0`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 5. **Report**: `REVIEW.md` re-synced (points to `memory-lint`); the verifier skill is available.
+
+---
+
+## Rung: 4.9.0 → 4.10.0 — fresh-context second opinion + install the built-in skills (MINOR)
+
+Additive: installs the built-in skills into the repo + a gitignored scratch dir. Folds the
+"AIF" brainstorming idea into the skills layer + VBDI (`docs/DESIGN-fresh-context-review.md`) —
+net-new is the security advisory on export, the handoff ritual, and the critique shape;
+everything else reuses memory.
+
+1. **Install the built-in skills** into the repo's `agent-skills/` — copy `second-opinion/`,
+   `apply-critique/`, **and `memory-lint/`** (with its `scripts/`) verbatim from this tool's
+   root, then regenerate adapters (Step 5h recipe). `memory-lint` is installed here too: v4.9.0
+   left it tool-local, but the **review ritual relies on it**, so the 4.10.0 upgrade brings it
+   into the target. Idempotent — overwrite these built-ins (they are ours); never touch
+   unrelated `agent-skills/` content (`never-pick-a-winner`). **Tool-managed copies:** because
+   upgrade overwrites them, the user must **not** customize an installed built-in — fork under a
+   **new skill name** for a variant. The overwrite is scoped to these three, so
+   `upgrades-additive` holds for all other `agent-skills/`.
+2. **`review-scratch/`** — add to the repo `.gitignore` (personal, per-machine
+   snapshots/critiques; never committed). `second-opinion` writes a `review-scratch/README.md`
+   marking the folder personal on first run.
+3. **Re-sync `.agent/schema.md`** (verbatim where different): adds the `review-scratch/`
+   section. `templates/.gitignore` gains the `review-scratch/` entry. `AGENTS.md` / `SKILLS.md`
+   / `DECAY.md` / `REVIEW.md` unchanged — the critique→repair loop reuses the existing ritual.
+4. **Stamp** `.agent/version.md` → `version: 4.10.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+5. **Report**: built-in skills installed (`second-opinion` + `apply-critique` + `memory-lint`)
+   with adapters regenerated; `review-scratch/` gitignored.

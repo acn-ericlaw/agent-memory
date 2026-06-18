@@ -22,3 +22,7 @@
 .aider.chat.history.md
 .aider.input.history
 .aider.tags.cache*
+
+# Fresh-context review scratch (second-opinion / apply-critique skills) — personal,
+# per-machine snapshots & critiques; sharing one is a conscious human decision, never committed.
+review-scratch/

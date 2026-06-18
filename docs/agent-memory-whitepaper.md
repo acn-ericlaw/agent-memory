@@ -194,6 +194,21 @@ never-pick-a-winner, additive/non-destructive — and it refined the tool's own 
 invariant into **"no build step; agent-run"**: the *tool* runs no code, while a skill may
 carry optional, **agent-invoked** helper scripts.
 
+**v4.10.0 — built-in skills + a fresh-context second opinion.** The layer now ships its own
+built-ins, *installed into every enabled repo*: `memory-lint` (the deterministic verifier the
+review ritual relies on) and a **fresh-context review** pair. `second-opinion` distills a compact
+snapshot **from** `continuity.md` + recent session logs (never a parallel state file) and, behind a
+**security advisory** the human must acknowledge, hands it to a reviewer with *clean memory* — a
+fresh session or a different vendor that did not live the work. `apply-critique` feeds the returned
+critique through a **bounded, validated, human-gated** loop (a few scoped fixes → build/tests +
+`memory-lint` → an applied-vs-rejected summary). The reviewer is a **hypothesis generator, not an
+authority**: its critique is advisory, gated by deterministic checks and a human — the lesson the
+layer learned when a clean-context reviewer once over-archived still-referenced facts. This
+externalizes the smoke-test intuition (a fresh agent should orient from memory alone) into a
+deliberate gate at milestones and risk points, and the advisory extends `target-repo-scope-only`
+from *what the tool touches* to *what the human exports*. The built-ins are tool-managed (fork under
+a new name to customize) and, like everything else, **zero overhead by default** — installed ≠ run.
+
 ---
 
 ## 6. Design Principles
@@ -248,6 +263,11 @@ carry optional, **agent-invoked** helper scripts.
   end-to-end by an in-place upgrade of a large, pre-existing project — promoting that
   project's vendor skills into the shared `agent-skills/` layer and regenerating the
   per-vendor adapters — confirming the migration path on a real codebase, not just a fixture.
+- **The review loop, dogfooded.** v4.10.0's fresh-context second-opinion pair was validated by
+  running it on its own milestone: a clean-context reviewer (a freshly-spawned agent with no
+  session memory) critiqued the change and surfaced a real invariant tension the in-session author
+  had missed — an upgrade silently overwriting a user-customized built-in vs. the additive-upgrades
+  invariant — which `apply-critique` then fixed. Using the reviewer to review the reviewer.
 
 ---
 
@@ -284,6 +304,7 @@ loop with human gates.**
 | Governance | opaque | git history + markdown + human gates |
 | Vendor coupling | locked to one tool | neutral; thin pointers to one hub |
 | Capabilities / skills | per-vendor skill files, not shared | neutral `agent-skills/` + regenerated per-vendor adapters; authored once, any agent |
+| Second opinion / review | self-review in the same (polluted) context | fresh-context reviewer (any vendor) + bounded, deterministically-gated apply |
 | Process weight | often heavy | lightweight default; SDLC is the target's opt-in |
 
 ---

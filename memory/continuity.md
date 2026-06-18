@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.9.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0–4.7.1:** + a **lightweight mode** keyed to the *objective* "did a file change?" test — **read-only** sessions write **no log**; **any file change** (even one line) writes at least a one-line **lite log**; a memory-relevant event → full ritual ("trivial" is a judgment call, so it never decides the skip). **v4.8.0:** the review **self-verifies its archival** — greps the last `archive_window` sessions for each fading id before archiving (guards against decay miscounts). **v4.9.0:** + a portable **`memory-lint`** verifier skill (`agent-skills/memory-lint/`, Python 3 stdlib) that runs the decay-integrity checks *deterministically* — moves the counting off the LLM (the real fix Copilot argued for). **Validated across five vendors 2026-06-16/18** (Claude, Gemini cross-machine, Cursor-format, enterprise Kiro on Windows, GitHub Copilot CLI — the Copilot enablement + review surfaced the decay-miscount that drove v4.8.0). **All cross-vendor validations closed.**
+- **status:** v4.10.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0–4.7.1:** + a **lightweight mode** keyed to the *objective* "did a file change?" test — **read-only** sessions write **no log**; **any file change** (even one line) writes at least a one-line **lite log**; a memory-relevant event → full ritual ("trivial" is a judgment call, so it never decides the skip). **v4.8.0:** the review **self-verifies its archival** — greps the last `archive_window` sessions for each fading id before archiving (guards against decay miscounts). **v4.9.0:** + a portable **`memory-lint`** verifier skill (`agent-skills/memory-lint/`, Python 3 stdlib) that runs the decay-integrity checks *deterministically* — moves the counting off the LLM (the real fix Copilot argued for). **v4.10.0:** + an optional **fresh-context second-opinion** skill pair — `second-opinion` snapshots the task (derived from continuity+sessions, behind an acknowledge-gated security advisory) for a clean-memory reviewer; `apply-critique` applies the returned critique through a bounded, validated, human-gated loop (build/tests + memory-lint). Snapshots in gitignored `review-scratch/`; **ENABLE + upgrades now install the built-in skills** (`second-opinion` + `apply-critique` + `memory-lint`, which the review ritual relies on). Folds the external "AIF" idea into skills+VBDI; the fresh reviewer is **advisory**, gated by deterministic checks + human (the v4.8/v4.9 lesson). **Dogfooded end-to-end 2026-06-18** (clean-context reviewer caught an upgrade-overwrite invariant tension; fixed via apply-critique); README/deck/whitepaper updated. **Validated across five vendors 2026-06-16/18** (Claude, Gemini cross-machine, Cursor-format, enterprise Kiro on Windows, GitHub Copilot CLI — the Copilot enablement + review surfaced the decay-miscount that drove v4.8.0). **All cross-vendor validations closed.**
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-18 | agent: Claude Code (2026-06-18-065458)
+- **last_session:** 2026-06-18 | agent: Claude Code (2026-06-18-174456)
 - **last_review:** 2026-06-18 | through 2026-06-18-051933
 - **last_invariant_check:** 2026-06-18 | through 2026-06-18-054159
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -327,10 +327,43 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   The tool never runs it (`no-build-step-agent-run`); it lints the *arithmetic*, the agent judges
   *meaning*. **First run caught a real over-archival both Copilot AND a hand re-check missed** —
   `skills-layer-v411-fixes` (sslu 16 ≤ 20) — now reactivated. `REVIEW.md` step 6 points to it.
-  **Not auto-installed into targets** (would add a script to every repo) — deliberate future option.
+  **Not auto-installed into targets** at v4.9.0 (would add a script to every repo) — a deliberate
+  future option **taken in v4.10.0** (now installed into every enabled repo; see `fresh-review-v4100`).
   Touched: `agent-skills/memory-lint/` (new), `REVIEW.md`, `VERSION`→4.9.0, `UPGRADE.md` rung + table,
   `README`/`CHANGELOG`. → serves: vision-agent-memory (faithful, verifiable memory)
   <!-- id: lint-skill-v490 | created: 2026-06-18 | last_used: 2026-06-18 | uses: 1 | tier: working | origin: 2026-06-18-065458 -->
+
+- **Shipped v4.10.0 — fresh-context second opinion (optional skill pair) (MINOR).** Folded an
+  external brainstorming artifact (the "AIF" draft — architecture paper + snapshot/critique specs)
+  into the **skills layer + VBDI** rather than a standalone spec — net-new surface is small: a
+  **security advisory** on export, the handoff ritual, and the critique shape; the rest reuses
+  continuity+sessions, the VBDI human gate, and memory-lint/build-tests. Built
+  `agent-skills/second-opinion/` (snapshot *derived from* continuity + recent sessions — never a
+  parallel state file — behind an acknowledge-gated advisory; milestone & reactive modes) +
+  `agent-skills/apply-critique/` (parse → ≤N scoped fixes → validate (build/tests + memory-lint) →
+  summarize applied/rejected; conflicts → Open Thread; writes a session log). Snapshots/critiques
+  live in gitignored `review-scratch/` (README marks it personal — sharing is a conscious decision).
+  **ENABLE Step 5i + the UPGRADE 4.10.0 rung now install the built-in skills** (`second-opinion`
+  + `apply-critique` + `memory-lint`) into every enabled repo — **superseding memory-lint's
+  v4.9.0 "tool-local / not auto-installed" stance** (the review ritual relies on it; maintainer
+  revised the initial opt-in choice — installing ≠ running, still zero-overhead-by-default).
+  Load-bearing lesson baked in (v4.8/v4.9): the fresh reviewer is a **hypothesis
+  generator, not an authority** — critique is advisory, gated by deterministic checks + human.
+  **Dogfooded end-to-end 2026-06-18** — ran `second-opinion` on this milestone; a clean-context
+  subagent reviewer (no session memory) caught a **real invariant tension the author missed**
+  (upgrade silently overwriting a user-customized built-in vs. `upgrades-additive`), fixed via
+  `apply-critique` (tool-managed-copies contract in ENABLE+UPGRADE, 5h/5i contradiction, no-gate
+  fallback, deeper-log reach, Python-3 prereq). Human-facing docs updated (`README`,
+  `docs/agent-memory-deck.html` +slide & version bump, `docs/agent-memory-whitepaper.md`).
+  **Post-dogfood refinement (real-use consideration):** `second-opinion` now makes the snapshot
+  **self-contained** + names an *Attach to reviewer* manifest, so a **repo-less web reviewer**
+  works (not only a repo-access agent — the dogfood used a filesystem reviewer, masking this).
+  Touched: the two skills (+ gitignored adapters regenerated), `ENABLE.md` (5i + report/scope),
+  root & `templates/.gitignore` (`review-scratch/`), `.agent/schema.md`, `VERSION`→4.10.0,
+  `UPGRADE.md` rung + table, `README`/`CHANGELOG`, `docs/DESIGN-fresh-context-review.md`.
+  `AGENTS.md`/`SKILLS.md`/`DECAY.md`/`REVIEW.md` unchanged. Realizes `bp-fresh-context-review`.
+  → serves: vision-agent-memory
+  <!-- id: fresh-review-v4100 | created: 2026-06-18 | last_used: 2026-06-18 | uses: 1 | tier: working | origin: 2026-06-18-170657 -->
 
 ### Blueprint — gaps from Current State (v4.9.0) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
@@ -352,6 +385,20 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `docs/DESIGN-vbdi-lifecycle.md` §13): ceremony + scoring live in the target's own space,
   never in `memory/`. → serves: vision-agent-memory
   <!-- id: bp-sdlc-overlay | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-010142 -->
+- [x] **(blueprint)** Fresh-context second opinion — no deliberate ritual for handing a
+  curated snapshot to a clean-memory reviewer (any vendor / clean session) at a milestone or
+  risk point, getting structured critique back, and applying it through a bounded, validated,
+  human-gated loop. **Direction confirmed 2026-06-18 (maintainer): fold into skills + VBDI**,
+  not a standalone "AIF" spec. Design drafted & under review:
+  `docs/DESIGN-fresh-context-review.md`. Net-new surface is small (security advisory on export
+  + the handoff ritual + the critique shape); the rest reuses continuity/sessions, VBDI gates,
+  and memory-lint/build-tests. Carries the v4.8/v4.9 lesson: fresh critique is **advisory**,
+  gated by deterministic checks + human. Next: settle the design's §10 forks, then build a
+  skill pair (`second-opinion` + `apply-critique`) on an additive MINOR rung. **Delivered
+  v4.10.0 this session** (`fresh-review-v4100`): pair built, ENABLE + upgrades install the
+  built-in skills (incl. `memory-lint`), snapshots in gitignored `review-scratch/`.
+  → serves: vision-agent-memory
+  <!-- id: bp-fresh-context-review | created: 2026-06-18 | last_used: 2026-06-18 | uses: 2 | tier: active | origin: 2026-06-18-164859 -->
 
 ### Backlog — vNext (temporal & supersession) + beyond
 > From the 2026-06-13 industry-alignment assessment:
@@ -379,7 +426,10 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - [ ] Test Continue.dev session JSON migration end-to-end
 - [ ] Add example for migrating a Continue.dev project
 - [ ] Consider a `DISABLE.md` protocol for cleanly removing AI memory
-- [ ] Publish to GitHub
+- [ ] **Publish to GitHub.** Currently hosted on **GitLab** (`origin` =
+  `git@gitlab.com:ericclaw/agent-memory-tool.git`; `main` tracks `origin/main`) — the working
+  remote while the tool matures. **Move back to GitHub when feature-complete / production-ready.**
+  Until then, **assume GitLab** for all git operations. (Clarified 2026-06-18.)
 - [ ] Keep root `CLAUDE.md` architecture section in sync when file shapes or
   vendor support change (also touches `templates/`, `MIGRATE.md`, `README.md`,
   `examples/`)

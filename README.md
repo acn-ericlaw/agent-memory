@@ -131,6 +131,34 @@ root of every enabled repo.
 
 ---
 
+## Fresh-Context Second Opinion
+
+A long AI session over-trusts its own trajectory — the agent that built a solution is the
+least likely to challenge it. The highest-value antidote is a reviewer with **clean memory**:
+a fresh session or a different vendor that didn't live the work. agent-memory ships this as two
+built-in skills, **installed into every enabled repo**:
+
+- **`second-opinion`** — at a milestone (or when blocked or facing a risky change), it distills
+  a compact snapshot **from** `continuity.md` + recent session logs (never a parallel state
+  file) and, behind a **security advisory you must acknowledge**, hands it to a clean-context
+  reviewer to challenge.
+- **`apply-critique`** — takes the reviewer's critique back through a **bounded, validated,
+  human-gated** loop: a few scoped fixes, then deterministic checks (build/tests + `memory-lint`),
+  then a summary of what was applied vs. rejected and why.
+
+The reviewer is a **hypothesis generator, not an authority** — its critique is advisory and
+gated by deterministic checks and your decision. (That's the lesson the memory layer learned when
+a clean-context reviewer once over-archived still-referenced facts — so the guardrail is built
+in.) Snapshots and critiques are personal, gitignored scratch (`review-scratch/`); sharing one
+with another AI is your conscious decision, which the advisory makes explicit. Like the rest of
+the tool: **zero overhead by default** — nothing runs unless you invoke it.
+
+> Also installed: **`memory-lint`**, the deterministic Python-3 verifier the review ritual relies
+> on (see *Evolving Memory* above). All three built-ins are tool-managed — fork under a new skill
+> name to customize, since upgrades overwrite them.
+
+---
+
 ## Versioning & Upgrades
 
 The tool is versioned (root `VERSION`, semver). Each enabled repo stamps
@@ -166,6 +194,7 @@ it in place** — additively, never destructively.
 | 4.7.1 | Lightweight mode keyed to **file-change, not "trivial"** (a judgment call both AI and human misjudge): **read-only** sessions (no file changes) write **no log**; **any file change** (even one line) writes at least a **lite log**; a memory-relevant event → the full ritual |
 | 4.8.0 | Review **self-verify guard**: before archiving, the review greps the last `archive_window` sessions for each fading id (any hit ⇒ the count was wrong, keep it) and confirms no id is in both `continuity.md` and the archive. Catches the decay miscount that's the most common — and costliest — review error |
 | 4.9.0 | **`memory-lint`** — a portable, optional verifier skill (`agent-skills/memory-lint/`, Python 3 stdlib) that runs the decay-integrity checks *deterministically* — moving the counting off the LLM entirely. Wire it to a pre-commit hook / CI. `REVIEW.md` points to it; it caught a real over-archival on first run. The tool never runs it (agent/human/CI-invoked) |
+| 4.10.0 | **Fresh-context second opinion** — a skill pair (`second-opinion` + `apply-critique`): snapshot the current task for a clean-memory reviewer (any vendor / a fresh session) behind a **security advisory**, then apply the returned critique through a **bounded, validated, human-gated** loop (build/tests + `memory-lint`; critique stays advisory). Snapshots live in gitignored `review-scratch/`. ENABLE and upgrades now **install** the built-in skills (incl. `memory-lint`, which the review ritual relies on). The reviewer is a hypothesis generator, not an authority — the lesson the layer learned in 4.8/4.9 |
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
 drift and runs the upgrade ladder in `UPGRADE.md` (the user's entry point stays the

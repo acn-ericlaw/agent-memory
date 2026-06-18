@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>agent-memory — v4.5.0</title>
+<title>agent-memory — v4.10.0</title>
 <style>
   :root{
     --bg:#0b1020; --bg2:#0e1530; --panel:#131c3a; --panel2:#18224a;
@@ -71,7 +71,7 @@
 
   <!-- 1 -->
   <section class="slide active">
-    <div class="kicker">agent-memory · v4.5.0</div>
+    <div class="kicker">agent-memory · v4.10.0</div>
     <h1>A lightweight, vendor-neutral<br><span class="grad">AI memory + cognitive loop</span></h1>
     <p class="lead" style="margin-top:.6em">Turning shared project context into <b>deterministic delivery with near-zero drift</b> — for human–AI collaboration, across any AI vendor.</p>
     <div class="foot">Peer / leadership review · June 2026</div>
@@ -201,6 +201,25 @@
     <p class="lead" style="margin-top:1em">Migration <b>promotes</b> a vendor's skills (e.g. <code>.claude/skills/</code>) into the shared layer — originals preserved under <code>legacy/</code>, never flattened into steering.</p>
   </section>
 
+  <!-- 9b · fresh-context second opinion -->
+  <section class="slide">
+    <div class="kicker">v4.10.0 · fresh-context review</div>
+    <h2>A <span class="grad">second opinion</span> from clean memory</h2>
+    <p class="lead">A long session over-trusts its own trajectory. The highest-value antidote is a reviewer with <b>clean memory</b> — a fresh session or a different vendor that didn't live the work. Shipped as two built-in skills, installed into every enabled repo.</p>
+    <div class="loop" style="margin-top:.8em">
+      <span class="step"><b>SNAPSHOT</b>second-opinion</span><span class="arr">→</span>
+      <span class="step">security advisory</span><span class="arr">→</span>
+      <span class="step">clean-context reviewer</span><span class="arr">→</span>
+      <span class="step"><b>APPLY</b>apply-critique</span><span class="arr">→</span>
+      <span class="step">validate + human gate</span>
+    </div>
+    <div class="grid g3" style="margin-top:1em">
+      <div class="card"><h3>Derived, not duplicated</h3><p>The snapshot is distilled from <code>continuity.md</code> + recent sessions — never a parallel state file. Behind a security advisory you must acknowledge before any state leaves the perimeter.</p></div>
+      <div class="card"><h3>Bounded &amp; gated</h3><p><code>apply-critique</code> plans a few scoped fixes, runs deterministic checks (build/tests + <code>memory-lint</code>), then summarizes applied vs. rejected. The human gates the result.</p></div>
+      <div class="card new"><h3>Hypothesis, not authority</h3><p>A clean reviewer can be confidently wrong (one once over-archived live facts). So critique is <b>advisory</b>, gated by deterministic checks + a human — the lesson baked in.</p></div>
+    </div>
+  </section>
+
   <!-- 10 · supported vendors -->
   <section class="slide">
     <div class="kicker">Vendor support · v4.5.0</div>
@@ -289,7 +308,7 @@
     <p class="quote"><span class="grad">Memory is the deterministic substrate.<br>The loop is the lightweight control layer.</span></p>
     <p class="lead" style="margin-top:1em">Next (tracked as Blueprint gaps): greenfield flow · multi-user hardening · an optional SDLC overlay for teams that want it.</p>
     <p class="big" style="margin-top:1em"><b>Predictable innovation with human partnership</b> — bold ideas, faithful delivery, the human in the loop at every altitude.</p>
-    <div class="foot">agent-memory · v4.5.0</div>
+    <div class="foot">agent-memory · v4.10.0</div>
   </section>
 
 </div>

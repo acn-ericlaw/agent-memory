@@ -235,6 +235,29 @@ the heavyweight **sanity check** all live in **`SKILLS.md`** (read on demand). S
 
 ---
 
+## review-scratch/  (fresh-context review — personal, gitignored)
+
+Working files for the optional **`second-opinion`** / **`apply-critique`** skills (the
+fresh-context review pair). When the human invokes `second-opinion`, it writes a compact
+snapshot of the current task — **derived from `continuity.md` + recent session logs**, never
+a parallel committed state file — to `review-scratch/snapshot-<UTC>.md`, for a clean-memory
+reviewer (another vendor or a fresh session) to challenge.
+
+```
+review-scratch/        gitignored, per-machine, personal — NOT shared memory
+  README.md            marks the folder personal; sharing a file is a conscious decision
+  snapshot-<UTC>.md    a task snapshot for an external reviewer
+  critique-<UTC>.md    the reviewer's returned critique (consumed by apply-critique)
+```
+
+The folder is **gitignored** (like the vendor adapter dirs): sharing a snapshot with another
+AI is a trust-boundary event the human owns — `second-opinion` shows a security advisory and
+waits for acknowledgment before exporting state. Critique is **advisory**: `apply-critique`
+gates it with deterministic checks (build/tests, `memory-lint`) and a human decision. See
+`docs/DESIGN-fresh-context-review.md`.
+
+---
+
 ## .agent/version.md
 
 Install manifest recording which agent-memory version this repo is on:
