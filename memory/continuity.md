@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.7.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0–4.7.1:** + a **lightweight mode** keyed to the *objective* "did a file change?" test — **read-only** sessions write **no log**; **any file change** (even one line) writes at least a one-line **lite log**; a memory-relevant event → full ritual ("trivial" is a judgment call, so it never decides the skip). **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run; cloned + bootstrapped under enterprise Kiro on Windows).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-18 | agent: GitHub Copilot (2026-06-18-054159)
+- **last_session:** 2026-06-18 | agent: Claude Code (2026-06-18-061536)
 - **last_review:** 2026-06-18 | through 2026-06-18-051933
 - **last_invariant_check:** 2026-06-18 | through 2026-06-18-054159
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -177,6 +177,40 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   deleted the tool's hello-world Gemini adapter and regenerated it via the operation. Supports
   multi-machine contributors (`bp-multi-user`). → serves: vision-agent-memory
   <!-- id: sync-adapters-v420 | created: 2026-06-16 | last_used: 2026-06-17 | uses: 9 | tier: archive-candidate | origin: 2026-06-16-171539 -->
+
+### Shipped — v4.4.0 / v4.5.0 + the hello-world dogfood (reactivated 2026-06-18)
+
+> Reactivated from `archive/2026-Q2.md` 2026-06-18 — the 2026-06-18-051933 review (GitHub Copilot)
+> swept these while they were still referenced in the window (low sslu); restored to `active`.
+
+- [x] **Dogfood: `hello-world` portable skill (2026-06-16).** The tool now carries its own
+  skill — `agent-skills/hello-world/SKILL.md` (neutral source of truth, committed) + a bundled
+  `scripts/hello.sh` (agent-invoked helper, exercises `no-build-step-agent-run`) + regenerated,
+  gitignored adapters (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`).
+  Tested end-to-end via the `AGENTS.md` baseline. The tool now dogfoods `agent-skills/` the way it
+  dogfoods `memory/`. **Cross-vendor + cross-machine validated 2026-06-17** (Gemini CLI, another
+  machine): ran via the baseline with no adapter, then natively after `sync skill adapters` — the
+  strongest agent-as-runtime portability proof. Surfaced the **invocation-path self-report** issue
+  (3 Gemini runs): a vendor expands a `/cmd` into the prompt before the model sees it, so an agent
+  can't reliably self-report its trigger → **option B**: `hello-world` step 3 reports the *result,
+  not the trigger* (`docs/DESIGN-skills-layer.md` §4c). → serves: vision-agent-memory
+  <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-18 | uses: 9 | tier: active | origin: 2026-06-16-152327 -->
+- [x] **v4.4.0 (MINOR): lightweight skills — conscious, not per-session.** Maintainer's frame:
+  "skill creation is a conscious developer act; don't do heavy skill work every session." The
+  adapter recipe + **sync** / **adopt** / **sanity-check** ops moved OUT of the per-session
+  `AGENTS.md` into an on-demand installed **`SKILLS.md`** (sibling of DECAY/REVIEW); the per-session
+  "Skills" section is now just the runtime baseline + a pointer. Removed the v4.3.0 per-session
+  "skills safety check" (partially supersedes `authoring-adopt-v430` — authoring + adopt stand).
+  Trims ~1.3K tok off every-session bootstrap. → serves: vision-agent-memory
+  <!-- id: lightweight-skills-v440 | created: 2026-06-16 | last_used: 2026-06-18 | uses: 1 | tier: active | origin: 2026-06-16-194434 -->
+- **Shipped v4.5.0 — Kiro support (a 4th adapter + Mode C detection).** Amazon's **Kiro IDE**
+  converges on the two open standards this tool bets on: it auto-reads root **`AGENTS.md`** (memory
+  layer needs no pointer file) and its Agent Skills follow the **open Agent Skills standard** (same
+  `SKILL.md` shape as Claude). Added a 4th adapter target `.kiro/skills/<name>/SKILL.md` (`sync`
+  writes four adapters) + **Kiro in the Mode C detection table** (`MIGRATE.md`: steering →
+  instructions, skills → `agent-skills/`, specs → `legacy/`). **Kiro Powers need no special
+  handling** (partner bundles that *consume* open-standard skills). → serves: vision-agent-memory
+  <!-- id: kiro-adapter-v450 | created: 2026-06-16 | last_used: 2026-06-18 | uses: 1 | tier: active | origin: 2026-06-16-221832 -->
 
 ### Shipped — v4.5.1–v4.7.1: cross-vendor refinements (2026-06-17)
 - **Shipped v4.5.1 — skills-layer guidance (PATCH, from the Gemini CLI cross-machine dogfood).**
