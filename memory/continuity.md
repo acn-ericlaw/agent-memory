@@ -9,9 +9,9 @@
 - **project:** agent-memory
 - **status:** v4.7.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0–4.7.1:** + a **lightweight mode** keyed to the *objective* "did a file change?" test — **read-only** sessions write **no log**; **any file change** (even one line) writes at least a one-line **lite log**; a memory-relevant event → full ritual ("trivial" is a judgment call, so it never decides the skip). **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run; cloned + bootstrapped under enterprise Kiro on Windows).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-17 | agent: Claude Code (2026-06-17-190301)
-- **last_review:** 2026-06-16 | through 2026-06-16-201531
-- **last_invariant_check:** 2026-06-15 | through 2026-06-15-231502
+- **last_session:** 2026-06-18 | agent: GitHub Copilot (2026-06-18-054159)
+- **last_review:** 2026-06-18 | through 2026-06-18-051933
+- **last_invariant_check:** 2026-06-18 | through 2026-06-18-054159
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
 
 ## What's Been Built
@@ -60,19 +60,19 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 - Target-repo scope only — never read/modify/move anything outside the resolved
   target-repo root (never `~`, `~/.claude/`, Application Support, AppData, system paths)
-  <!-- id: target-repo-scope-only | created: 2026-06-13 | last_used: 2026-06-16 | uses: 6 | tier: core -->
+  <!-- id: target-repo-scope-only | created: 2026-06-13 | last_used: 2026-06-17 | uses: 8 | tier: core -->
 - Never delete vendor files — move originals to `legacy/<vendor>/`, preserving paths
-  <!-- id: never-delete-vendor-files | created: 2026-06-13 | last_used: 2026-06-16 | uses: 4 | tier: core -->
+  <!-- id: never-delete-vendor-files | created: 2026-06-13 | last_used: 2026-06-17 | uses: 6 | tier: core -->
 - Never overwrite, never pick a winner — fold vendor steering under
   `## Migrated rules from <vendor>`; surface contradictions as Open Threads
-  <!-- id: never-pick-a-winner | created: 2026-06-13 | last_used: 2026-06-16 | uses: 7 | tier: core -->
+  <!-- id: never-pick-a-winner | created: 2026-06-13 | last_used: 2026-06-17 | uses: 10 | tier: core -->
 - No build step; agent-run — the tool itself runs no code and needs none (no install, no
   daemon). The markdown files are the product and the agent is the runtime. A skill MAY
   bundle optional helper scripts, but those are invoked by the agent/vendor at the user's
   direction, never executed by the tool.
-  <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-17 | uses: 9 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
+  <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-18 | uses: 26 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
 - Upgrades are additive and non-destructive — enrich and add, never rewrite or delete
-  <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-16 | uses: 15 | tier: core -->
+  <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-16 | uses: 16 | tier: core -->
 
 ## Key Decisions
 
@@ -90,6 +90,10 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
+- [x] **Re-verify invariants (due):** confirm `target-repo-scope-only`, `never-delete-vendor-files`, `never-pick-a-winner`, `no-build-step-agent-run`, `upgrades-additive`, and the Vision (`vision-agent-memory`) still hold, or supersede any that don't (`DECAY.md` §9). Due: 34 sessions since last check (`verify_invariants_every: 20`).
+  **Confirmed 2026-06-18 (maintainer):** all 5 invariants and the Vision still hold.
+  <!-- id: ot-reverify-invariants-20260618 | created: 2026-06-18 | last_used: 2026-06-18 | uses: 2 | tier: active | origin: 2026-06-18-051933 -->
+
 - [x] Incorporate findings from real-world enablement / validation. **Closed 2026-06-17
   (maintainer):** the validation loop is satisfied — a **team demo of "AI enable" drew member
   support**, and the v4.x upgrade was exercised across real targets and **three non-Claude vendors**
@@ -97,146 +101,29 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   source-code repo with an honest "helps more than it interferes" assessment). No blocking issues;
   findings drove the **v4.5.1–v4.7.1** refinements (Gemini slash-command + commit guard; Kiro
   hooks; commit attribution; lightweight mode). The dogfood-feedback loop did its job.
-  <!-- id: ot-realworld-v411-findings | created: 2026-06-16 | last_used: 2026-06-17 | uses: 1 | tier: active | origin: 2026-06-16-141614 -->
+  <!-- id: ot-realworld-v411-findings | created: 2026-06-16 | last_used: 2026-06-17 | uses: 2 | tier: active | origin: 2026-06-16-141614 -->
 
-- [ ] Validate the memory + skills layer with **GitHub Copilot CLI**. Maintainer's account was
+- [x] Validate the memory + skills layer with **GitHub Copilot CLI**. Maintainer's account was
   **approved 2026-06-17**, activating in ~1–2 days (≈2026-06-18/19); they'll then test and report.
   Copilot is already in the Mode C detection table (`.github/copilot-instructions.md`) and gets a
   bootstrap pointer — this validates whether Copilot CLI actually reads `AGENTS.md` / follows the
   protocol, and whether skills need a Copilot adapter (today the recipe covers Claude/Gemini/Cursor/Kiro).
   Last open cross-vendor validation; same dogfood loop.
-  <!-- id: ot-copilot-cli-validation | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: active | origin: 2026-06-17-190301 -->
-
-- [x] Drift: the Blueprint subsection header said "Current State (**v4.1.1**)" while status
-  is now **v4.4.0**. **Resolved 2026-06-16** — refreshed the baseline label to v4.4.0 (the gap
-  set itself — bp-greenfield, bp-multi-user, bp-sdlc-overlay — remains valid). Surfaced by the
-  review backstop.
-  <!-- id: ot-drift-blueprint-baseline-v440 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-201531 -->
-
-- [x] Re-verify invariants — **done 2026-06-16** (maintainer): `target-repo-scope-only`,
-  `never-delete-vendor-files`, `never-pick-a-winner`, `upgrades-additive`, and the Vision
-  (`vision-agent-memory`) **still hold (confirmed)**; `no-code-markdown-only` **superseded
-  by `no-build-step-agent-run`** (DECAY §9) — the skills layer's helper scripts made the
-  absolute "markdown-only" wording false.
-  <!-- id: ot-reverify-invariants-20260615 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 0 | tier: active | origin: 2026-06-15-231502 -->
-- [x] Drift: Blueprint subsection header was stale ("Current State (v3.7.0)"). **Resolved
-  2026-06-16** — refreshed the baseline label to v4.1.1 (current state); the gap set itself
-  is still valid (bp-greenfield, bp-multi-user, bp-sdlc-overlay remain open).
-  <!-- id: ot-drift-blueprint-baseline-20260615 | created: 2026-06-15 | last_used: 2026-06-16 | uses: 1 | tier: archive-candidate | origin: 2026-06-15-231502 -->
+  **Closed 2026-06-18 (GitHub Copilot):** Copilot CLI reads `AGENTS.md`, follows the full protocol
+  (before-session reads, multi-agent continuity, VBDI, session log, lightweight-mode, fact metadata,
+  supersession, skills, invariants — all verified). Skills work via the `AGENTS.md` baseline; no
+  native adapter format exists for Copilot (not a blocker — the baseline is sufficient). Cross-vendor
+  validation set is now complete: Claude, Gemini, Cursor, Kiro, **GitHub Copilot CLI** ✅.
+  <!-- id: ot-copilot-cli-validation | created: 2026-06-17 | last_used: 2026-06-18 | uses: 2 | tier: active | origin: 2026-06-17-190301 -->
 
 ### Evolving long-term memory layer (v3.0.0) — BUILT 2026-06-13
-- [x] **Evolving-memory layer implemented.** Design: `docs/DESIGN-evolving-memory.md`.
-  Deterministic integer tier rules (no float `strength`); event-sourced metadata
-  (derived from session-log `## Memory References` at review); stable kebab fact IDs;
-  `sessions/` = immutable event log; tiers by counting session files; decay sweeps
-  completed `[x]` threads; auto-core off (human-set); default windows 3/8/20, review
-  every 10. Created: `DECAY.md`, `REVIEW.md`, `UPGRADE.md`, `VERSION` (3.0.0),
-  `templates/memory/decay-policy.md`, `templates/.agent/version.md`,
-  `examples/evolving-memory-example/`. Wired: `templates/memory/continuity.md`
-  (Architectural Invariants + last_review + metadata note), `templates/.agent/schema.md`
-  (metadata fields + Memory References + new files), `templates/AGENTS.md` + root
-  `AGENTS.md` (Before/During/After), `ENABLE.md` (Step 5e generate, Step 6 install
-  DECAY/REVIEW, version-aware Mode B, Step 8 verify), root `CLAUDE.md` + `README.md`
-  (architecture + version table + evolving-memory section).
-- [x] **Versioning + in-place upgrade.** Root `VERSION` (semver); per-repo
-  `.agent/version.md` stamp; `UPGRADE.md` ladder reached only via ENABLE Mode B
-  (operator-only, like MIGRATE.md ← Mode C). 2.x→3.0.0 rung backfills ids/metadata.
-- [x] **Refinement vs. literal plan:** DECAY.md/REVIEW.md are *installed into every
-  enabled repo's root* (the ritual runs inside the repo), not tool-operator-only.
-  UPGRADE.md stays operator-only. (Flagged to user.)
 - [ ] **Dogfood backfill (optional):** this repo adopted the layer — added
   Architectural Invariants (core), `memory/decay-policy.md`, `memory/archive/INDEX.md`,
   `last_review`, and Memory References in session logs going forward. Legacy facts in
   What's Been Built / Key Decisions are grandfathered as `active` (no metadata footers
   yet); backfill them with ids/metadata if/when desired (or let the first review do it).
-- [x] **Validate version-aware Mode B + UPGRADE.md** — test-drove on TWO real
-  pre-versioning repos (2026-06-13), both 2.x → 3.0.0 in place, both idempotent:
-  - `~/sandbox/mercury-composable` (orig. Mode C, git-tracked): committed `0d4cc3b9`;
-    promote-into-invariants style (2 hard constraints moved up from Key Decisions).
-  - `~/sandbox/rust/rust_event_bus_example` (orig. Mode A, **not git-tracked**):
-    additive-only style (no content moved); source untouched. (No git → not committed.)
-  All files present, no placeholder/path leaks, sessions untouched, no protocol
-  ambiguity. Validated across both original modes (A, C) and git/non-git.
-- [x] **First review cycle ran** (2026-06-13, 10 session files, `review_every: 10`).
-  Recompute + re-tier validated on real `## Memory References` data (4 of 10 logs
-  carried events; the 6 pre-adoption logs none). `uses` recomputed (e.g.
-  upgrades-additive 1→4, target-repo-scope-only / no-code-markdown-only 1→3); 2
-  completed threads re-tiered active→working per the rules. **Archive/sweep paths NOT
-  yet exercised** — nothing is older than `archive_window` (20 sessions); revisit when
-  facts actually age out. Observation: the tier model has no "done" state for completed
-  `[x]` threads — they read as `working` until swept (candidate refinement).
 - [ ] Optionally update `examples/` to mention the mercury upgrade as a real Mode B
   upgrade fixture (analogous to rust-event-bus being a real Mode A).
-
-### Shipped — v3.1.0: AI-infrastructure `.gitignore` propagation (2026-06-13)
-- [x] **Propagate the `.gitignore` design into enabled repos.** Found during the
-  first real-work dogfood (enabling `~/sandbox/simple-proxy`): the tool's own repo
-  ignores personal AI-IDE runtime dirs (`.claude/`, `.kiro/`, `.cursor/`, …) but
-  `ENABLE.md` Step 7 never passed that on — it only appended a comment to an
-  *existing* `.gitignore` and refused to create one. Fix shipped as **v3.1.0**
-  (additive → MINOR): new `templates/.gitignore` (sentinel-headed managed block);
-  `ENABLE.md` Step 7 now creates-or-appends idempotently (add-only, never reorders);
-  Step 8 verifies it; Step 9 report + Notes scope list updated; `UPGRADE.md` rung
-  3.0.0→3.1.0 added; `VERSION`→3.1.0; version tables in `UPGRADE.md`/`README.md` and
-  `CHANGELOG.md` updated. Steering files + `memory/` stay tracked (verified via
-  `git check-ignore`).
-  <!-- id: gitignore-propagation-v310 | created: 2026-06-13 | last_used: 2026-06-15 | uses: 4 | tier: archive-candidate -->
-
-### Shipped — v3.2.0: protocol clarifications from a real-work field report (2026-06-13)
-- _(faded — `field-report-v320` archived to `archive/2026-Q2.md` at the 2026-06-16 review)_
-
-### Shipped — v3.3.0: supersession / fact-invalidation (2026-06-14)
-- [x] **P1 (supersession) shipped.** The evolving-memory layer can now represent a fact
-  becoming *false*, not just unused: a terminal `superseded` tier + optional
-  `superseded-by`/`supersedes` footer fields. The agent marks a reversed/invalidated
-  fact `superseded` immediately (a truth-state edit it owns) and records
-  `Superseded: old → new` in the session log; the review archives it flagged
-  "superseded" (not "faded"), terminal (never reactivated). Touched `DECAY.md` (§9 +
-  tier + rule), `REVIEW.md`, `.agent/schema.md`, both `AGENTS.md`, the
-  `evolving-memory-example/` (a worked REST-versioning supersession), `VERSION`→3.3.0,
-  `UPGRADE.md` 3.2.0→3.3.0 rung + tables, `README`/`CHANGELOG`. Flipped the
-  industry-alignment assessment's gap #1 ⬜→✅ — the one "High" gap closed.
-  <!-- id: supersession-v330 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 3 | tier: archive-candidate -->
-- [x] **P2 (invariant-verification cadence) shipped as v3.4.0.** Never-decay facts
-  (`core` / Architectural Invariants) can quietly go "confidently wrong"; the review now
-  prompts a human to re-confirm them. Added `verify_invariants_every` (default 20) to
-  `decay-policy.md` and a `last_invariant_check` tracker to continuity Project State;
-  `REVIEW.md` step 6 raises **one** Open Thread to confirm-or-supersede when due (never
-  auto-invalidates) + a summary line; `DECAY.md` §6 note; `.agent/schema.md`; worked
-  example shows a first invariant prompt. `VERSION`→3.4.0, `UPGRADE.md` 3.3.0→3.4.0 rung
-  + tables, `README`/`CHANGELOG`. Assessment gap #2 ⬜→✅. Pairs with v3.3.0: P1 retires
-  a fact you *notice* is false; P2 makes you *check*.
-  <!-- id: invariant-verify-v340 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 2 | tier: archive-candidate -->
-- [x] **P3 (write-time contradiction check) shipped as v3.5.0.** Generalized the
-  migration-time "surface contradictions, never pick a winner" rule to normal sessions:
-  `DECAY.md` §10 — on adding/rewriting a fact, scan `core`/invariants + active decisions
-  in the same area; a clear replacement → supersede (§9), a genuine conflict →
-  `Contradiction:` Open Thread, a clash with a `core` invariant → stop and surface.
-  Added a review contradiction-backstop (`REVIEW.md`) and the before-adding check in
-  both `AGENTS.md`. `VERSION`→3.5.0, `UPGRADE.md` 3.4.0→3.5.0 rung + tables,
-  `README`/`CHANGELOG`; assessment gap #3 ⬜→✅ and Truth-maintenance scorecard ◐→✅.
-  Completes the truth-maintenance trio: P3 catches a conflict at write time, P1
-  resolves it (supersede) or P3 raises a thread, P2 re-checks invariants periodically.
-  <!-- id: contradiction-check-v350 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: archive-candidate -->
-- [x] **P4 (memory smoke test) shipped as v3.6.0.** A cheap, no-code answer to the
-  "evaluation is unsolved" gap: `memory/smoke-test.md` — N questions (generic orientation
-  + project-specific, seeded at enable) a *fresh* agent should answer from `memory/`
-  alone; a ❌ is a memory gap to fill. New `templates/memory/smoke-test.md`; `ENABLE.md`
-  step 5f generates it (+ Step 8 verify, Step 9 report); `.agent/schema.md` documents it;
-  `REVIEW.md` notes running it at a review. This repo's own `memory/smoke-test.md`
-  created (dogfood, not yet run). `VERSION`→3.6.0, `UPGRADE.md` 3.5.0→3.6.0 rung + tables,
-  `README`/`CHANGELOG`; assessment gap #5 + Evaluation scorecard ⬜→✅.
-  <!-- id: memory-smoke-test-v360 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 1 | tier: archive-candidate -->
-- [x] **P5 (provenance + retrieval-at-scale) shipped as v3.7.0 — completes the vNext
-  backlog.** Event-sourcing already records a fact's source session; v3.7.0 *surfaces* it
-  as an optional `origin: <session-file>` footer (set at creation, repairable by review).
-  `DECAY.md` §11 also documents retrieval as deliberately lexical + indexed (grep +
-  `archive/INDEX.md` + `origin` pointers); vector/semantic retrieval stays out of scope
-  (would break no-code). Touched `DECAY.md` (§1 row + §11), `REVIEW.md`, `.agent/schema.md`,
-  both `AGENTS.md`, `ENABLE.md`, the worked example (origin on session-created facts),
-  `VERSION`→3.7.0, `UPGRADE.md` 3.6.0→3.7.0 rung + tables, `README`/`CHANGELOG`. Assessment
-  gap #6 ⬜→✅; gap #4 (lexical retrieval) ◐ by-design (semantic out of scope).
-  <!-- id: provenance-retrieval-v370 | created: 2026-06-14 | last_used: 2026-06-14 | uses: 2 | tier: archive-candidate | origin: 2026-06-14-024407 -->
 
 ### Next major iteration — Vision → Blueprint → Design → Implementation (VBDI) lifecycle
 > Set 2026-06-14. The vNext backlog (P1–P5) is complete; this is the next headline direction.
@@ -260,26 +147,6 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   rewrite delivered deterministically with no drift — VBDI generalizes that to creation.
   <!-- id: vbdi-lifecycle-direction | created: 2026-06-14 | last_used: 2026-06-15 | uses: 3 | tier: active | origin: 2026-06-14-030729 -->
 
-### Shipped — v4.0.0: the forward layer (VBDI) (2026-06-15)
-- [x] **VBDI forward layer shipped.** The cognitive loop (Current State → Vision →
-  Blueprint → Design → Implementation → Feedback) now lives in the protocol: new
-  `templates/memory/vision.md`; Blueprint = typed `(blueprint)` Open Threads; altitude
-  trace (`serves:` / `id`); `DECAY.md` §12 + §10 altitude-drift; `REVIEW.md` (Vision in
-  invariant-verify + drift backstop); `.agent/schema.md`; both `AGENTS.md` (cognitive-loop
-  section + Vision in the read-list); `ENABLE.md` Step 5g (+ verify + report).
-  **Bootstrap:** enable/upgrade create a ⚠️ DRAFT Vision (current-state context only; the
-  target is left to the human) + a `(vision-bootstrap)` gate — never fabricated.
-  `VERSION`→4.0.0 (new-layer milestone; additive); `UPGRADE.md` 3.7.0→4.0.0 rung + version
-  tables; `README`/`CHANGELOG`. **Vendor-neutrality fix** (maintainer caught it in review):
-  root `CLAUDE.md` thinned to a pointer like `GEMINI.md`; its project guide + architecture
-  map moved to vendor-neutral `memory/instructions.md` — the architecture had been
-  Claude-only, a drift from the vendor-neutral Vision. **Follow-on (2026-06-15):**
-  standardized all 10 bootstrap pointers (root + templates) to one minimal parallel form —
-  the read-order now lives **only in `AGENTS.md`** (DRY), which also retroactively fixed the
-  v4.0.0 `vision.md` miss in the template pointers. Closes `bp-vbdi-loop` + `bp-altitude-drift`.
-  Decisions locked with the maintainer: **4.0.0** + **context-only bootstrap**.
-  <!-- id: vbdi-shipped-v400 | created: 2026-06-15 | last_used: 2026-06-15 | uses: 4 | tier: archive-candidate | origin: 2026-06-15-002837 -->
-
 ### Shipped — v4.1.0: cross-vendor skills layer (2026-06-15)
 - [x] **Skills layer shipped (additive MINOR).** The shared layer's third leg —
   *capabilities* — beside memory and steering. Neutral, committed `agent-skills/<name>/SKILL.md`
@@ -294,68 +161,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `templates/.gitignore` (comment), `VERSION`→4.1.0, `UPGRADE.md` 4.0.0→4.1.0 rung + table,
   `README`/`CHANGELOG`. `DECAY.md`/`REVIEW.md` unchanged. Design: `docs/DESIGN-skills-layer.md`.
   Realizes `bp-skills-layer`. Not yet validated on a real target (next: upgrade the client).
-  <!-- id: skills-layer-v410 | created: 2026-06-15 | last_used: 2026-06-16 | uses: 6 | tier: active | origin: 2026-06-15-234801 -->
-
-### Shipped — v4.1.1: skills-layer refinements (2026-06-16)
-- [x] **Skills layer refined (PATCH)** — pre-adoption corrections before the first real
-  target run (the client Mode B tonight): (1) **folder renamed `skills/` → `agent-skills/`**
-  (collision-safe — `skills/` is too common a top-level dir); (2) **Cursor adapter fix** —
-  `.cursor/rules/*.mdc` now emits the "agent-requested" type (`description` + empty `globs:`
-  + `alwaysApply: false`), verified against current Cursor docs (Gemini `.toml` + Claude
-  formats verified correct as-is); (3) **collision guard** — never overwrite a pre-existing
-  `agent-skills/`, surface a Contradiction thread; (4) **vendor-dir double-duty clarified**
-  in MIGRATE.md (archive originals to `legacy/` first, then generate adapters). `VERSION`→
-  4.1.1; `UPGRADE.md` 4.1.0→4.1.1 rung + table; `README`/`CHANGELOG`; all living docs
-  renamed (perl, `.claude/skills/` preserved). v4.1.0 was same-day + unconsumed → a
-  pre-adoption correction, not a breaking change. Closes the (a)+(b) follow-ups to
-  `skills-layer-v410`.
-  <!-- id: skills-layer-v411-fixes | created: 2026-06-16 | last_used: 2026-06-16 | uses: 5 | tier: active | origin: 2026-06-16-001342 -->
-- [x] **Dogfood: `hello-world` portable skill (2026-06-16).** The tool now carries its own
-  skill — `agent-skills/hello-world/SKILL.md` (neutral source of truth, committed) + a bundled
-  `scripts/hello.sh` (agent-invoked helper, exercises `no-build-step-agent-run`) + the three
-  regenerated, gitignored adapters (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`).
-  Tested end-to-end via the `AGENTS.md` baseline (read the SKILL.md → ran the helper).
-  Closes the "skills layer shipped with no example/dogfood fixture" follow-on; the tool now
-  dogfoods `agent-skills/` the way it dogfoods `memory/`.
-  **Cross-vendor + cross-machine validated 2026-06-17** (`Gemini CLI`, a different machine,
-  sessions `2026-06-17-032043` → `-042634`): first ran `hello-world` via the **`AGENTS.md`
-  baseline with no `.gemini/commands/` adapter present** — the strongest proof yet of
-  agent-as-runtime portability (non-Claude vendor, no engine). The missing adapter was the
-  **known gitignored cross-machine behavior** (`sync-adapters-v420`), **not a defect**: adapters
-  don't travel with a clone/pull. After `sync skill adapters` on that machine, the **retry
-  triggered natively** via `.gemini/commands/hello-world.toml` (session `2026-06-17-042634`) —
-  loop closed. Confirms the lightweight design: the baseline always works; native auto-trigger is
-  an opt-in sync away (so we do **not** add a per-session sync nudge, per `lightweight-skills-v440`).
-  **Re-validated 2026-06-17** (`Gemini CLI`, session `2026-06-17-045723`): the **native
-  `.gemini/commands/` slash command triggered correctly** (v4.5.1 behavior confirmed). Gemini left
-  one **agent-alignment** note: it first mis-reported the entry point as "baseline" when the
-  *native adapter* had triggered (it read the neutral skill — baseline *content* — and conflated
-  that with the baseline *trigger*). **Fix:** sharpened `hello-world` SKILL.md step 3 to attribute
-  by the **entry point, not the file read** (per-vendor trigger cues; "check for a matching adapter
-  before reporting baseline"). Demo-skill content only — **no VERSION bump** (not protocol/templates).
-  **2nd Gemini re-test (post-fix, ~2026-06-17T05:11Z — maintainer screenshot, not committed as a
-  session) still mis-attributed** — and showed *my* fix backfired: invoked by the `/hello-world`
-  **slash command** (native adapter), the agent
-  did a `ReadFolder` of the adapter dirs, saw `.gemini/commands → 0 items (1 ignored)` (the
-  gitignored `.toml` **hidden by the folder tool**), concluded "no adapter," and reported
-  "baseline / natural-language request." **Re-fixed step 3:** attribute **from the invocation
-  method, never a directory scan** — a `/`-command *proves* the adapter is loaded; adapters are
-  gitignored so folder listings hide them ("0 items (1 ignored)"). Lesson: don't tell an agent to
-  "check for the adapter file" when the file is gitignored — the invocation syntax is the reliable
-  signal.
-  **3rd Gemini re-test (session `2026-06-17-053003`; maintainer screenshots — since removed from the
-  repo post-diagnosis, in git history) mis-attributed AGAIN → root cause found + design decision "B".** Definitive root cause: a Gemini
-  `/hello-world` is **expanded into the adapter's `prompt` text before the model sees anything** —
-  the model never receives the slash token, only the expanded prompt (indistinguishable from a
-  typed request), and the `SKILL.md` is read *after* the trigger. So **agents structurally cannot
-  self-report the path**, and no `SKILL.md` prose can fix it (both prior fixes were doomed). Per the
-  maintainer's choice (**option B — drop the self-report**): rewrote `hello-world` step 3 to report
-  the *result, not the trigger* ("don't guess your invocation path; the proof of native wiring is
-  that the invocation ran the skill"); added the finding to `docs/DESIGN-skills-layer.md` §4c with a
-  "don't re-add path self-reporting; carry provenance in the adapter prompt if ever needed" note.
-  Demo/design-doc content only — **no VERSION bump** (neither `agent-skills/hello-world` nor the
-  DESIGN doc is installed into targets).
-  <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-17 | uses: 9 | tier: active | origin: 2026-06-16-152327 -->
+  <!-- id: skills-layer-v410 | created: 2026-06-15 | last_used: 2026-06-18 | uses: 7 | tier: active | origin: 2026-06-15-234801 -->
 
 ### Shipped — v4.2.0: "sync skill adapters" (2026-06-16)
 - [x] **"Sync skill adapters" operation shipped (additive MINOR).** Closes the cross-machine
@@ -370,95 +176,9 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `docs/DESIGN-skills-layer.md` (§9 resolved). `DECAY.md`/`REVIEW.md` unchanged. Dogfooded:
   deleted the tool's hello-world Gemini adapter and regenerated it via the operation. Supports
   multi-machine contributors (`bp-multi-user`). → serves: vision-agent-memory
-  <!-- id: sync-adapters-v420 | created: 2026-06-16 | last_used: 2026-06-17 | uses: 6 | tier: active | origin: 2026-06-16-171539 -->
+  <!-- id: sync-adapters-v420 | created: 2026-06-16 | last_used: 2026-06-17 | uses: 9 | tier: archive-candidate | origin: 2026-06-16-171539 -->
 
-### Shipped — v4.3.0: skill authoring convention + "adopt skill" safety-net (2026-06-16)
-- [x] **Authoring convention + adopt safety-net shipped (additive; docs/protocol).** Closes
-  the footgun where a skill authored natively in a vendor folder (e.g. a built-in skill
-  creator → `.claude/skills/`) is gitignored → never shared, not the source of truth.
-  (1) **Authoring convention** in `AGENTS.md` "Skills" → "Authoring a skill": create in
-  `agent-skills/<name>/SKILL.md`, never a vendor folder. (2) **"Adopt a skill" operation**
-  (`AGENTS.md` "Skills" → "Adopt a skill"): promote a vendor-folder-authored skill into
-  `agent-skills/` then sync — the on-demand reverse of sync / ongoing complement to
-  migration's one-time promote. (3) **Session-close safety check**: "After Every Session"
-  gains a step + checklist line that detects a stranded vendor-folder skill and prompts adopt
-  before commit. Touched: `AGENTS.md` (root+template), `MIGRATE.md`, `.agent/schema.md`,
-  `VERSION`→4.3.0, `UPGRADE.md` 4.2.0→4.3.0 rung + table, `README`/`CHANGELOG`,
-  `docs/DESIGN-skills-layer.md`. `DECAY.md`/`REVIEW.md` unchanged. **Dogfooded end-to-end:**
-  simulated an orphan `.claude/skills/demo-adopt/`, detection flagged it, adopted it
-  (promote+sync), re-detection resolved, cleaned up; the real session-close check on this repo
-  passes (hello-world maps to `agent-skills/`). **[v4.4.0 update]** part (3), the per-session
-  safety check, was **removed** — skill work is on-demand (see `lightweight-skills-v440`);
-  parts (1) authoring convention + (2) adopt **stand**. → serves: vision-agent-memory
-  <!-- id: authoring-adopt-v430 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 4 | tier: active | origin: 2026-06-16-182101 -->
-- [x] **v4.3.1 (PATCH): skills-layer doc fixes from a session-close test-drive.** A fresh
-  agent test-drove the v4.3.0 session-close ritual on `simple-proxy` (authored a skill in
-  `.claude/skills/` → safety check flagged it stranded → adopt promoted it to `agent-skills/`
-  + re-synced; verified). It surfaced 4 doc issues, all fixed in `templates/AGENTS.md`:
-  (1) **real contradiction** — "Adopt a skill" step 3 said "commit" but the session-close
-  ritual only *reminds* → now "stage for the session-end commit; agent doesn't self-commit";
-  (2) **ordering** — adopt before writing the session log so the log records it; (3) body
-  normalization clarified; (4) detection locations. `VERSION`→4.3.1; `UPGRADE.md` 4.3.0→4.3.1
-  rung + table; `README`/`CHANGELOG`. `DECAY.md`/`REVIEW.md` unchanged. The dogfood loop
-  catching its own doc bug. → serves: vision-agent-memory
-  <!-- id: skills-docs-v431-fixes | created: 2026-06-16 | last_used: 2026-06-16 | uses: 3 | tier: active | origin: 2026-06-16-183825 -->
-- [x] **v4.3.2 (PATCH): skill description hardening from a lifecycle sanity check.** Ran a full
-  skill-lifecycle sanity check (on simple-proxy): mechanics all PASS (git split, pointer
-  integrity, per-vendor format, adopt, prune), but found two hard-to-spot `description` hazards:
-  (1) a `description` with a `"` would emit **invalid TOML/`.mdc`** when synced; (2) the hand-made
-  `hello-world` adapters used an **abbreviated** description that drifted from the neutral skill.
-  Fix: `AGENTS.md` now requires a **single-line, quote-free `description`** and states the adapter
-  `description` **mirrors the neutral verbatim** (+ escape/quote fallback); fixed the dogfood
-  `hello-world` description (dropped quotes) + regenerated its adapters (now valid TOML, mirror
-  verbatim). `VERSION`→4.3.2; `UPGRADE.md` 4.3.1→4.3.2 rung + table; `README`/`CHANGELOG`;
-  `DESIGN-skills-layer` §9 note. `DECAY.md`/`REVIEW.md` unchanged. → serves: vision-agent-memory
-  <!-- id: skills-desc-hardening-v432 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 2 | tier: active | origin: 2026-06-16-185423 -->
-- [x] **v4.3.3 (PATCH): skill description guidance** (reviewed from external/Copilot feedback).
-  A `description` is a model-matched activation signal read within a small discovery budget →
-  keep it **concise + trigger-phrase-rich** (~1–2 sentences, not a long abstract paragraph).
-  Reviewed Copilot's `>`-marker idea and **declined it as the rule**: YAML `>`/`|` folded
-  blocks are YAML-only; the description also mirrors into the **Gemini TOML** adapter (no `>`),
-  and folded YAML can still carry newlines → the canonical value stays one logical line (a
-  clean `>` folds to that anyway). Added the conciseness guidance + the `>`-YAML-only caveat to
-  `AGENTS.md`; tightened the `hello-world` description (~35 words) + regenerated its adapters.
-  `VERSION`→4.3.3; `UPGRADE.md` 4.3.2→4.3.3 rung + table; `README`/`CHANGELOG`; `DESIGN` §9.
-  `DECAY.md`/`REVIEW.md` unchanged. → serves: vision-agent-memory
-  <!-- id: skills-desc-guidance-v433 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 2 | tier: active | origin: 2026-06-16-190758 -->
-- [x] **v4.4.0 (MINOR): lightweight skills — conscious, not per-session.** Maintainer's frame:
-  "skill creation is a conscious developer act; don't do heavy skill work every session." The
-  adapter recipe + **sync** / **adopt** / **sanity-check** ops moved OUT of the per-session
-  `AGENTS.md` into a new on-demand installed **`SKILLS.md`** (sibling of DECAY/REVIEW); the
-  per-session `AGENTS.md` "Skills" section is now just the runtime baseline + a pointer.
-  **Removed the v4.3.0 per-session "skills safety check"** from the ritual (partially supersedes
-  `authoring-adopt-v430` — authoring + adopt stand; only the per-session check is gone). Upgrades
-  run a **read-only filename check** that *recommends* `sync` if adapters are missing/orphaned
-  (never regenerates). Trims ~1.3K tok off every-session bootstrap. Came directly from the
-  lightweight-overhead analysis. Touched: `SKILLS.md` (new root doc), `AGENTS.md` (root+template),
-  `ENABLE.md`, `MIGRATE.md`, `.agent/schema.md`, `UPGRADE.md` (4.3.3→4.4.0 rung + standing check),
-  `VERSION`→4.4.0, `README`/`CHANGELOG`, `DESIGN`. `DECAY.md`/`REVIEW.md` unchanged. → serves: vision-agent-memory
-  <!-- id: lightweight-skills-v440 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-194434 -->
-
-- **Shipped v4.5.0 — Kiro support (a 4th adapter + Mode C detection).** Investigated the impact
-  of a target repo on Amazon's **Kiro IDE** (maintainer's own project; matters for evangelizing
-  this tool to leadership). Finding: **Kiro converges on the two open standards this tool already
-  bets on** — it auto-reads a root **`AGENTS.md`** (so the memory layer works with *no* pointer
-  file) and its Agent Skills follow the **open Agent Skills standard** (same `SKILL.md` shape as
-  Claude). So enabling a Kiro repo needs almost nothing new. Added: (1) a 4th skills **adapter**
-  target `.kiro/skills/<name>/SKILL.md` in the `SKILLS.md` recipe (identical to the Claude
-  adapter — frontmatter `name`+`description` + pointer body); `sync` writes four adapters; the
-  standing upgrade-time filename check scans for it. (2) **Kiro in the Mode C detection table**
-  (`MIGRATE.md`) + a per-vendor protocol: `.kiro/steering/*.md` → `memory/instructions.md`,
-  `.kiro/skills/` → promote to `agent-skills/`, `.kiro/specs/` → preserve verbatim under
-  `legacy/` (never auto-flatten — folding a spec into Vision/Blueprint is a human, altitude-gated
-  call). **Kiro Powers need no special handling** — they are partner-published bundles (MCP +
-  steering + hooks) that *consume* open-standard skills, which ours already are; the tool never
-  emits a Power. `.gitignore` unchanged (`.kiro/` was already in the managed block; it doubles as
-  the adapter target). Dogfooded: regenerated the `hello-world` `.kiro/skills/` adapter locally.
-  Touched: `SKILLS.md`, `AGENTS.md` (root+template), `ENABLE.md`, `MIGRATE.md`, `UPGRADE.md`
-  (4.4.0→4.5.0 rung + table + standing check), `VERSION`→4.5.0, `README`/`CHANGELOG`, `DESIGN`,
-  `.gitignore` comment, `agent-skills/hello-world/SKILL.md`. → serves: vision-agent-memory
-  <!-- id: kiro-adapter-v450 | created: 2026-06-16 | last_used: 2026-06-16 | uses: 1 | tier: working | origin: 2026-06-16-221832 -->
-
+### Shipped — v4.5.1–v4.7.1: cross-vendor refinements (2026-06-17)
 - **Shipped v4.5.1 — skills-layer guidance (PATCH, from the Gemini CLI cross-machine dogfood).**
   Two rough edges surfaced by a real Gemini CLI run (see `dogfood-hello-world-skill`), both
   wording/guidance — no shape change: **(1)** after `sync`, a natural-language "run hello-world"
@@ -475,7 +195,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   recipe table + note. `VERSION`→4.5.1, `UPGRADE.md` 4.5.0→4.5.1 rung + table, `README`/`CHANGELOG`.
   `DECAY.md`/`REVIEW.md` unchanged. The dogfood-feedback loop (drove v3.1.0/v3.2.0/v4.2.0) again.
   → serves: vision-agent-memory
-  <!-- id: skills-gemini-dogfood-v451 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 2 | tier: working | origin: 2026-06-17-044933 -->
+  <!-- id: skills-gemini-dogfood-v451 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 6 | tier: archive-candidate | origin: 2026-06-17-044933 -->
 
 - **Shipped v4.5.2 — Kiro hooks in Mode C + a bootstrap edge-case note (PATCH, from a Windows/Kiro
   enable).** The maintainer cloned this repo on a fresh Windows 11 machine and opened it in
@@ -498,7 +218,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   auto-commit/push → Open Thread); `README` bootstrap edge-case note;
   `VERSION`→4.5.2, `UPGRADE.md` rung + table. `AGENTS.md`/`SKILLS.md`/`DECAY.md`/`REVIEW.md`
   unchanged. → serves: vision-agent-memory (multi-vendor, multi-machine without drift)
-  <!-- id: kiro-hooks-edgecase-v452 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: working | origin: 2026-06-17-175728 -->
+  <!-- id: kiro-hooks-edgecase-v452 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 3 | tier: active | origin: 2026-06-17-175728 -->
 
 - **Shipped v4.6.0 — vendor-neutral commit attribution (MINOR).** Came from the maintainer's
   observation: **Claude Code adds a deliberate, human-gated `Co-Authored-By:` trailer
@@ -513,7 +233,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   per-vendor configs" proof point. Touched: `AGENTS.md` (root + template), `VERSION`→4.6.0,
   `UPGRADE.md` 4.5.2→4.6.0 rung + table, `README`/`CHANGELOG`. `SKILLS.md`/`DECAY.md`/`REVIEW.md`
   unchanged. → serves: vision-agent-memory (`bp-multi-user` — multi-contributor traceability + provenance)
-  <!-- id: commit-attribution-v460 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: working | origin: 2026-06-17-181607 -->
+  <!-- id: commit-attribution-v460 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 2 | tier: active | origin: 2026-06-17-181607 -->
 
 - **Shipped v4.7.0 — lightweight mode for memory-neutral tasks (MINOR).** From a **real
   cross-vendor enablement**: the maintainer used the *installed* tool to AI-enable a **new
@@ -539,7 +259,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   line,** writes at least a **lite log** (never skipped on a "felt trivial" call; the git diff
   anchors it); a memory-relevant event → full ritual. `AGENTS.md` note rewritten to this three-tier
   form; `VERSION`→4.7.1, `UPGRADE.md` 4.7.0→4.7.1 rung + table, `README`/`CHANGELOG`.
-  <!-- id: lightweight-mode-v470 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 1 | tier: working | origin: 2026-06-17-184652 -->
+  <!-- id: lightweight-mode-v470 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 3 | tier: active | origin: 2026-06-17-184652 -->
 
 ### Blueprint — gaps from Current State (v4.7.1) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
@@ -547,20 +267,13 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 > memory layer is not here — it's done; every gap is *forward*. These operationalize the
 > `vbdi-lifecycle-direction` thread above. First real VBDI loop, dogfooded on the tool itself.
 
-- [x] **(blueprint)** Build the forward cognitive loop (VBDI) — **SHIPPED v4.0.0**: the Blueprint mechanism,
-  the altitude trace (id-linkage Implementation→Design→Blueprint→Vision), drift-detection,
-  and human gates. Design drafted: `docs/DESIGN-vbdi-lifecycle.md`. → serves: vision-agent-memory
-  <!-- id: bp-vbdi-loop | created: 2026-06-15 | last_used: 2026-06-15 | uses: 2 | tier: archive-candidate | origin: 2026-06-15-000531 -->
 - [ ] **(blueprint)** Greenfield path — the tool handles brownfield (enable/migrate) well
   but has no "start from a Vision, no code yet" flow. → serves: vision-agent-memory
   <!-- id: bp-greenfield | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-000531 -->
-- [x] **(blueprint)** Altitude drift-detection — **SHIPPED v4.0.0**: extend the §10 contradiction-check across
-  Vision ↔ Blueprint ↔ Design ↔ Implementation. → serves: vision-agent-memory
-  <!-- id: bp-altitude-drift | created: 2026-06-15 | last_used: 2026-06-15 | uses: 2 | tier: archive-candidate | origin: 2026-06-15-000531 -->
 - [ ] **(blueprint)** Multi-user concurrent contribution — mostly supported (shared
   committed `memory/`, multi-agent continuity, collision-safe session filenames); validate
   and harden for *simultaneous* contributors. → serves: vision-agent-memory
-  <!-- id: bp-multi-user | created: 2026-06-15 | last_used: 2026-06-16 | uses: 3 | tier: active | origin: 2026-06-15-000531 -->
+  <!-- id: bp-multi-user | created: 2026-06-15 | last_used: 2026-06-17 | uses: 4 | tier: active | origin: 2026-06-15-000531 -->
 - [ ] **(blueprint)** *(optional)* SDLC overlay for targets — a scrum-inspired profile a
   target *owner* can opt into: a `(sprint)` tag over Blueprint gaps + a sprint-boundary
   review, **no points/velocity/ceremony**. Not core; only if a real target wants it. The
@@ -568,30 +281,6 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `docs/DESIGN-vbdi-lifecycle.md` §13): ceremony + scoring live in the target's own space,
   never in `memory/`. → serves: vision-agent-memory
   <!-- id: bp-sdlc-overlay | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-010142 -->
-- [x] **(blueprint)** Cross-vendor skills layer — **SHIPPED v4.1.0** (2026-06-15). Neutral
-  committed `agent-skills/<name>/SKILL.md` source of truth + an `AGENTS.md` "Skills" baseline
-  (agent-as-runtime) + regenerated Claude/Gemini/Cursor adapters (gitignored — **Option A**,
-  all-vendor scope chosen at build). Migration promotes `.claude/skills/` into `agent-skills/`
-  (preserve under `legacy/`, don't flatten). Design: `docs/DESIGN-skills-layer.md`. Realized
-  by `skills-layer-v410`. → serves: vision-agent-memory
-  <!-- id: bp-skills-layer | created: 2026-06-15 | last_used: 2026-06-16 | uses: 3 | tier: archive-candidate | origin: 2026-06-15-231502 -->
-- [x] **Review artifacts authored (2026-06-15)** for peer / leadership review:
-  `docs/agent-memory-whitepaper.md` (technical paper) + `docs/agent-memory-deck.html`
-  (self-contained HTML deck, ~13 slides, keyboard/click nav). Built on the reference ACF
-  framework (`docs/agent-cognitive-framework.md`), articulating the integrated v4.0.0
-  (memory substrate + VBDI loop). **Company-neutral** per the personal-research rule —
-  add organizational framing at presentation time, not in the repo.
-  <!-- id: review-artifacts-v400 | created: 2026-06-15 | last_used: 2026-06-16 | uses: 2 | tier: active | origin: 2026-06-15-012034 -->
-
-### First real-work dogfood — enabled `~/sandbox/simple-proxy` (Mode A, 2026-06-13)
-- [x] **Design validated: enabled target repos are self-contained.** The user chose to
-  run the simple-proxy refactor in a *separate* Claude Code session launched inside the
-  target — driven by simple-proxy's own `CLAUDE.md`→`AGENTS.md`→`memory/`, needing no
-  knowledge of this tool. Confirms the two-layer model: the tool's job ends at
-  enablement; the enabled repo then stands on its own. Baselines committed cleanly
-  (simple-proxy: source import + AI-enable; mercury: v3.1.0 upgrade) so the new
-  sessions start from committed state. (2026-06-13)
-  <!-- id: dogfood-target-repo-self-contained | created: 2026-06-13 | last_used: 2026-06-14 | uses: 2 | tier: archive-candidate -->
 
 ### Backlog — vNext (temporal & supersession) + beyond
 > From the 2026-06-13 industry-alignment assessment:
@@ -599,22 +288,12 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 > on event-sourcing/determinism/governance; one real gap = temporal/supersession.
 > Re-run the assessment after meaningful iterations and compare its scorecard.
 
-- [x] **P3 — Write-time contradiction flag — SHIPPED v3.5.0** (see Shipped section above). Extend the migration-time contradiction
-  check into REVIEW.md: when a fact is added, scan for one it contradicts → raise an
-  Open Thread (SSGM "pre-consolidation validation", scaled down).
-  <!-- id: backlog-contradiction-check | created: 2026-06-13 | last_used: 2026-06-14 | uses: 2 | tier: archive-candidate -->
-- [x] **P4 — Minimal memory eval — SHIPPED v3.6.0** (see Shipped section above). `memory-smoke-test.md`: N questions a fresh agent
-  should answer from memory alone. Manual, but app-level eval is unsolved industry-wide.
-  <!-- id: backlog-memory-eval | created: 2026-06-13 | last_used: 2026-06-14 | uses: 2 | tier: archive-candidate -->
-- [x] **P5 — Provenance surfacing + retrieval-at-scale — SHIPPED v3.7.0** (see Shipped section above). Surface each fact's originating
-  session; lean on archive/INDEX.md (+ optional sessions/INDEX.md) as the no-code
-  mitigation if memory grows large. Full vector/semantic retrieval stays out of scope.
-  <!-- id: backlog-provenance-retrieval | created: 2026-06-13 | last_used: 2026-06-14 | uses: 2 | tier: archive-candidate -->
 - [ ] **Dogfooding on real work (ongoing).** Already delivering: the simple-proxy
   enable surfaced v3.1.0 (`.gitignore`), and the simple-proxy Node→Rust refactor's
   field report drove v3.2.0 (protocol clarifications). Keep feeding real-work insights
   back into this backlog. (Stated 2026-06-13.)
   <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-06-13 | uses: 3 | tier: active -->
+
 
 - [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**
   (2026-06-13) in favor of the markdown-native evolving-memory layer above. Not
