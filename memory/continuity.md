@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.10.2 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0–4.7.1:** + a **lightweight mode** keyed to the *objective* "did a file change?" test — **read-only** sessions write **no log**; **any file change** (even one line) writes at least a one-line **lite log**; a memory-relevant event → full ritual ("trivial" is a judgment call, so it never decides the skip). **v4.8.0:** the review **self-verifies its archival** — greps the last `archive_window` sessions for each fading id before archiving (guards against decay miscounts). **v4.9.0:** + a portable **`memory-lint`** verifier skill (`agent-skills/memory-lint/`, Python 3 stdlib) that runs the decay-integrity checks *deterministically* — moves the counting off the LLM (the real fix Copilot argued for). **v4.10.0:** + an optional **fresh-context second-opinion** skill pair — `second-opinion` snapshots the task (derived from continuity+sessions, behind an acknowledge-gated security advisory) for a clean-memory reviewer; `apply-critique` applies the returned critique through a bounded, validated, human-gated loop (build/tests + memory-lint). Snapshots in gitignored `review-scratch/`; **ENABLE + upgrades now install the built-in skills** (`second-opinion` + `apply-critique` + `memory-lint`, which the review ritual relies on). Folds the external "AIF" idea into skills+VBDI; the fresh reviewer is **advisory**, gated by deterministic checks + human (the v4.8/v4.9 lesson). **Dogfooded end-to-end 2026-06-18** (clean-context reviewer caught an upgrade-overwrite invariant tension; fixed via apply-critique); README/deck/whitepaper updated. **Validated across five vendors 2026-06-16/18** (Claude, Gemini cross-machine, Cursor-format, enterprise Kiro on Windows, GitHub Copilot CLI — the Copilot enablement + review surfaced the decay-miscount that drove v4.8.0). **All cross-vendor validations closed.** **v4.10.1 (PATCH):** line-anchored `memory-lint`'s Memory-References parser (`ot-memlint-anchor-bug`) — found while running the verifier during a memory review, where a log quoting the heading in prose tripped a false `over-archived`; the verifier must not be fooled by prose. **v4.10.2 (PATCH):** four fixes from a fresh-context review of the v4.10.x line (GitHub Copilot CLI, applied via the `apply-critique` loop — the second dogfood of the review pair, this time a *different vendor*): `memory-lint`'s `FOOTER_RE` bound to one line (unclosed-footer guard); install protocol **warns before overwriting a locally-modified built-in** (tool-managed-copies contract now *checked*, not convention-only); the `upgrades-additive` invariant text carries its tool-managed-built-ins exception inline; `second-opinion` gains a same-vendor-vs-different-vendor caveat. One low-confidence finding deferred (`ot-memlint-pinned-nested`).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-18 | agent: Claude Code (2026-06-18-190716)
+- **last_session:** 2026-06-18 | agent: Claude Code (2026-06-18-211724)
 - **last_review:** 2026-06-18 | through 2026-06-18-181132
 - **last_invariant_check:** 2026-06-18 | through 2026-06-18-054159
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -437,10 +437,15 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - [ ] Test Continue.dev session JSON migration end-to-end
 - [ ] Add example for migrating a Continue.dev project
 - [ ] Consider a `DISABLE.md` protocol for cleanly removing AI memory
-- [ ] **Publish to GitHub.** Currently hosted on **GitLab** (`origin` =
-  `git@gitlab.com:ericclaw/agent-memory-tool.git`; `main` tracks `origin/main`) — the working
-  remote while the tool matures. **Move back to GitHub when feature-complete / production-ready.**
-  Until then, **assume GitLab** for all git operations. (Clarified 2026-06-18.)
+- [x] **Publish to GitHub — DONE 2026-06-18.** Migrated GitLab → **public GitHub** at
+  `git@github.com:acn-ericlaw/agent-memory.git` (Apache-2.0; **release-candidate** status; full
+  73-commit history mirrored). The repo + working dir are now **`agent-memory`** (dropped the
+  `-tool` suffix — the canonical name everywhere already). GitLab
+  (`git@gitlab.com:ericclaw/agent-memory-tool.git`) is being **retired**. The
+  `no-company-references-until-publication-approved` gate is satisfied — company protocol followed,
+  maintainer approved public publication. **`origin` is now GitHub; assume GitHub for git ops.**
+- [ ] **Remaining: migrate to enterprise GitHub** for the official repo (one more hop after this
+  public-GitHub staging step). (Set 2026-06-18.)
 - [ ] Keep root `CLAUDE.md` architecture section in sync when file shapes or
   vendor support change (also touches `templates/`, `MIGRATE.md`, `README.md`,
   `examples/`)

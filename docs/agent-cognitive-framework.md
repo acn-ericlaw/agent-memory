@@ -17,7 +17,7 @@ it is the very foundation to tackle complex problem without going into a rabbit 
 
 Poor memory management leads to intent and design drift, over-analysis or deadlock.
 
-This framework enriches the agent-memory-tool to provide light-weight but
+This framework enriches agent-memory to provide light-weight but
 powerful guardrails for efficient memory management to deliver deterministic outcome.
 
 ## 🎯 Purpose
