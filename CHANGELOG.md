@@ -12,6 +12,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.10.1, 6/18/2026
+
+> **`memory-lint` bug fix — line-anchor the Memory-References detection (PATCH).** Found while
+> *running* the verifier during a memory review: a first pass false-positived
+> `[over-archived] sync-adapters-v420`. The review's own session log quoted the heading string
+> "## Memory References" in its prose (describing the very check), and the script's un-anchored
+> `find()` matched that inline mention before the real section — scooping the neighbouring
+> `## What happened` paragraph (which named the archived id) in as the references block. The
+> archival was in fact correct. A verifier whose whole job (v4.9.0) is trustworthy decay-counting
+> must not be fooled by prose, so this anchors the heading match to the start of a line.
+
+### Fixed
+
+1. **`agent-skills/memory-lint/scripts/memory-lint.py` — `memref_ids()` now anchors the heading**
+   to a real line (`(?m)^## +Memory References[ \t]*$`) and bounds the block at the next
+   line-anchored heading, instead of `text.find("## Memory References")`. A session log may now
+   safely quote the heading inline without producing a false `over-archived` error. Verified with
+   added cases: the false-positive is gone, genuine references in the real section are still
+   detected, and block-bounding still stops at the next heading. No description change → adapters
+   unchanged; the tool still never runs it (`no-build-step-agent-run`).
+2. **Ignore Python bytecode caches** — `.gitignore` and `templates/.gitignore` now ignore
+   `__pycache__/` + `*.py[cod]`. The bundled `memory-lint` helper generates these on run (in this
+   repo *and* in every enabled target as of v4.10.0); the `.py` source under `agent-skills/` stays
+   tracked. Add-only, consistent with the v3.1.0 `.gitignore` propagation.
+
+---
 ## Version 4.10.0, 6/18/2026
 
 > **Fresh-context second opinion — a clean-memory reviewer as a deliberate gate.** A long

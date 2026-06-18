@@ -31,6 +31,11 @@
 # OS / editor noise
 .DS_Store
 
+# Python bytecode cache — the bundled memory-lint helper script generates this on run;
+# it is a build artifact, never committed (the .py source under agent-skills/ stays tracked).
+__pycache__/
+*.py[cod]
+
 # Fresh-context review scratch (second-opinion / apply-critique skills) — personal,
 # per-machine snapshots & critiques; sharing one is a conscious human decision, never committed.
 review-scratch/

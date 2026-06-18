@@ -34,3 +34,4 @@
 - ot-reverify-invariants-20260615 — Open Thread: re-verify invariants, done 2026-06-16 — swept: completed 2026-06-16, > archive_window — 2026-Q2.md
 - ot-drift-blueprint-baseline-20260615 — Open Thread: Blueprint baseline was stale (v3.7.0→v4.1.1), resolved 2026-06-16 — swept: completed 2026-06-16, > archive_window — 2026-Q2.md
 - ot-drift-blueprint-baseline-v440 — Open Thread: Blueprint baseline was stale (v4.1.1→v4.4.0), resolved 2026-06-16 — swept: completed 2026-06-16, > archive_window — 2026-Q2.md
+- sync-adapters-v420 — "sync skill adapters" on-demand op: regenerate gitignored vendor adapters from agent-skills/ (v4.2.0) — faded (sslu 24 > archive_window) — 2026-Q2.md

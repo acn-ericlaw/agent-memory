@@ -46,6 +46,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.8.0 | Review **self-verify guard** (from a Copilot review that over-archived recent facts): a new `REVIEW.md` step greps the last `archive_window` sessions for each about-to-be-archived id — any hit ⇒ the `sessions_since_last_used` count was wrong, keep the fact — and confirms no id lives in both `continuity.md` and the archive. Replaces a hand-counted judgment with a checkable signal for the riskiest operation |
 | 4.9.0 | **`memory-lint`** — a portable, optional verifier skill (`agent-skills/memory-lint/` + `scripts/memory-lint.py`, Python 3 stdlib) that runs the decay-integrity checks *deterministically* (id-in-both-places, archived-but-recently-referenced, overdue advisory, supersession links). Moves the arithmetic off the LLM; `REVIEW.md` step 6 points to it. Caught a real over-archival on first run. The tool never runs it (`no-build-step-agent-run`) — agent/human/CI-invoked |
 | 4.10.0 | **Fresh-context second opinion** — a skill pair (`second-opinion` + `apply-critique`): snapshot the current task (derived from `continuity.md` + recent sessions, never a parallel state file) for a clean-memory reviewer (any vendor / fresh session) behind a **security advisory**, then apply the returned critique through a **bounded, validated, human-gated** loop (build/tests + `memory-lint`; critique is advisory). Snapshots/critiques live in gitignored `review-scratch/`. ENABLE and the upgrade ladder now **install** the built-in skills (this pair + `memory-lint`, which the review ritual relies on). Folds the "AIF" idea into skills + VBDI |
+| 4.10.1 | **`memory-lint` bug fix:** its Memory-References parser is now **line-anchored** (`(?m)^## +Memory References[ \t]*$`) instead of `find("## Memory References")`, so a session log that *quotes* the heading in prose no longer trips a false `over-archived` error. Script-only; no description/shape change |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -654,3 +655,27 @@ everything else reuses memory.
    `enabled_with` and `mode`.
 5. **Report**: built-in skills installed (`second-opinion` + `apply-critique` + `memory-lint`)
    with adapters regenerated; `review-scratch/` gitignored.
+
+---
+
+## Rung: 4.10.0 → 4.10.1 — `memory-lint` line-anchor bug fix (PATCH)
+
+Script-only fix to a built-in skill. No memory-file shape change, no description change, so
+adapters are untouched. Only matters for a repo that has `memory-lint` installed (v4.10.0+, or
+adopted earlier).
+
+1. **Re-copy `agent-skills/memory-lint/scripts/memory-lint.py`** verbatim from this tool's root,
+   overwriting the installed copy (it is a tool-managed built-in — `upgrades-additive` holds; the
+   overwrite is scoped to this tool-owned file). The fix: `memref_ids()` anchors the heading to a
+   real line (`(?m)^## +Memory References[ \t]*$`) and bounds at the next line-anchored heading,
+   so a session log that quotes the heading in prose no longer yields a false `over-archived`
+   error. `SKILL.md` unchanged → **no adapter regeneration**.
+2. **Ignore Python bytecode caches** — append `__pycache__/` + `*.py[cod]` to the repo's
+   `.gitignore` (create-or-append, add-only, idempotent — same mechanism as the v3.1.0 propagation).
+   `memory-lint` generates these on run; the `.py` source stays tracked.
+3. **Nothing else changes** — `AGENTS.md` / `SKILLS.md` / `DECAY.md` / `REVIEW.md` / `.agent/schema.md`
+   untouched. If `memory-lint` isn't installed, step 1 is a no-op (step 2's cache rule is harmless either way).
+4. **Stamp** `.agent/version.md` → `version: 4.10.1`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+5. **Report**: `memory-lint` updated (false-positive on inline heading mentions fixed); Python-cache
+   `.gitignore` rule added.

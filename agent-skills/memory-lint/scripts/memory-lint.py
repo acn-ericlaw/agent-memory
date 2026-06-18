@@ -65,13 +65,18 @@ def pinned_open_threads(text):
 
 
 def memref_ids(text):
-    idx = text.find("## Memory References")
-    if idx == -1:
+    # Anchor the heading to the start of a line. A session log may *quote* the
+    # string "## Memory References" inline in prose (e.g. while describing this
+    # very check); an un-anchored find() would match that mention and scoop a
+    # neighbouring section's ids into the references set — a false "over-archived"
+    # positive. Match only a real heading line, and bound at the next one.
+    m = re.search(r"(?m)^## +Memory References[ \t]*$", text)
+    if m is None:
         return set()
-    block = text[idx:]
-    nxt = block.find("\n## ", 4)
-    if nxt != -1:
-        block = block[:nxt]
+    block = text[m.end():]
+    nxt = re.search(r"(?m)^## +\S", block)
+    if nxt is not None:
+        block = block[: nxt.start()]
     return set(ID_RE.findall(block))
 
 
