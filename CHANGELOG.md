@@ -12,6 +12,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.8.0, 6/18/2026
+
+> **Review self-verify guard — catch decay miscounts before they archive.** A GitHub Copilot CLI
+> review (2026-06-18) over-archived three recent, active facts — it miscomputed
+> `sessions_since_last_used` (counted ~5–9 as ">20") and ignored its own "still referenced in
+> review window" note. The decay *rule* was right; what was missing was a check that the count was.
+> Counting session files by hand is the easiest review step to get wrong, and archival is the
+> costliest error — so the review now verifies its own archival against a cheap, grep-able signal.
+
+### Added
+
+1. **"Verify archival" step in `REVIEW.md`** (new step 6, before stamping): for each fact about to
+   be archived as *faded*, `grep` the last `archive_window` session files for its id — **any hit
+   means the count was wrong, so keep the fact** (it's `active`/`archive-candidate`), don't archive.
+   Then confirm **no id lives in both `continuity.md` and the archive**. Superseded facts are exempt
+   (they archive on truth-state, not recency). Added an `Archive-verify:` line to the review-summary
+   format. Pure markdown; replaces a hand-counted judgment with a checkable signal for the riskiest
+   operation.
+
+### Changed
+
+1. `VERSION` → 4.8.0; `UPGRADE.md` 4.7.1→4.8.0 rung (re-sync `REVIEW.md`) + table; `README`.
+   `AGENTS.md` / `SKILLS.md` / `DECAY.md` unchanged.
+
+---
 ## Version 4.7.1, 6/17/2026
 
 > **Lightweight mode — sharpen the skip criterion to an *objective* test.** v4.7.0 let any

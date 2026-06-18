@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.7.1 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0–4.7.1:** + a **lightweight mode** keyed to the *objective* "did a file change?" test — **read-only** sessions write **no log**; **any file change** (even one line) writes at least a one-line **lite log**; a memory-relevant event → full ritual ("trivial" is a judgment call, so it never decides the skip). **Validated on real targets 2026-06-16/17** (Mode B upgrade of a large pre-existing project; cross-vendor + cross-machine Gemini CLI run; cloned + bootstrapped under enterprise Kiro on Windows).
+- **status:** v4.8.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0–4.7.1:** + a **lightweight mode** keyed to the *objective* "did a file change?" test — **read-only** sessions write **no log**; **any file change** (even one line) writes at least a one-line **lite log**; a memory-relevant event → full ritual ("trivial" is a judgment call, so it never decides the skip). **v4.8.0:** the review **self-verifies its archival** — greps the last `archive_window` sessions for each fading id before archiving (guards against decay miscounts). **Validated across five vendors 2026-06-16/18** (Claude, Gemini cross-machine, Cursor-format, enterprise Kiro on Windows, GitHub Copilot CLI — the Copilot enablement + review surfaced the decay-miscount that drove v4.8.0). **All cross-vendor validations closed.**
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-18 | agent: Claude Code (2026-06-18-061536)
+- **last_session:** 2026-06-18 | agent: Claude Code (2026-06-18-062730)
 - **last_review:** 2026-06-18 | through 2026-06-18-051933
 - **last_invariant_check:** 2026-06-18 | through 2026-06-18-054159
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -295,7 +295,22 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   form; `VERSION`→4.7.1, `UPGRADE.md` 4.7.0→4.7.1 rung + table, `README`/`CHANGELOG`.
   <!-- id: lightweight-mode-v470 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 3 | tier: active | origin: 2026-06-17-184652 -->
 
-### Blueprint — gaps from Current State (v4.7.1) to the Vision  (serves: vision-agent-memory)
+- **Shipped v4.8.0 — review self-verify guard against decay miscounts (MINOR).** The 2026-06-18
+  GitHub Copilot CLI review over-archived 3 recent active facts (`dogfood-hello-world-skill`,
+  `kiro-adapter-v450`, `lightweight-skills-v440`) — it **miscomputed `sessions_since_last_used`**
+  (counted ~5–9 as ">20") and ignored its own "still referenced in window" note. The decay *rule*
+  was correct; the *count* wasn't, and nothing forced a check. Remediation (maintainer chose the
+  lightweight markdown guard over an optional lint script): `REVIEW.md` gains **step 6 "Verify
+  archival"** — before stamping, `grep` the last `archive_window` session files for each
+  about-to-be-archived id; **any hit ⇒ the count was wrong, keep the fact**; also confirm no id lives
+  in both `continuity.md` and the archive. Replaces a hand-counted judgment with a checkable signal
+  for the riskiest op. Honest framing: agent misjudgment isn't fully eliminable (no-code = trust the
+  agent), but this error *class* is now self-catching. Touched: `REVIEW.md` (step + summary line),
+  `VERSION`→4.8.0, `UPGRADE.md` 4.7.1→4.8.0 rung + table, `README`/`CHANGELOG`. `AGENTS.md`/`SKILLS.md`/`DECAY.md`
+  unchanged. → serves: vision-agent-memory (faithful memory; deterministic, verifiable decay)
+  <!-- id: review-verify-v480 | created: 2026-06-18 | last_used: 2026-06-18 | uses: 1 | tier: working | origin: 2026-06-18-062730 -->
+
+### Blueprint — gaps from Current State (v4.8.0) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
 > `(blueprint)`: each is a Vision↔reality gap that closes when delivered. The *backward*
 > memory layer is not here — it's done; every gap is *forward*. These operationalize the

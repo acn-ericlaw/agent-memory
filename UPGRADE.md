@@ -43,6 +43,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.6.0 | Vendor-neutral **commit attribution**: `AGENTS.md` extends "identify yourself" (already true for session logs) to commits — deliberate, human-initiated, with a `Co-Authored-By: <agent>` trailer. Encodes once in the shared layer what Claude Code does automatically and Kiro needed a per-machine hook for; soft guidance, a no-op where the runtime already does it |
 | 4.7.0 | **Lightweight mode** for memory-neutral tasks (from a Kiro enablement): a trivial task (no new fact/decision/thread/state change) writes a **one-line "lite" session log** (`## Memory References` → `(none)`) and skips the full template / fact-footers / continuity edits. Ledger stays continuous; the review handles it as a normal reference-free session. Scales the per-session ceremony to the actual memory impact |
 | 4.7.1 | Lightweight mode keyed to **file-change, not "trivial"** (a judgment call both AI and human misjudge): **read-only** sessions (no file changes) write **no log**; **any file change** (even one line) writes at least a **lite log** (never skipped on a "felt trivial" call); a memory-relevant event → full ritual |
+| 4.8.0 | Review **self-verify guard** (from a Copilot review that over-archived recent facts): a new `REVIEW.md` step greps the last `archive_window` sessions for each about-to-be-archived id — any hit ⇒ the `sessions_since_last_used` count was wrong, keep the fact — and confirms no id lives in both `continuity.md` and the archive. Replaces a hand-counted judgment with a checkable signal for the riskiest operation |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -584,3 +585,21 @@ human misjudge), so the skip is keyed to the **objective** "did a file change?" 
    `enabled_with` and `mode`.
 4. **Report**: `AGENTS.md` re-synced; lightweight mode now keyed to file-change (read-only = no log,
    any change = at least a lite log).
+
+---
+
+## Rung: 4.7.1 → 4.8.0 — review self-verify guard against decay miscounts (MINOR)
+
+Additive review step; no shape change, no data changes. From a Copilot CLI review that
+over-archived recent active facts (miscounted `sessions_since_last_used`).
+
+1. **Re-sync `REVIEW.md`** (verbatim where different): new **step 6 "Verify archival"** before
+   stamping — for each fact about to be archived as faded, `grep` the last `archive_window` session
+   files for its id; any hit ⇒ keep it (count was wrong), don't archive; confirm no id lives in both
+   `continuity.md` and the archive. Adds an `Archive-verify:` line to the review-summary format.
+   `AGENTS.md` / `SKILLS.md` / `DECAY.md` unchanged.
+2. **No skill regeneration; no `.gitignore` change.** No memory data changes (this is a review
+   *process* guard for future reviews).
+3. **Stamp** `.agent/version.md` → `version: 4.8.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: `REVIEW.md` re-synced; reviews now self-verify archival before stamping.
