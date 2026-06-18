@@ -143,6 +143,14 @@ Invoked by the human, on demand. It never runs during ordinary work.
   clean-context reviewer once over-archived still-referenced facts). So critique is
   **advisory**; `apply-critique` gates it with deterministic checks (build/tests,
   `memory-lint`) and a human decision before anything is applied.
+- **Same-vendor clean session vs. a different vendor — know which one you have.** A fresh
+  session (or a spawned clean-context subagent) of the *same* model tests the **mechanism**:
+  does the snapshot stand alone, does `apply-critique` parse and apply cleanly, does the gate
+  fire. That is genuinely useful and the common case. But it shares the author's model priors,
+  training data, and stylistic blind spots, so it is **not** a full test of *epistemic
+  diversity*. For a high-stakes milestone, prefer a **different vendor** (the strongest "didn't
+  live the session" signal) — the snapshot is built to stand alone precisely so you can hand it
+  to one.
 - **No-code, agent-run** — the snapshot is markdown you write; the tool runs nothing on its
   own (`no-build-step-agent-run`).
 - **No automatic agent-to-agent transport** — *the human carries the snapshot.* This is

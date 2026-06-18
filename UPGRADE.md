@@ -47,6 +47,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.9.0 | **`memory-lint`** — a portable, optional verifier skill (`agent-skills/memory-lint/` + `scripts/memory-lint.py`, Python 3 stdlib) that runs the decay-integrity checks *deterministically* (id-in-both-places, archived-but-recently-referenced, overdue advisory, supersession links). Moves the arithmetic off the LLM; `REVIEW.md` step 6 points to it. Caught a real over-archival on first run. The tool never runs it (`no-build-step-agent-run`) — agent/human/CI-invoked |
 | 4.10.0 | **Fresh-context second opinion** — a skill pair (`second-opinion` + `apply-critique`): snapshot the current task (derived from `continuity.md` + recent sessions, never a parallel state file) for a clean-memory reviewer (any vendor / fresh session) behind a **security advisory**, then apply the returned critique through a **bounded, validated, human-gated** loop (build/tests + `memory-lint`; critique is advisory). Snapshots/critiques live in gitignored `review-scratch/`. ENABLE and the upgrade ladder now **install** the built-in skills (this pair + `memory-lint`, which the review ritual relies on). Folds the "AIF" idea into skills + VBDI |
 | 4.10.1 | **`memory-lint` bug fix:** its Memory-References parser is now **line-anchored** (`(?m)^## +Memory References[ \t]*$`) instead of `find("## Memory References")`, so a session log that *quotes* the heading in prose no longer trips a false `over-archived` error. Script-only; no description/shape change |
+| 4.10.2 | **Fresh-context-review critique fixes (PATCH):** `memory-lint`'s `FOOTER_RE` now binds to a single line so an *unclosed* footer can't silently swallow the file and misparse decay metadata; the install protocol (`ENABLE.md` §5i) **warns before overwriting a locally-modified built-in** instead of silently clobbering it; the `upgrades-additive` invariant text carries its tool-managed-built-ins exception inline; and `second-opinion` gains a same-vendor-vs-different-vendor caveat. No description/shape change |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -644,7 +645,9 @@ everything else reuses memory.
    unrelated `agent-skills/` content (`never-pick-a-winner`). **Tool-managed copies:** because
    upgrade overwrites them, the user must **not** customize an installed built-in — fork under a
    **new skill name** for a variant. The overwrite is scoped to these three, so
-   `upgrades-additive` holds for all other `agent-skills/`.
+   `upgrades-additive` holds for all other `agent-skills/`. **Before overwriting an already-installed
+   built-in, apply `ENABLE.md` §5i's modified-built-in check** — if the target's copy was locally
+   changed, warn the human and let them decide rather than silently clobbering it.
 2. **`review-scratch/`** — add to the repo `.gitignore` (personal, per-machine
    snapshots/critiques; never committed). `second-opinion` writes a `review-scratch/README.md`
    marking the folder personal on first run.
@@ -679,3 +682,34 @@ adopted earlier).
    `enabled_with` and `mode`.
 5. **Report**: `memory-lint` updated (false-positive on inline heading mentions fixed); Python-cache
    `.gitignore` rule added.
+
+---
+
+## Rung: 4.10.1 → 4.10.2 — fresh-context-review critique fixes (PATCH)
+
+Refinements from a fresh-context review of the v4.10.x line (a clean-vendor reviewer). Two
+built-in skills get re-copied and the install protocol gains a safety check. Only matters for a
+repo that has the built-ins installed (v4.10.0+).
+
+1. **Re-copy two built-ins** verbatim from this tool's root, overwriting the installed copies
+   (tool-managed built-ins — `upgrades-additive` holds; overwrite scoped to tool-owned files):
+   - `agent-skills/memory-lint/scripts/memory-lint.py` — `FOOTER_RE` is now bound to a single line
+     (`[^\n]`, no `re.S`), so an *unclosed* footer can no longer let the field capture swallow the
+     rest of the file up to a stray `-->` and silently misparse decay metadata. Same theme as
+     v4.10.1: the verifier must not be fooled by malformed input.
+   - `agent-skills/second-opinion/SKILL.md` — adds a "same-vendor vs. different-vendor" caveat under
+     *Notes* (a same-vendor clean session tests the *mechanism*; a different vendor adds *epistemic
+     diversity* for high-stakes milestones). **Body only — description unchanged → no adapter
+     regeneration.**
+2. **Warn-before-overwrite check** — `ENABLE.md` §5i (and this rung's step 1, and the 4.10.0 rung)
+   now say: before overwriting an *already-installed* built-in, diff it against the source; if it was
+   locally modified, **warn the human and let them decide** rather than silently clobbering. Makes
+   the tool-managed-copies contract checked, not convention-only. Agent-run at the human's direction
+   (`no-build-step-agent-run`); no-op on a fresh enable. **Apply that check before step 1's re-copy.**
+3. **Nothing else changes** — `AGENTS.md` / `SKILLS.md` / `DECAY.md` / `REVIEW.md` / `.agent/schema.md`
+   untouched. `apply-critique` and `memory-lint`'s `SKILL.md` are unchanged. If the built-ins aren't
+   installed, steps 1–2 are no-ops.
+4. **Stamp** `.agent/version.md` → `version: 4.10.2`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+5. **Report**: `memory-lint` hardened (unclosed-footer guard); `second-opinion` caveat added; install
+   now warns before overwriting a locally-modified built-in.

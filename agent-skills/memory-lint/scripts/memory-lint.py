@@ -17,7 +17,12 @@ import re
 import sys
 
 ID_RE = re.compile(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)+")
-FOOTER_RE = re.compile(r"<!--\s*id:\s*([a-z0-9-]+)\s*\|(.*?)-->", re.S)
+# Footers are single-line HTML comments. Bind the field span to one line
+# ([^\n], and no re.S) so an *unclosed* footer (a stray "<!-- id: foo | ..." with
+# no closing "-->") can't let .*? swallow the rest of the file up to a "-->"
+# elsewhere — that would silently misparse fields (wrong tier/superseded ⇒ wrong
+# decay counts) with no error raised. The verifier must not be fooled by malformed input.
+FOOTER_RE = re.compile(r"<!--\s*id:\s*([a-z0-9-]+)\s*\|([^\n]*?)-->")
 
 
 def find_root(start):

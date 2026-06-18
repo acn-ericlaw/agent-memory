@@ -366,6 +366,15 @@ enable **does** create `agent-skills/` — populated with these built-ins, never
 > (your own `agent-skills/<your-name>/`, which is never overwritten). The overwrite is scoped to
 > these three tool-owned skills, so `upgrades-additive` still holds for everything else in
 > `agent-skills/`.
+>
+> **Warn before you clobber.** Before overwriting an *already-installed* built-in, check whether the
+> target's copy was locally modified — diff it against the source you're about to write (or, if it's
+> committed there, `git diff`/`git status` on `agent-skills/<name>/`). If it differs by more than this
+> version's update (a sign someone customized it despite the rule above), **stop and warn the human,
+> show what differs, and let them choose** to keep their version or take the update — never silently
+> discard a local change. This keeps the tool-managed-copies contract *checked*, not convention-only,
+> and is itself agent-run at the human's direction (`no-build-step-agent-run`). On a fresh Mode A
+> enable there is nothing to overwrite, so the check is a no-op.
 
 ---
 

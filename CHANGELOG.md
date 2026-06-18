@@ -12,6 +12,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.10.2, 6/18/2026
+
+> **Fresh-context-review critique fixes (PATCH).** The v4.10.x line was put through its own
+> `second-opinion` ritual: a clean-vendor reviewer (GitHub Copilot CLI) challenged the milestone and
+> returned a critique applied through the `apply-critique` loop. It confirmed the design was sound,
+> cleared the `no-build-step-agent-run` question, and surfaced four scoped refinements — two
+> documentation-consistency gaps that would have re-triggered the same review noise, one real parser
+> robustness hole the v4.10.1 fix didn't cover, and one expectation-setting caveat.
+
+### Fixed
+
+1. **`memory-lint` — guard against an unclosed footer.** `FOOTER_RE` is now bound to a single line
+   (`[^\n]`, no `re.S`). A malformed footer (`<!-- id: foo | ...` with no closing `-->`) can no longer
+   let the non-greedy field capture span newlines and swallow the rest of the file up to a stray
+   `-->`, which would have silently misparsed `tier`/`superseded` fields and corrupted decay counts
+   with no error. Same lesson as v4.10.1: a verifier whose job is trustworthy counting must not be
+   fooled by malformed input. Script-only; no description change → adapters unchanged.
+
+### Changed
+
+2. **Install protocol warns before overwriting a locally-modified built-in.** `ENABLE.md` §5i (and the
+   `UPGRADE.md` 4.10.0 / 4.10.2 rungs) now say: before overwriting an already-installed tool-managed
+   built-in, diff it against the source; if it was locally customized, **warn the human and let them
+   decide** rather than silently discarding their change. Makes the tool-managed-copies contract a
+   *checked* step, not convention-only. Agent-run at the human's direction (`no-build-step-agent-run`);
+   a no-op on a fresh enable.
+3. **`upgrades-additive` invariant text carries its exception inline.** The invariant in this repo's
+   `memory/continuity.md` now states the tool-managed-built-ins carve-out at its declaration (it was
+   only in ENABLE/UPGRADE prose), so a reader encountering it cold no longer re-flags the overwrite as
+   a contradiction — the exact noise the dogfood reviewer raised.
+4. **`second-opinion` — same-vendor vs. different-vendor caveat.** A *Notes* bullet now states that a
+   same-vendor clean session (or spawned subagent) tests the **mechanism**, while a **different vendor**
+   adds the **epistemic diversity** that is the whole point of a fresh reviewer for high-stakes
+   milestones. Body only — description unchanged → adapters unchanged.
+
+> Deferred (reviewer rated low-confidence/contrived): hardening `pinned_open_threads` against deeply
+> nested lists — tracked as an Open Thread, not changed, since current session-log formatting is flat.
+
+---
 ## Version 4.10.1, 6/18/2026
 
 > **`memory-lint` bug fix — line-anchor the Memory-References detection (PATCH).** Found while
