@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.8.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0–4.7.1:** + a **lightweight mode** keyed to the *objective* "did a file change?" test — **read-only** sessions write **no log**; **any file change** (even one line) writes at least a one-line **lite log**; a memory-relevant event → full ritual ("trivial" is a judgment call, so it never decides the skip). **v4.8.0:** the review **self-verifies its archival** — greps the last `archive_window` sessions for each fading id before archiving (guards against decay miscounts). **Validated across five vendors 2026-06-16/18** (Claude, Gemini cross-machine, Cursor-format, enterprise Kiro on Windows, GitHub Copilot CLI — the Copilot enablement + review surfaced the decay-miscount that drove v4.8.0). **All cross-vendor validations closed.**
+- **status:** v4.9.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0–4.7.1:** + a **lightweight mode** keyed to the *objective* "did a file change?" test — **read-only** sessions write **no log**; **any file change** (even one line) writes at least a one-line **lite log**; a memory-relevant event → full ritual ("trivial" is a judgment call, so it never decides the skip). **v4.8.0:** the review **self-verifies its archival** — greps the last `archive_window` sessions for each fading id before archiving (guards against decay miscounts). **v4.9.0:** + a portable **`memory-lint`** verifier skill (`agent-skills/memory-lint/`, Python 3 stdlib) that runs the decay-integrity checks *deterministically* — moves the counting off the LLM (the real fix Copilot argued for). **Validated across five vendors 2026-06-16/18** (Claude, Gemini cross-machine, Cursor-format, enterprise Kiro on Windows, GitHub Copilot CLI — the Copilot enablement + review surfaced the decay-miscount that drove v4.8.0). **All cross-vendor validations closed.**
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-18 | agent: Claude Code (2026-06-18-062730)
+- **last_session:** 2026-06-18 | agent: Claude Code (2026-06-18-065458)
 - **last_review:** 2026-06-18 | through 2026-06-18-051933
 - **last_invariant_check:** 2026-06-18 | through 2026-06-18-054159
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -162,6 +162,13 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `README`/`CHANGELOG`. `DECAY.md`/`REVIEW.md` unchanged. Design: `docs/DESIGN-skills-layer.md`.
   Realizes `bp-skills-layer`. Not yet validated on a real target (next: upgrade the client).
   <!-- id: skills-layer-v410 | created: 2026-06-15 | last_used: 2026-06-18 | uses: 7 | tier: active | origin: 2026-06-15-234801 -->
+- [x] **v4.1.1 (PATCH): skills-layer refinements** — pre-adoption corrections before the first real
+  target run: folder renamed `skills/` → **`agent-skills/`** (collision-safe); **Cursor adapter fix**
+  (`.cursor/rules/*.mdc` "agent-requested" type — `description` + empty `globs:` + `alwaysApply: false`);
+  collision guard (never overwrite a pre-existing `agent-skills/`); vendor-dir double-duty clarified in
+  `MIGRATE.md`. `VERSION`→4.1.1. Closes the follow-ups to `skills-layer-v410`. (Reactivated 2026-06-18 —
+  `memory-lint` caught it over-archived at sslu 16 ≤ archive_window.) → serves: vision-agent-memory
+  <!-- id: skills-layer-v411-fixes | created: 2026-06-16 | last_used: 2026-06-18 | uses: 5 | tier: active | origin: 2026-06-16-001342 -->
 
 ### Shipped — v4.2.0: "sync skill adapters" (2026-06-16)
 - [x] **"Sync skill adapters" operation shipped (additive MINOR).** Closes the cross-machine
@@ -310,7 +317,22 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   unchanged. → serves: vision-agent-memory (faithful memory; deterministic, verifiable decay)
   <!-- id: review-verify-v480 | created: 2026-06-18 | last_used: 2026-06-18 | uses: 1 | tier: working | origin: 2026-06-18-062730 -->
 
-### Blueprint — gaps from Current State (v4.8.0) to the Vision  (serves: vision-agent-memory)
+- **Shipped v4.9.0 — `memory-lint`, a deterministic verifier skill (MINOR).** The stronger fix
+  Copilot argued for after v4.8.0: v4.8.0's markdown guard still left the *primary* count to the
+  LLM, and LLMs miscount. So built a portable, optional **`memory-lint`** skill
+  (`agent-skills/memory-lint/SKILL.md` + `scripts/memory-lint.py`, Python 3 stdlib, no install) that
+  checks integrity *deterministically*: no id in both `continuity.md` + archive; no archived-as-faded
+  fact referenced within `archive_window` (the decay-miscount guard); advisory overdue (excludes
+  `core`/`superseded`/pinned `- [ ]`); supersession links resolve. Exit non-zero → wire to pre-commit/CI.
+  The tool never runs it (`no-build-step-agent-run`); it lints the *arithmetic*, the agent judges
+  *meaning*. **First run caught a real over-archival both Copilot AND a hand re-check missed** —
+  `skills-layer-v411-fixes` (sslu 16 ≤ 20) — now reactivated. `REVIEW.md` step 6 points to it.
+  **Not auto-installed into targets** (would add a script to every repo) — deliberate future option.
+  Touched: `agent-skills/memory-lint/` (new), `REVIEW.md`, `VERSION`→4.9.0, `UPGRADE.md` rung + table,
+  `README`/`CHANGELOG`. → serves: vision-agent-memory (faithful, verifiable memory)
+  <!-- id: lint-skill-v490 | created: 2026-06-18 | last_used: 2026-06-18 | uses: 1 | tier: working | origin: 2026-06-18-065458 -->
+
+### Blueprint — gaps from Current State (v4.9.0) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
 > `(blueprint)`: each is a Vision↔reality gap that closes when delivered. The *backward*
 > memory layer is not here — it's done; every gap is *forward*. These operationalize the

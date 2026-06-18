@@ -20,7 +20,6 @@
 - provenance-retrieval-v370 — provenance + retrieval-at-scale; shipped v3.7.0 — faded (sslu 40) — 2026-Q2.md
 - review-artifacts-v400 — whitepaper + deck authored for peer/leadership review — faded (sslu 22) — 2026-Q2.md
 - vbdi-shipped-v400 — VBDI forward layer shipped (v4.0.0) — swept: completed 2026-06-15, > archive_window — 2026-Q2.md
-- skills-layer-v411-fixes — skills-layer refinements PATCH (v4.1.1) — swept: completed 2026-06-16, > archive_window — 2026-Q2.md
 - authoring-adopt-v430 — skill authoring convention + adopt safety-net (v4.3.0) — swept: completed 2026-06-16, > archive_window — 2026-Q2.md
 - skills-docs-v431-fixes — skills-layer doc fixes from session-close test-drive (v4.3.1) — swept: completed 2026-06-16, > archive_window — 2026-Q2.md
 - skills-desc-hardening-v432 — skill description hardening from lifecycle sanity check (v4.3.2) — swept: completed 2026-06-16, > archive_window — 2026-Q2.md

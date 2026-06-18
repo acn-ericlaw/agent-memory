@@ -68,7 +68,10 @@ it never fires more often than reviews do.
    count was wrong — do *not* archive it** (it is still `active` / `archive-candidate`); move it
    back into `continuity.md`. Then confirm **no id lives in both `continuity.md` and the archive**
    (a fact must exist in exactly one). Record the result in the summary. (Superseded facts are
-   exempt — they archive on truth-state, not recency.)
+   exempt — they archive on truth-state, not recency.) **For a deterministic version of this check
+   — recommended — run the `memory-lint` skill** (`agent-skills/memory-lint/`, if present): it does
+   the counting for you and exits non-zero on a violation. Hand-counting is the easiest step to get
+   wrong; let the script count.
 7. **Verify invariants (cadence).** If `sessions_since_last_invariant_check ≥
    verify_invariants_every` (or `last_invariant_check` is unset and that many session
    files exist), raise **one** Open Thread listing every never-decay fact —

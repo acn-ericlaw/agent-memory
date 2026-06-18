@@ -12,6 +12,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.9.0, 6/18/2026
+
+> **`memory-lint` — a deterministic verifier skill (move the decay arithmetic off the LLM).**
+> v4.8.0 added a markdown self-verify step, but the *primary* count was still hand-done — and an
+> LLM (Copilot, then a hand re-check) miscounts. This release ships the stronger fix Copilot
+> argued for: a portable, optional **`memory-lint`** skill whose bundled script *deterministically*
+> checks memory integrity. The agent judges meaning; the script does the counting. **On its very
+> first run it caught a real over-archival that two rounds of human review had missed**
+> (`skills-layer-v411-fixes`, last referenced 16 sessions ago ≤ archive_window 20) — now reactivated.
+
+### Added
+
+1. **`agent-skills/memory-lint/`** — a portable skill (neutral `SKILL.md` + `scripts/memory-lint.py`,
+   Python 3 stdlib, no install). Deterministic checks: no id in both `continuity.md` and the archive;
+   no archived-as-faded fact referenced within `archive_window` (the decay-miscount guard); advisory
+   overdue-for-archival (excluding `core` / `superseded` / pinned `- [ ]` threads); supersession links
+   resolve. Exit non-zero on error → wire to a pre-commit hook / CI. Optional and agent/human-invoked
+   (`no-build-step-agent-run` — the tool never runs it); it lints the *arithmetic*, not the *meaning*.
+
+### Changed
+
+1. `REVIEW.md` step 6 ("Verify archival") now points to `memory-lint` as the recommended
+   deterministic version of the check ("let the script count"). `VERSION` → 4.9.0; `UPGRADE.md`
+   4.8.0→4.9.0 rung + table; `README`. `AGENTS.md` / `SKILLS.md` / `DECAY.md` unchanged.
+
+### Fixed
+
+1. **Reactivated `skills-layer-v411-fixes`** — `memory-lint` flagged it as over-archived by the
+   2026-06-18 Copilot review (sslu 16 ≤ archive_window 20); moved back to `continuity.md` (`active`).
+
+---
 ## Version 4.8.0, 6/18/2026
 
 > **Review self-verify guard — catch decay miscounts before they archive.** A GitHub Copilot CLI

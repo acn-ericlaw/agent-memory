@@ -44,6 +44,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.7.0 | **Lightweight mode** for memory-neutral tasks (from a Kiro enablement): a trivial task (no new fact/decision/thread/state change) writes a **one-line "lite" session log** (`## Memory References` → `(none)`) and skips the full template / fact-footers / continuity edits. Ledger stays continuous; the review handles it as a normal reference-free session. Scales the per-session ceremony to the actual memory impact |
 | 4.7.1 | Lightweight mode keyed to **file-change, not "trivial"** (a judgment call both AI and human misjudge): **read-only** sessions (no file changes) write **no log**; **any file change** (even one line) writes at least a **lite log** (never skipped on a "felt trivial" call); a memory-relevant event → full ritual |
 | 4.8.0 | Review **self-verify guard** (from a Copilot review that over-archived recent facts): a new `REVIEW.md` step greps the last `archive_window` sessions for each about-to-be-archived id — any hit ⇒ the `sessions_since_last_used` count was wrong, keep the fact — and confirms no id lives in both `continuity.md` and the archive. Replaces a hand-counted judgment with a checkable signal for the riskiest operation |
+| 4.9.0 | **`memory-lint`** — a portable, optional verifier skill (`agent-skills/memory-lint/` + `scripts/memory-lint.py`, Python 3 stdlib) that runs the decay-integrity checks *deterministically* (id-in-both-places, archived-but-recently-referenced, overdue advisory, supersession links). Moves the arithmetic off the LLM; `REVIEW.md` step 6 points to it. Caught a real over-archival on first run. The tool never runs it (`no-build-step-agent-run`) — agent/human/CI-invoked |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -603,3 +604,23 @@ over-archived recent active facts (miscounted `sessions_since_last_used`).
 3. **Stamp** `.agent/version.md` → `version: 4.8.0`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 4. **Report**: `REVIEW.md` re-synced; reviews now self-verify archival before stamping.
+
+---
+
+## Rung: 4.8.0 → 4.9.0 — `memory-lint` deterministic verifier skill (MINOR)
+
+Additive: a portable verifier skill + a `REVIEW.md` pointer to it. The markdown guard (v4.8.0) is
+still the in-ritual default; this adds the deterministic, CI-able version.
+
+1. **Re-sync `REVIEW.md`** (verbatim where different): step 6 now points to the `memory-lint` skill
+   as the recommended deterministic version of the verify ("let the script count"). The pointer is
+   guarded with "if present," so it's a no-op where the skill isn't installed. `AGENTS.md` /
+   `SKILLS.md` / `DECAY.md` unchanged.
+2. **The skill itself is in the tool's `agent-skills/memory-lint/`** (neutral `SKILL.md` +
+   `scripts/memory-lint.py`). It is **not** auto-installed into targets by this rung — a target that
+   wants it can adopt/copy the skill (it's portable, Python 3 stdlib, optional). Auto-install into
+   targets is a deliberate future option (it would add a script to every enabled repo).
+3. **No skill regeneration; no `.gitignore` change.**
+4. **Stamp** `.agent/version.md` → `version: 4.9.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+5. **Report**: `REVIEW.md` re-synced (points to `memory-lint`); the verifier skill is available.
