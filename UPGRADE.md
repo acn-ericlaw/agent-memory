@@ -48,6 +48,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.10.0 | **Fresh-context second opinion** — a skill pair (`second-opinion` + `apply-critique`): snapshot the current task (derived from `continuity.md` + recent sessions, never a parallel state file) for a clean-memory reviewer (any vendor / fresh session) behind a **security advisory**, then apply the returned critique through a **bounded, validated, human-gated** loop (build/tests + `memory-lint`; critique is advisory). Snapshots/critiques live in gitignored `review-scratch/`. ENABLE and the upgrade ladder now **install** the built-in skills (this pair + `memory-lint`, which the review ritual relies on). Folds the "AIF" idea into skills + VBDI |
 | 4.10.1 | **`memory-lint` bug fix:** its Memory-References parser is now **line-anchored** (`(?m)^## +Memory References[ \t]*$`) instead of `find("## Memory References")`, so a session log that *quotes* the heading in prose no longer trips a false `over-archived` error. Script-only; no description/shape change |
 | 4.10.2 | **Fresh-context-review critique fixes (PATCH):** `memory-lint`'s `FOOTER_RE` now binds to a single line so an *unclosed* footer can't silently swallow the file and misparse decay metadata; the install protocol (`ENABLE.md` §5i) **warns before overwriting a locally-modified built-in** instead of silently clobbering it; the `upgrades-additive` invariant text carries its tool-managed-built-ins exception inline; and `second-opinion` gains a same-vendor-vs-different-vendor caveat. No description/shape change |
+| 4.10.3 | **Lightweight-mode wording fix (PATCH):** `AGENTS.md` now keys the session-log test to whether a **tracked** file changed (the *objective* test is the **git diff**, not any filesystem write), and explicitly exempts runs whose only writes are **gitignored, regenerated artifacts** (`sync skill adapters`, `review-scratch/`, the compiled lint artifact) → **no log**. Aligns the lightweight-mode note with what `SKILLS.md` already states (sync "touches no committed file"); prevents a spurious lite log after every adapter sync. Wording-only |
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
 
@@ -713,3 +714,29 @@ repo that has the built-ins installed (v4.10.0+).
    `enabled_with` and `mode`.
 5. **Report**: `memory-lint` hardened (unclosed-footer guard); `second-opinion` caveat added; install
    now warns before overwriting a locally-modified built-in.
+
+## Rung: 4.10.2 → 4.10.3 — lightweight-mode wording fix (PATCH)
+
+Wording-only clarification to the `AGENTS.md` lightweight-mode note. No file shape, no skill, no
+script changes — only the installed `AGENTS.md` text.
+
+1. **Re-key the lightweight-mode test to a *tracked* change.** In the target's installed `AGENTS.md`
+   ("After Every Session" → lightweight-mode block), the objective test is now the **git diff over
+   tracked files**, not "did any file change":
+   - the opening line reads "whether a *tracked* file changed (the *objective* test is the git diff,
+     not any filesystem write)";
+   - the **Read-only** tier now also covers "a run whose only writes are gitignored, regenerated
+     artifacts" — naming `sync skill adapters`, `review-scratch/` snapshots, and the compiled lint
+     artifact — as **no session log**;
+   - the second tier reads "**A tracked file changed** but produced no memory-relevant event";
+   - the closing line reads "anything that touched a *tracked* file."
+   This aligns the note with what `SKILLS.md` already states — `sync skill adapters` "touches no
+   committed file… not a version change" — so an adapter sync (or any gitignored-only write) no
+   longer implies a spurious lite log. **If the target's `AGENTS.md` was locally modified, warn the
+   human and let them decide** (same warn-before-overwrite courtesy as the built-ins).
+2. **Nothing else changes** — `SKILLS.md` / `DECAY.md` / `REVIEW.md` / `.agent/schema.md` / templates'
+   memory files / skills / scripts untouched.
+3. **Stamp** `.agent/version.md` → `version: 4.10.3`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: lightweight-mode test re-keyed to tracked changes (git diff); gitignored regenerated
+   artifacts (adapter sync, `review-scratch/`, lint artifact) are explicitly no-log.

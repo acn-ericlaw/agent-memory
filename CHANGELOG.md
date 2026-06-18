@@ -12,6 +12,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
 ---
+## Version 4.10.3, 6/18/2026
+
+> **Lightweight-mode wording fix (PATCH).** A loose end surfaced while running `sync skill adapters`:
+> the sync (re)wrote 16 gitignored vendor adapters but left `git status` clean — yet `AGENTS.md`'s
+> lightweight-mode note, read literally ("did a *file* change?"), seemed to demand a lite session log.
+> It shouldn't: `SKILLS.md` already says the sync op "touches no committed file… not a version change,"
+> and the note's own anchor is the git diff. The wording just didn't say *tracked*.
+
+### Changed
+
+1. **Lightweight-mode test re-keyed to a *tracked* change.** `AGENTS.md` (root + template) now states
+   the objective test is the **git diff over tracked files**, not any filesystem write. The **Read-only**
+   tier explicitly covers a run whose only writes are **gitignored, regenerated artifacts** —
+   `sync skill adapters`, `review-scratch/` snapshots, the compiled lint artifact — as **no session
+   log**. The middle tier reads "**A tracked file changed**…"; the closing line, "anything that touched
+   a *tracked* file." Aligns the note with `SKILLS.md` (sync touches no committed file) and prevents a
+   spurious lite log after every adapter sync. Wording-only — no file shape, skill, or script change.
+
+Lockstep: `AGENTS.md` (root + template), `VERSION`→4.10.3, `UPGRADE.md` 4.10.2→4.10.3 rung + table,
+`README` table. `SKILLS.md` / `DECAY.md` / `REVIEW.md` / `.agent/schema.md` unchanged.
+
+---
 ## Version 4.10.2, 6/18/2026
 
 > **Fresh-context-review critique fixes (PATCH).** The v4.10.x line was put through its own
