@@ -11,6 +11,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.11.0, 6/19/2026
+
+> **`memory-lint` gains a Node runtime (MINOR).** The deterministic decay-integrity check is the
+> answer to "LLM hand-counting isn't reliable" — but that guarantee shouldn't depend on the machine
+> having Python. `memory-lint` now ships in **both** Python and Node; on a node-only box you still get
+> the script, not a hand count.
+
+### Added
+- **`memory-lint.mjs` — a Node port of the verifier** (Node ≥ 18, built-in modules only, no npm
+  install), at **feature + output parity** with `memory-lint.py`. `SKILL.md` documents both commands
+  as interchangeable; the agent runs whichever runtime the machine has (no dispatcher, no installer —
+  the agent is the runtime). Verified byte-identical output (default and `--strict`) on this repo.
+- **`test_memory_lint.mjs` — the cross-runtime contract.** Mirrors `test_memory_lint.py`'s fixtures
+  exactly; both suites must pass, which is what holds the two implementations equivalent over time.
+
+---
+
 ## Version 4.10.4, 6/18/2026
 
 > **memory-lint nested list fix (PATCH).** Hardened the verifier script to handle deeply-nested lists correctly.

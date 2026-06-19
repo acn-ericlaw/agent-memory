@@ -20,12 +20,18 @@ script, so the riskiest operation is verified against observable evidence.
 
 ## What to do
 
-1. Run the bundled checker from the repo root (needs **Python 3**, stdlib only — no install):
+1. Run the bundled checker from the repo root. **Two interchangeable runtimes** — use whichever the
+   machine has (stdlib/built-ins only, no install). Same flags, same output, same exit codes:
    ```bash
-   python3 agent-skills/memory-lint/scripts/memory-lint.py
+   python3 agent-skills/memory-lint/scripts/memory-lint.py    # Python 3 (>= 3.8)
+   node    agent-skills/memory-lint/scripts/memory-lint.mjs    # Node (>= 18)
    ```
    Flags: `--strict` (also fail on warnings), `--root PATH` (point at a specific repo).
-   *To run the script's own tests:* `python3 -m unittest agent-skills/memory-lint/scripts/test_memory_lint.py`
+   *Run the test suite (the cross-runtime contract — both implementations pass the same fixtures):*
+   ```bash
+   python3 -m unittest agent-skills/memory-lint/scripts/test_memory_lint.py
+   node --test          agent-skills/memory-lint/scripts/test_memory_lint.mjs
+   ```
 2. It checks, deterministically:
    - **no id lives in both `continuity.md` and the archive** (a fact exists in exactly one place);
    - **no archived-as-faded fact was referenced within `archive_window` sessions** — the decay-miscount
@@ -44,6 +50,28 @@ script, so the riskiest operation is verified against observable evidence.
   your direction.
 - It lints the **arithmetic and integrity**; it does **not** judge *meaning* (what's worth recording,
   supersession truth-state, contradictions) — that stays human/agent.
-- **No Python?** Run the checks by hand per the list above — e.g. `grep` each about-to-be-archived id
-  against the last `archive_window` session logs (any hit ⇒ don't archive). The script just makes it
-  reliable and CI-able.
+- **Two runtimes so the deterministic check survives a missing one.** The verifier ships in both
+  Python (`memory-lint.py`) and Node (`memory-lint.mjs`) — kept equivalent by a shared test contract —
+  so a machine with only one of them still gets the script, not a hand count.
+- **Neither Python nor Node? Install one — do not hand-count.** Decay arithmetic is *only ever*
+  script-verified, never counted by hand: an LLM hand-counting `sessions_since_last_used` has already
+  over-archived a still-referenced fact, which is the whole reason this skill exists. So when neither
+  runtime is present, **do not estimate the decay by hand** — surface this to the human and pause any
+  archival decision:
+
+  > ⚠️ **memory-lint needs a runtime to verify decay deterministically — neither Python nor Node was
+  > found. Please install *either one* (both are free, one-time, and need no extra packages — the
+  > verifier is standard-library only): https://www.python.org/downloads/ or https://nodejs.org . Then
+  > re-run the check. Until then, archival/decay decisions are on hold.**
+
+  The memory layer itself still works without the verifier (it's optional — see above); reading,
+  writing, and recall need no runtime. What waits for a runtime is *committing a decay decision* — if
+  this machine genuinely can't install one, defer that decision to a machine that can, rather than
+  hand-counting it.
+- **Why fail-loud-and-halt instead of a fallback?** Missing *both* runtimes is rare: a developer
+  machine almost always has at least one of Python or Node. The realistic trigger is a **thin or
+  locked-down CI/container image** that hasn't provisioned tooling yet — and CI is exactly where this
+  skill runs as a gate. There, a hard stop ("add a runtime to the image") is the *correct* outcome, not
+  a degradation to paper over; and on the rare bare machine you defer rather than guess. So a one-time
+  install nudge is the proportionate response — engineering a runtime-free fallback would spend effort
+  reintroducing the very hand count this skill exists to remove.

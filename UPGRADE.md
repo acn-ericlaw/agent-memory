@@ -50,6 +50,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.10.2 | **Fresh-context-review critique fixes (PATCH):** `memory-lint`'s `FOOTER_RE` now binds to a single line so an *unclosed* footer can't silently swallow the file and misparse decay metadata; the install protocol (`ENABLE.md` §5i) **warns before overwriting a locally-modified built-in** instead of silently clobbering it; the `upgrades-additive` invariant text carries its tool-managed-built-ins exception inline; and `second-opinion` gains a same-vendor-vs-different-vendor caveat. No description/shape change |
 | 4.10.3 | **Lightweight-mode wording fix (PATCH):** `AGENTS.md` now keys the session-log test to whether a **tracked** file changed (the *objective* test is the **git diff**, not any filesystem write), and explicitly exempts runs whose only writes are **gitignored, regenerated artifacts** (`sync skill adapters`, `review-scratch/`, the compiled lint artifact) → **no log**. Aligns the lightweight-mode note with what `SKILLS.md` already states (sync "touches no committed file"); prevents a spurious lite log after every adapter sync. Wording-only |
 | 4.10.4 | **`memory-lint` nested list fix (PATCH):** hardened the verifier script to handle deeply-nested lists correctly. `pinned_open_threads` now checks indentation level so a parent Open Thread's pinned state isn't dropped by a standard sub-bullet. |
+| 4.11.0 | **`memory-lint` Node runtime (MINOR):** the deterministic verifier now ships in **both** Python (`memory-lint.py`) and Node (`memory-lint.mjs`, Node ≥ 18, built-ins only) at feature + output parity, so a machine with only Node still runs the script instead of a hand count. `SKILL.md` documents both commands as interchangeable; a shared test contract (`test_memory_lint.mjs` ↔ `.py`) holds them equivalent. Additive — no dispatcher, no installer (the agent picks the runtime) |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -751,3 +752,13 @@ Updates the bundled `memory-lint` script to correctly parse deeply-nested lists 
 2. **Re-copy the memory-lint `SKILL.md`.** It now contains a note about running the test harness. Same warn-before-overwrite rule applies.
 3. **Stamp** `.agent/version.md` → `version: 4.10.4`, `last_upgraded: <today>`, preserving `enabled_with` and `mode`.
 4. **Report**: `memory-lint` hardened to correctly preserve the pinned state of Open Threads containing deeply-nested sub-items.
+
+## Rung: 4.10.4 → 4.11.0 — memory-lint Node runtime (MINOR)
+
+Adds a Node implementation of the `memory-lint` verifier alongside the Python one, so a target machine that has Node but not Python still gets the deterministic check. Additive only — no memory-file shape or procedural changes; the Python script and command are unchanged.
+
+1. **Copy the two new `memory-lint` files** into the target's `agent-skills/memory-lint/scripts/`: `memory-lint.mjs` (the Node verifier) and `test_memory_lint.mjs` (its tests). These are net-new; nothing is overwritten. (If a target somehow already has local copies, the built-in **warn-before-overwrite** rule from 4.10.2 applies.)
+2. **Re-copy the memory-lint `SKILL.md`.** It now documents both runtimes as interchangeable and the cross-runtime test command. Same warn-before-overwrite rule applies.
+3. **Verify parity (optional but recommended):** if both runtimes are present, `python3 …/memory-lint.py` and `node …/memory-lint.mjs` should produce identical output; `node --test …/test_memory_lint.mjs` should pass.
+4. **Stamp** `.agent/version.md` → `version: 4.11.0`, `last_upgraded: <today>`, preserving `enabled_with` and `mode`.
+5. **Report**: `memory-lint` now runs under Node as well as Python — deterministic decay checks no longer require a Python install.
