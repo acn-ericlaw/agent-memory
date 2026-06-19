@@ -11,6 +11,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.12.0, 6/19/2026
+
+> **Enforced skill-adapter sync at enable + upgrade (MINOR).** Skill adapters are gitignored
+> per-machine pointers, so they don't travel with a clone/pull, and a rung that adds a new adapter
+> target (e.g. Kiro in 4.5.0) left older skills' adapters incomplete. Previously enable/upgrade only
+> did a read-only **"recommend, don't run"** check, so after an upgrade a skill's vendor-native
+> adapters could be missing — blocking subsequent work that relies on native auto-trigger until the
+> user manually ran sync. Surfaced upgrading `~/sandbox/simple-proxy` (v4.4.0 → v4.11.1): the
+> pre-existing `hello-world` skill was left without its Kiro adapter.
+
+### Changed
+- **ENABLE and every Mode B re-enable (upgrade or already-up-to-date) now *run* `sync skill
+  adapters`** as their closing skills step, instead of recommending it. For each
+  `agent-skills/<name>/` it (re)writes the four vendor adapters and prunes orphaned generated
+  adapters. Safe to run unconditionally: it is **idempotent** and writes **only gitignored** files
+  (never `agent-skills/`, never a committed file) — so it is not a version change and needs no session
+  log. `no-build-step-agent-run` holds: the agent runs it during a human-invoked enable/upgrade, not a
+  daemon or per-session automation. The per-session path still never touches skills; content-drift
+  realignment is still the on-demand `skill sanity check`.
+- **`ENABLE.md` Step 8 now *asserts* adapter completeness** (every skill has all four adapters, no
+  orphans) — enforcement is checked, not convention.
+- Touched: `UPGRADE.md` (standing "Skills adapter sync" section + 4.11.1 → 4.12.0 rung + version
+  table; stale back-references in older rungs updated), `SKILLS.md`, `ENABLE.md` (Step 5h + Step 8),
+  `docs/DESIGN-skills-layer.md`, `VERSION` → 4.12.0, `README`. `AGENTS.md` / `DECAY.md` / `REVIEW.md`
+  unchanged.
+
 ## Version 4.11.1, 6/19/2026
 
 > **Review step-6 archival guard hardened against prose (PATCH).** The `REVIEW.md` step-6

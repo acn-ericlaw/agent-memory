@@ -97,8 +97,10 @@ literal string; `.mdc`/YAML: quote the whole value). YAML `>`/`|` folded/literal
 For **each** `agent-skills/<name>/SKILL.md`, (re)write the four adapters above — idempotent;
 overwrite the adapter, never the neutral skill — and **prune** orphaned *generated* adapters
 (one whose `agent-skills/<name>/` no longer exists; never touch other files in a vendor dir).
-Touches no committed file (adapters are gitignored); not a version change. Run it after
-authoring/editing a skill, or after a clone/pull on a machine that wants native auto-trigger.
+Touches no committed file (adapters are gitignored); not a version change. **Enable and every
+Mode B re-enable run this automatically** (v4.12.0), so adapters are materialized without a manual
+step. Still run it by hand after authoring/editing a skill, or after a clone/pull on a machine that
+wants native auto-trigger before its next enable/upgrade.
 
 > **Never commit the adapters — and never tell the user to.** The vendor adapter dirs
 > (`.claude/`, `.gemini/`, `.cursor/`, `.kiro/`) are gitignored, per-machine, and regenerated;
@@ -129,7 +131,10 @@ session:
 
 ---
 
-> **Lightweight by design.** Enable does a full adaptation once; **upgrade** does only a cheap,
-> read-only **filename** check that *recommends* `sync skill adapters` if an adapter is missing
-> or orphaned (it never acts); the deliberate `skill sanity check` realigns everything when you
-> choose to run it. None of this is in the per-session path.
+> **Lightweight by design.** Enable and **every** Mode B re-enable (upgrade or already-up-to-date)
+> **run** `sync skill adapters` as their closing skills step (v4.12.0) — idempotent and
+> gitignored-only, so it self-heals a missing adapter (a fresh clone/pull, or a skill that predates
+> a new adapter target) with no committed change and no version bump. The deliberate
+> `skill sanity check` additionally realigns *content* drift (a description that no longer mirrors
+> its skill) when you choose to run it. None of this is in the **per-session** path — skill work
+> there is still conscious and on-demand.

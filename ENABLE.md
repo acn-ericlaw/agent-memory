@@ -326,12 +326,14 @@ on any vendor). See `docs/DESIGN-skills-layer.md` and `.agent/schema.md`.
   regenerated (never hand-edited), living in the gitignored vendor dirs (Step 7), so they
   stay per-machine while only `agent-skills/` is committed.
 
-**Adapter generation** uses the canonical recipe in **`SKILLS.md`** (the skills reference
-that ships into the target): for each `agent-skills/<name>/SKILL.md`, write the
-Claude / Gemini / Cursor / Kiro pointers — idempotent, gitignored. After enable/migrate, a
-contributor on another machine regenerates *their* local adapters with the **"sync skill
-adapters"** operation in `SKILLS.md` (adapters are gitignored, so they don't travel with a
-clone/pull). `SKILLS.md` is read on demand — it's not in the per-session path.
+**Adapter generation** is the canonical **`sync skill adapters`** operation in **`SKILLS.md`** (the
+skills reference that ships into the target): for each `agent-skills/<name>/SKILL.md` it writes the
+Claude / Gemini / Cursor / Kiro pointers and prunes orphans — idempotent, gitignored-only. **Run it
+as the closing skills step of every enable** (and, per `UPGRADE.md`, every Mode B re-enable), so the
+adapters are *materialized*, not merely recommended — a skill is then usable via its vendor's native
+auto-trigger immediately. Adapters don't travel with a clone/pull (they're gitignored), so a
+contributor on another machine gets them from their own next enable/upgrade, or by running **"sync
+skill adapters"** by hand. `SKILLS.md` is read on demand — it's not in the per-session path.
 
 **Collision guard.** `agent-skills/` is namespaced to make a clash with a pre-existing
 project dir unlikely, but if a top-level `agent-skills/` already exists with unrelated
@@ -480,13 +482,17 @@ describe what was intended.
    placeholders. A `- [ ] (vision-bootstrap)` Open Thread is present in `continuity.md`,
    and no Blueprint gaps were derived yet (they await the confirmed Vision).
 
-6. **Skills installed + promoted.** Confirm the **built-in skills** (`memory-lint`,
-   `second-opinion`, `apply-critique`) were installed into `agent-skills/` (Step 5i) with
-   adapters regenerated and `review-scratch/` gitignored. Additionally (Mode C), if the source
-   repo had vendor skills (e.g. `.claude/skills/`), confirm each was promoted to
-   `agent-skills/<name>/SKILL.md` (committed), the original preserved under `legacy/`, and the
-   four adapters regenerated (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`,
-   `.kiro/skills/`).
+6. **Skills installed + promoted + adapters complete.** Confirm the **built-in skills**
+   (`memory-lint`, `second-opinion`, `apply-critique`) were installed into `agent-skills/`
+   (Step 5i) and `review-scratch/` is gitignored. Additionally (Mode C), if the source repo had
+   vendor skills (e.g. `.claude/skills/`), confirm each was promoted to
+   `agent-skills/<name>/SKILL.md` (committed), the original preserved under `legacy/`.
+   **Assert adapter completeness (v4.12.0):** after the closing `sync skill adapters` (Step 5h),
+   **every** `agent-skills/<name>/` has all four adapters present
+   (`.claude/skills/<name>/SKILL.md`, `.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc`,
+   `.kiro/skills/<name>/SKILL.md`) and no *generated* adapter is orphaned (each has a live
+   `agent-skills/<name>/`). Any miss or orphan ⇒ re-run sync. (Enforcement is now *checked*, not
+   convention — the loose end that a recommend-only check left open.)
 
 Log any issue you cannot fix as an Open Thread in `memory/continuity.md` and
 note it in the report.

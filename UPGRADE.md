@@ -52,6 +52,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.10.4 | **`memory-lint` nested list fix (PATCH):** hardened the verifier script to handle deeply-nested lists correctly. `pinned_open_threads` now checks indentation level so a parent Open Thread's pinned state isn't dropped by a standard sub-bullet. |
 | 4.11.0 | **`memory-lint` Node runtime (MINOR):** the deterministic verifier now ships in **both** Python (`memory-lint.py`) and Node (`memory-lint.mjs`, Node ≥ 18, built-ins only) at feature + output parity, so a machine with only Node still runs the script instead of a hand count. `SKILL.md` documents both commands as interchangeable; a shared test contract (`test_memory_lint.mjs` ↔ `.py`) holds them equivalent. Additive — no dispatcher, no installer (the agent picks the runtime) |
 | 4.11.1 | **Review step-6 archival guard hardened (PATCH):** `REVIEW.md` step 6 now defines a "use" as a `## Memory References` entry, not a prose mention — `memory-lint` is the preferred check (Memory-References-only, immune to the trap) and the by-hand fallback only counts in-block hits. Fixes an archival livelock (`ot-review-step6-prose`) where a review naming a fact while deferring it re-armed the guard forever. Doc + tests only; the verifier script was already correct (`memref_ids` line-anchored since 4.10.1) |
+| 4.12.0 | **Enforced adapter sync at enable + upgrade (MINOR):** ENABLE and **every** Mode B re-enable (upgrade or already-up-to-date) now **run** `sync skill adapters` instead of the read-only "recommend, don't run" check — so a skill's vendor-native adapters are actually materialized (closing the gap where a skill predating a new adapter target, e.g. Kiro, or a fresh clone/pull, was left without working native skills). Idempotent, writes only gitignored files (no committed change, no version bump, no session log); `no-build-step-agent-run` holds (the agent runs it during a human-invoked enable/upgrade). The per-session path still never touches skills; content-drift realignment is still the on-demand `skill sanity check` |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -76,7 +77,7 @@ if installed <  current:  run each rung below from installed up to current, in o
                           then re-stamp .agent/version.md (version=current, last_upgraded=today);
                           report what changed.
 if installed >  current:  the repo is newer than this tool checkout — stop and tell the user.
-either branch (incl. "up to date"):  also run the Skills adapter check (below) — read-only, recommend-only.
+either branch (incl. "up to date"):  also run `sync skill adapters` (below) — idempotent, gitignored-only.
 ```
 
 A **missing** `.agent/version.md` means the repo was enabled before versioning
@@ -93,20 +94,30 @@ source code or package manifests.
 
 ---
 
-## Skills adapter check (lightweight — every Mode B re-enable)
+## Skills adapter sync (every enable + Mode B re-enable) — enforced, v4.12.0
 
-Independent of the version ladder and **read-only**: skill adapters are gitignored, so a
-clone/pull (or a teammate's machine) may simply be missing them. On **any** Mode B re-enable —
-including "already up to date" — do a **filename-only** scan (no file contents):
-- **missing:** for each `agent-skills/<name>/`, any of `.claude/skills/<name>/SKILL.md`,
-  `.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc`, `.kiro/skills/<name>/SKILL.md` absent;
-- **orphan:** any of those adapter files whose `<name>` has no `agent-skills/<name>/`.
+Independent of the version ladder: skill adapters are gitignored, so they don't travel with a
+clone/pull, and a rung that adds a new adapter target (e.g. Kiro in 4.5.0) leaves older skills'
+adapters incomplete. So on **any** enable and **any** Mode B re-enable — including "already up to
+date" — **run `sync skill adapters`** (see `SKILLS.md`) as the closing skills step: for each
+`agent-skills/<name>/`, (re)write the four vendor adapters (`.claude/skills/<name>/SKILL.md`,
+`.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc`, `.kiro/skills/<name>/SKILL.md`) and
+**prune** orphaned *generated* adapters (one whose `agent-skills/<name>/` no longer exists; never
+touch other files in a vendor dir).
 
-If either is non-empty, **recommend (don't run):** *"Skill adapters are out of sync on this
-machine (N missing, M orphaned) — run `sync skill adapters` (see `SKILLS.md`)."* Plus a nudge:
-*"edited a skill since the last sync? run the heavyweight `skill sanity check`."* **Never
-regenerate as part of the upgrade** — skill creation/sync is a conscious, on-demand action,
-not per-session or per-upgrade work.
+This is safe to run unconditionally because it is **idempotent** and writes **only gitignored**
+files — never `agent-skills/`, never a committed file. So it is **not a version change and needs no
+session log** (the lightweight-mode rule: a run whose only writes are gitignored, regenerated
+artifacts). It does not violate `no-build-step-agent-run`: the **agent** runs it during a
+human-invoked enable/upgrade — there is no daemon and no per-session automation. Report the counts:
+*"synced N skill(s) → M adapters (gitignored — do not commit; only `agent-skills/` is shared); pruned
+K orphan(s)."* If there are no skills, it is a no-op.
+
+This **replaces the former read-only "recommend, don't run" check** (≤ v4.11.1): enable and upgrade
+are deliberate, human-invoked moments, so *materializing* adapters then — rather than printing advice
+the user must act on before the skills work natively — is correct. The **per-session** path still
+never touches skills; deliberate **content-drift** realignment (a description that no longer mirrors
+its skill) is still the heavyweight, on-demand `skill sanity check` in `SKILLS.md`.
 
 ---
 
@@ -477,10 +488,10 @@ developer action, so it leaves the per-session path. No skill data changes.
 2. **Re-sync `AGENTS.md`** (verbatim where different): the "Skills" section is now just the
    runtime baseline + a pointer to `SKILLS.md`; the verbose recipe/ops are gone from it. The
    **"After Every Session" ritual no longer has a skills safety-check step** (removed — see
-   the standing read-only "Skills adapter check" this doc runs at Mode B instead).
-3. **No skill regeneration.** Existing `agent-skills/` and adapters are untouched. The
-   standing Skills adapter check (above) will *recommend* `sync skill adapters` if anything's
-   missing/orphaned on this machine.
+   the standing skills-adapter sync this doc runs at every Mode B re-enable instead).
+3. **No skill regeneration in this rung.** The standing skills-adapter sync (above) handles
+   adapters — since **v4.12.0** it *runs* `sync skill adapters` (idempotent, gitignored-only) on
+   every Mode B re-enable rather than only recommending it.
 4. **Stamp** `.agent/version.md` → `version: 4.4.0`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 5. **Report**: `SKILLS.md` installed; `AGENTS.md` slimmed (per-session skills footprint cut;
@@ -501,14 +512,14 @@ changes; a repo with no skills (or no Kiro) works exactly as before. Design:
 2. **`.gitignore` — no entry change needed.** `.kiro/` is already in the v3.1.0 managed block
    (it is the adapter target for `.kiro/skills/`). Optionally refresh the managed-block comment
    to name `.kiro/skills/` among the adapters (cosmetic only).
-3. **No forced skill regeneration.** Existing `agent-skills/` and adapters are untouched. If
-   the target has skills but no `.kiro/skills/` adapters, the standing read-only **Skills
-   adapter check** (above) will now flag them missing and *recommend* `sync skill adapters`
-   (which writes the Kiro adapter too) — it never acts on its own.
+3. **No skill regeneration in this rung.** If the target has skills but no `.kiro/skills/`
+   adapters, the standing skills-adapter sync (above) materializes them — since **v4.12.0** it
+   *runs* `sync skill adapters` (which writes the Kiro adapter too) on every Mode B re-enable,
+   rather than only recommending it.
 4. **Stamp** `.agent/version.md` → `version: 4.5.0`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
-5. **Report**: docs re-synced; Kiro adapter now in the recipe; skills adapter check result
-   (whether `.kiro/skills/` adapters are recommended for sync on this machine).
+5. **Report**: docs re-synced; Kiro adapter now in the recipe; skills-adapter sync result
+   (the `.kiro/skills/` adapters are (re)written by the standing sync).
 
 ---
 
@@ -772,3 +783,27 @@ Fixes a wording bug in the review ritual's archival-verify (step 6): a raw full-
 2. **Re-copy the memory-lint test files** into `agent-skills/memory-lint/scripts/`: `test_memory_lint.py` and `test_memory_lint.mjs` now include `memref_ids` regression tests (prose/review-summary mention is not counted; block bounded at next heading). `memory-lint.py`/`.mjs` themselves are unchanged. Warn-before-overwrite rule (4.10.2) applies if locally modified.
 3. **Stamp** `.agent/version.md` → `version: 4.11.1`, `last_upgraded: <today>`, preserving `enabled_with` and `mode`.
 4. **Report**: review step-6 archival guard no longer livelocks on prose mentions; a "use" is a Memory-References entry, counted deterministically by `memory-lint`.
+
+## Rung: 4.11.1 → 4.12.0 — enforce `sync skill adapters` at enable + upgrade (MINOR)
+
+Behavior change (additive, backward-compatible): the standing skills-adapter step stops being a
+read-only "recommend, don't run" check and instead **runs** `sync skill adapters`. Closes the loose
+end where, after an upgrade, a skill's vendor-native adapters could be missing — a skill that predates
+a new adapter target (e.g. Kiro, added in 4.5.0), or any fresh clone/pull (adapters are gitignored and
+don't travel) — so subsequent work that relies on native skill auto-trigger was blocked until the user
+manually ran sync. No memory-file shape change; safe because the sync is idempotent and writes only
+gitignored files.
+
+1. **Re-sync the generic docs** (copy verbatim where different): `SKILLS.md` (its "Lightweight by
+   design" note now says enable + every Mode B re-enable *run* the idempotent sync, not a read-only
+   recommend; the `sync skill adapters` operation notes it's auto-run then). `AGENTS.md` / `DECAY.md`
+   / `REVIEW.md` are unchanged (the per-session path still never touches skills, and `AGENTS.md`
+   already only points to `SKILLS.md`).
+2. **Run `sync skill adapters`** now as the closing skills step (this is the new enforced behavior,
+   applied to this very upgrade): for each `agent-skills/<name>/`, (re)write the four vendor adapters
+   and prune orphaned generated adapters. Idempotent; writes only gitignored files (no committed
+   change, no session log). If the target has no skills, it's a no-op.
+3. **Stamp** `.agent/version.md` → `version: 4.12.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: enable/upgrade now materialize skill adapters automatically; *"synced N skill(s) → M
+   adapters (gitignored — do not commit; only `agent-skills/` is shared); pruned K orphan(s)."*

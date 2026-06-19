@@ -14,7 +14,11 @@
 > **+ trigger-semantics & commit-guard clarifications v4.5.1** (from a Gemini CLI dogfood: the
 > Gemini adapter is a *slash command* `/<name>`, not a natural-language auto-trigger — NL routes
 > through the baseline to the same skill; and `sync` must never commit / recommend committing the
-> gitignored adapter dirs).
+> gitignored adapter dirs),
+> **+ enforced adapter sync v4.12.0** (enable + every Mode B re-enable now *run* `sync skill
+> adapters` — idempotent, gitignored-only — instead of a read-only "recommend, don't run" check, so a
+> skill's vendor-native adapters are materialized at enable/upgrade rather than left for the user to
+> sync by hand; closes the loose end where an upgrade left newer/old-target adapters missing).
 > Sibling to `DESIGN-evolving-memory.md` and `DESIGN-vbdi-lifecycle.md`.
 > The maintainer chose **all-vendor adapters** at build time (Claude + Gemini + Cursor + Kiro),
 > so §4c is fully realized rather than Claude-only.
