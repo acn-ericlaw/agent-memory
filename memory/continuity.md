@@ -9,8 +9,8 @@
 - **project:** agent-memory
 - **status:** v4.11.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); upgrades do a read-only filename check that recommends sync. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0–4.7.1:** + a **lightweight mode** keyed to the *objective* "did a file change?" test — **read-only** sessions write **no log**; **any file change** (even one line) writes at least a one-line **lite log**; a memory-relevant event → full ritual ("trivial" is a judgment call, so it never decides the skip). **v4.8.0:** the review **self-verifies its archival** — greps the last `archive_window` sessions for each fading id before archiving (guards against decay miscounts). **v4.9.0:** + a portable **`memory-lint`** verifier skill (`agent-skills/memory-lint/`, Python 3 stdlib) that runs the decay-integrity checks *deterministically* — moves the counting off the LLM (the real fix Copilot argued for). **v4.10.0:** + an optional **fresh-context second-opinion** skill pair — `second-opinion` snapshots the task (derived from continuity+sessions, behind an acknowledge-gated security advisory) for a clean-memory reviewer; `apply-critique` applies the returned critique through a bounded, validated, human-gated loop (build/tests + memory-lint). Snapshots in gitignored `review-scratch/`; **ENABLE + upgrades now install the built-in skills** (`second-opinion` + `apply-critique` + `memory-lint`, which the review ritual relies on). Folds the external "AIF" idea into skills+VBDI; the fresh reviewer is **advisory**, gated by deterministic checks + human (the v4.8/v4.9 lesson). **Dogfooded end-to-end 2026-06-18** (clean-context reviewer caught an upgrade-overwrite invariant tension; fixed via apply-critique); README/deck/whitepaper updated. **Validated across five vendors 2026-06-16/18** (Claude, Gemini cross-machine, Cursor-format, enterprise Kiro on Windows, GitHub Copilot CLI — the Copilot enablement + review surfaced the decay-miscount that drove v4.8.0). **All cross-vendor validations closed.** **v4.10.1 (PATCH):** line-anchored `memory-lint`'s Memory-References parser (`ot-memlint-anchor-bug`) — found while running the verifier during a memory review, where a log quoting the heading in prose tripped a false `over-archived`; the verifier must not be fooled by prose. **v4.10.2 (PATCH):** four fixes from a fresh-context review of the v4.10.x line (GitHub Copilot CLI, applied via the `apply-critique` loop — the second dogfood of the review pair, this time a *different vendor*): `memory-lint`'s `FOOTER_RE` bound to one line (unclosed-footer guard); install protocol **warns before overwriting a locally-modified built-in** (tool-managed-copies contract now *checked*, not convention-only); the `upgrades-additive` invariant text carries its tool-managed-built-ins exception inline; `second-opinion` gains a same-vendor-vs-different-vendor caveat. One low-confidence finding deferred (`ot-memlint-pinned-nested`). **v4.10.3 (PATCH):** lightweight-mode **wording fix** — the session-log test is now keyed to whether a *tracked* file changed (the objective test is the **git diff**, not any filesystem write), and a run whose only writes are **gitignored, regenerated artifacts** (`sync skill adapters`, `review-scratch/`, the compiled lint artifact) is explicitly **no log** (`lightweight-tracked-change-v4103`). Surfaced when a fresh `sync skill adapters` (re)wrote 16 gitignored adapters but left `git status` clean — yet the old "did a *file* change?" wording seemed to demand a lite log; aligns `AGENTS.md` with what `SKILLS.md` already says (sync "touches no committed file"). **v4.10.4 (PATCH):** hardened `memory-lint` to correctly preserve pinned Open Threads that contain deeply-nested sub-items. **v4.11.0 (MINOR):** `memory-lint` now ships a **Node** runtime (`memory-lint.mjs`, Node ≥ 18, built-ins only) alongside Python, at output parity and held equivalent by a **shared test contract** (`test_memory_lint.mjs` ↔ `.py`) — so the deterministic decay check no longer requires a Python install (motivated by a node-preferring collaborator; the determinism guarantee shouldn't depend on which runtime a machine has). Additive: no dispatcher, no installer — the agent picks the runtime. Shipped `25677a7`; **cross-vendor validated** by Gemini 3.1 Pro (GitHub Copilot CLI), which reran both runtimes + suites live and reproduced byte-identical output.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-19 | agent: Claude Code (2026-06-19-161804)
-- **last_review:** 2026-06-18 | through 2026-06-18-181132
+- **last_session:** 2026-06-19 | agent: Claude Code (2026-06-19-162522)
+- **last_review:** 2026-06-19 | through 2026-06-19-162522
 - **last_invariant_check:** 2026-06-18 | through 2026-06-18-054159
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
 
@@ -94,6 +94,20 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
+- [ ] **(med) `REVIEW.md` step-6 archival guard is fooled by prose decay-mentions — archival livelock.**
+  Step 6 ("grep the last `archive_window` session *files* for the id; if found, don't archive") matches
+  *any* occurrence — including a prior review summary that merely **names** the fact while recording its
+  overdue/archival status (tier-change lines, "archivable:", "memory-lint … overdue"). Since every review
+  that defers a fact re-mentions it, the guard re-arms each cycle and the fact can **never** archive. Hit
+  this 2026-06-19: `skills-gemini-dogfood-v451` / `kiro-hooks-edgecase-v452` / `commit-attribution-v460`
+  all tripped step-6 on **prose-only** hits (zero `## Memory References` uses); archived by judgment per
+  DECAY §2 (a "use" = a Memory-References entry, which `memory-lint` already counts). Same class as the
+  v4.10.1 prose-vs-heading false positive. **Fix candidates:** restrict step-6's grep to each session's
+  `## Memory References` block (reuse `memory-lint`'s line-anchored `memref_ids`), or have step-6 *call*
+  `memory-lint` instead of a raw grep. Design the fix + add a fixture; don't change the guard speculatively.
+  → serves: vision-agent-memory (faithful, verifiable memory)
+  <!-- id: ot-review-step6-prose | created: 2026-06-19 | last_used: 2026-06-19 | uses: 1 | tier: active | origin: 2026-06-19-162522 -->
+
 - [x] **Shipped v4.11.0 (MINOR) — `memory-lint` Node runtime.** A node-preferring collaborator asked
   why the deterministic verifier was Python-only; the principled answer is that "LLM hand-counting is
   unreliable, so prefer a deterministic script" must hold on a node-only machine too. Added
@@ -151,15 +165,6 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - [x] **Re-verify invariants (due):** confirm `target-repo-scope-only`, `never-delete-vendor-files`, `never-pick-a-winner`, `no-build-step-agent-run`, `upgrades-additive`, and the Vision (`vision-agent-memory`) still hold, or supersede any that don't (`DECAY.md` §9). Due: 34 sessions since last check (`verify_invariants_every: 20`).
   **Confirmed 2026-06-18 (maintainer):** all 5 invariants and the Vision still hold.
   <!-- id: ot-reverify-invariants-20260618 | created: 2026-06-18 | last_used: 2026-06-18 | uses: 2 | tier: active | origin: 2026-06-18-051933 -->
-
-- [x] Incorporate findings from real-world enablement / validation. **Closed 2026-06-17
-  (maintainer):** the validation loop is satisfied — a **team demo of "AI enable" drew member
-  support**, and the v4.x upgrade was exercised across real targets and **three non-Claude vendors**
-  (Gemini cross-machine run, enterprise-Kiro bootstrap on Windows, Kiro enablement of a new
-  source-code repo with an honest "helps more than it interferes" assessment). No blocking issues;
-  findings drove the **v4.5.1–v4.7.1** refinements (Gemini slash-command + commit guard; Kiro
-  hooks; commit attribution; lightweight mode). The dogfood-feedback loop did its job.
-  <!-- id: ot-realworld-v411-findings | created: 2026-06-16 | last_used: 2026-06-17 | uses: 2 | tier: archive-candidate | origin: 2026-06-16-141614 -->
 
 - [x] Validate the memory + skills layer with **GitHub Copilot CLI**. Maintainer's account was
   **approved 2026-06-17**, activating in ~1–2 days (≈2026-06-18/19); they'll then test and report.
@@ -264,63 +269,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   handling** (partner bundles that *consume* open-standard skills). → serves: vision-agent-memory
   <!-- id: kiro-adapter-v450 | created: 2026-06-16 | last_used: 2026-06-18 | uses: 6 | tier: active | origin: 2026-06-16-221832 -->
 
-### Shipped — v4.5.1–v4.7.1: cross-vendor refinements (2026-06-17)
-- **Shipped v4.5.1 — skills-layer guidance (PATCH, from the Gemini CLI cross-machine dogfood).**
-  Two rough edges surfaced by a real Gemini CLI run (see `dogfood-hello-world-skill`), both
-  wording/guidance — no shape change: **(1)** after `sync`, a natural-language "run hello-world"
-  kept reading `agent-skills/` rather than the new `.gemini/commands/` command. **Root cause:**
-  Gemini custom commands are **slash commands** (`/<name>`, explicit) — *not* NL auto-triggers
-  like Claude/Cursor/Kiro — so NL correctly routes through the `AGENTS.md` baseline to the **same**
-  neutral skill (identical result; both the slash command and the baseline are pointers to
-  `agent-skills/`, so nothing can diverge). **(2)** the agent told the user to **commit** the
-  vendor adapter dirs — wrong: adapters are gitignored/per-machine/regenerated; only
-  `agent-skills/` is committed (the `.gitignore` already blocks it, but the agent shouldn't
-  recommend it). **Fixes:** `SKILLS.md` — Gemini adapter documented as a slash command + a
-  "trigger semantics differ per vendor" note + a **never-commit-the-adapters** guard on the
-  `sync` op; `AGENTS.md` (root + template) adapter line now says "never commit them"; `DESIGN`
-  recipe table + note. `VERSION`→4.5.1, `UPGRADE.md` 4.5.0→4.5.1 rung + table, `README`/`CHANGELOG`.
-  `DECAY.md`/`REVIEW.md` unchanged. The dogfood-feedback loop (drove v3.1.0/v3.2.0/v4.2.0) again.
-  → serves: vision-agent-memory
-  <!-- id: skills-gemini-dogfood-v451 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 6 | tier: archive-candidate | origin: 2026-06-17-044933 -->
-
-- **Shipped v4.5.2 — Kiro hooks in Mode C + a bootstrap edge-case note (PATCH, from a Windows/Kiro
-  enable).** The maintainer cloned this repo on a fresh Windows 11 machine and opened it in
-  **enterprise Kiro**. Two findings: **(1) chicken-and-egg bootstrap** — on a fresh clone `.kiro/`
-  doesn't exist (gitignored, per-machine), and enterprise Kiro **self-bootstraps from its
-  onboarding/MCP before reading `AGENTS.md`**; the human nudge **"Start from `AGENTS.md`"** puts the
-  agent-memory protocol in charge (works — then `sync skill adapters` regenerates local adapters).
-  **(2) Kiro deposits hooks + steering** into `.kiro/` (e.g. `kiro-commit-signature.kiro.hook` +
-  `auto-commit-prompt.md`). **Compatibility verdict: no hard incompatibility** — all of `.kiro/` is
-  gitignored (verified `git check-ignore` on hooks/steering/skills paths), so enterprise content
-  stays per-machine and never enters the shared `memory/`/`agent-skills/` layer, and `sync` only
-  writes `.kiro/skills/<name>/` ("never touch other files in a vendor dir"). **No tension after
-  all (maintainer-clarified):** my first "auto-commit" worry was a wrong inference from the
-  filename — the Kiro commit hook is **human-gated** (fires only when the human says "commit"; Kiro
-  writes a context-aware message + a "co-authored by Kiro" trailer), which *matches* agent-memory's
-  deliberate-commit model (agent-memory itself uses co-author trailers). The only hypothetical
-  concern would be a hook that commits/pushes **unprompted** — none here. **Changes:** `MIGRATE.md`
-  Kiro protocol gains a **Hooks** sub-case (`.kiro/hooks/*.kiro.hook` → preserve verbatim under
-  `legacy/kiro/hooks/`, never convert/run; human-gated commit hooks align, only unprompted
-  auto-commit/push → Open Thread); `README` bootstrap edge-case note;
-  `VERSION`→4.5.2, `UPGRADE.md` rung + table. `AGENTS.md`/`SKILLS.md`/`DECAY.md`/`REVIEW.md`
-  unchanged. → serves: vision-agent-memory (multi-vendor, multi-machine without drift)
-  <!-- id: kiro-hooks-edgecase-v452 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 3 | tier: archive-candidate | origin: 2026-06-17-175728 -->
-
-- **Shipped v4.6.0 — vendor-neutral commit attribution (MINOR).** Came from the maintainer's
-  observation: **Claude Code adds a deliberate, human-gated `Co-Authored-By:` trailer
-  automatically** (it's in its harness), **Kiro needed a per-machine hook + steering** to do the
-  same, and Gemini/Cursor do nothing by default. That vendor-by-vendor inconsistency is exactly the
-  gap the shared layer closes. So `AGENTS.md` (root + template) now **extends its existing "identify
-  yourself" principle** (already true for session logs) **to commits**: "After Every Session" step 4
-  + checklist say *commits are deliberate and human-initiated; identify yourself the way you do in
-  session logs — e.g. a `Co-Authored-By: <agent>` trailer.* **Soft by design** (guides, doesn't
-  prescribe git workflow; a no-op for runtimes that already do it). Now any vendor gets Claude's
-  behavior with **no per-vendor hook** — a concrete "encode once in the shared layer vs. N
-  per-vendor configs" proof point. Touched: `AGENTS.md` (root + template), `VERSION`→4.6.0,
-  `UPGRADE.md` 4.5.2→4.6.0 rung + table, `README`/`CHANGELOG`. `SKILLS.md`/`DECAY.md`/`REVIEW.md`
-  unchanged. → serves: vision-agent-memory (`bp-multi-user` — multi-contributor traceability + provenance)
-  <!-- id: commit-attribution-v460 | created: 2026-06-17 | last_used: 2026-06-17 | uses: 2 | tier: archive-candidate | origin: 2026-06-17-181607 -->
-
+### Shipped — v4.7.0–v4.7.1: cross-vendor refinements (2026-06-17)
 - **Shipped v4.7.0 — lightweight mode for memory-neutral tasks (MINOR).** From a **real
   cross-vendor enablement**: the maintainer used the *installed* tool to AI-enable a **new
   source-code repo via Kiro IDE**, and Kiro gave an honest assessment (strong validation — the

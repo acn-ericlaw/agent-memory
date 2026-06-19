@@ -35,3 +35,8 @@
 - ot-drift-blueprint-baseline-20260615 — Open Thread: Blueprint baseline was stale (v3.7.0→v4.1.1), resolved 2026-06-16 — swept: completed 2026-06-16, > archive_window — 2026-Q2.md
 - ot-drift-blueprint-baseline-v440 — Open Thread: Blueprint baseline was stale (v4.1.1→v4.4.0), resolved 2026-06-16 — swept: completed 2026-06-16, > archive_window — 2026-Q2.md
 - sync-adapters-v420 — "sync skill adapters" on-demand op: regenerate gitignored vendor adapters from agent-skills/ (v4.2.0) — faded (sslu 24 > archive_window) — 2026-Q2.md
+
+- skills-gemini-dogfood-v451 — shipped v4.5.1 skills-layer guidance (Gemini CLI cross-machine dogfood: Gemini slash-command NL routing + never-commit-adapters guard) — faded (sslu 27 > archive_window; recent hits are prose decay-status mentions, not Memory-References) — 2026-Q2.md
+- kiro-hooks-edgecase-v452 — shipped v4.5.2 Kiro hooks in Mode C + fresh-clone bootstrap edge-case (Windows/enterprise-Kiro enable; .kiro/ gitignored, no hard incompatibility) — faded (sslu 23 > archive_window) — 2026-Q2.md
+- commit-attribution-v460 — shipped v4.6.0 vendor-neutral commit attribution (AGENTS.md extends "identify yourself" to commits; soft, no per-vendor hook) — faded (sslu 22 > archive_window) — 2026-Q2.md
+- ot-realworld-v411-findings — completed Open Thread: incorporate real-world enablement findings (team demo drew support + 3 non-Claude vendors: Gemini cross-machine, enterprise-Kiro Windows, Kiro repo enable; drove v4.5.1–v4.7.1) — swept: completed 2026-06-17, > archive_window — 2026-Q2.md
