@@ -51,6 +51,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.10.3 | **Lightweight-mode wording fix (PATCH):** `AGENTS.md` now keys the session-log test to whether a **tracked** file changed (the *objective* test is the **git diff**, not any filesystem write), and explicitly exempts runs whose only writes are **gitignored, regenerated artifacts** (`sync skill adapters`, `review-scratch/`, the compiled lint artifact) → **no log**. Aligns the lightweight-mode note with what `SKILLS.md` already states (sync "touches no committed file"); prevents a spurious lite log after every adapter sync. Wording-only |
 | 4.10.4 | **`memory-lint` nested list fix (PATCH):** hardened the verifier script to handle deeply-nested lists correctly. `pinned_open_threads` now checks indentation level so a parent Open Thread's pinned state isn't dropped by a standard sub-bullet. |
 | 4.11.0 | **`memory-lint` Node runtime (MINOR):** the deterministic verifier now ships in **both** Python (`memory-lint.py`) and Node (`memory-lint.mjs`, Node ≥ 18, built-ins only) at feature + output parity, so a machine with only Node still runs the script instead of a hand count. `SKILL.md` documents both commands as interchangeable; a shared test contract (`test_memory_lint.mjs` ↔ `.py`) holds them equivalent. Additive — no dispatcher, no installer (the agent picks the runtime) |
+| 4.11.1 | **Review step-6 archival guard hardened (PATCH):** `REVIEW.md` step 6 now defines a "use" as a `## Memory References` entry, not a prose mention — `memory-lint` is the preferred check (Memory-References-only, immune to the trap) and the by-hand fallback only counts in-block hits. Fixes an archival livelock (`ot-review-step6-prose`) where a review naming a fact while deferring it re-armed the guard forever. Doc + tests only; the verifier script was already correct (`memref_ids` line-anchored since 4.10.1) |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -762,3 +763,12 @@ Adds a Node implementation of the `memory-lint` verifier alongside the Python on
 3. **Verify parity (optional but recommended):** if both runtimes are present, `python3 …/memory-lint.py` and `node …/memory-lint.mjs` should produce identical output; `node --test …/test_memory_lint.mjs` should pass.
 4. **Stamp** `.agent/version.md` → `version: 4.11.0`, `last_upgraded: <today>`, preserving `enabled_with` and `mode`.
 5. **Report**: `memory-lint` now runs under Node as well as Python — deterministic decay checks no longer require a Python install.
+
+## Rung: 4.11.0 → 4.11.1 — review step-6 archival guard hardened (PATCH)
+
+Fixes a wording bug in the review ritual's archival-verify (step 6): a raw full-text grep of recent sessions counted prose mentions (e.g. a prior review summary naming a fact while deferring it) as "uses," creating an archival livelock. No memory-file shape change; the verifier script is unchanged (it was already correct).
+
+1. **Re-copy `REVIEW.md`** to the target's repo root. Step 6 now defines a "use" as a `## Memory References` entry, makes `memory-lint` the preferred check, and scopes the by-hand fallback to in-block hits.
+2. **Re-copy the memory-lint test files** into `agent-skills/memory-lint/scripts/`: `test_memory_lint.py` and `test_memory_lint.mjs` now include `memref_ids` regression tests (prose/review-summary mention is not counted; block bounded at next heading). `memory-lint.py`/`.mjs` themselves are unchanged. Warn-before-overwrite rule (4.10.2) applies if locally modified.
+3. **Stamp** `.agent/version.md` → `version: 4.11.1`, `last_upgraded: <today>`, preserving `enabled_with` and `mode`.
+4. **Report**: review step-6 archival guard no longer livelocks on prose mentions; a "use" is a Memory-References entry, counted deterministically by `memory-lint`.

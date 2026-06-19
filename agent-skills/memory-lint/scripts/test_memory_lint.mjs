@@ -3,7 +3,7 @@
 // keeps memory-lint.mjs at parity with memory-lint.py. Run: node --test <file>
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { pinned_open_threads } from "./memory-lint.mjs";
+import { pinned_open_threads, memref_ids } from "./memory-lint.mjs";
 
 function byCodePoint(a, b) {
   if (a < b) return -1;
@@ -77,4 +77,34 @@ test("pinned_open_threads mixed", () => {
 `,
     ["mix-1", "mix-3"]
   );
+});
+
+test("memref_ids ignores prose and review-summary mentions (ot-review-step6-prose)", () => {
+  // A fact named only in prose / a '## Memory Review' summary is NOT a use —
+  // only '## Memory References' counts.
+  const text = `# Session
+## What happened
+Archiving \`foo-fact\` because it is overdue.
+## Memory Review (2026-06-19)
+- Archived: 1 (\`foo-fact\` -> archive, faded)
+- Tier changes: foo-fact archive-candidate->archived
+## Memory References
+- Created: bar-fact
+- Referenced: baz-fact
+`;
+  const ids = memref_ids(text);
+  assert.ok(ids.has("bar-fact"));
+  assert.ok(ids.has("baz-fact"));
+  assert.ok(!ids.has("foo-fact")); // prose / review-summary mention is not a reference
+});
+
+test("memref_ids is bounded by the next heading", () => {
+  const text = `## Memory References
+- Referenced: in-block-id
+## Next Section
+- not-a-ref-id mentioned here
+`;
+  const ids = memref_ids(text);
+  assert.ok(ids.has("in-block-id"));
+  assert.ok(!ids.has("not-a-ref-id"));
 });

@@ -11,6 +11,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.11.1, 6/19/2026
+
+> **Review step-6 archival guard hardened against prose (PATCH).** The `REVIEW.md` step-6
+> archival-verify told the agent to grep recent session *files* for an about-to-be-archived id and
+> keep it if found — but a raw full-text grep also matches a prior **review summary** that merely
+> *names* the fact while recording its decay status. Because every review that defers a fact re-names
+> it, the guard re-armed each cycle: an **archival livelock** (tracked as `ot-review-step6-prose`,
+> same class as the v4.10.1 prose-vs-heading bug). Found during the 2026-06-19 review.
+
+### Fixed
+- **`REVIEW.md` step 6 now defines a "use" as a `## Memory References` entry, not a prose mention.**
+  It makes `memory-lint` the preferred archival check (it counts Memory-References only, so it is
+  immune to the trap), and scopes the by-hand fallback to hits **inside** a `## Memory References`
+  block — explicitly ignoring `## Memory Review` / `## What happened` mentions. The verifier script
+  itself needed no change (`memref_ids` was already line-anchored since v4.10.1); added
+  `memref_ids` regression tests (prose/review-summary mention is not counted; block bounded at the
+  next heading) to both `test_memory_lint.py` and `test_memory_lint.mjs`.
+
+---
+
 ## Version 4.11.0, 6/19/2026
 
 > **`memory-lint` gains a Node runtime (MINOR).** The deterministic decay-integrity check is the

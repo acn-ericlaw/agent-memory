@@ -62,16 +62,28 @@ it never fires more often than reviews do.
    `archive_window` sessions move to the archive the same way (usually the biggest
    lean-up). Keep recently-completed threads for context.
 6. **Verify archival (required — guards against a miscounted `sessions_since_last_used`).**
-   Counting "sessions since last used" by hand is the easiest step to get wrong, and archival is
-   the costliest error. Before stamping, for **each** fact you just archived as *faded*, `grep`
-   the last `archive_window` session files for its id. **If the id appears in any of them, your
-   count was wrong — do *not* archive it** (it is still `active` / `archive-candidate`); move it
-   back into `continuity.md`. Then confirm **no id lives in both `continuity.md` and the archive**
-   (a fact must exist in exactly one). Record the result in the summary. (Superseded facts are
-   exempt — they archive on truth-state, not recency.) **For a deterministic version of this check
-   — recommended — run the `memory-lint` skill** (`agent-skills/memory-lint/`, if present): it does
-   the counting for you and exits non-zero on a violation. Hand-counting is the easiest step to get
-   wrong; let the script count.
+   Archival is the costliest error, and "sessions since last used" is the easiest count to get wrong.
+   A *"use"* is an id under a session's `## Memory References` (§2 / `DECAY.md` §2) — **not** a passing
+   mention in prose. Verify against that definition:
+   - **Preferred — run the `memory-lint` skill** (`agent-skills/memory-lint/`; Python *or* Node,
+     whichever the machine has). It recomputes `sessions_since_last_used` from `## Memory References`
+     **only**, exits non-zero if any archived-as-faded fact was actually referenced within
+     `archive_window` (⇒ reactivate it), and confirms **no id lives in both `continuity.md` and the
+     archive**. The script counts, so it is immune to the prose trap below. (No runtime? `SKILL.md`
+     says install Python or Node — don't hand-count if you can avoid it.)
+   - **By hand (fallback):** for **each** fact you archived as *faded*, grep the last `archive_window`
+     session files for its id — **but only count a hit that sits inside a `## Memory References`
+     block.** A hit *outside* it — e.g. a prior **review summary** (`## Memory Review`) that names the
+     id while recording its decay status, or a `## What happened` mention — is **not** a use; ignore
+     it. *(A raw full-text grep that counts such mentions creates an **archival livelock**: every
+     review that defers a fact re-names it, so the guard never clears — the `ot-review-step6-prose`
+     bug, same class as the v4.10.1 prose-vs-heading false positive.)* If a genuine `## Memory
+     References` hit appears, your count was wrong — do **not** archive it (it is still `active` /
+     `archive-candidate`); move it back into `continuity.md`.
+
+   Either way, then confirm **no id lives in both `continuity.md` and the archive** (a fact exists in
+   exactly one place). Record the result in the summary. (Superseded facts are exempt — they archive
+   on truth-state, not recency.)
 7. **Verify invariants (cadence).** If `sessions_since_last_invariant_check ≥
    verify_invariants_every` (or `last_invariant_check` is unset and that many session
    files exist), raise **one** Open Thread listing every never-decay fact —

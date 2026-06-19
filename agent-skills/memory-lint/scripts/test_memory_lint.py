@@ -61,5 +61,34 @@ class TestMemoryLint(unittest.TestCase):
 """
         self.assertEqual(memory_lint.pinned_open_threads(text), {"mix-1", "mix-3"})
 
+    def test_memref_ids_ignores_prose_and_review_summary(self):
+        # The ot-review-step6-prose livelock: a fact named only in prose / a
+        # '## Memory Review' summary is NOT a use — only '## Memory References' counts.
+        text = """# Session
+## What happened
+Archiving `foo-fact` because it is overdue.
+## Memory Review (2026-06-19)
+- Archived: 1 (`foo-fact` -> archive, faded)
+- Tier changes: foo-fact archive-candidate->archived
+## Memory References
+- Created: bar-fact
+- Referenced: baz-fact
+"""
+        ids = memory_lint.memref_ids(text)
+        self.assertIn("bar-fact", ids)
+        self.assertIn("baz-fact", ids)
+        self.assertNotIn("foo-fact", ids)  # prose / review-summary mention is not a reference
+
+    def test_memref_ids_bounded_by_next_heading(self):
+        text = """## Memory References
+- Referenced: in-block-id
+## Next Section
+- not-a-ref-id mentioned here
+"""
+        ids = memory_lint.memref_ids(text)
+        self.assertIn("in-block-id", ids)
+        self.assertNotIn("not-a-ref-id", ids)
+
+
 if __name__ == "__main__":
     unittest.main()
