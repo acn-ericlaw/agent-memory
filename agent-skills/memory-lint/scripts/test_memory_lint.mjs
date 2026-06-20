@@ -3,7 +3,15 @@
 // keeps memory-lint.mjs at parity with memory-lint.py. Run: node --test <file>
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { pinned_open_threads, memref_ids } from "./memory-lint.mjs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import {
+  pinned_open_threads,
+  memref_ids,
+  load_repo,
+  check_dangling,
+} from "./memory-lint.mjs";
 
 function byCodePoint(a, b) {
   if (a < b) return -1;
@@ -107,4 +115,48 @@ test("memref_ids is bounded by the next heading", () => {
   const ids = memref_ids(text);
   assert.ok(ids.has("in-block-id"));
   assert.ok(!ids.has("not-a-ref-id"));
+});
+
+test("supersession target in vision.md is not dangling (cross-file resolution)", () => {
+  // Regression for the dangling-link false positive: a supersession target whose
+  // footer lives in another memory/*.md (e.g. vision.md) must resolve, not warn.
+  // The bug was in load_repo (it only pooled continuity + archive footers), so this
+  // exercises load_repo end-to-end against a temp memory/ layer, not check_dangling alone.
+  const root = mkdtempSync(join(tmpdir(), "memlint-"));
+  try {
+    mkdirSync(join(root, "memory", "sessions"), { recursive: true });
+    writeFileSync(
+      join(root, "memory", "continuity.md"),
+      `# Continuity
+## Open Threads
+- [x] Old vision retired
+  <!-- id: old-fact | created: 2026-06-19 | last_used: 2026-06-19 | uses: 1 | tier: superseded | superseded-by: new-fact -->
+- [x] Orphaned link
+  <!-- id: orphan-fact | created: 2026-06-19 | last_used: 2026-06-19 | uses: 1 | tier: superseded | superseded-by: ghost-fact -->
+`
+    );
+    writeFileSync(
+      join(root, "memory", "vision.md"),
+      `# Vision
+<!-- id: new-fact | created: 2026-06-19 | last_used: 2026-06-19 | uses: 1 | tier: core -->
+`
+    );
+
+    const { cont, arch, extra } = load_repo(root);
+    // the vision fact is available for link resolution but NOT counted as a fact
+    assert.ok(extra.has("new-fact"));
+    assert.ok(!cont.has("new-fact"));
+    assert.ok(!arch.has("new-fact"));
+
+    const warns = check_dangling(new Map([...cont, ...arch, ...extra]));
+    // superseded-by a vision.md fact resolves -> no dangling
+    assert.ok(!warns.some((w) => w.includes("old-fact")), warns.join("\n"));
+    // a genuinely missing target still dangles (negative control)
+    assert.ok(
+      warns.some((w) => w.includes("orphan-fact") && w.includes("ghost-fact")),
+      warns.join("\n")
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });

@@ -1,9 +1,15 @@
 ---
 name: memory-lint
 description: Deterministic integrity check for the agent-memory layer. Use after a memory review, before committing memory/ changes, or in CI to catch decay miscounts — facts archived while still referenced, an id in both continuity and the archive, tier or supersession drift. The agent judges meaning; the script does the counting.
+provenance: agent-memory-builtin
 ---
 
 # memory-lint
+
+> ⚠️ **Tool-managed skill provided by agent-memory** (`provenance: agent-memory-builtin`). Don't edit it
+> in place — it is overwritten on upgrade. To change behavior: **fork** it under a new skill name, or
+> **upstream** a genuine fix to the agent-memory project (file an issue in its repo, or bring it to the
+> tool maintainer) for back-port + validation. See `SKILLS.md` → "Tool-provided (system) skills".
 
 A deterministic safety net for the evolving-memory layer. Decay is integer-counting by design, but
 an agent counting session files **by hand** can miscompute `sessions_since_last_used` and archive a

@@ -124,7 +124,7 @@ def parse_args(args):
 
 
 def load_repo(root):
-    """Read the memory/ layer. Returns (cont, pinned, arch, sessions, refs)."""
+    """Read the memory/ layer. Returns (cont, pinned, arch, extra, sessions, refs)."""
     mem = os.path.join(root, "memory")
     cont_text = read_text(os.path.join(mem, "continuity.md"))
     cont = parse_footers(cont_text)
@@ -137,9 +137,21 @@ def load_repo(root):
         archive_text += read_text(f) + "\n"
     arch = parse_footers(archive_text)
 
+    # Extra footers from other memory/*.md files (e.g. vision.md) — used only for
+    # supersession link resolution in check_dangling; not counted as cont/arch facts.
+    _skip = {"continuity.md", "decay-policy.md"}
+    extra_text = ""
+    for name in sorted(os.listdir(mem)):
+        if not name.endswith(".md") or name in _skip:
+            continue
+        fp = os.path.join(mem, name)
+        if os.path.isfile(fp):
+            extra_text += read_text(fp) + "\n"
+    extra = parse_footers(extra_text)
+
     sessions = sorted(glob.glob(os.path.join(mem, "sessions", "*.md")))
     refs = [memref_ids(read_text(s)) for s in sessions]
-    return cont, pinned, arch, sessions, refs
+    return cont, pinned, arch, extra, sessions, refs
 
 
 def make_sslu(refs):
@@ -226,13 +238,13 @@ def main():
         print("memory-lint: could not find memory/continuity.md", file=sys.stderr)
         return 2
 
-    cont, pinned, arch, sessions, refs = load_repo(root)
+    cont, pinned, arch, extra, sessions, refs = load_repo(root)
     w = load_windows(root)
     aw, acw = w["archive_window"], w["active_window"]
     sslu = make_sslu(refs)
 
     errors = check_duplicates(cont, arch) + check_over_archived(arch, sslu, aw)
-    warns = check_overdue(cont, pinned, sslu, aw) + check_dangling({**cont, **arch})
+    warns = check_overdue(cont, pinned, sslu, aw) + check_dangling({**cont, **arch, **extra})
 
     return report(cont, arch, sessions, acw, aw, warns, errors, strict)
 

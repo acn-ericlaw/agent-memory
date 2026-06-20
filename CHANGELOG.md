@@ -11,6 +11,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.13.0, 6/20/2026
+
+> **Tool-provided (system) skills are marked + carry an upstream advisory (MINOR).** The built-ins
+> agent-memory installs into every repo (`memory-lint`, `second-opinion`, `apply-critique`) are
+> tool-managed copies — overwritten on upgrade — but nothing told a target's AI that *at edit time*, so
+> a local change could be made (and stranded) without anyone realizing it should go back upstream. This
+> is exactly what happened with the `memory-lint` dangling-link fix in `~/sandbox/simple-proxy`: it was
+> a genuine fix, but the target session didn't surface it for back-port. (The existing
+> warn-before-overwrite only fires during an upgrade, which that session never ran.)
+
+### Added
+- **`provenance: agent-memory-builtin` frontmatter marker** on the three shipped built-ins, plus a
+  one-line banner in each `SKILL.md` body. Any vendor's agent can now recognize a system skill by
+  reading the file — no out-of-band knowledge needed. (`hello-world` is a dogfood sample, never
+  installed into targets, so it is not marked.)
+- **Edit-time advisory** (`SKILLS.md` → new "Tool-provided (system) skills" section): before editing a
+  skill, check its frontmatter; if it is `provenance: agent-memory-builtin`, don't edit in place —
+  advise the human and either **fork** under a new name (local variant) or **upstream** a genuine fix to
+  the agent-memory project for back-port + validation. **Production:** file an issue in the agent-memory
+  repo. **Pre-release:** an advisory message to the maintainer (best effort until there's an issue
+  tracker). The upstream pointer is kept **generic** (not a hard-coded URL) until the project's
+  enterprise-GitHub move.
+- **Upgrade-time backstop extended:** `ENABLE.md` §5i's warn-before-overwrite now also advises
+  upstreaming a locally-modified built-in (not just keep-yours/take-update).
+
+### Changed
+- `.agent/schema.md` documents the optional `provenance` field; `AGENTS.md` (root + template) gains a
+  one-line pointer; `docs/DESIGN-skills-layer.md` gains a status entry. `DECAY.md` / `REVIEW.md` and the
+  adapter recipe are unchanged (adapters mirror only `name` + `description`, so the marker doesn't
+  touch them). Lockstep: `VERSION` → 4.13.0, `UPGRADE.md` rung + table, `README`.
+
+## Version 4.12.1, 6/20/2026
+
+> **`memory-lint` dangling-link check resolves supersession targets across `memory/*.md` (PATCH).**
+> `check_dangling` resolved `superseded-by` / `supersedes` links against footers from `continuity.md`
+> + the archive only — so a fact superseded by one whose footer lives in another memory file (notably
+> `vision.md`) was falsely flagged `[dangling] … which has no footer anywhere`. Found dogfooding on
+> `~/sandbox/simple-proxy` (a retired vision was superseded by a `vision.md` fact); the maintainer
+> fixed it there, and this ports the fix back to the tool with a regression test.
+
+### Fixed
+- **`load_repo` now also pools footers from other `memory/*.md` files** (e.g. `vision.md`), excluding
+  `continuity.md` + `decay-policy.md`, into an `extra` set used **only** for supersession-link
+  resolution in `check_dangling` — never counted as continuity/archive facts (counts, overdue, and
+  over-archived checks are unchanged). Fixed identically in **both** `memory-lint.py` and
+  `memory-lint.mjs` (code-point sort preserved → byte-identical output).
+- **Regression test added to both suites** (`test_memory_lint.py` / `.mjs`): a continuity fact
+  superseded by a `vision.md` fact must not warn, while a genuinely missing target still warns.
+  Exercises `load_repo` end-to-end against a temp `memory/` layer (the bug site), not `check_dangling`
+  alone. To enable it, `memory-lint.mjs` now also exports `load_repo` + `check_dangling` (the Python
+  module already exposed them) — additive, no behavior change.
+- Lockstep: `VERSION` → 4.12.1, `UPGRADE.md` rung + table, `README`. Verified: both suites 8/8;
+  `memory-lint` parity byte-identical on the tool's own memory (0 errors, 0 warnings).
+
 ## Version 4.12.0, 6/19/2026
 
 > **Enforced skill-adapter sync at enable + upgrade (MINOR).** Skill adapters are gitignored

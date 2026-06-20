@@ -18,7 +18,11 @@
 > **+ enforced adapter sync v4.12.0** (enable + every Mode B re-enable now *run* `sync skill
 > adapters` — idempotent, gitignored-only — instead of a read-only "recommend, don't run" check, so a
 > skill's vendor-native adapters are materialized at enable/upgrade rather than left for the user to
-> sync by hand; closes the loose end where an upgrade left newer/old-target adapters missing).
+> sync by hand; closes the loose end where an upgrade left newer/old-target adapters missing),
+> **+ tool-provided-skill provenance v4.13.0** (the three shipped built-ins carry
+> `provenance: agent-memory-builtin` so a target's AI recognizes a *system* skill at edit time;
+> `SKILLS.md` routes a change to **fork** a variant or **upstream** a genuine fix for back-port +
+> validation — closing the gap where a real `memory-lint` fix in a target nearly got stranded).
 > Sibling to `DESIGN-evolving-memory.md` and `DESIGN-vbdi-lifecycle.md`.
 > The maintainer chose **all-vendor adapters** at build time (Claude + Gemini + Cursor + Kiro),
 > so §4c is fully realized rather than Claude-only.

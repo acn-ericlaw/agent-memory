@@ -32,6 +32,37 @@ small discovery budget, so avoid long abstract paragraphs). Put helper scripts u
 `agent-skills/<name>/scripts/`. Then run **sync skill adapters** so your vendor gets a native
 adapter.
 
+## Tool-provided (system) skills
+
+Some skills are **provided by agent-memory itself** — the built-ins installed into every enabled repo
+(`memory-lint`, `second-opinion`, `apply-critique`). Each is marked in its
+`agent-skills/<name>/SKILL.md` frontmatter:
+
+```
+provenance: agent-memory-builtin
+```
+
+These are **tool-managed copies**: an enable/upgrade re-copies (overwrites) them, so a local edit is
+**not durable** — the next upgrade discards it, and the maintainer never learns of it.
+
+**Before editing a skill, check its frontmatter.** If it carries `provenance: agent-memory-builtin`, do
+**not** edit it in place — advise the human and pick one:
+
+- **Local variant** → **fork** it under a *new* skill name (`agent-skills/<your-name>/`), which the tool
+  never overwrites. Edit the fork freely.
+- **Genuine fix or improvement** → **upstream it** so everyone gets it and it survives upgrades. Give the
+  human a clear advisory: *this is an agent-memory-provided skill; the change should go back to the
+  agent-memory project for back-port + validation.* **In production**, file an issue in the agent-memory
+  repository (describe the change; attach the diff). **Pre-release**, bring it to the tool maintainer —
+  an advisory message is the best-effort hand-off until there's an official release / issue tracker.
+  (Keep the pointer generic — "the agent-memory project / its maintainer" — not a hard-coded URL, which
+  would go stale.)
+
+Why it matters: a target's AI that silently edits a built-in **strands** the change (overwritten on the
+next upgrade) — exactly how a real `memory-lint` fix nearly got lost. The marker lets any vendor's agent
+recognize a system skill and route the change correctly. At **upgrade** time, `ENABLE.md` §5i's
+warn-before-overwrite is the backstop: it diffs the installed built-in and surfaces the same advisory.
+
 ## Adapter recipe
 
 The adapter `description` **mirrors the neutral skill's verbatim** (never abbreviate — that

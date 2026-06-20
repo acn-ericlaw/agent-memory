@@ -53,6 +53,8 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.11.0 | **`memory-lint` Node runtime (MINOR):** the deterministic verifier now ships in **both** Python (`memory-lint.py`) and Node (`memory-lint.mjs`, Node ≥ 18, built-ins only) at feature + output parity, so a machine with only Node still runs the script instead of a hand count. `SKILL.md` documents both commands as interchangeable; a shared test contract (`test_memory_lint.mjs` ↔ `.py`) holds them equivalent. Additive — no dispatcher, no installer (the agent picks the runtime) |
 | 4.11.1 | **Review step-6 archival guard hardened (PATCH):** `REVIEW.md` step 6 now defines a "use" as a `## Memory References` entry, not a prose mention — `memory-lint` is the preferred check (Memory-References-only, immune to the trap) and the by-hand fallback only counts in-block hits. Fixes an archival livelock (`ot-review-step6-prose`) where a review naming a fact while deferring it re-armed the guard forever. Doc + tests only; the verifier script was already correct (`memref_ids` line-anchored since 4.10.1) |
 | 4.12.0 | **Enforced adapter sync at enable + upgrade (MINOR):** ENABLE and **every** Mode B re-enable (upgrade or already-up-to-date) now **run** `sync skill adapters` instead of the read-only "recommend, don't run" check — so a skill's vendor-native adapters are actually materialized (closing the gap where a skill predating a new adapter target, e.g. Kiro, or a fresh clone/pull, was left without working native skills). Idempotent, writes only gitignored files (no committed change, no version bump, no session log); `no-build-step-agent-run` holds (the agent runs it during a human-invoked enable/upgrade). The per-session path still never touches skills; content-drift realignment is still the on-demand `skill sanity check` |
+| 4.12.1 | **`memory-lint` dangling-link cross-file fix (PATCH):** `load_repo` now pools footers from other `memory/*.md` files (e.g. `vision.md`), excluding `continuity.md`/`decay-policy.md`, into an `extra` set used **only** for supersession-link resolution in `check_dangling` — so a fact superseded by a target whose footer lives in `vision.md` no longer false-flags as `[dangling]`. Both runtimes (`.py` + `.mjs`) fixed at parity; regression test added to both suites (`.mjs` now also exports `load_repo`/`check_dangling` to enable it). Found dogfooding `~/sandbox/simple-proxy`; ported back from there |
+| 4.13.0 | **Tool-provided (system) skills marked + upstream advisory (MINOR):** the three shipped built-ins carry `provenance: agent-memory-builtin` in their `SKILL.md` frontmatter (+ a body banner), so a target's AI recognizes a system skill **at edit time** — and `SKILLS.md` (new "Tool-provided (system) skills" section) tells it to **fork** a local variant or **upstream** a genuine fix to the agent-memory project (issue in production; maintainer advisory pre-release) rather than strand it. `ENABLE.md` §5i's warn-before-overwrite extended with the same upstream advice. Closes the gap that let the simple-proxy `memory-lint` fix nearly get lost. Adapters unchanged (mirror only name+description) |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -807,3 +809,53 @@ gitignored files.
    `enabled_with` and `mode`.
 4. **Report**: enable/upgrade now materialize skill adapters automatically; *"synced N skill(s) → M
    adapters (gitignored — do not commit; only `agent-skills/` is shared); pruned K orphan(s)."*
+
+## Rung: 4.12.0 → 4.12.1 — `memory-lint` dangling-link cross-file fix (PATCH)
+
+Script fix to a built-in: `check_dangling` resolved supersession links against `continuity.md` +
+archive footers only, so a fact superseded by a target whose footer lives in another `memory/*.md`
+(notably `vision.md`) false-flagged as `[dangling] … which has no footer anywhere`. Only matters for a
+repo that has `memory-lint` installed (v4.10.0+).
+
+1. **Re-copy the `memory-lint` scripts** verbatim from this tool's root, overwriting the installed
+   copies (tool-managed built-ins; `upgrades-additive` holds — overwrite scoped to tool-owned files):
+   `agent-skills/memory-lint/scripts/memory-lint.py` and `memory-lint.mjs`. The fix: `load_repo` now
+   pools footers from other `memory/*.md` files (excluding `continuity.md`/`decay-policy.md`) into an
+   `extra` set used **only** for supersession-link resolution in `check_dangling` — never counted as
+   continuity/archive facts. `.mjs` additionally **exports** `load_repo` + `check_dangling` (additive,
+   test-enabling; the `.py` already exposed them). **If the target's scripts were locally modified,
+   WARN the human first** (the 4.10.2 warn-before-overwrite rule) and let them decide.
+2. **Re-copy the test files** into `agent-skills/memory-lint/scripts/`: `test_memory_lint.py` and
+   `test_memory_lint.mjs` now include a cross-file dangling regression test (a fact superseded by a
+   `vision.md` fact must not warn; a genuinely missing target still warns). Same warn-before-overwrite
+   rule. `SKILL.md` unchanged → **no adapter regeneration**.
+3. **Stamp** `.agent/version.md` → `version: 4.12.1`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: `memory-lint` no longer false-flags a supersession target whose footer lives in
+   `vision.md` (or another `memory/*.md`); both runtimes at parity; both suites 8/8.
+
+## Rung: 4.12.1 → 4.13.0 — tool-provided (system) skills: marker + upstream advisory (MINOR)
+
+Additive: marks the shipped built-ins as tool-provided so a target's AI recognizes a *system* skill at
+edit time and routes a change correctly (fork a variant, or upstream a genuine fix), instead of silently
+editing it and having the change overwritten on the next upgrade. No memory-file shape change; adapters
+are untouched (they mirror only `name` + `description`).
+
+1. **Re-copy the three built-ins' `SKILL.md`** verbatim from this tool's root, overwriting the installed
+   copies (tool-managed built-ins — `upgrades-additive` holds; overwrite scoped to tool-owned files):
+   `agent-skills/{memory-lint,second-opinion,apply-critique}/SKILL.md`. The expected delta is the new
+   **`provenance: agent-memory-builtin`** frontmatter field + a one-line body banner. **Warn-before-overwrite
+   (4.10.2) applies:** if a target's `SKILL.md` differs *beyond* this marker addition (a local
+   modification), stop, show the diff, and — because such a change is often a genuine fix — **advise
+   upstreaming it to the agent-memory project** (issue in production; maintainer pre-release) in addition
+   to the keep/take choice. Scripts/tests are unchanged in this rung → no re-copy needed there.
+2. **Re-sync the generic docs** (copy verbatim where different): `SKILLS.md` (new "Tool-provided (system)
+   skills" section — the marker + the fork-or-upstream edit-time advisory), `AGENTS.md` (root + template:
+   the one-line pointer), `.agent/schema.md` (the optional `provenance` field). `DECAY.md` / `REVIEW.md`
+   unchanged.
+3. **No adapter regeneration** — `name`/`description` are unchanged, so existing adapters still point
+   correctly (adapters never carried `provenance`).
+4. **Stamp** `.agent/version.md` → `version: 4.13.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+5. **Report**: built-ins now marked `provenance: agent-memory-builtin`; editing a system skill prompts
+   fork-or-upstream; the upgrade warn-before-overwrite also advises upstreaming.

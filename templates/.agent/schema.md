@@ -211,7 +211,7 @@ steering. Each skill is vendor-neutral markdown:
 ```
 agent-skills/
   <skill-name>/
-    SKILL.md     frontmatter (name + description = the when-to-use trigger) + the procedure
+    SKILL.md     frontmatter (name + description = the when-to-use trigger; optional provenance) + the procedure
     scripts/     (optional) portable helpers (sh / python), referenced by relative path
 ```
 
@@ -232,6 +232,13 @@ authored natively in a vendor folder is **adopted** (promoted) into `agent-skill
 work is on-demand, not per-session: authoring, the adapter recipe, **sync**, **adopt**, and
 the heavyweight **sanity check** all live in **`SKILLS.md`** (read on demand). See also
 `docs/DESIGN-skills-layer.md`.
+
+**Tool-provided (system) skills** — the built-ins agent-memory installs into every repo
+(`memory-lint`, `second-opinion`, `apply-critique`) — carry **`provenance: agent-memory-builtin`** in
+their frontmatter (the field is optional and absent on skills you author). They are tool-managed copies,
+overwritten on upgrade: don't edit one in place — **fork** it under a new name, or **upstream** a
+genuine fix to the agent-memory project for back-port + validation (`SKILLS.md` → "Tool-provided
+(system) skills").
 
 ---
 

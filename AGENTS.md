@@ -72,9 +72,11 @@ is the runtime, so it works on any vendor. Native adapters (`.claude/skills/`,
 pointers — **never commit them** (only `agent-skills/` is shared); the source of truth is
 always `agent-skills/<name>/SKILL.md`.
 
-**Authoring, syncing, adopting, or sanity-checking a skill?** See **`SKILLS.md`** (read on
-demand — not part of the per-session read). Skill work is a deliberate, occasional action,
-never part of the session ritual.
+**Authoring, syncing, adopting, sanity-checking, or editing a tool-provided skill?** See **`SKILLS.md`**
+(read on demand — not part of the per-session read). Skill work is a deliberate, occasional action,
+never part of the session ritual. A skill whose frontmatter says `provenance: agent-memory-builtin` is
+**tool-managed** (overwritten on upgrade) — don't edit it in place; fork it under a new name, or
+upstream a genuine fix to the agent-memory project (`SKILLS.md` → "Tool-provided (system) skills").
 
 ### During the Session
 

@@ -356,7 +356,10 @@ gets**, because they support the core workflow:
 
 **Install all three** (every mode, including a fresh Mode A enable): copy `agent-skills/<name>/`
 **verbatim from this tool's root** into the target's `agent-skills/` (including `memory-lint`'s
-bundled `scripts/`), then regenerate their adapters via the 5h recipe. Add **`review-scratch/`**
+bundled `scripts/`), then regenerate their adapters via the 5h recipe. Each ships marked
+**`provenance: agent-memory-builtin`** in its frontmatter (with a banner in its body), so a target's
+agent — any vendor — can recognize it as a tool-provided *system* skill and route any change correctly
+(see `SKILLS.md` → "Tool-provided (system) skills"). Add **`review-scratch/`**
 to the target `.gitignore` (Step 7) for the review pair's personal, per-machine
 snapshots/critiques (never committed); `second-opinion` writes a README there on first run.
 Idempotent on re-enable — overwrite these built-ins (they are ours); never touch unrelated
@@ -365,16 +368,21 @@ enable **does** create `agent-skills/` — populated with these built-ins, never
 
 > **The built-ins are tool-managed copies.** Re-enable/upgrade **overwrites** them, so do **not**
 > customize an installed built-in — if you need a variant, fork it under a **new skill name**
-> (your own `agent-skills/<your-name>/`, which is never overwritten). The overwrite is scoped to
-> these three tool-owned skills, so `upgrades-additive` still holds for everything else in
-> `agent-skills/`.
+> (your own `agent-skills/<your-name>/`, which is never overwritten). **If the change is a genuine fix
+> rather than a customization, upstream it to the agent-memory project** (file an issue in its repo in
+> production; bring it to the maintainer pre-release) so it is back-ported + validated and survives
+> upgrades. The overwrite is scoped to these three tool-owned skills, so `upgrades-additive` still holds
+> for everything else in `agent-skills/`.
 >
 > **Warn before you clobber.** Before overwriting an *already-installed* built-in, check whether the
 > target's copy was locally modified — diff it against the source you're about to write (or, if it's
 > committed there, `git diff`/`git status` on `agent-skills/<name>/`). If it differs by more than this
 > version's update (a sign someone customized it despite the rule above), **stop and warn the human,
 > show what differs, and let them choose** to keep their version or take the update — never silently
-> discard a local change. This keeps the tool-managed-copies contract *checked*, not convention-only,
+> discard a local change. Because such a change is often a *genuine fix* (the simple-proxy case), the
+> warning also **advises upstreaming it to the agent-memory project** (an issue in its repo in
+> production; the maintainer pre-release) for back-port + validation — see `SKILLS.md` → "Tool-provided
+> (system) skills". This keeps the tool-managed-copies contract *checked*, not convention-only,
 > and is itself agent-run at the human's direction (`no-build-step-agent-run`). On a fresh Mode A
 > enable there is nothing to overwrite, so the check is a no-op.
 

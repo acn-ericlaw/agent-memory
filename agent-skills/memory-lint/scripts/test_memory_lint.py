@@ -1,5 +1,7 @@
 import unittest
 import importlib.util
+import os
+import tempfile
 from pathlib import Path
 import sys
 
@@ -88,6 +90,45 @@ Archiving `foo-fact` because it is overdue.
         ids = memory_lint.memref_ids(text)
         self.assertIn("in-block-id", ids)
         self.assertNotIn("not-a-ref-id", ids)
+
+
+class TestDanglingCrossFile(unittest.TestCase):
+    # Regression for the dangling-link false positive: a supersession target whose
+    # footer lives in another memory/*.md (e.g. vision.md) must resolve, not warn.
+    # The bug was in load_repo (it only pooled continuity + archive footers), so this
+    # exercises load_repo end-to-end against a temp memory/ layer, not check_dangling alone.
+    @staticmethod
+    def _write(path, text):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(text)
+
+    def test_supersession_target_in_vision_is_not_dangling(self):
+        with tempfile.TemporaryDirectory() as root:
+            mem = os.path.join(root, "memory")
+            self._write(os.path.join(mem, "continuity.md"), """# Continuity
+## Open Threads
+- [x] Old vision retired
+  <!-- id: old-fact | created: 2026-06-19 | last_used: 2026-06-19 | uses: 1 | tier: superseded | superseded-by: new-fact -->
+- [x] Orphaned link
+  <!-- id: orphan-fact | created: 2026-06-19 | last_used: 2026-06-19 | uses: 1 | tier: superseded | superseded-by: ghost-fact -->
+""")
+            self._write(os.path.join(mem, "vision.md"), """# Vision
+<!-- id: new-fact | created: 2026-06-19 | last_used: 2026-06-19 | uses: 1 | tier: core -->
+""")
+            os.makedirs(os.path.join(mem, "sessions"), exist_ok=True)
+
+            cont, pinned, arch, extra, sessions, refs = memory_lint.load_repo(root)
+            # the vision fact is available for link resolution but NOT counted as a fact
+            self.assertIn("new-fact", extra)
+            self.assertNotIn("new-fact", cont)
+            self.assertNotIn("new-fact", arch)
+
+            warns = memory_lint.check_dangling({**cont, **arch, **extra})
+            # superseded-by a vision.md fact resolves -> no dangling
+            self.assertFalse(any("old-fact" in w for w in warns), warns)
+            # a genuinely missing target still dangles (negative control)
+            self.assertTrue(any("orphan-fact" in w and "ghost-fact" in w for w in warns), warns)
 
 
 if __name__ == "__main__":

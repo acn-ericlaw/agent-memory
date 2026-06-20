@@ -1,9 +1,15 @@
 ---
 name: apply-critique
 description: Apply a fresh-context reviewer's critique to the current work through a bounded, validated, human-gated loop. Use after a second-opinion review returns a critique — parse it, plan a few scoped fixes, run the build/tests and memory-lint, then summarize what was applied versus rejected and why.
+provenance: agent-memory-builtin
 ---
 
 # apply-critique
+
+> ⚠️ **Tool-managed skill provided by agent-memory** (`provenance: agent-memory-builtin`). Don't edit it
+> in place — it is overwritten on upgrade. To change behavior: **fork** it under a new skill name, or
+> **upstream** a genuine fix to the agent-memory project (file an issue in its repo, or bring it to the
+> tool maintainer) for back-port + validation. See `SKILLS.md` → "Tool-provided (system) skills".
 
 Consumes the critique a clean-memory reviewer hands back from a **`second-opinion`** review
 and turns it into a **bounded, validated** set of changes — never an open autonomous loop.

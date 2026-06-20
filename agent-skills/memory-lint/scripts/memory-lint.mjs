@@ -132,8 +132,8 @@ function parse_args(args) {
   return { strict, root_arg };
 }
 
-function load_repo(root) {
-  // Read the memory/ layer. Returns { cont, pinned, arch, sessions, refs }.
+export function load_repo(root) {
+  // Read the memory/ layer. Returns { cont, pinned, arch, extra, sessions, refs }.
   const mem = join(root, "memory");
   const cont_text = read_text(join(mem, "continuity.md"));
   const cont = parse_footers(cont_text);
@@ -149,12 +149,23 @@ function load_repo(root) {
   }
   const arch = parse_footers(archive_text);
 
+  // Extra footers from other memory/*.md files (e.g. vision.md) — used only for
+  // supersession link resolution in check_dangling; not counted as cont/arch facts.
+  let extra_text = "";
+  const SKIP = new Set(["continuity.md", "decay-policy.md"]);
+  for (const f of readdirSync(mem).filter((x) => x.endsWith(".md")).sort(byCodePoint)) {
+    if (SKIP.has(f)) continue;
+    const fp = join(mem, f);
+    if (statSync(fp).isFile()) extra_text += read_text(fp) + "\n";
+  }
+  const extra = parse_footers(extra_text);
+
   const sessDir = join(mem, "sessions");
   const sessions = existsSync(sessDir)
     ? readdirSync(sessDir).filter((x) => x.endsWith(".md")).sort(byCodePoint)
     : [];
   const refs = sessions.map((s) => memref_ids(read_text(join(sessDir, s))));
-  return { cont, pinned, arch, sessions, refs };
+  return { cont, pinned, arch, extra, sessions, refs };
 }
 
 function make_sslu(refs) {
@@ -204,7 +215,7 @@ function check_overdue(cont, pinned, sslu, aw) {
   return out;
 }
 
-function check_dangling(allf) {
+export function check_dangling(allf) {
   // (4) supersession links resolve
   const out = [];
   for (const [fid, fields] of allf) {
@@ -246,7 +257,7 @@ export function main(argv) {
     return 2;
   }
 
-  const { cont, pinned, arch, sessions, refs } = load_repo(root);
+  const { cont, pinned, arch, extra, sessions, refs } = load_repo(root);
   const w = load_windows(root);
   const aw = w.archive_window;
   const acw = w.active_window;
@@ -255,7 +266,7 @@ export function main(argv) {
   const errors = [...check_duplicates(cont, arch), ...check_over_archived(arch, sslu, aw)];
   const warns = [
     ...check_overdue(cont, pinned, sslu, aw),
-    ...check_dangling(new Map([...cont, ...arch])),
+    ...check_dangling(new Map([...cont, ...arch, ...extra])),
   ];
 
   return report({ cont, arch, sessions, acw, aw, warns, errors, strict });

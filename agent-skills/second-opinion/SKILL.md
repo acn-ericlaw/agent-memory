@@ -1,9 +1,15 @@
 ---
 name: second-opinion
 description: Generate a fresh-context review snapshot of the current task for a clean-memory AI reviewer (any vendor or a clean session). Use at a milestone that looks complete, or when blocked, uncertain, or facing a risky change, to get an independent second opinion before proceeding; shows a security advisory before exporting any state.
+provenance: agent-memory-builtin
 ---
 
 # second-opinion
+
+> ⚠️ **Tool-managed skill provided by agent-memory** (`provenance: agent-memory-builtin`). Don't edit it
+> in place — it is overwritten on upgrade. To change behavior: **fork** it under a new skill name, or
+> **upstream** a genuine fix to the agent-memory project (file an issue in its repo, or bring it to the
+> tool maintainer) for back-port + validation. See `SKILLS.md` → "Tool-provided (system) skills".
 
 A deliberate **fresh-context review** ritual. A long session accumulates assumptions and
 self-trust — the agent that built a solution over-trusts its own trajectory. This skill
