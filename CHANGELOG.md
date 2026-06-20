@@ -11,6 +11,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.14.1, 6/20/2026
+
+> **Re-synced `AGENTS.md` source clarified (PATCH).** A cross-vendor dogfood (GitHub Copilot
+> upgrading `mercury-composable` from v3.7.0 → v4.14.0) re-synced the target's `AGENTS.md` from the
+> tool's **root** `AGENTS.md` — the operator/dual-mode dispatcher — instead of `templates/AGENTS.md`,
+> leaving the target presenting itself as an enablement tool and referencing the non-installed
+> `ENABLE.md`. The other synced docs were correct; only `AGENTS.md` has a different canonical source
+> for a target, and the upgrade ladder didn't say so per-file.
+
+### Changed
+- **`UPGRADE.md` gains a "Source of truth for re-synced files" section** — a per-file map: a target's
+  `AGENTS.md` comes from **`templates/AGENTS.md`** (the memory hub); `DECAY.md`/`REVIEW.md`/`SKILLS.md`
+  from the tool **root**; `.agent/schema.md` + bootstrap pointers from `templates/`. Explicit warning
+  that the tool's **root** `AGENTS.md` (which references `ENABLE.md`/`MIGRATE.md`/`UPGRADE.md`) must
+  **never** be installed into a target, plus a grep self-check ("AI-Enable Another Repository").
+- **New `4.14.0 → 4.14.1` rung** that **verifies and repairs** a mis-synced `AGENTS.md` (re-copies
+  from `templates/AGENTS.md` if the target's copy looks operator-sourced).
+
+### Notes
+- `UPGRADE.md` is tool-operator-only — **no target memory-file shape change**; `ENABLE.md` (fresh
+  enable) was already explicit and unaffected. Purely an upgrade-path clarity + self-heal fix.
+
 ## Version 4.14.0, 6/20/2026
 
 > **Optional Architecture Decision Record (ADR) log (MINOR).** The VBDI **Design** altitude was

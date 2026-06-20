@@ -55,6 +55,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.12.0 | **Enforced adapter sync at enable + upgrade (MINOR):** ENABLE and **every** Mode B re-enable (upgrade or already-up-to-date) now **run** `sync skill adapters` instead of the read-only "recommend, don't run" check — so a skill's vendor-native adapters are actually materialized (closing the gap where a skill predating a new adapter target, e.g. Kiro, or a fresh clone/pull, was left without working native skills). Idempotent, writes only gitignored files (no committed change, no version bump, no session log); `no-build-step-agent-run` holds (the agent runs it during a human-invoked enable/upgrade). The per-session path still never touches skills; content-drift realignment is still the on-demand `skill sanity check` |
 | 4.12.1 | **`memory-lint` dangling-link cross-file fix (PATCH):** `load_repo` now pools footers from other `memory/*.md` files (e.g. `vision.md`), excluding `continuity.md`/`decay-policy.md`, into an `extra` set used **only** for supersession-link resolution in `check_dangling` — so a fact superseded by a target whose footer lives in `vision.md` no longer false-flags as `[dangling]`. Both runtimes (`.py` + `.mjs`) fixed at parity; regression test added to both suites (`.mjs` now also exports `load_repo`/`check_dangling` to enable it). Found dogfooding `~/sandbox/simple-proxy`; ported back from there |
 | 4.13.0 | **Tool-provided (system) skills marked + upstream advisory (MINOR):** the three shipped built-ins carry `provenance: agent-memory-builtin` in their `SKILL.md` frontmatter (+ a body banner), so a target's AI recognizes a system skill **at edit time** — and `SKILLS.md` (new "Tool-provided (system) skills" section) tells it to **fork** a local variant or **upstream** a genuine fix to the agent-memory project (issue in production; maintainer advisory pre-release) rather than strand it. `ENABLE.md` §5i's warn-before-overwrite extended with the same upstream advice. Closes the gap that let the simple-proxy `memory-lint` fix nearly get lost. Adapters unchanged (mirror only name+description) |
+| 4.14.1 | **Re-synced `AGENTS.md` source clarified (PATCH):** `UPGRADE.md` now maps each re-synced file to its one canonical source — a target's `AGENTS.md` comes from **`templates/AGENTS.md`** (the memory hub), **never** the tool's **root** `AGENTS.md` (the operator/dual-mode dispatcher, which references the non-installed `ENABLE.md`) — with a self-check (a target `AGENTS.md` must not say "AI-Enable Another Repository"). The 4.14.1 rung **verifies + repairs** a mis-synced `AGENTS.md`. Found dogfooding a v3.7.0→v4.14.0 upgrade (GitHub Copilot, `mercury-composable`) that grabbed the root file |
 | 4.14.0 | **Optional Architecture Decision Record log (MINOR):** documents an **optional** human-facing `docs/ADR.md` decision log at the VBDI **Design** altitude — one durable architecture decision per entry (Status/Date/Abstract/Rationale-with-consequences), newest-first, `Proposed → Accepted → Superseded/Deprecated`, **never deleted** (mirrors `DECAY.md` §9). Map-don't-duplicate: live constraints stay in `continuity.md`, the ADR carries the *why*, cross-linked by `formalizes:` ↔ a visible `(ADR-NNNN)` tag in the invariant title (a human pointer, not an agent read-cue). Read **on demand** — **not** in the per-session read path (zero default token cost). Documented in `.agent/schema.md` + `AGENTS.md`; **not auto-installed** into targets (adopt on demand) |
 
 
@@ -88,6 +89,30 @@ existed. Treat it as `2.x` and run the 2→3 rung; create the stamp at the end.
 
 Rungs are **idempotent**: before each change, check whether it is already present
 and skip if so. Re-running an upgrade must be safe.
+
+## Source of truth for re-synced files (read before any rung)
+
+When a rung says "re-sync the generic docs," each file has **one** canonical source in this
+tool's checkout. Copy from the right one into the **target repo root** — getting this wrong
+silently installs operator-facing docs into a target:
+
+| Target file | Copy from (this tool's checkout) |
+|---|---|
+| `DECAY.md`, `REVIEW.md`, `SKILLS.md` | the tool **root** (`<tool>/DECAY.md`, …) — generic, no placeholders |
+| **`AGENTS.md`** | **`<tool>/templates/AGENTS.md`** — the *target* memory-protocol hub |
+| `.agent/schema.md` | `<tool>/templates/.agent/schema.md` |
+| `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md` | `<tool>/templates/` |
+
+⚠️ **Never install the tool's _root_ `AGENTS.md` into a target.** The root `AGENTS.md` is the
+operator/dual-mode dispatcher — it routes between "AI-enable another repository" (→ `ENABLE.md`) and
+"use as a memory system," and references operator-only files (`ENABLE.md`, `MIGRATE.md`, `UPGRADE.md`)
+that are **not** installed in a target. The target gets `templates/AGENTS.md` (memory protocol only).
+Rung notes that read "`AGENTS.md` (root + template)" mean the *change* lives in both copies **inside
+this tool**; for the **target**, always install the **template**.
+
+**Self-check after re-syncing `AGENTS.md`:** the target's `AGENTS.md` must **not** contain
+"AI-Enable Another Repository" or reference `ENABLE.md`/`MIGRATE.md`/`UPGRADE.md`. If it does, the
+wrong file was copied — replace it with `templates/AGENTS.md`.
 
 ## Scope (unchanged from `ENABLE.md`)
 
@@ -882,3 +907,23 @@ auto-created in the target** — a team adopts an ADR log only if it wants one.
 4. **Report**: an optional `docs/ADR.md` Architecture Decision Record log is now documented
    (Design-altitude, human-facing, on-demand — not in the per-session read path); no file was
    created; adopt on demand.
+
+## Rung: 4.14.0 → 4.14.1 — clarify the re-synced `AGENTS.md` source (+ corrective verify) (PATCH)
+
+Operator-protocol fix (`UPGRADE.md` is tool-operator-only — **no** target memory-file shape change).
+Surfaced by a cross-vendor dogfood: a v3.7.0 → v4.14.0 upgrade (GitHub Copilot, `mercury-composable`)
+re-synced the target's `AGENTS.md` from the tool's **root** `AGENTS.md` (the operator/dual-mode
+dispatcher) instead of `templates/AGENTS.md`, leaving the target presenting itself as an enablement
+tool and referencing the non-installed `ENABLE.md`. Root cause: the rungs' "(root + template)" notation
++ the standing "copy verbatim from the tool root / templates" guidance never said, per file, which
+source a *target* gets. Fixed by the new **"Source of truth for re-synced files"** section above.
+
+1. **Verify the target's `AGENTS.md` is the target hub, not the operator dispatcher.** If it contains
+   `AI-Enable Another Repository` or references `ENABLE.md`/`MIGRATE.md`/`UPGRADE.md`, it was
+   mis-synced from the tool's root — **re-copy it from `templates/AGENTS.md`** (current content).
+   Otherwise leave it unchanged. (This repairs any target an earlier AI-run upgrade got wrong.)
+2. **No other file changes** — `DECAY.md`/`REVIEW.md`/`SKILLS.md`/`.agent/schema.md`/built-ins are
+   unaffected by this rung.
+3. **Stamp** `.agent/version.md` → `version: 4.14.1`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: confirmed (or repaired) the target's `AGENTS.md` source; re-stamped to 4.14.1.
