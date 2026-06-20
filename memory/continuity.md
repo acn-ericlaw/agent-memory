@@ -9,9 +9,9 @@
 - **project:** agent-memory
 - **status:** v4.13.0 — backward memory layer (v3.x) + forward cognitive layer (VBDI, v4.0.0) + **cross-vendor skills layer (v4.1–4.5)**: neutral committed `agent-skills/` + `AGENTS.md` runtime baseline; recipe + **sync**/**adopt**/**sanity-check** ops live in an **on-demand `SKILLS.md`** (per-session footprint is just a pointer — no skills check in the ritual); Claude/Gemini/Cursor/**Kiro** adapters (gitignored, regenerated, **never committed**); Claude/Cursor/Kiro adapters are description-matched, **Gemini is a slash command** `/<name>`; single-line/quote-free/concise descriptions mirrored verbatim; migration promotes vendor `.claude/skills/` + `.kiro/skills/` and preserves Kiro **hooks** under `legacy/` (never run); enable + every Mode B re-enable **run** `sync skill adapters` (v4.12.0; idempotent, gitignored-only) so adapters are materialized, not merely recommended. **v4.6.0:** `AGENTS.md` now carries a vendor-neutral **commit-attribution** convention (deliberate, human-initiated commits with a self-identifying `Co-Authored-By:` trailer). **v4.7.0–4.7.1:** + a **lightweight mode** keyed to the *objective* "did a file change?" test — **read-only** sessions write **no log**; **any file change** (even one line) writes at least a one-line **lite log**; a memory-relevant event → full ritual ("trivial" is a judgment call, so it never decides the skip). **v4.8.0:** the review **self-verifies its archival** — greps the last `archive_window` sessions for each fading id before archiving (guards against decay miscounts). **v4.9.0:** + a portable **`memory-lint`** verifier skill (`agent-skills/memory-lint/`, Python 3 stdlib) that runs the decay-integrity checks *deterministically* — moves the counting off the LLM (the real fix Copilot argued for). **v4.10.0:** + an optional **fresh-context second-opinion** skill pair — `second-opinion` snapshots the task (derived from continuity+sessions, behind an acknowledge-gated security advisory) for a clean-memory reviewer; `apply-critique` applies the returned critique through a bounded, validated, human-gated loop (build/tests + memory-lint). Snapshots in gitignored `review-scratch/`; **ENABLE + upgrades now install the built-in skills** (`second-opinion` + `apply-critique` + `memory-lint`, which the review ritual relies on). Folds the external "AIF" idea into skills+VBDI; the fresh reviewer is **advisory**, gated by deterministic checks + human (the v4.8/v4.9 lesson). **Dogfooded end-to-end 2026-06-18** (clean-context reviewer caught an upgrade-overwrite invariant tension; fixed via apply-critique); README/deck/whitepaper updated. **Validated across five vendors 2026-06-16/18** (Claude, Gemini cross-machine, Cursor-format, enterprise Kiro on Windows, GitHub Copilot CLI — the Copilot enablement + review surfaced the decay-miscount that drove v4.8.0). **All cross-vendor validations closed.** **v4.10.1 (PATCH):** line-anchored `memory-lint`'s Memory-References parser (`ot-memlint-anchor-bug`) — found while running the verifier during a memory review, where a log quoting the heading in prose tripped a false `over-archived`; the verifier must not be fooled by prose. **v4.10.2 (PATCH):** four fixes from a fresh-context review of the v4.10.x line (GitHub Copilot CLI, applied via the `apply-critique` loop — the second dogfood of the review pair, this time a *different vendor*): `memory-lint`'s `FOOTER_RE` bound to one line (unclosed-footer guard); install protocol **warns before overwriting a locally-modified built-in** (tool-managed-copies contract now *checked*, not convention-only); the `upgrades-additive` invariant text carries its tool-managed-built-ins exception inline; `second-opinion` gains a same-vendor-vs-different-vendor caveat. One low-confidence finding deferred (`ot-memlint-pinned-nested`). **v4.10.3 (PATCH):** lightweight-mode **wording fix** — the session-log test is now keyed to whether a *tracked* file changed (the objective test is the **git diff**, not any filesystem write), and a run whose only writes are **gitignored, regenerated artifacts** (`sync skill adapters`, `review-scratch/`, the compiled lint artifact) is explicitly **no log** (`lightweight-tracked-change-v4103`). Surfaced when a fresh `sync skill adapters` (re)wrote 16 gitignored adapters but left `git status` clean — yet the old "did a *file* change?" wording seemed to demand a lite log; aligns `AGENTS.md` with what `SKILLS.md` already says (sync "touches no committed file"). **v4.10.4 (PATCH):** hardened `memory-lint` to correctly preserve pinned Open Threads that contain deeply-nested sub-items. **v4.11.0 (MINOR):** `memory-lint` now ships a **Node** runtime (`memory-lint.mjs`, Node ≥ 18, built-ins only) alongside Python, at output parity and held equivalent by a **shared test contract** (`test_memory_lint.mjs` ↔ `.py`) — so the deterministic decay check no longer requires a Python install (motivated by a node-preferring collaborator; the determinism guarantee shouldn't depend on which runtime a machine has). Additive: no dispatcher, no installer — the agent picks the runtime. Shipped `25677a7`; **cross-vendor validated** by Gemini 3.1 Pro (GitHub Copilot CLI), which reran both runtimes + suites live and reproduced byte-identical output. **v4.11.1 (PATCH):** hardened `REVIEW.md` step-6 archival-verify against prose — a "use" is now defined as a `## Memory References` entry (not a passing mention), `memory-lint` is the preferred check, and the by-hand fallback only counts in-block hits; fixes an archival livelock (`ot-review-step6-prose`) found in the 2026-06-19 review. Doc + tests only; verifier already correct. **v4.12.0 (MINOR):** enforced skill-adapter sync — ENABLE + every Mode B re-enable now *run* `sync skill adapters` (idempotent, gitignored-only) instead of the read-only "recommend, don't run" check, so a skill's vendor-native adapters are materialized at enable/upgrade (Step 8 asserts adapter completeness); the per-session path still never touches skills. Surfaced upgrading `~/sandbox/simple-proxy` (v4.4.0→4.11.1), where the pre-existing `hello-world` skill was left without its Kiro adapter (`ot-enforce-sync-adapters-v4120`). **v4.12.1 (PATCH):** `memory-lint` dangling-link check now resolves `superseded-by`/`supersedes` targets across other `memory/*.md` files (e.g. `vision.md`) — `load_repo` pools their footers into an `extra` set used *only* for link resolution (not counted as facts), fixed at parity in `.py` + `.mjs` with a cross-file regression test in both suites. A false `[dangling]` the tool's own check would emit when a fact is superseded by a `vision.md` fact; found + fixed by the maintainer dogfooding `~/sandbox/simple-proxy`, ported back here (`ot-memlint-dangling-crossfile-v4121`). **v4.13.0 (MINOR):** tool-provided (system) skills now carry **`provenance: agent-memory-builtin`** in their `SKILL.md` frontmatter (+ a body banner) so a target's AI recognizes a system skill **at edit time**; `SKILLS.md` (new "Tool-provided (system) skills" section) routes a change to **fork** a local variant or **upstream** a genuine fix to the agent-memory project (issue in production; maintainer advisory pre-release, kept generic until enterprise-GitHub) — and `ENABLE.md` §5i's warn-before-overwrite carries the same advice. Closes the gap that nearly stranded the simple-proxy `memory-lint` fix (`ot-system-skill-provenance-v4130`). **Cross-vendor validated 2026-06-20:** a **Gemini CLI** agent in `~/sandbox/simple-proxy` recognized the `provenance` marker and refused an in-place edit (Claude wrote the marker, Gemini honored it — clean-room, different-vendor proof).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-20 | agent: Claude Code (2026-06-20-005233)
-- **last_review:** 2026-06-19 | through 2026-06-19-162522
-- **last_invariant_check:** 2026-06-18 | through 2026-06-18-054159
+- **last_session:** 2026-06-20 | agent: Claude Code (2026-06-20-005953)
+- **last_review:** 2026-06-20 | through 2026-06-20-005953
+- **last_invariant_check:** 2026-06-20 | through 2026-06-20-005953
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
 
 ## What's Been Built
@@ -70,13 +70,13 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   daemon). The markdown files are the product and the agent is the runtime. A skill MAY
   bundle optional helper scripts, but those are invoked by the agent/vendor at the user's
   direction, never executed by the tool.
-  <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-18 | uses: 29 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
+  <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-20 | uses: 31 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
 - Upgrades are additive and non-destructive — enrich and add, never rewrite or delete —
   **except the tool's own managed built-ins** (`memory-lint`, `second-opinion`, `apply-critique`),
   which are re-copied (overwritten) on upgrade; that overwrite is scoped to those tool-owned files,
   and a user customizes only by forking under a new skill name (see `ENABLE.md` §5i). For everything
   the user authors, the invariant holds unchanged.
-  <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-18 | uses: 20 | tier: core -->
+  <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-20 | uses: 22 | tier: core -->
 
 ## Key Decisions
 
@@ -93,6 +93,13 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [ ] **Re-verify invariants (due at the 2026-06-20 review):** confirm `target-repo-scope-only`,
+  `never-delete-vendor-files`, `never-pick-a-winner`, `no-build-step-agent-run`, `upgrades-additive`,
+  and the Vision (`vision-agent-memory`) still hold, or supersede any that don't (`DECAY.md` §9).
+  `sessions_since_last_invariant_check` reached ≥ `verify_invariants_every: 20` (last confirmed
+  2026-06-18). The review only prompts — a human checks this off or supersedes the false ones.
+  <!-- id: ot-reverify-invariants-20260620 | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: active | origin: 2026-06-20-005953 -->
 
 - [x] **Shipped v4.13.0 (MINOR) — tool-provided (system) skills: provenance marker + upstream advisory.**
   **Edge case (maintainer):** a target's AI edited an agent-memory *built-in* (`memory-lint` in
@@ -119,7 +126,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   marker is self-describing across vendors (no out-of-band knowledge needed).
   → serves: vision-agent-memory (vendor-neutral; real-work dogfooding feeds the tool — a target's change
   finds its way home instead of being stranded)
-  <!-- id: ot-system-skill-provenance-v4130 | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: active | origin: 2026-06-20-002602 -->
+  <!-- id: ot-system-skill-provenance-v4130 | created: 2026-06-20 | last_used: 2026-06-20 | uses: 2 | tier: active | origin: 2026-06-20-002602 -->
 
 - [x] **Shipped v4.12.1 (PATCH) — `memory-lint` dangling-link check resolves targets across `memory/*.md`.**
   `check_dangling` pooled only `continuity.md` + archive footers, so a fact `superseded-by` a target
@@ -139,7 +146,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   Lockstep: scripts + tests, `VERSION`→4.12.1, `CHANGELOG`, `UPGRADE.md` rung + table, `README`.
   `SKILL.md` unchanged (no description change → no adapter regen). → serves: vision-agent-memory
   (faithful, verifiable memory; real-work dogfooding feeds the tool — `backlog-real-work-dogfood`)
-  <!-- id: ot-memlint-dangling-crossfile-v4121 | created: 2026-06-20 | last_used: 2026-06-20 | uses: 1 | tier: active | origin: 2026-06-20-000243 -->
+  <!-- id: ot-memlint-dangling-crossfile-v4121 | created: 2026-06-20 | last_used: 2026-06-20 | uses: 2 | tier: active | origin: 2026-06-20-000243 -->
 
 - [x] **Shipped v4.12.0 (MINOR) — enforce `sync skill adapters` at enable + upgrade.** Surfaced
   upgrading `~/sandbox/simple-proxy` (v4.4.0 → v4.11.1, Mode B): the built-in skills got their
@@ -159,7 +166,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `CHANGELOG`, `README`. `AGENTS.md`/`DECAY.md`/`REVIEW.md` unchanged. Dogfooded on simple-proxy
   (re-ran Mode B → hello-world's Kiro adapter materialized; stamped 4.12.0). → serves: vision-agent-memory
   (vendor-neutral, lightweight; a skill works natively across vendors without a manual step)
-  <!-- id: ot-enforce-sync-adapters-v4120 | created: 2026-06-19 | last_used: 2026-06-19 | uses: 1 | tier: active | origin: 2026-06-19-234240 -->
+  <!-- id: ot-enforce-sync-adapters-v4120 | created: 2026-06-19 | last_used: 2026-06-20 | uses: 3 | tier: active | origin: 2026-06-19-234240 -->
 
 - [x] **Fixed v4.11.1 — `REVIEW.md` step-6 archival guard no longer fooled by prose (archival livelock).**
   Step 6 told the agent to grep recent session *files* for an about-to-be-archived id and keep it if
@@ -174,7 +181,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   regression tests in both `test_memory_lint.py` and `.mjs` (prose mention not counted; block bounded).
   Doc + tests only. Lockstep: `VERSION`→4.11.1, `CHANGELOG`, `UPGRADE.md` rung + table, `README`.
   → serves: vision-agent-memory (faithful, verifiable memory)
-  <!-- id: ot-review-step6-prose | created: 2026-06-19 | last_used: 2026-06-19 | uses: 2 | tier: active | origin: 2026-06-19-162522 -->
+  <!-- id: ot-review-step6-prose | created: 2026-06-19 | last_used: 2026-06-19 | uses: 3 | tier: active | origin: 2026-06-19-162522 -->
 
 - [x] **Shipped v4.11.0 (MINOR) — `memory-lint` Node runtime.** A node-preferring collaborator asked
   why the deterministic verifier was Python-only; the principled answer is that "LLM hand-counting is
@@ -193,7 +200,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   no-dispatcher / halt-don't-hand-count design. Reproduction-grade (it reran what we ran); the Sonar
   complexity verdict and the halt-path *behavior* itself remain unexercised. → serves: vision-agent-memory
   (faithful, verifiable memory)
-  <!-- id: memlint-node-runtime-v4110 | created: 2026-06-19 | last_used: 2026-06-19 | uses: 2 | tier: active | origin: 2026-06-19-153355 -->
+  <!-- id: memlint-node-runtime-v4110 | created: 2026-06-19 | last_used: 2026-06-20 | uses: 3 | tier: active | origin: 2026-06-19-153355 -->
 
 - [x] **Bug: `memory-lint`'s Memory-References detection wasn't line-anchored — FIXED v4.10.1.**
   `memref_ids()` used `text.find("## Memory References")`, matching the *first* occurrence anywhere —
@@ -228,24 +235,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   log" still holds *for tracked files*. Wording-only; no shape/skill/script change. Lockstep:
   `AGENTS.md` (root + template), `VERSION`→4.10.3, `UPGRADE.md` rung + table, `README`, `CHANGELOG`.
   → serves: vision-agent-memory (faithful, lightweight memory)
-  <!-- id: lightweight-tracked-change-v4103 | created: 2026-06-18 | last_used: 2026-06-18 | uses: 1 | tier: active | origin: 2026-06-18-221335 -->
-
-- [x] **Re-verify invariants (due):** confirm `target-repo-scope-only`, `never-delete-vendor-files`, `never-pick-a-winner`, `no-build-step-agent-run`, `upgrades-additive`, and the Vision (`vision-agent-memory`) still hold, or supersede any that don't (`DECAY.md` §9). Due: 34 sessions since last check (`verify_invariants_every: 20`).
-  **Confirmed 2026-06-18 (maintainer):** all 5 invariants and the Vision still hold.
-  <!-- id: ot-reverify-invariants-20260618 | created: 2026-06-18 | last_used: 2026-06-18 | uses: 2 | tier: active | origin: 2026-06-18-051933 -->
-
-- [x] Validate the memory + skills layer with **GitHub Copilot CLI**. Maintainer's account was
-  **approved 2026-06-17**, activating in ~1–2 days (≈2026-06-18/19); they'll then test and report.
-  Copilot is already in the Mode C detection table (`.github/copilot-instructions.md`) and gets a
-  bootstrap pointer — this validates whether Copilot CLI actually reads `AGENTS.md` / follows the
-  protocol, and whether skills need a Copilot adapter (today the recipe covers Claude/Gemini/Cursor/Kiro).
-  Last open cross-vendor validation; same dogfood loop.
-  **Closed 2026-06-18 (GitHub Copilot):** Copilot CLI reads `AGENTS.md`, follows the full protocol
-  (before-session reads, multi-agent continuity, VBDI, session log, lightweight-mode, fact metadata,
-  supersession, skills, invariants — all verified). Skills work via the `AGENTS.md` baseline; no
-  native adapter format exists for Copilot (not a blocker — the baseline is sufficient). Cross-vendor
-  validation set is now complete: Claude, Gemini, Cursor, Kiro, **GitHub Copilot CLI** ✅.
-  <!-- id: ot-copilot-cli-validation | created: 2026-06-17 | last_used: 2026-06-18 | uses: 3 | tier: active | origin: 2026-06-17-190301 -->
+  <!-- id: lightweight-tracked-change-v4103 | created: 2026-06-18 | last_used: 2026-06-19 | uses: 2 | tier: active | origin: 2026-06-18-221335 -->
 
 ### Evolving long-term memory layer (v3.0.0) — BUILT 2026-06-13
 - [ ] **Dogfood backfill (optional):** this repo adopted the layer — added
@@ -293,13 +283,6 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `README`/`CHANGELOG`. `DECAY.md`/`REVIEW.md` unchanged. Design: `docs/DESIGN-skills-layer.md`.
   Realizes `bp-skills-layer`. Not yet validated on a real target (next: upgrade the client).
   <!-- id: skills-layer-v410 | created: 2026-06-15 | last_used: 2026-06-18 | uses: 10 | tier: active | origin: 2026-06-15-234801 -->
-- [x] **v4.1.1 (PATCH): skills-layer refinements** — pre-adoption corrections before the first real
-  target run: folder renamed `skills/` → **`agent-skills/`** (collision-safe); **Cursor adapter fix**
-  (`.cursor/rules/*.mdc` "agent-requested" type — `description` + empty `globs:` + `alwaysApply: false`);
-  collision guard (never overwrite a pre-existing `agent-skills/`); vendor-dir double-duty clarified in
-  `MIGRATE.md`. `VERSION`→4.1.1. Closes the follow-ups to `skills-layer-v410`. (Reactivated 2026-06-18 —
-  `memory-lint` caught it over-archived at sslu 16 ≤ archive_window.) → serves: vision-agent-memory
-  <!-- id: skills-layer-v411-fixes | created: 2026-06-16 | last_used: 2026-06-18 | uses: 7 | tier: active | origin: 2026-06-16-001342 -->
 
 > _v4.2.0 ("sync skill adapters", `sync-adapters-v420`) archived faded → `archive/2026-Q2.md` (2026-06-18 review)._
 
@@ -319,7 +302,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (3 Gemini runs): a vendor expands a `/cmd` into the prompt before the model sees it, so an agent
   can't reliably self-report its trigger → **option B**: `hello-world` step 3 reports the *result,
   not the trigger* (`docs/DESIGN-skills-layer.md` §4c). → serves: vision-agent-memory
-  <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-18 | uses: 20 | tier: active | origin: 2026-06-16-152327 -->
+  <!-- id: dogfood-hello-world-skill | created: 2026-06-16 | last_used: 2026-06-19 | uses: 21 | tier: active | origin: 2026-06-16-152327 -->
 - [x] **v4.4.0 (MINOR): lightweight skills — conscious, not per-session.** Maintainer's frame:
   "skill creation is a conscious developer act; don't do heavy skill work every session." The
   adapter recipe + **sync** / **adopt** / **sanity-check** ops moved OUT of the per-session
@@ -327,7 +310,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   "Skills" section is now just the runtime baseline + a pointer. Removed the v4.3.0 per-session
   "skills safety check" (partially supersedes `authoring-adopt-v430` — authoring + adopt stand).
   Trims ~1.3K tok off every-session bootstrap. → serves: vision-agent-memory
-  <!-- id: lightweight-skills-v440 | created: 2026-06-16 | last_used: 2026-06-18 | uses: 7 | tier: active | origin: 2026-06-16-194434 -->
+  <!-- id: lightweight-skills-v440 | created: 2026-06-16 | last_used: 2026-06-19 | uses: 8 | tier: active | origin: 2026-06-16-194434 -->
 - **Shipped v4.5.0 — Kiro support (a 4th adapter + Mode C detection).** Amazon's **Kiro IDE**
   converges on the two open standards this tool bets on: it auto-reads root **`AGENTS.md`** (memory
   layer needs no pointer file) and its Agent Skills follow the **open Agent Skills standard** (same
@@ -335,7 +318,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   writes four adapters) + **Kiro in the Mode C detection table** (`MIGRATE.md`: steering →
   instructions, skills → `agent-skills/`, specs → `legacy/`). **Kiro Powers need no special
   handling** (partner bundles that *consume* open-standard skills). → serves: vision-agent-memory
-  <!-- id: kiro-adapter-v450 | created: 2026-06-16 | last_used: 2026-06-18 | uses: 6 | tier: active | origin: 2026-06-16-221832 -->
+  <!-- id: kiro-adapter-v450 | created: 2026-06-16 | last_used: 2026-06-19 | uses: 7 | tier: active | origin: 2026-06-16-221832 -->
 
 ### Shipped — v4.7.0–v4.7.1: cross-vendor refinements (2026-06-17)
 - **Shipped v4.7.0 — lightweight mode for memory-neutral tasks (MINOR).** From a **real
@@ -393,7 +376,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   future option **taken in v4.10.0** (now installed into every enabled repo; see `fresh-review-v4100`).
   Touched: `agent-skills/memory-lint/` (new), `REVIEW.md`, `VERSION`→4.9.0, `UPGRADE.md` rung + table,
   `README`/`CHANGELOG`. → serves: vision-agent-memory (faithful, verifiable memory)
-  <!-- id: lint-skill-v490 | created: 2026-06-18 | last_used: 2026-06-18 | uses: 5 | tier: active | origin: 2026-06-18-065458 -->
+  <!-- id: lint-skill-v490 | created: 2026-06-18 | last_used: 2026-06-20 | uses: 7 | tier: active | origin: 2026-06-18-065458 -->
 
 - **Shipped v4.10.0 — fresh-context second opinion (optional skill pair) (MINOR).** Folded an
   external brainstorming artifact (the "AIF" draft — architecture paper + snapshot/critique specs)
@@ -425,7 +408,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `UPGRADE.md` rung + table, `README`/`CHANGELOG`, `docs/DESIGN-fresh-context-review.md`.
   `AGENTS.md`/`SKILLS.md`/`DECAY.md`/`REVIEW.md` unchanged. Realizes `bp-fresh-context-review`.
   → serves: vision-agent-memory
-  <!-- id: fresh-review-v4100 | created: 2026-06-18 | last_used: 2026-06-18 | uses: 4 | tier: active | origin: 2026-06-18-170657 -->
+  <!-- id: fresh-review-v4100 | created: 2026-06-18 | last_used: 2026-06-20 | uses: 5 | tier: active | origin: 2026-06-18-170657 -->
 
 ### Blueprint — gaps from Current State (v4.10.0) to the Vision  (serves: vision-agent-memory)
 > Derived 2026-06-15 from `memory/vision.md` (maintainer-confirmed). Typed Open Threads
@@ -472,7 +455,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   enable surfaced v3.1.0 (`.gitignore`), and the simple-proxy Node→Rust refactor's
   field report drove v3.2.0 (protocol clarifications). Keep feeding real-work insights
   back into this backlog. (Stated 2026-06-13.)
-  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-06-13 | uses: 3 | tier: active -->
+  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-06-20 | uses: 5 | tier: active -->
 
 
 - [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**

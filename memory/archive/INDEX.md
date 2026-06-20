@@ -40,3 +40,6 @@
 - kiro-hooks-edgecase-v452 — shipped v4.5.2 Kiro hooks in Mode C + fresh-clone bootstrap edge-case (Windows/enterprise-Kiro enable; .kiro/ gitignored, no hard incompatibility) — faded (sslu 23 > archive_window) — 2026-Q2.md
 - commit-attribution-v460 — shipped v4.6.0 vendor-neutral commit attribution (AGENTS.md extends "identify yourself" to commits; soft, no per-vendor hook) — faded (sslu 22 > archive_window) — 2026-Q2.md
 - ot-realworld-v411-findings — completed Open Thread: incorporate real-world enablement findings (team demo drew support + 3 non-Claude vendors: Gemini cross-machine, enterprise-Kiro Windows, Kiro repo enable; drove v4.5.1–v4.7.1) — swept: completed 2026-06-17, > archive_window — 2026-Q2.md
+- ot-reverify-invariants-20260618 — completed Open Thread: invariants + Vision re-confirmed 2026-06-18 — swept: completed 2026-06-18, > archive_window — 2026-Q2.md
+- ot-copilot-cli-validation — completed Open Thread: GitHub Copilot CLI validated (reads AGENTS.md, full protocol; baseline skills) — swept: completed 2026-06-18, > archive_window — 2026-Q2.md
+- skills-layer-v411-fixes — shipped v4.1.1 skills-layer refinements (folder→agent-skills/, Cursor adapter fix, collision guard) — faded (sslu 21 > archive_window; reactivated 2026-06-18 then re-faded) — 2026-Q2.md

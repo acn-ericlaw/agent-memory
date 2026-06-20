@@ -6,7 +6,7 @@
 > **Blueprint** (Open Threads tagged `(blueprint)` in `continuity.md`) tracks the gap
 > from Current State to here; Designs and Implementations trace back to this id.
 >
-> <!-- id: vision-agent-memory | created: 2026-06-14 | last_used: 2026-06-18 | uses: 39 | tier: core -->
+> <!-- id: vision-agent-memory | created: 2026-06-14 | last_used: 2026-06-20 | uses: 44 | tier: core -->
 
 ## Elevator statement
 
