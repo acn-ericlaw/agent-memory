@@ -62,6 +62,10 @@ Tie significant work to a `(blueprint)` Open Thread that `serves:` the Vision an
 Design it realizes; surface altitude drift; gate each transition with the human. Never
 fabricate the Vision.
 
+> The Design altitude *may* keep an **optional** Architecture Decision Record log,
+> `docs/ADR.md` (a human-facing governance ledger; see `.agent/schema.md`). It is read
+> **on demand** — deliberately **not** part of the Before-session read above.
+
 ### Skills
 
 If a `agent-skills/` directory exists, it holds the project's **capabilities** — committed,

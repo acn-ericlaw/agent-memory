@@ -55,6 +55,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.12.0 | **Enforced adapter sync at enable + upgrade (MINOR):** ENABLE and **every** Mode B re-enable (upgrade or already-up-to-date) now **run** `sync skill adapters` instead of the read-only "recommend, don't run" check — so a skill's vendor-native adapters are actually materialized (closing the gap where a skill predating a new adapter target, e.g. Kiro, or a fresh clone/pull, was left without working native skills). Idempotent, writes only gitignored files (no committed change, no version bump, no session log); `no-build-step-agent-run` holds (the agent runs it during a human-invoked enable/upgrade). The per-session path still never touches skills; content-drift realignment is still the on-demand `skill sanity check` |
 | 4.12.1 | **`memory-lint` dangling-link cross-file fix (PATCH):** `load_repo` now pools footers from other `memory/*.md` files (e.g. `vision.md`), excluding `continuity.md`/`decay-policy.md`, into an `extra` set used **only** for supersession-link resolution in `check_dangling` — so a fact superseded by a target whose footer lives in `vision.md` no longer false-flags as `[dangling]`. Both runtimes (`.py` + `.mjs`) fixed at parity; regression test added to both suites (`.mjs` now also exports `load_repo`/`check_dangling` to enable it). Found dogfooding `~/sandbox/simple-proxy`; ported back from there |
 | 4.13.0 | **Tool-provided (system) skills marked + upstream advisory (MINOR):** the three shipped built-ins carry `provenance: agent-memory-builtin` in their `SKILL.md` frontmatter (+ a body banner), so a target's AI recognizes a system skill **at edit time** — and `SKILLS.md` (new "Tool-provided (system) skills" section) tells it to **fork** a local variant or **upstream** a genuine fix to the agent-memory project (issue in production; maintainer advisory pre-release) rather than strand it. `ENABLE.md` §5i's warn-before-overwrite extended with the same upstream advice. Closes the gap that let the simple-proxy `memory-lint` fix nearly get lost. Adapters unchanged (mirror only name+description) |
+| 4.14.0 | **Optional Architecture Decision Record log (MINOR):** documents an **optional** human-facing `docs/ADR.md` decision log at the VBDI **Design** altitude — one durable architecture decision per entry (Status/Date/Abstract/Rationale-with-consequences), newest-first, `Proposed → Accepted → Superseded/Deprecated`, **never deleted** (mirrors `DECAY.md` §9). Map-don't-duplicate: live constraints stay in `continuity.md`, the ADR carries the *why*, cross-linked by `id` (`formalizes:` ↔ `adr:`). Read **on demand** — **not** in the per-session read path (zero default token cost). Documented in `.agent/schema.md` + `AGENTS.md`; **not auto-installed** into targets (adopt on demand) |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -859,3 +860,25 @@ are untouched (they mirror only `name` + `description`).
    `enabled_with` and `mode`.
 5. **Report**: built-ins now marked `provenance: agent-memory-builtin`; editing a system skill prompts
    fork-or-upstream; the upgrade warn-before-overwrite also advises upstreaming.
+
+## Rung: 4.13.0 → 4.14.0 — optional Architecture Decision Record log (MINOR)
+
+Additive and **documentation-only**: introduces an **optional** human-facing `docs/ADR.md`
+decision log at the VBDI **Design** altitude. No memory-file shape change; adapters, scripts,
+`DECAY.md`/`REVIEW.md` rules, and the per-session read path are untouched. **Nothing is
+auto-created in the target** — a team adopts an ADR log only if it wants one.
+
+1. **Re-sync the generic docs** (copy verbatim where different): `.agent/schema.md` (new
+   optional `docs/ADR.md` section), `AGENTS.md` (root + template: the one-line "Design altitude
+   may keep an optional `docs/ADR.md`, read on demand, not per-session" note), `DECAY.md` §12
+   (the *Design* primitive now names the optional ADR log + its supersede/deprecate-never-delete
+   lifecycle). `REVIEW.md` unchanged.
+2. **Do not create `docs/ADR.md`** in the target. If the team wants one, they author it by hand
+   following `.agent/schema.md` — seeding it (optionally) from their `## Architectural Invariants`,
+   cross-linking by `id` (`formalizes:` on the ADR ↔ `adr:` on the continuity footer). This repo's
+   own `docs/ADR.md` is the worked reference.
+3. **Stamp** `.agent/version.md` → `version: 4.14.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: an optional `docs/ADR.md` Architecture Decision Record log is now documented
+   (Design-altitude, human-facing, on-demand — not in the per-session read path); no file was
+   created; adopt on demand.

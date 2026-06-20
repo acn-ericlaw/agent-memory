@@ -259,8 +259,11 @@ memory layer enforces:
 - **The primitives.** *Current State* = `continuity.md` (read at session start). *Vision* =
   `memory/vision.md` (the target; `core`, invariant-verified). *Blueprint* = typed
   `(blueprint)` Open Threads = the Vision↔Current-State gap. *Design* = Key Decisions /
-  Architectural Invariants. *Implementation* = code/commits, traced in sessions. *Feedback*
-  = the review ritual. **Only Vision + Blueprint are new; the rest is the existing layer, named.**
+  Architectural Invariants (and, **optionally**, a human-facing `docs/ADR.md` decision log
+  — Architecture Decision Records, read on demand, never in the per-session path; its
+  supersede/deprecate-never-delete lifecycle mirrors §9). *Implementation* = code/commits,
+  traced in sessions. *Feedback* = the review ritual. **Only Vision + Blueprint are new; the
+  rest is the existing layer, named.**
 - **The trace is the determinism.** Implementation → Design → Blueprint (`serves: <gap>`)
   → Vision (`serves: <vision-id>`), linked by `id`. A missing or broken link is drift
   (§10, grep-detectable). The *trace and the gates* are deterministic; the *content* — the

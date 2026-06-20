@@ -11,6 +11,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.14.0, 6/20/2026
+
+> **Optional Architecture Decision Record (ADR) log (MINOR).** The VBDI **Design** altitude was
+> realized by the `## Architectural Invariants` / `## Key Decisions` in `continuity.md` and the
+> long-form `docs/DESIGN-*.md`, but there was no atomic, dated, status-tracked, never-deleted record
+> of an individual architecture decision *with its rationale*, browsable by a human IT-governance
+> audience. This adds the well-established ADR practice (Nygard 2011) as a **lightweight, optional,
+> human-facing** ledger — kept token-efficient by living under `docs/` and being read **on demand**,
+> never in the per-session agent read path.
+
+### Added
+- **`docs/ADR.md`** (this tool's own, dogfooded) — a single-file decision log, entries **newest
+  first**, each with **Status · Date · Abstract · Rationale (incl. consequences/trade-offs)** and
+  `formalizes:` / `serves:` trace links. Status lifecycle `Proposed → Accepted → Superseded /
+  Deprecated`; **nothing is ever deleted** (mirrors the memory layer's supersession model,
+  `DECAY.md` §9). **Seeded with the 5 standing Architectural Invariants, plus the superseded
+  `no-code-markdown-only` decision** (ADR-0001…0006 — `no-code-markdown-only` recorded as ADR-0004,
+  *Superseded by ADR-0006*).
+- **`.agent/schema.md`** documents the optional `docs/ADR.md` section (format + lifecycle +
+  map-don't-duplicate cross-linking + the "on-demand, not per-session" rule).
+
+### Changed
+- `AGENTS.md` (root + template) and `DECAY.md` §12 note that the Design altitude *may* keep an
+  optional `docs/ADR.md` log, explicitly **not** part of the Before-session read path.
+- `docs/DESIGN-vbdi-lifecycle.md` §4 names the optional ADR log on the **Design** row.
+- `memory/continuity.md` invariant footers gain an `adr: ADR-000N` cross-link to their records.
+
+### Notes
+- **Map, don't duplicate:** `continuity.md` keeps the live *what* (with `id`); the ADR carries the
+  durable *why*. The constraint text is never restated as competing truth.
+- **Not auto-installed.** ENABLE/UPGRADE *document* the convention; no `docs/ADR.md` is created in a
+  target — a team adopts one on demand. Additive → no memory-file shape change.
+
 ## Version 4.13.0, 6/20/2026
 
 > **Tool-provided (system) skills are marked + carry an upstream advisory (MINOR).** The built-ins
