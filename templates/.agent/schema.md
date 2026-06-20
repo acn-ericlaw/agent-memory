@@ -200,9 +200,12 @@ like `docs/DESIGN-*.md`). Not auto-installed; adopt it only if the team wants on
 
 **Map, don't duplicate.** Live constraints stay in `continuity.md`
 (`## Architectural Invariants` / `## Key Decisions`) — the *what* that holds *now*, with an
-`id`. An ADR is the durable *why* (context, alternatives, consequences). They cross-link by
-`id`: `formalizes: <continuity-id>` on the ADR ↔ optional `adr: ADR-NNNN` on the continuity
-footer. The constraint text is never restated as competing truth.
+`id`. An ADR is the durable *why* (context, alternatives, consequences). They cross-link:
+`formalizes: <continuity-id>` on the ADR ↔ a visible **`(ADR-NNNN)` tag in the invariant's
+title** (e.g. `Target-repo scope only (ADR-0001)`). That tag is a **pointer for humans** — it
+is **not** a cue for the agent to open `docs/ADR.md`; the constraint text in `continuity.md`
+stays authoritative and is read every session, the ADR is read on demand only. The constraint
+text is never restated as competing truth.
 
 ```
 ## ADR-NNNN — <Title>

@@ -17,9 +17,10 @@ reasoning behind. It is the **Design** altitude of the VBDI loop made durable
 **Map, don't duplicate.** The live constraint text stays in `memory/continuity.md`
 (`## Architectural Invariants` / `## Key Decisions`) — that is the *what* that holds
 *now*, carries an `id`, and is read every session. An ADR is the durable *why*:
-context, alternatives, and consequences. The two cross-link by `id`
-(`formalizes:` here ↔ `adr:` on the continuity footer); the constraint is never
-restated as competing truth.
+context, alternatives, and consequences. They cross-link: `formalizes:` here points to the
+continuity `id`, and each invariant/decision carries a visible `(ADR-NNNN)` tag in its title
+(a pointer for humans — **not** a cue for the agent to open this file). The constraint is
+never restated as competing truth.
 
 ## Lifecycle (mirrors `DECAY.md` §9)
 

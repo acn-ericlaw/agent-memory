@@ -64,7 +64,8 @@ fabricate the Vision.
 
 > The Design altitude *may* keep an **optional** Architecture Decision Record log,
 > `docs/ADR.md` (a human-facing governance ledger; see `.agent/schema.md`). It is read
-> **on demand** — deliberately **not** part of the Before-session read above.
+> **on demand** — deliberately **not** part of the Before-session read above; the
+> `(ADR-NNNN)` tags on invariants are human pointers, not a cue to open it.
 
 ### Skills
 

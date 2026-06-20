@@ -36,7 +36,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `AGENTS.md` (root + template) and `DECAY.md` §12 note that the Design altitude *may* keep an
   optional `docs/ADR.md` log, explicitly **not** part of the Before-session read path.
 - `docs/DESIGN-vbdi-lifecycle.md` §4 names the optional ADR log on the **Design** row.
-- `memory/continuity.md` invariant footers gain an `adr: ADR-000N` cross-link to their records.
+- each `memory/continuity.md` Architectural Invariant title gains a visible `(ADR-NNNN)` pointer
+  to its record (e.g. `Target-repo scope only (ADR-0001)`) — a **human cue**, explicitly **not** a
+  prompt for the agent to open `docs/ADR.md`.
 
 ### Notes
 - **Map, don't duplicate:** `continuity.md` keeps the live *what* (with `id`); the ADR carries the
