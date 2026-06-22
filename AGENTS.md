@@ -66,6 +66,10 @@ fabricate the Vision.
 > `docs/ADR.md` (a human-facing governance ledger; see `.agent/schema.md`). It is read
 > **on demand** — deliberately **not** part of the Before-session read above; the
 > `(ADR-NNNN)` tags on invariants are human pointers, not a cue to open it.
+> **If the log exists, keep it alive:** on a new durable architecture decision — or when you
+> supersede/invalidate a continuity fact carrying an `(ADR-NNNN)` tag — **propose** a matching
+> ledger update (add a newer ADR; mark the old `Superseded`/`Deprecated`, never delete; keep
+> `formalizes:` ↔ `(ADR-NNNN)` in sync) and let the human approve (`DECAY.md` §9, §12).
 
 ### Skills
 

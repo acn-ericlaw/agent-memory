@@ -57,6 +57,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.13.0 | **Tool-provided (system) skills marked + upstream advisory (MINOR):** the three shipped built-ins carry `provenance: agent-memory-builtin` in their `SKILL.md` frontmatter (+ a body banner), so a target's AI recognizes a system skill **at edit time** — and `SKILLS.md` (new "Tool-provided (system) skills" section) tells it to **fork** a local variant or **upstream** a genuine fix to the agent-memory project (issue in production; maintainer advisory pre-release) rather than strand it. `ENABLE.md` §5i's warn-before-overwrite extended with the same upstream advice. Closes the gap that let the simple-proxy `memory-lint` fix nearly get lost. Adapters unchanged (mirror only name+description) |
 | 4.14.1 | **Re-synced `AGENTS.md` source clarified (PATCH):** `UPGRADE.md` now maps each re-synced file to its one canonical source — a target's `AGENTS.md` comes from **`templates/AGENTS.md`** (the memory hub), **never** the tool's **root** `AGENTS.md` (the operator/dual-mode dispatcher, which references the non-installed `ENABLE.md`) — with a self-check (a target `AGENTS.md` must not say "AI-Enable Another Repository"). The 4.14.1 rung **verifies + repairs** a mis-synced `AGENTS.md`. Found dogfooding a v3.7.0→v4.14.0 upgrade (GitHub Copilot, `mercury-composable`) that grabbed the root file |
 | 4.14.0 | **Optional Architecture Decision Record log (MINOR):** documents an **optional** human-facing `docs/ADR.md` decision log at the VBDI **Design** altitude — one durable architecture decision per entry (Status/Date/Abstract/Rationale-with-consequences), newest-first, `Proposed → Accepted → Superseded/Deprecated`, **never deleted** (mirrors `DECAY.md` §9). Map-don't-duplicate: live constraints stay in `continuity.md`, the ADR carries the *why*, cross-linked by `formalizes:` ↔ a visible `(ADR-NNNN)` tag in the invariant title (a human pointer, not an agent read-cue). Read **on demand** — **not** in the per-session read path (zero default token cost). Documented in `.agent/schema.md` + `AGENTS.md`; **not auto-installed** into targets (adopt on demand) |
+| 4.15.0 | **ADR log upkeep trigger (MINOR):** the optional `docs/ADR.md` log is now *maintained*, not just documented — **once it exists**, making a new durable architecture decision, or superseding/invalidating a continuity fact carrying an `(ADR-NNNN)` tag, **prompts a human-gated ledger update** (add a newer ADR; mark the old `Superseded`/`Deprecated`, never delete; keep `formalizes:` ↔ `(ADR-NNNN)` in sync). Closes the 4.14.0 gap where the log could be adopted but had no cue to evolve. Re-syncs `templates/AGENTS.md` + root `AGENTS.md`, `templates/.agent/schema.md`, and `DECAY.md §12`; still **not auto-installed**. Surfaced dogfooding `mercury-composable`'s ADR opt-in |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -927,3 +928,29 @@ source a *target* gets. Fixed by the new **"Source of truth for re-synced files"
 3. **Stamp** `.agent/version.md` → `version: 4.14.1`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`.
 4. **Report**: confirmed (or repaired) the target's `AGENTS.md` source; re-stamped to 4.14.1.
+
+## Rung: 4.14.1 → 4.15.0 — ADR log upkeep trigger (MINOR)
+
+Additive and **documentation-only** (same shape as 4.13.0 → 4.14.0): teaches the protocol to
+**maintain** an existing `docs/ADR.md`, closing the 4.14.0 gap where the log could be adopted but
+nothing cued it to evolve. No memory-file shape change; adapters, scripts, `REVIEW.md`, and the
+per-session read path are untouched. **Nothing is created in the target** — a target with no ADR
+log only receives the updated generic guidance.
+
+1. **Re-sync the generic docs** (copy verbatim where different — see "Source of truth for
+   re-synced files"): `AGENTS.md` (from `templates/AGENTS.md` — the new "If the log exists, keep it
+   alive" maintenance/supersession trigger), `.agent/schema.md` (from `templates/.agent/schema.md`
+   — the new "When to maintain it" paragraph in the `docs/ADR.md` section), and `DECAY.md` §12 (the
+   *Design* primitive now notes the ADR lifecycle is kept in sync with fact supersession).
+   `REVIEW.md` / `SKILLS.md` / built-ins unchanged.
+   - **If the target's `AGENTS.md` ADR note is repo-customized** (e.g. it records an *adopted* ADR
+     log at a non-default path), **merge** the maintenance sentence into that paragraph instead of
+     overwriting — preserve the repo-specific adoption text + path. (Likewise for `.agent/schema.md`
+     if a target localized it.)
+2. **Do not create `docs/ADR.md`.** A target without one is unaffected beyond the guidance update;
+   a target with one now has the maintenance trigger documented and is expected to keep it in sync.
+3. **Stamp** `.agent/version.md` → `version: 4.15.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: the optional ADR log now carries a documented upkeep trigger (human-gated — a new
+   durable decision or `(ADR-NNNN)`-tagged-fact supersession → propose a ledger update); no file
+   created; re-stamped to 4.15.0.

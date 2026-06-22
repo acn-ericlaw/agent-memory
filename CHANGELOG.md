@@ -11,6 +11,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.15.0, 6/22/2026
+
+> **ADR log upkeep trigger (MINOR).** The optional `docs/ADR.md` log (4.14.0) could be *adopted*
+> but had no cue to *evolve* — the per-session ritual covered continuity-fact supersession yet
+> never said to maintain a linked ADR. This adds the missing trigger: once the log exists, a new
+> durable architecture decision, or the supersession/invalidation of a continuity fact carrying an
+> `(ADR-NNNN)` tag, **prompts a human-gated ledger update** (add a newer ADR; mark the old
+> `Superseded`/`Deprecated`, never delete; keep `formalizes:` ↔ `(ADR-NNNN)` in sync). Surfaced
+> dogfooding `mercury-composable`'s ADR opt-in.
+
+### Changed
+- **`AGENTS.md` (root + `templates/`)** — the ADR paragraph gains an "If the log exists, keep it
+  alive" maintenance/supersession trigger (propose; human-gated).
+- **`.agent/schema.md`** (`docs/ADR.md` section) — a new "When to maintain it" paragraph spelling
+  out the on-demand-but-kept-in-sync lifecycle.
+- **`DECAY.md` §12** — the *Design* primitive notes the ADR lifecycle is kept in sync with fact
+  supersession.
+- **`UPGRADE.md`** — new `4.14.1 → 4.15.0` rung (re-sync the guidance; **merge** into a
+  repo-customized ADR note rather than overwrite) + version-table row.
+
 ## Version 4.14.1, 6/20/2026
 
 > **Re-synced `AGENTS.md` source clarified (PATCH).** A cross-vendor dogfood (GitHub Copilot

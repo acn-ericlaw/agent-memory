@@ -38,6 +38,11 @@ The Design altitude *may* keep an **optional** Architecture Decision Record log,
 `docs/ADR.md` — a human-facing governance ledger of durable architecture decisions
 (see `.agent/schema.md`). It is read **on demand**, **not** part of the per-session read;
 any `(ADR-NNNN)` tag on an invariant is a human pointer, not a cue to open it.
+**If the log exists, keep it alive:** when you make a new durable architecture decision, or
+supersede/invalidate a continuity fact carrying an `(ADR-NNNN)` tag, **propose** a matching
+ledger update — add a newer ADR, mark the old one `Superseded`/`Deprecated` (never delete),
+keep `formalizes:` ↔ `(ADR-NNNN)` in sync — and let the human approve (a Design-altitude change
+is a human gate; `DECAY.md` §9, §12). That supersession is the one time you open the ledger.
 
 ## Skills
 
