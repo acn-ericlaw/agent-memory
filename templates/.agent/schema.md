@@ -99,8 +99,9 @@ work segment); that is expected and correct. The decay math counts session *file
 (`DECAY.md` §4), so each log is one event regardless of how conversations are sliced.
 
 Name the file with the UTC timestamp at **persist time** — the moment you write it.
-Use `date -u +%Y-%m-%d-%H%M%S` or equivalent; colons omitted for cross-platform
-filename compatibility. Filenames sort lexicographically = chronologically, so the
+**Always run `date -u +%Y-%m-%d-%H%M%S`** — the `currentDate` injected into your
+context is date-only and produces a non-conforming `YYYY-MM-DD.md` name if used
+directly. Colons omitted for cross-platform filename compatibility. Filenames sort lexicographically = chronologically, so the
 most recent log is always the last file — unambiguous even with multiple
 contributors on the same day.
 

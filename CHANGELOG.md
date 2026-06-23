@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.16.1, 6/23/2026
+
+> **Session filename drift fix (PATCH).** Two independent gaps allowed agents to write
+> date-only session filenames (`2026-06-23.md`) instead of timestamped ones
+> (`2026-06-23-153401.md`): (1) the protocol said "Use `date -u` *or equivalent*",
+> letting agents treat the context-injected `currentDate` (date-only) as equivalent;
+> (2) `memory-lint` had no filename-format check, so drift was invisible until manual
+> inspection. Fixed both: tightened protocol wording to an explicit prohibition, and
+> added a `check_session_filenames` warning to both linters. Surfaced from drift in
+> this session.
+
+### Changed
+- **`templates/AGENTS.md`** — Step 1 and checklist: "always run `date -u +%Y-%m-%d-%H%M%S`"
+  replaces "or equivalent"; explicit warning against using `currentDate` from context.
+- **`templates/.agent/schema.md`** — same prohibition in the session-naming paragraph.
+- **`memory-lint.py` + `memory-lint.mjs`** — new `check_session_filenames` warning (check 5):
+  flags `YYYY-MM-DD.md` sessions; exported from the Node module. Registered in `main()`
+  for both runtimes. Tests added to both suites (3 cases each, Python + Node).
+
 ## Version 4.16.0, 6/23/2026
 
 > **ADR default path aligned to industry convention (MINOR).** The optional Architecture

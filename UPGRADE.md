@@ -57,6 +57,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.13.0 | **Tool-provided (system) skills marked + upstream advisory (MINOR):** the three shipped built-ins carry `provenance: agent-memory-builtin` in their `SKILL.md` frontmatter (+ a body banner), so a target's AI recognizes a system skill **at edit time** — and `SKILLS.md` (new "Tool-provided (system) skills" section) tells it to **fork** a local variant or **upstream** a genuine fix to the agent-memory project (issue in production; maintainer advisory pre-release) rather than strand it. `ENABLE.md` §5i's warn-before-overwrite extended with the same upstream advice. Closes the gap that let the simple-proxy `memory-lint` fix nearly get lost. Adapters unchanged (mirror only name+description) |
 | 4.14.1 | **Re-synced `AGENTS.md` source clarified (PATCH):** `UPGRADE.md` now maps each re-synced file to its one canonical source — a target's `AGENTS.md` comes from **`templates/AGENTS.md`** (the memory hub), **never** the tool's **root** `AGENTS.md` (the operator/dual-mode dispatcher, which references the non-installed `ENABLE.md`) — with a self-check (a target `AGENTS.md` must not say "AI-Enable Another Repository"). The 4.14.1 rung **verifies + repairs** a mis-synced `AGENTS.md`. Found dogfooding a v3.7.0→v4.14.0 upgrade (GitHub Copilot, `mercury-composable`) that grabbed the root file |
 | 4.14.0 | **Optional Architecture Decision Record log (MINOR):** documents an **optional** human-facing `docs/ADR.md` decision log at the VBDI **Design** altitude — one durable architecture decision per entry (Status/Date/Abstract/Rationale-with-consequences), newest-first, `Proposed → Accepted → Superseded/Deprecated`, **never deleted** (mirrors `DECAY.md` §9). Map-don't-duplicate: live constraints stay in `continuity.md`, the ADR carries the *why*, cross-linked by `formalizes:` ↔ a visible `(ADR-NNNN)` tag in the invariant title (a human pointer, not an agent read-cue). Read **on demand** — **not** in the per-session read path (zero default token cost). Documented in `.agent/schema.md` + `AGENTS.md`; **not auto-installed** into targets (adopt on demand) |
+| 4.16.1 | **Session filename drift fix (PATCH):** closes two gaps that caused date-only filenames (`YYYY-MM-DD.md`): `templates/AGENTS.md` + `schema.md` now require `date -u +%Y-%m-%d-%H%M%S` (no "or equivalent"); `memory-lint` gains `check_session_filenames` warning (check 5) in both runtimes |
 | 4.16.0 | **ADR default path aligned to industry convention (MINOR):** the optional ADR log default path changes from `docs/ADR.md` to `docs/arch-decisions/ADR.md`. Normative: `.agent/schema.md`, `AGENTS.md` (root + template), `DECAY.md §12`; this repo moves its own `docs/ADR.md`. Targets at the new path already (e.g. `mercury-composable`) need no file move — version bump only |
 | 4.15.0 | **ADR log upkeep trigger (MINOR):** the optional `docs/ADR.md` log is now *maintained*, not just documented — **once it exists**, making a new durable architecture decision, or superseding/invalidating a continuity fact carrying an `(ADR-NNNN)` tag, **prompts a human-gated ledger update** (add a newer ADR; mark the old `Superseded`/`Deprecated`, never delete; keep `formalizes:` ↔ `(ADR-NNNN)` in sync). Closes the 4.14.0 gap where the log could be adopted but had no cue to evolve. Re-syncs `templates/AGENTS.md` + root `AGENTS.md`, `templates/.agent/schema.md`, and `DECAY.md §12`; still **not auto-installed**. Surfaced dogfooding `mercury-composable`'s ADR opt-in |
 
@@ -981,3 +982,20 @@ No memory-file shape change; the ADR log remains optional, not auto-installed, a
    `enabled_with` and `mode`.
 4. **Report**: ADR default path updated to `docs/arch-decisions/ADR.md`; file moved (or already
    at new path / not present); re-stamped to 4.16.0.
+
+## Rung: 4.16.0 → 4.16.1 — Session filename drift fix (PATCH)
+
+Wording-only changes to generic docs + linter improvement; no memory-file shape change.
+
+1. **Re-sync the generic docs** (copy verbatim where different): `templates/AGENTS.md` (step 1
+   and checklist now say "always run `date -u +%Y-%m-%d-%H%M%S`" and warn against using
+   `currentDate` directly), `templates/.agent/schema.md` (same prohibition in the
+   session-naming paragraph). `DECAY.md` / `REVIEW.md` / `SKILLS.md` / built-ins unchanged.
+2. **Update the built-in `memory-lint` skill** (`agent-skills/memory-lint/scripts/`): sync
+   `memory-lint.py` + `memory-lint.mjs` (new `check_session_filenames` warning) and their
+   test files — see "Source of truth for re-synced files". If a target has forked a local
+   variant, apply the same check to the fork rather than overwriting.
+3. **Stamp** `.agent/version.md` → `version: 4.16.1`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+4. **Report**: session filename convention tightened; `memory-lint` will now warn on
+   date-only session filenames; re-stamped to 4.16.1.
