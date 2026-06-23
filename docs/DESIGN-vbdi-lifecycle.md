@@ -49,7 +49,7 @@ two missing forward steps.
 | **Current State** | What exists now? | ✅ strong | `continuity.md`, read at session start |
 | **Vision** | What should exist? | ❌ **gap** | *new* — the north-star artifact (§5) |
 | **Blueprint** | What's missing? | ◐ partial | Open Threads — formalized as *Vision-derived* gaps (§5) |
-| **Design** | How should it work? | ✅ strong | Key Decisions + Architectural Invariants + `docs/DESIGN-*.md` (+ an optional human-facing `docs/ADR.md` decision log) |
+| **Design** | How should it work? | ✅ strong | Key Decisions + Architectural Invariants + `docs/DESIGN-*.md` (+ an optional human-facing `docs/arch-decisions/ADR.md` decision log) |
 | **Implementation** | What next? | ✅ external | code/commits; memory holds the *trace* (sessions, `origin`) |
 | **Feedback** | What changed/learned? | ✅ strong | REVIEW ritual + session ledger + decay/supersession |
 | **Memory loop** (Capture→Store→Retrieve→Reflect→Update) | — | ✅ *is the tool* | sessions → grep+`origin` → REVIEW → continuity/decay |

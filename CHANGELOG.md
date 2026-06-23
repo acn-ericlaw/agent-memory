@@ -11,6 +11,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.16.0, 6/23/2026
+
+> **ADR default path aligned to industry convention (MINOR).** The optional Architecture
+> Decision Record log default moves from `docs/ADR.md` to `docs/arch-decisions/ADR.md`,
+> matching the wider convention of placing the ledger in a named subdirectory (purpose-signalling;
+> leaves `docs/` root uncluttered). Surfaced from `mercury-composable` feedback — that project
+> had already adopted `docs/arch-decisions/ADR.md` ahead of the default. Targets at the new path
+> need no file move; targets at the old path rename on upgrade.
+
+### Changed
+- **`templates/.agent/schema.md`** — section header updated to `## docs/arch-decisions/ADR.md`
+  and the one body reference to the path updated.
+- **`templates/AGENTS.md`** — ADR path reference updated.
+- **`AGENTS.md` (root)** — ADR path reference updated.
+- **`DECAY.md` §12** — *Design* primitive path reference updated.
+- **`README.md`** — file-tree entry updated; new version-table row.
+- **`UPGRADE.md`** — new `4.15.0 → 4.16.0` rung + version-table row.
+- **`docs/arch-decisions/ADR.md`** — this repo's own ADR log moved from `docs/ADR.md`
+  (dogfooding the new default).
+
 ## Version 4.15.0, 6/22/2026
 
 > **ADR log upkeep trigger (MINOR).** The optional `docs/ADR.md` log (4.14.0) could be *adopted*
