@@ -4,6 +4,11 @@
 > zero-manual / untrained-user adoption constraint; built (`.githooks/post-commit` + CI workflow,
 > agent-activated, advisory) and dogfooded. The §6 forks were resolved as recommended (auto-stub + nudge,
 > advisory-by-default with an opt-in `AGENT_MEMORY_STRICT` gate, no-manual activation).
+> **+ first-run init v4.20.0:** `.githooks/init.sh` (one idempotent command — regenerate adapters +
+> activate the hook) + an `AGENTS.md` **self-init** note. Closes the fresh-clone gap a Copilot dogfood
+> exposed: a clone has gitignored adapters absent + the hook unactivated, and the memory bootstrap
+> self-initializes but the adapters/hook did not. Now the agent self-inits on its first session (or one
+> human command does it); CI remains the zero-config floor regardless.
 > Sibling to `DESIGN-evolving-memory.md`, `DESIGN-vbdi-lifecycle.md`, `DESIGN-skills-layer.md`, and
 > `DESIGN-fresh-context-review.md`. Realizes the `(blueprint)` gap **`bp-ritual-triggers`** →
 > serves `vision-agent-memory`.
@@ -120,7 +125,10 @@ reference-bearing session and is flagged for enrichment — never silently treat
    security — no auto-exec on clone), so a clone where **no agent has run** relies on **CI** as the
    backstop until an agent (its next enable/run) activates the local hook. Net: **CI = always-on,
    zero-config**; **git hook = agent-activated** (no user step in the common path); the two cover each
-   other. Not "offer" — **installed + activated**.
+   other. Not "offer" — **installed + activated**. **(v4.20.0)** `.githooks/init.sh` + the `AGENTS.md`
+   self-init note collapse the fresh-clone setup to a **single agent-run step** (the agent self-initializes
+   on its first session) or **one human command** (`bash .githooks/init.sh`) — closing the gap a Copilot
+   fresh-clone dogfood exposed (memory bootstrap self-initialized, but adapters + hook did not).
 5. **Where the no-code line sits.** Document explicitly: these are env-run optional helpers
    (`no-build-step-agent-run` holds); the tool still ships/maintains only markdown + the bundled scripts.
 

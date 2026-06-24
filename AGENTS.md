@@ -165,6 +165,12 @@ expected (the decay math counts log files — `DECAY.md` §4).
 > (`.github/workflows/agent-memory.yml`, zero per-user setup) — so the ritual fires for any vendor. Treat
 > the log as part of **done**. Advisory (never blocks) + no-code (git/CI run them in your env; the tool
 > runs nothing). Design + per-vendor hook extras: `docs/DESIGN-ritual-triggers.md`, `docs/optional-ritual-hook.md`.
+>
+> **First session in a fresh clone? Self-initialize.** A clone has the gitignored skill adapters
+> **absent** and the hook **unactivated** (git can't auto-run committed hooks on clone). If vendor
+> adapter dirs are empty or `git config core.hooksPath` is unset, run **`bash .githooks/init.sh`** once
+> (regenerates adapters + activates the post-commit hook) — proactively, before other work. (CI runs
+> server-side regardless.)
 
 ### Multi-Agent Continuity
 

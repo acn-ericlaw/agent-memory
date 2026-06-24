@@ -63,6 +63,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.17.0 | **GitHub Copilot CLI skills adapter (MINOR):** a **5th** skills adapter target `.github/skills/<name>/SKILL.md` — Copilot CLI follows the open Agent Skills standard (same `SKILL.md` shape as the Claude/Kiro adapter) and auto-matches by `description` (also accepts `/<name>`). `sync skill adapters` now writes **five** adapters; `.github/skills/` is gitignored **path-scoped** (the rest of `.github/` — `copilot-instructions.md`, `workflows/` — stays tracked). Copilot also gains skills in the Mode C detection/migration table (`.github/skills/`, `.agents/skills/` → `agent-skills/`); `templates/.github/copilot-instructions.md` now points Copilot at the skills layer. Mirrors the 4.5.0 Kiro rung. Surfaced dogfooding `~/sandbox/simple-proxy` (Copilot CLI couldn't find a skill authored only in `agent-skills/`) |
 | 4.18.0 | **`sync skill adapters` is now a runnable script (MINOR):** a new built-in **`sync-adapters`** skill ships a deterministic adapter-regeneration script (Node + Python at parity, built-ins only) that (re)writes the five vendor adapters for every skill and prunes the orphans it generated. Replaces the prose-recipe-only sync that agents (e.g. Copilot CLI / Gemini) struggled to *run* — they hunted for a non-existent npm/MCP command and flailed. Enable + every Mode B re-enable now invoke the script; an agent also triggers it by description. Consistent with `no-build-step-agent-run` (same category as the `memory-lint` script). Surfaced dogfooding `~/sandbox/simple-proxy` |
 | 4.19.0 | **Vendor-neutral ritual triggers (MINOR):** the after-session ritual no longer relies on the agent self-triggering. Enable installs a committed **`.githooks/post-commit`** (auto-stubs a session log when a commit does real work without one; re-syncs adapters), **agent-activated** via `git config core.hooksPath .githooks` (no manual user step), plus a **CI floor** (`.github/workflows/agent-memory.yml`: `memory-lint` + advisory session-log check on push/PR, zero per-user setup). Advisory by default (opt-in `AGENT_MEMORY_STRICT=1` gate); `no-build-step-agent-run` holds (git/CI invoke them; the tool runs nothing). Honest limit: git can't auto-run hooks on a bare clone → CI is the backstop. From real client-team pain (ritual not followed even with Claude; Copilot-only teams had no triggers) + the zero-manual/untrained-user constraint; design `docs/DESIGN-ritual-triggers.md` |
+| 4.20.0 | **First-run init (MINOR):** closes the fresh-clone activation gap (Copilot dogfood: the memory bootstrap self-initializes, but a clone has the gitignored adapters **absent** + the hook **unactivated**). Adds **`.githooks/init.sh`** (one idempotent command: regenerate adapters + `git config core.hooksPath .githooks`) + an **`AGENTS.md` self-init note** so the agent does it on its first session. One agent-run step (or one human command) instead of two; CI stays the zero-config floor |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1094,3 +1095,24 @@ constraint ("any manual operation is a barrier"). Design: `docs/DESIGN-ritual-tr
    and `mode`.
 5. **Report**: ritual triggers installed (`.githooks/` + CI) and the local hook activated; the
    after-session ritual now fires vendor-neutrally (advisory; CI is the zero-config floor).
+
+## Rung: 4.19.0 → 4.20.0 — first-run init for fresh clones (MINOR)
+
+Additive: closes the fresh-clone activation gap exposed dogfooding `~/sandbox/simple-proxy` with Copilot —
+the memory bootstrap self-initializes, but a clone has the gitignored skill **adapters absent** and the
+git hook **unactivated** (git can't auto-run committed hooks on clone). No memory-file shape change.
+
+1. **Install `.githooks/init.sh`** (copy verbatim from this tool's root; **ensure executable** —
+   `chmod +x`, committed mode `100755`). It's the one-command first-run init (regenerate adapters +
+   activate the hook). It lives in `.githooks/` but is **not** a git hook name, so git never auto-runs it.
+   (`.githooks/` itself is already installed by the 4.19.0 rung / Step 6.)
+2. **Re-sync `AGENTS.md`** (from `templates/AGENTS.md`) — adds the **first-session self-init** note (run
+   `bash .githooks/init.sh` if adapters are absent / `core.hooksPath` unset). Re-sync `.githooks/README.md`
+   (now leads with the one-command init). `DECAY`/`REVIEW`/`SKILLS`/`.agent/schema.md` unchanged.
+3. **Note:** ENABLE/UPGRADE already activate `core.hooksPath` directly (a deliberate enable is not a bare
+   clone). `init.sh` + the self-init note are for **clones** (which never go through enable). For an
+   in-place upgrade you may run `bash .githooks/init.sh` to confirm activation.
+4. **Stamp** `.agent/version.md` → `version: 4.20.0`, `last_upgraded: <today>`, preserving `enabled_with`
+   and `mode`.
+5. **Report**: first-run init added (`.githooks/init.sh` + the AGENTS.md self-init note); fresh clones now
+   self-initialize in one agent step (or one human command).

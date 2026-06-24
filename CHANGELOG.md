@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.20.0, 6/24/2026
+
+> **First-run init for fresh clones (MINOR).** Closes the gap a Copilot fresh-clone dogfood exposed: the
+> memory bootstrap self-initializes (the agent reads AGENTS.md/memory on its own), but a clone has the
+> gitignored skill **adapters absent** and the git hook **unactivated** (git can't auto-run committed
+> hooks on clone). That had meant a two-command manual setup. Now: **`.githooks/init.sh`** (one idempotent
+> command — regenerate adapters + `git config core.hooksPath .githooks`) + an **`AGENTS.md` self-init
+> note** so the agent does it on its first session. CI remains the zero-config floor regardless.
+
+### Added
+- **`.githooks/init.sh`** — one-command first-run init (sync adapters + activate the hook). Idempotent;
+  not a git-hook name, so git never auto-runs it (run `bash .githooks/init.sh`). Committed executable (`100755`).
+
+### Changed
+- **`AGENTS.md` (root + template)** — first-session **self-init** note: run `bash .githooks/init.sh` if
+  adapter dirs are empty / `core.hooksPath` is unset.
+- **`.githooks/README.md`** — now leads with the one-command init.
+- `UPGRADE.md` (rung + table), `docs/DESIGN-ritual-triggers.md`, `README`, `VERSION` → 4.20.0.
+
 ## Version 4.19.0, 6/24/2026
 
 > **Vendor-neutral ritual triggers (MINOR).** The after-session ritual (session log, review, sync) no

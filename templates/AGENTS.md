@@ -147,6 +147,12 @@ expected (the decay math counts log files — `DECAY.md` §4).
 > *a task that changed tracked files isn't finished until its log exists.* The triggers are **advisory**
 > (never block) and **no-code** (git/CI run them in your env; the tool runs nothing). See
 > **`.githooks/README.md`** for activation + per-vendor end-of-turn hook extras.
+>
+> **First session in a fresh clone? Self-initialize.** A clone has the gitignored skill adapters
+> **absent** and the hook **unactivated** (git can't auto-run committed hooks on clone). If you see
+> empty vendor adapter dirs or `git config core.hooksPath` is unset, run **`bash .githooks/init.sh`**
+> once (regenerates adapters + activates the post-commit hook) — do this proactively, before other
+> work. (CI runs server-side regardless.)
 
 ## Multi-Agent Continuity
 

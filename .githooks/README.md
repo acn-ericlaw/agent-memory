@@ -5,17 +5,20 @@ agent (Claude, Copilot, Kiro, …) — because everyone commits, regardless of w
 are **advisory** (never block) and the **tool runs nothing itself**: git invokes them in your env at your
 opt-in (`no-build-step-agent-run`). See `docs/optional-ritual-hook.md` and `DECAY.md` for the rationale.
 
-## Activation (no manual step in the common path)
+## First-run init (one command)
 
-Git does **not** auto-run committed hooks on clone (deliberate security). One command activates them:
+A fresh clone has the gitignored skill **adapters absent** and the hook **unactivated** (git can't
+auto-run committed hooks on clone — security). Set both up with one idempotent command:
 
 ```sh
-git config core.hooksPath .githooks
+bash .githooks/init.sh
 ```
 
-**The agent runs this for you at enable** (and on a first-run check), so an untrained user does nothing.
+It regenerates the vendor skill adapters **and** runs `git config core.hooksPath .githooks`. **The agent
+runs this itself on a first session** (see `AGENTS.md`), so an untrained user does nothing. To activate
+the hook alone: `git config core.hooksPath .githooks` (undo: `git config --unset core.hooksPath`).
 **CI is the zero-config floor** (`.github/workflows/agent-memory.yml`) — it runs server-side on push/PR
-with no per-user setup, so the ritual is enforced even on a clone where no hook was activated.
+with no per-user setup, so the ritual is enforced even on a clone where the local hook was never activated.
 
 ## Hooks
 
