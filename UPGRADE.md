@@ -60,6 +60,8 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.16.1 | **Session filename drift fix (PATCH):** closes two gaps that caused date-only filenames (`YYYY-MM-DD.md`): `templates/AGENTS.md` + `schema.md` now require `date -u +%Y-%m-%d-%H%M%S` (no "or equivalent"); `memory-lint` gains `check_session_filenames` warning (check 5) in both runtimes |
 | 4.16.0 | **ADR default path aligned to industry convention (MINOR):** the optional ADR log default path changes from `docs/ADR.md` to `docs/arch-decisions/ADR.md`. Normative: `.agent/schema.md`, `AGENTS.md` (root + template), `DECAY.md §12`; this repo moves its own `docs/ADR.md`. Targets at the new path already (e.g. `mercury-composable`) need no file move — version bump only |
 | 4.15.0 | **ADR log upkeep trigger (MINOR):** the optional `docs/ADR.md` log is now *maintained*, not just documented — **once it exists**, making a new durable architecture decision, or superseding/invalidating a continuity fact carrying an `(ADR-NNNN)` tag, **prompts a human-gated ledger update** (add a newer ADR; mark the old `Superseded`/`Deprecated`, never delete; keep `formalizes:` ↔ `(ADR-NNNN)` in sync). Closes the 4.14.0 gap where the log could be adopted but had no cue to evolve. Re-syncs `templates/AGENTS.md` + root `AGENTS.md`, `templates/.agent/schema.md`, and `DECAY.md §12`; still **not auto-installed**. Surfaced dogfooding `mercury-composable`'s ADR opt-in |
+| 4.17.0 | **GitHub Copilot CLI skills adapter (MINOR):** a **5th** skills adapter target `.github/skills/<name>/SKILL.md` — Copilot CLI follows the open Agent Skills standard (same `SKILL.md` shape as the Claude/Kiro adapter) and auto-matches by `description` (also accepts `/<name>`). `sync skill adapters` now writes **five** adapters; `.github/skills/` is gitignored **path-scoped** (the rest of `.github/` — `copilot-instructions.md`, `workflows/` — stays tracked). Copilot also gains skills in the Mode C detection/migration table (`.github/skills/`, `.agents/skills/` → `agent-skills/`); `templates/.github/copilot-instructions.md` now points Copilot at the skills layer. Mirrors the 4.5.0 Kiro rung. Surfaced dogfooding `~/sandbox/simple-proxy` (Copilot CLI couldn't find a skill authored only in `agent-skills/`) |
+| 4.18.0 | **`sync skill adapters` is now a runnable script (MINOR):** a new built-in **`sync-adapters`** skill ships a deterministic adapter-regeneration script (Node + Python at parity, built-ins only) that (re)writes the five vendor adapters for every skill and prunes the orphans it generated. Replaces the prose-recipe-only sync that agents (e.g. Copilot CLI / Gemini) struggled to *run* — they hunted for a non-existent npm/MCP command and flailed. Enable + every Mode B re-enable now invoke the script; an agent also triggers it by description. Consistent with `no-build-step-agent-run` (same category as the `memory-lint` script). Surfaced dogfooding `~/sandbox/simple-proxy` |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -130,11 +132,14 @@ source code or package manifests.
 Independent of the version ladder: skill adapters are gitignored, so they don't travel with a
 clone/pull, and a rung that adds a new adapter target (e.g. Kiro in 4.5.0) leaves older skills'
 adapters incomplete. So on **any** enable and **any** Mode B re-enable — including "already up to
-date" — **run `sync skill adapters`** (see `SKILLS.md`) as the closing skills step: for each
-`agent-skills/<name>/`, (re)write the four vendor adapters (`.claude/skills/<name>/SKILL.md`,
-`.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc`, `.kiro/skills/<name>/SKILL.md`) and
-**prune** orphaned *generated* adapters (one whose `agent-skills/<name>/` no longer exists; never
-touch other files in a vendor dir).
+date" — **run the `sync skill adapters` script** (v4.18.0: `bash
+agent-skills/sync-adapters/scripts/sync-adapters.sh`, or the `.mjs`/`.py`; see `SKILLS.md`) as the
+closing skills step. For each `agent-skills/<name>/` it (re)writes the five vendor adapters
+(`.claude/skills/<name>/SKILL.md`, `.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc`,
+`.kiro/skills/<name>/SKILL.md`, `.github/skills/<name>/SKILL.md`) and **prunes** orphaned adapters it
+generated (signature-guarded — never touches a hand-authored vendor file; for Copilot, only
+`.github/skills/`, never the rest of `.github/`). Older targets without the `sync-adapters` built-in
+get it from the 4.18.0 rung; if absent, fall back to the prose recipe in `SKILLS.md`.
 
 This is safe to run unconditionally because it is **idempotent** and writes **only gitignored**
 files — never `agent-skills/`, never a committed file. So it is **not a version change and needs no
@@ -999,3 +1004,65 @@ Wording-only changes to generic docs + linter improvement; no memory-file shape 
    `enabled_with` and `mode`.
 4. **Report**: session filename convention tightened; `memory-lint` will now warn on
    date-only session filenames; re-stamped to 4.16.1.
+
+## Rung: 4.16.1 → 4.17.0 — GitHub Copilot CLI skills adapter (MINOR)
+
+Additive: a **5th** adapter target plus Copilot skills in the Mode C detection table. No skill data
+changes; a repo with no skills (or no Copilot) works exactly as before. Mirrors the 4.4.0 → 4.5.0
+Kiro rung. Design: `docs/DESIGN-skills-layer.md`.
+
+1. **Re-sync the installed docs** (copy verbatim where different — see "Source of truth for
+   re-synced files"): `SKILLS.md` (the adapter recipe now lists a **GitHub Copilot CLI** target —
+   `.github/skills/<name>/SKILL.md`, same shape as the Claude/Kiro adapter, since Copilot CLI
+   follows the open Agent Skills standard; description-matched + `/<name>`), `AGENTS.md` (from
+   `templates/AGENTS.md` — the adapter list now includes `.github/skills/`), and `.agent/schema.md`
+   (from `templates/.agent/schema.md` — the adapter list). `DECAY.md` / `REVIEW.md` unchanged.
+   (`MIGRATE.md`'s Copilot skill-promotion update is **operator-only** — `MIGRATE.md` is not
+   installed into targets, so there is nothing to re-sync there.)
+2. **`.gitignore` — add `.github/skills/` (path-scoped).** Unlike the other adapter dirs, `.github/`
+   is **not** ignored wholesale (it holds the tracked `copilot-instructions.md` + `workflows/`), so
+   add the single entry `.github/skills/` to the managed block (de-duplicate; add-only; same
+   mechanism as the v3.1.0 propagation). If it's already present, no change.
+3. **Re-sync `.github/copilot-instructions.md`** (from `templates/`) where the target's copy differs.
+   The template now **front-loads the explicit `memory/` read list** (not just a pointer to
+   `AGENTS.md`) and notes that **session upkeep is manual in Copilot** — because Copilot's **Ask/Plan**
+   modes don't follow a pointer chain or auto-maintain the memory layer (a real-vendor finding). It
+   also points Copilot at the skills layer. **If the target's copy was genuinely locally customized**
+   (project-specific rules, not just an older default), **warn the human and let them decide** rather
+   than overwriting.
+4. **No skill regeneration in this rung directly.** The standing skills-adapter sync (above) now
+   writes the `.github/skills/` adapter too — since v4.12.0 it **runs** `sync skill adapters` on
+   every Mode B re-enable, materializing the Copilot adapter for every existing skill.
+5. **Stamp** `.agent/version.md` → `version: 4.17.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+6. **Report**: docs re-synced; Copilot CLI adapter (`.github/skills/`) now in the recipe + gitignored
+   path-scoped; skills-adapter sync result (the `.github/skills/` adapters are (re)written by the
+   standing sync).
+
+## Rung: 4.17.0 → 4.18.0 — `sync skill adapters` becomes a runnable script (MINOR)
+
+Additive: installs the new **`sync-adapters`** built-in (the runnable script) and switches the standing
+sync + the authoring convention to *run the script* rather than act out a prose recipe. No memory-file
+shape change. Surfaced dogfooding `~/sandbox/simple-proxy`: Copilot CLI (Gemini) read `SKILLS.md` and
+still couldn't *run* `sync skill adapters` — it was an agent operation with no executable, so the agent
+hunted for an npm/MCP command and flailed. A real script removes the ambiguity (consistent with
+`no-build-step-agent-run` — same category as the `memory-lint` script: an optional helper the
+agent/vendor/CI invokes, never the tool).
+
+1. **Install the `sync-adapters` built-in** — copy `agent-skills/sync-adapters/` (its `SKILL.md` +
+   `scripts/sync-adapters.sh` + `.mjs` + `.py`) **verbatim from this tool's root** into the target's
+   `agent-skills/`. It carries `provenance: agent-memory-builtin`; **apply the
+   warn-before-overwrite check** (`ENABLE.md` §5i) if the target already has a modified copy.
+2. **Re-sync `SKILLS.md`** (from the tool root — see "Source of truth"): the `sync skill adapters`
+   operation **and** "Authoring a skill" now point to the runnable script; the adapter recipe stays as
+   the format spec the script implements. `AGENTS.md` / `DECAY.md` / `REVIEW.md` are unchanged (the
+   per-session path still never touches skills; `AGENTS.md`'s authoring 3-step already says "run
+   `sync skill adapters`", which now resolves to the script).
+3. **Run the script** as the closing skills step (the standing sync, now script-based):
+   `bash agent-skills/sync-adapters/scripts/sync-adapters.sh` (or the `.mjs`/`.py`). Idempotent,
+   gitignored-only — materializes all five adapters for every skill (incl. `sync-adapters`' own) and
+   prunes the orphans it generated.
+4. **Stamp** `.agent/version.md` → `version: 4.18.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`.
+5. **Report**: `sync-adapters` built-in installed; `sync skill adapters` is now a runnable script;
+   adapters re-synced via the script.

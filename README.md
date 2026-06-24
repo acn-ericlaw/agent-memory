@@ -209,6 +209,8 @@ it in place** — additively, never destructively.
 | 4.16.1 | **Session filename drift fix:** two gaps allowed date-only session filenames (`YYYY-MM-DD.md`): the protocol said "or equivalent" (allowing context `currentDate`), and `memory-lint` had no filename check. Fixed: explicit `date -u` requirement in `templates/AGENTS.md` + `schema.md`; new `check_session_filenames` warning (check 5) in both linter runtimes with tests |
 | 4.16.0 | **ADR default path aligned to industry convention:** the optional Architecture Decision Record log moves from `docs/ADR.md` to `docs/arch-decisions/ADR.md` — aligning the default with the widely-adopted subdirectory convention (signals purpose, leaves `docs/` root uncluttered). Normative change to `.agent/schema.md`, `AGENTS.md` (root + template), `DECAY.md §12`; this repo dogfoods the new path (`docs/arch-decisions/ADR.md`). Targets already at the new path (e.g. `mercury-composable`) need no file move — only a version bump; targets still at `docs/ADR.md` rename the file. Not auto-installed; the upgrade rung handles the migration |
 | 4.15.0 | **ADR log upkeep trigger:** the optional `docs/ADR.md` decision log is now *maintained*, not merely documented — once a repo has one, a new durable architecture decision (or superseding/invalidating an `(ADR-NNNN)`-tagged `continuity.md` fact) **prompts a human-gated ledger update**: add a newer ADR, mark the old `Superseded`/`Deprecated` (never deleted), keep `formalizes:` ↔ `(ADR-NNNN)` in sync. Closes the 4.14.0 gap where the log could be adopted but had no cue to evolve. Documented in `AGENTS.md` + `.agent/schema.md` + `DECAY.md §12`; still not auto-installed |
+| 4.17.0 | **GitHub Copilot CLI skills adapter:** a **5th** skills adapter target `.github/skills/<name>/SKILL.md` — Copilot CLI follows the open Agent Skills standard (same `SKILL.md` shape as the Claude/Kiro adapter) and auto-matches by `description` (also accepts an explicit `/<name>`). `sync skill adapters` now writes five adapters; `.github/skills/` is gitignored **path-scoped** (the rest of `.github/` — `copilot-instructions.md`, `workflows/` — stays tracked). Copilot also gains skills in the Mode C detection/migration table (`.github/skills/`, `.agents/skills/` → `agent-skills/`), and the Copilot steering template now **front-loads the `memory/` read list** + a manual-upkeep note (Copilot's Ask/Plan modes don't follow a pointer chain or auto-maintain memory — reliability over DRY, Copilot-scoped). Found dogfooding `~/sandbox/simple-proxy`, where Copilot CLI couldn't discover a skill authored only in `agent-skills/` |
+| 4.18.0 | **`sync skill adapters` is now a runnable script:** a new built-in **`sync-adapters`** skill ships a deterministic adapter-regeneration script (Node + Python at parity) that (re)writes the five vendor adapters for every skill and prunes the orphans it generated. Replaces the prose-recipe-only sync that agents (e.g. Copilot CLI / Gemini) struggled to *run* — they hunted for a non-existent npm/MCP command and flailed. Enable + every Mode B re-enable invoke the script; an agent also triggers it by description. Consistent with `no-build-step-agent-run` (same category as the `memory-lint` script). Surfaced dogfooding `~/sandbox/simple-proxy` |
 
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
@@ -229,7 +231,7 @@ The tool detects and migrates from these vendors:
 | Aider | `.aider.conf.yml`, `.aider.chat.history.md`, `CONVENTIONS.md` | Steering, full chat history |
 | Continue.dev | `.continue/config.json`, `.continue/sessions/*.json` | Steering, JSON sessions |
 | Codeium / Windsurf | `.windsurfrules`, `.codeiumrc`, `.windsurf/` | Steering, history |
-| GitHub Copilot | `.github/copilot-instructions.md` (non-ours) | Steering only (no history) |
+| GitHub Copilot | `.github/copilot-instructions.md` (non-ours), `.github/skills/`, `.agents/skills/` | Steering, **skills → `agent-skills/`** (no history) |
 | GPT / Codex | `AGENTS.md` (non-ours), `.codex/` | Steering, history |
 | Zed AI | `.rules`, `.zed/` | Steering, history (with safety check) |
 | Gemini CLI | `GEMINI.md` (non-ours), `.gemini/` | Steering, history |
@@ -250,9 +252,9 @@ Migration rules per vendor: see [`MIGRATE.md`](./MIGRATE.md).
   section inside `memory/instructions.md`. Nothing is discarded.
 - **History becomes sessions.** Chat logs and JSONL files are parsed and split
   into dated `memory/sessions/YYYY-MM-DD-HHMMSS.md` files in our standard format.
-- **Skills promoted.** Vendor skill bundles (e.g. `.claude/skills/`, `.kiro/skills/`) become
+- **Skills promoted.** Vendor skill bundles (e.g. `.claude/skills/`, `.kiro/skills/`, `.github/skills/`) become
   neutral, committed `agent-skills/<name>/SKILL.md` capabilities — not flattened into steering —
-  with Claude/Gemini/Cursor/Kiro adapters regenerated. See [`docs/DESIGN-skills-layer.md`](./docs/DESIGN-skills-layer.md).
+  with Claude/Gemini/Cursor/Kiro/Copilot adapters regenerated. See [`docs/DESIGN-skills-layer.md`](./docs/DESIGN-skills-layer.md).
 - **Contradictions surfaced.** If two vendors had conflicting rules, both are
   preserved and an Open Thread is added asking the user to resolve.
 - **Idempotent.** Running enable on an already-migrated repo detects our format

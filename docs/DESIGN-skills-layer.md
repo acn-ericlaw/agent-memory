@@ -22,9 +22,17 @@
 > **+ tool-provided-skill provenance v4.13.0** (the three shipped built-ins carry
 > `provenance: agent-memory-builtin` so a target's AI recognizes a *system* skill at edit time;
 > `SKILLS.md` routes a change to **fork** a variant or **upstream** a genuine fix for back-port +
-> validation — closing the gap where a real `memory-lint` fix in a target nearly got stranded).
+> validation — closing the gap where a real `memory-lint` fix in a target nearly got stranded),
+> **+ GitHub Copilot CLI adapter v4.17.0** (5th adapter target `.github/skills/<name>/SKILL.md` —
+> Copilot CLI follows the open Agent Skills standard, same shape as the Claude/Kiro adapter,
+> description-matched + `/<name>`; gitignored **path-scoped** since `.github/` itself stays tracked;
+> Copilot project skills also promoted in Mode C — found dogfooding `~/sandbox/simple-proxy`),
+> **+ runnable `sync-adapters` script v4.18.0** (the `sync skill adapters` operation becomes a bundled
+> built-in script — Node + Python at parity — instead of a prose recipe the agent acts out by hand;
+> dogfooding showed Copilot/Gemini couldn't *run* a prose operation and hunted for a non-existent
+> command. Consistent with `no-build-step-agent-run`: same category as the `memory-lint` script).
 > Sibling to `DESIGN-evolving-memory.md` and `DESIGN-vbdi-lifecycle.md`.
-> The maintainer chose **all-vendor adapters** at build time (Claude + Gemini + Cursor + Kiro),
+> The maintainer chose **all-vendor adapters** at build time (Claude + Gemini + Cursor + Kiro + Copilot),
 > so §4c is fully realized rather than Claude-only.
 > **Source:** a real-work finding (2026-06-15) — a client repo enabled with agent-memory
 > carried user-defined **Claude skills** under `.claude/skills/`, which the tool neither
@@ -116,11 +124,12 @@ lives only in `AGENTS.md`):
 | Gemini CLI | custom command (`.gemini/commands/<n>.toml`) — **slash command `/<n>`, explicit (not NL-matched)** | command that reads the neutral skill |
 | Cursor | rule (`.cursor/rules/*.mdc`) | rule referencing the neutral skill |
 | Kiro | `.kiro/skills/<n>/SKILL.md` (open Agent Skills standard — auto-matched) | same shape as Claude: frontmatter + body "follow `agent-skills/<n>/SKILL.md`" |
+| GitHub Copilot CLI | `.github/skills/<n>/SKILL.md` (open Agent Skills standard — auto-matched + `/<n>`) | same shape as Claude/Kiro: frontmatter + body "follow `agent-skills/<n>/SKILL.md`" |
 | Codex / Kiro / AGENTS.md-only | *(none)* | nothing needed — auto-reads root `AGENTS.md`, uses the §4b baseline |
 
 > **Trigger semantics differ (v4.5.1, from a Gemini dogfood).** "Auto-triggers" above holds for
-> the *description-matched* mechanisms (Claude Skill tool, Cursor agent-requested rules, Kiro's
-> open-standard skills). **Gemini is the exception**: a custom command fires only on an explicit
+> the *description-matched* mechanisms (Claude Skill tool, Cursor agent-requested rules, Kiro's and
+> GitHub Copilot CLI's open-standard skills). **Gemini is the exception**: a custom command fires only on an explicit
 > `/<name>`, never on natural-language prose — so a phrase like "run hello-world" correctly routes
 > through the §4b baseline to the same neutral skill (identical result; not a missing adapter).
 > Because every adapter is a pointer back to `agent-skills/`, no path can diverge. **Adapters are

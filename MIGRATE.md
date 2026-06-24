@@ -70,7 +70,7 @@ the vendor is present. Apply the rules in that row's migration section.
 | Aider | `.aider.conf.yml`, `.aider.chat.history.md`, `.aider.input.history`, `CONVENTIONS.md` |
 | Continue.dev | `.continue/`, `.continue/config.json`, `.continue/sessions/` |
 | Codeium / Windsurf | `.windsurfrules`, `.codeiumrc`, `.windsurf/` |
-| GitHub Copilot | `.github/copilot-instructions.md` (non-ours) |
+| GitHub Copilot | `.github/copilot-instructions.md` (non-ours), `.github/skills/`, `.agents/skills/` |
 | GPT / Codex | `AGENTS.md` (non-ours), `.codex/` |
 | Zed AI | `.rules` (when not a different tool's file), `.zed/` |
 | Gemini CLI | `GEMINI.md` (non-ours), `.gemini/` |
@@ -150,7 +150,8 @@ add the section after the standard headings.
 ### B2. Promote skills (capabilities) → `agent-skills/`
 
 Vendor **skill bundles** are *capabilities*, not steering and not history — Claude Code's
-`.claude/skills/<name>/SKILL.md` and Kiro's `.kiro/skills/<name>/SKILL.md` (both follow the
+`.claude/skills/<name>/SKILL.md`, Kiro's `.kiro/skills/<name>/SKILL.md`, and GitHub Copilot's
+`.github/skills/<name>/SKILL.md` (all follow the
 open Agent Skills standard: a `name` + `description` + a procedure, plus optional bundled
 scripts). Do **not** flatten them into `memory/instructions.md`. Instead **promote** each into
 the neutral, committed capability layer:
@@ -160,7 +161,7 @@ the neutral, committed capability layer:
   bundled scripts to `agent-skills/<name>/scripts/`, preserving relative references.
 - The verbatim original is preserved by Section A's move to `legacy/<vendor>/` — so
   `agent-skills/` is the promoted, shared copy and `legacy/` keeps the untouched original.
-- After promoting, **regenerate the per-vendor adapters** (Claude / Gemini / Cursor / Kiro)
+- After promoting, **regenerate the per-vendor adapters** (Claude / Gemini / Cursor / Kiro / Copilot)
   from each neutral skill per the adapter recipe in `SKILLS.md` — thin pointers living in the
   gitignored vendor dirs.
 
@@ -334,6 +335,12 @@ Only migrate repo-local files. Note this in the report:
 
 **Steering:** `.github/copilot-instructions.md` (non-ours)
 - Append content under `## Migrated rules from GitHub Copilot`.
+
+**Skills:** `.github/skills/<name>/SKILL.md` (and `.agents/skills/<name>/SKILL.md`) — Copilot CLI's
+project skills follow the open Agent Skills standard.
+- **Promote** each to `agent-skills/<name>/SKILL.md` per Section B2 (the verbatim original is
+  preserved under `legacy/` by Section A); regenerate the Claude/Gemini/Cursor/Kiro/Copilot adapters
+  per the recipe in `SKILLS.md`.
 
 **History:** None — Copilot does not store session history in the repo.
 Note this in the report.

@@ -5,9 +5,11 @@
 # are committed and shared across the team, so do NOT ignore them. Only personal
 # AI-IDE runtime directories and local history/caches are ignored below (the
 # "infrastructure", not the steering). The vendor dirs below also hold per-machine
-# skill *adapters* (.claude/skills/, .gemini/commands/, .cursor/rules/, .kiro/skills/)
-# regenerated from agent-skills/ — local only; the neutral agent-skills/ is the shared
-# source of truth.
+# skill *adapters* (.claude/skills/, .gemini/commands/, .cursor/rules/, .kiro/skills/,
+# .github/skills/) regenerated from agent-skills/ — local only; the neutral agent-skills/
+# is the shared source of truth. NOTE: GitHub Copilot's skill adapter lives at .github/skills/,
+# so it is ignored path-scoped (below) — never ignore all of .github/, which holds the tracked
+# copilot-instructions.md and workflows/.
 .kiro/
 .claude/
 .cursor/
@@ -15,6 +17,7 @@
 .windsurf/
 .codeium/
 .gemini/
+.github/skills/
 .cline/
 .roo/
 .zed/

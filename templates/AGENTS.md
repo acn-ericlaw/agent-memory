@@ -51,13 +51,15 @@ vendor-neutral `agent-skills/<name>/SKILL.md` files. **This is the runtime:** wh
 matches a skill's `description`, read and follow that `SKILL.md` (and any scripts it
 references). The agent is the runtime — works on any vendor, no engine.
 
-Per-vendor adapters (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`)
-are thin, gitignored, regenerated pointers — **never commit them** (only `agent-skills/` is
-shared); the source of truth is always `agent-skills/<name>/SKILL.md`.
+Per-vendor adapters (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`,
+`.github/skills/`) are thin, gitignored, regenerated pointers — **never commit them** (only
+`agent-skills/` is shared); the source of truth is always `agent-skills/<name>/SKILL.md`.
 
 **Authoring, syncing, adopting, sanity-checking, or editing a tool-provided skill?** See **`SKILLS.md`**
-(read on demand — it is *not* part of this per-session read). Skill work is a deliberate, occasional
-action, never part of the session ritual. A skill whose frontmatter says `provenance: agent-memory-builtin`
+(read on demand — it is *not* part of this per-session read). **Authoring a skill is a 3-step action —
+write `agent-skills/<name>/SKILL.md`, run `sync skill adapters`, then reload your runtime if it loads
+adapters at startup (e.g. GitHub Copilot CLI `/restart`); it is not done after step 1.** Skill work is
+a deliberate, occasional action, never part of the session ritual. A skill whose frontmatter says `provenance: agent-memory-builtin`
 is **tool-managed** (overwritten on upgrade) — don't edit it in place; fork it under a new name, or
 upstream a genuine fix to the agent-memory project (`SKILLS.md` → "Tool-provided (system) skills").
 
