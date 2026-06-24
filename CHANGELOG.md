@@ -11,6 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.20.1, 6/24/2026
+
+> **Self-init folded into `copilot-instructions.md` (PATCH).** A fresh-clone dogfood showed v4.20.0's
+> self-init worked for **Claude Code** (which acts on `AGENTS.md`) but **not GitHub Copilot CLI** — its
+> `start` is driven by `copilot-instructions.md`'s front-loaded read list, so it loaded memory and
+> summarized without acting on the AGENTS.md self-init step (hook stayed inactive, adapters absent). Fix:
+> put the first-run init **at the top of `copilot-instructions.md`** (the file Copilot reliably
+> front-loads), as the first action — run `bash .githooks/init.sh` if `core.hooksPath` is unset / adapters
+> absent, *before* summarizing. Improves Copilot's odds of self-initing; `bash .githooks/init.sh` remains
+> the one-command fallback and CI remains the zero-config floor.
+
+### Changed
+- **`templates/.github/copilot-instructions.md`** — now leads with a first-run-init block. `VERSION` → 4.20.1.
+
 ## Version 4.20.0, 6/24/2026
 
 > **First-run init for fresh clones (MINOR).** Closes the gap a Copilot fresh-clone dogfood exposed: the

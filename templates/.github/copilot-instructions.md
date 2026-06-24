@@ -1,5 +1,17 @@
 # Copilot Instructions
 
+> **First-run init — do this before anything else (incl. before summarizing).** A fresh clone has the
+> gitignored skill adapters **absent** and the git hook **unactivated** (git can't auto-run committed
+> hooks on clone). **If `git config core.hooksPath` is unset, OR vendor adapter dirs like `.github/skills/`
+> are empty, run this once first:**
+>
+> ```sh
+> bash .githooks/init.sh
+> ```
+>
+> It regenerates the skill adapters **and** activates the post-commit hook (idempotent — skip if already
+> set up). Then proceed to load context below.
+
 This project uses the **agent-memory** shared memory system. **Read these now, in order** — don't
 defer to a pointer chain (Copilot Ask/Plan modes won't follow it unless the files are attached):
 

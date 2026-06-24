@@ -9,6 +9,9 @@
 > exposed: a clone has gitignored adapters absent + the hook unactivated, and the memory bootstrap
 > self-initializes but the adapters/hook did not. Now the agent self-inits on its first session (or one
 > human command does it); CI remains the zero-config floor regardless.
+> **+ 4.20.1:** self-init also folded into **`copilot-instructions.md`** — a fresh-clone dogfood showed
+> Claude self-inits (it acts on `AGENTS.md`) but Copilot CLI did **not** (its `start` front-loads
+> `copilot-instructions.md` + summarizes), so the first-run init now **leads** that file too.
 > Sibling to `DESIGN-evolving-memory.md`, `DESIGN-vbdi-lifecycle.md`, `DESIGN-skills-layer.md`, and
 > `DESIGN-fresh-context-review.md`. Realizes the `(blueprint)` gap **`bp-ritual-triggers`** →
 > serves `vision-agent-memory`.

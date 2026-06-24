@@ -64,6 +64,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.18.0 | **`sync skill adapters` is now a runnable script (MINOR):** a new built-in **`sync-adapters`** skill ships a deterministic adapter-regeneration script (Node + Python at parity, built-ins only) that (re)writes the five vendor adapters for every skill and prunes the orphans it generated. Replaces the prose-recipe-only sync that agents (e.g. Copilot CLI / Gemini) struggled to *run* — they hunted for a non-existent npm/MCP command and flailed. Enable + every Mode B re-enable now invoke the script; an agent also triggers it by description. Consistent with `no-build-step-agent-run` (same category as the `memory-lint` script). Surfaced dogfooding `~/sandbox/simple-proxy` |
 | 4.19.0 | **Vendor-neutral ritual triggers (MINOR):** the after-session ritual no longer relies on the agent self-triggering. Enable installs a committed **`.githooks/post-commit`** (auto-stubs a session log when a commit does real work without one; re-syncs adapters), **agent-activated** via `git config core.hooksPath .githooks` (no manual user step), plus a **CI floor** (`.github/workflows/agent-memory.yml`: `memory-lint` + advisory session-log check on push/PR, zero per-user setup). Advisory by default (opt-in `AGENT_MEMORY_STRICT=1` gate); `no-build-step-agent-run` holds (git/CI invoke them; the tool runs nothing). Honest limit: git can't auto-run hooks on a bare clone → CI is the backstop. From real client-team pain (ritual not followed even with Claude; Copilot-only teams had no triggers) + the zero-manual/untrained-user constraint; design `docs/DESIGN-ritual-triggers.md` |
 | 4.20.0 | **First-run init (MINOR):** closes the fresh-clone activation gap (Copilot dogfood: the memory bootstrap self-initializes, but a clone has the gitignored adapters **absent** + the hook **unactivated**). Adds **`.githooks/init.sh`** (one idempotent command: regenerate adapters + `git config core.hooksPath .githooks`) + an **`AGENTS.md` self-init note** so the agent does it on its first session. One agent-run step (or one human command) instead of two; CI stays the zero-config floor |
+| 4.20.1 | **Self-init in `copilot-instructions.md` (PATCH):** v4.20.0's self-init reached Claude (acts on `AGENTS.md`) but **not Copilot CLI** (its `start` front-loads `copilot-instructions.md` + summarizes — so on a fresh clone the hook stayed inactive + adapters absent). Folds the first-run init into the **top of `copilot-instructions.md`** so Copilot runs `bash .githooks/init.sh` before summarizing. Re-sync that one file; the `init.sh` fallback + CI floor are unchanged |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1116,3 +1117,19 @@ git hook **unactivated** (git can't auto-run committed hooks on clone). No memor
    and `mode`.
 5. **Report**: first-run init added (`.githooks/init.sh` + the AGENTS.md self-init note); fresh clones now
    self-initialize in one agent step (or one human command).
+
+## Rung: 4.20.0 → 4.20.1 — self-init in `copilot-instructions.md` (PATCH)
+
+Wording/placement fix to an installed file — no shape change. v4.20.0's self-init note (in `AGENTS.md`)
+reached Claude Code but **not GitHub Copilot CLI**: a fresh-clone dogfood showed Copilot's `start` is
+driven by `copilot-instructions.md`'s front-loaded read list, so it loaded memory + summarized without
+acting on the AGENTS.md self-init (hook stayed inactive, adapters absent).
+
+1. **Re-sync `.github/copilot-instructions.md`** (from `templates/.github/copilot-instructions.md`) — it
+   now **leads** with a first-run-init block (*run `bash .githooks/init.sh` if `core.hooksPath` is unset /
+   adapters absent, before summarizing*). **If a target's copy is locally customized, merge the block in**
+   rather than overwriting. Nothing else changes.
+2. **Stamp** `.agent/version.md` → `version: 4.20.1`, `last_upgraded: <today>`, preserving `enabled_with`
+   and `mode`.
+3. **Report**: `copilot-instructions.md` now carries the first-run self-init (Copilot acts before
+   summarizing); the `bash .githooks/init.sh` fallback + CI floor are unchanged.
