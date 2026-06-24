@@ -65,6 +65,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.19.0 | **Vendor-neutral ritual triggers (MINOR):** the after-session ritual no longer relies on the agent self-triggering. Enable installs a committed **`.githooks/post-commit`** (auto-stubs a session log when a commit does real work without one; re-syncs adapters), **agent-activated** via `git config core.hooksPath .githooks` (no manual user step), plus a **CI floor** (`.github/workflows/agent-memory.yml`: `memory-lint` + advisory session-log check on push/PR, zero per-user setup). Advisory by default (opt-in `AGENT_MEMORY_STRICT=1` gate); `no-build-step-agent-run` holds (git/CI invoke them; the tool runs nothing). Honest limit: git can't auto-run hooks on a bare clone → CI is the backstop. From real client-team pain (ritual not followed even with Claude; Copilot-only teams had no triggers) + the zero-manual/untrained-user constraint; design `docs/DESIGN-ritual-triggers.md` |
 | 4.20.0 | **First-run init (MINOR):** closes the fresh-clone activation gap (Copilot dogfood: the memory bootstrap self-initializes, but a clone has the gitignored adapters **absent** + the hook **unactivated**). Adds **`.githooks/init.sh`** (one idempotent command: regenerate adapters + `git config core.hooksPath .githooks`) + an **`AGENTS.md` self-init note** so the agent does it on its first session. One agent-run step (or one human command) instead of two; CI stays the zero-config floor |
 | 4.20.1 | **Self-init in `copilot-instructions.md` (PATCH):** v4.20.0's self-init reached Claude (acts on `AGENTS.md`) but **not Copilot CLI** (its `start` front-loads `copilot-instructions.md` + summarizes — so on a fresh clone the hook stayed inactive + adapters absent). Folds the first-run init into the **top of `copilot-instructions.md`** so Copilot runs `bash .githooks/init.sh` before summarizing. Re-sync that one file; the `init.sh` fallback + CI floor are unchanged |
+| 4.20.2 | **Windows line-ending hardening (PATCH):** adds a **`.gitattributes`** pinning `*.sh` + `.githooks/*` to **LF**, so Git for Windows (`core.autocrlf=true`) doesn't rewrite them to CRLF on checkout (which breaks bash: `bad interpreter: /usr/bin/env bash^M`, silently disabling the hook + `init.sh`). Installed/merged into targets additively (like the `.gitignore` block). Makes the bootstrap + hooks robust on Windows (Git Bash / WSL), not luck-of-the-default. From a Copilot Windows-feasibility check |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1133,3 +1134,19 @@ acting on the AGENTS.md self-init (hook stayed inactive, adapters absent).
    and `mode`.
 3. **Report**: `copilot-instructions.md` now carries the first-run self-init (Copilot acts before
    summarizing); the `bash .githooks/init.sh` fallback + CI floor are unchanged.
+
+## Rung: 4.20.1 → 4.20.2 — Windows line-ending hardening (PATCH)
+
+Additive: a `.gitattributes` that keeps the executable scripts + git hooks LF, so they run under bash on
+Windows. No memory-file shape change. Surfaced from a Copilot Windows-feasibility check — the bootstrap
+works via Git Bash, but with **no `.gitattributes`** a Windows clone (`core.autocrlf=true` by default)
+rewrites `*.sh` + `.githooks/*` to CRLF and bash fails (`bad interpreter: /usr/bin/env bash^M`).
+
+1. **Install / merge `.gitattributes`** (per ENABLE Step 7b): if the target has none, copy
+   `templates/.gitattributes` verbatim; if it has one, **add only** the LF rules not already present
+   (`*.sh text eol=lf`, `.githooks/* text eol=lf`) — de-duplicate; never remove/reorder existing entries.
+   Then `git add --renormalize .` (a no-op if the files are already LF).
+2. **Stamp** `.agent/version.md` → `version: 4.20.2`, `last_upgraded: <today>`, preserving `enabled_with`
+   and `mode`.
+3. **Report**: `.gitattributes` added/merged (LF for `*.sh` + `.githooks/*`); the bootstrap + hooks are now
+   robust on Windows (Git Bash / WSL).

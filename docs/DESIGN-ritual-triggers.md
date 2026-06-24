@@ -12,6 +12,10 @@
 > **+ 4.20.1:** self-init also folded into **`copilot-instructions.md`** — a fresh-clone dogfood showed
 > Claude self-inits (it acts on `AGENTS.md`) but Copilot CLI did **not** (its `start` front-loads
 > `copilot-instructions.md` + summarizes), so the first-run init now **leads** that file too.
+> **+ 4.20.2:** a `.gitattributes` pins `*.sh` + `.githooks/*` to **LF** so they run under bash on Windows
+> (Git Bash / WSL) regardless of `core.autocrlf` — Windows-hardening from a Copilot feasibility check
+> (otherwise a Windows clone rewrites them to CRLF and bash fails). **Validated cross-platform on the
+> happy path; Windows now robust, not luck-of-the-default.**
 > Sibling to `DESIGN-evolving-memory.md`, `DESIGN-vbdi-lifecycle.md`, `DESIGN-skills-layer.md`, and
 > `DESIGN-fresh-context-review.md`. Realizes the `(blueprint)` gap **`bp-ritual-triggers`** →
 > serves `vision-agent-memory`.

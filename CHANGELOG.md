@@ -11,6 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.20.2, 6/24/2026
+
+> **Windows line-ending hardening (PATCH).** Adds a **`.gitattributes`** pinning `*.sh` and `.githooks/*`
+> to **LF**, so Git for Windows (`core.autocrlf=true` by default) doesn't rewrite them to CRLF on checkout —
+> which would break bash (`bad interpreter: /usr/bin/env bash^M`) and silently disable the hook + `init.sh`.
+> From a Copilot Windows-feasibility check: the bootstrap works via Git Bash/WSL, but without this it was
+> luck-of-the-default. Now robust on Windows.
+
+### Added
+- **`.gitattributes`** (root + `templates/`) — `*.sh text eol=lf`, `.githooks/* text eol=lf`. Installed /
+  merged into targets additively (ENABLE Step 7b + a `4.20.1 → 4.20.2` rung), same discipline as the
+  `.gitignore` block. `VERSION` → 4.20.2.
+
 ## Version 4.20.1, 6/24/2026
 
 > **Self-init folded into `copilot-instructions.md` (PATCH).** A fresh-clone dogfood showed v4.20.0's

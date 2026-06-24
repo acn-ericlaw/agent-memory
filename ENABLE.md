@@ -478,6 +478,22 @@ add. Adding a path to `.gitignore` does not untrack files already committed, so 
 is safe even if a vendor dir was previously committed (e.g. before a Mode C migration
 moved it to `legacy/`).
 
+### Step 7b — Install / merge `.gitattributes` (Windows line-ending hardening, v4.20.2)
+
+The executable scripts (`*.sh`) and git hooks (`.githooks/*`) **must stay LF**, or Git for Windows
+(`core.autocrlf=true` by default) rewrites them to CRLF on checkout and bash fails with
+`bad interpreter: /usr/bin/env bash^M`. The canonical rules live in `templates/.gitattributes`:
+
+```
+*.sh        text eol=lf
+.githooks/* text eol=lf
+```
+
+Apply additively (same discipline as `.gitignore`): **no `.gitattributes`** → copy
+`templates/.gitattributes` verbatim; **exists** → add only the LF rules not already present
+(de-duplicate; never remove/reorder the user's entries). After adding, run `git add --renormalize .`
+(a no-op if the files are already LF) so the index reflects the attributes.
+
 ---
 
 ## Step 8 — Verify
