@@ -11,6 +11,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.20.3, 6/24/2026
+
+> **memory-lint catches an empty/malformed version manifest (PATCH).** Adds a deterministic
+> `check_version_manifest` check (an **ERROR**) so a present-but-empty or malformed `.agent/version.md`
+> is caught by the lint floor (CI + reviews + manual runs) instead of silently breaking Mode B upgrade
+> detection. This closes the loop on the v4.20.1 bug: a truncating stamp one-liner emptied a target's
+> `version.md`, which made an agent misread the repo's version — now that exact failure mode fails the
+> lint rather than going unnoticed. A *missing* `version.md` stays valid (the pre-versioning baseline)
+> and is **not** flagged.
+
+### Added
+- **`check_version_manifest`** in both `memory-lint.py` and `memory-lint.mjs` (byte-identical message,
+  at parity) — wired into `main`'s error list; with mirror tests in `test_memory_lint.py` /
+  `test_memory_lint.mjs` (empty → error, malformed → error, valid → ok, missing → ok). `SKILL.md`
+  documents the new check. Re-copied into targets on the `4.20.2 → 4.20.3` rung. `VERSION` → 4.20.3.
+
 ## Version 4.20.2, 6/24/2026
 
 > **Windows line-ending hardening (PATCH).** Adds a **`.gitattributes`** pinning `*.sh` and `.githooks/*`

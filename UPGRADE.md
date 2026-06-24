@@ -66,6 +66,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.20.0 | **First-run init (MINOR):** closes the fresh-clone activation gap (Copilot dogfood: the memory bootstrap self-initializes, but a clone has the gitignored adapters **absent** + the hook **unactivated**). Adds **`.githooks/init.sh`** (one idempotent command: regenerate adapters + `git config core.hooksPath .githooks`) + an **`AGENTS.md` self-init note** so the agent does it on its first session. One agent-run step (or one human command) instead of two; CI stays the zero-config floor |
 | 4.20.1 | **Self-init in `copilot-instructions.md` (PATCH):** v4.20.0's self-init reached Claude (acts on `AGENTS.md`) but **not Copilot CLI** (its `start` front-loads `copilot-instructions.md` + summarizes — so on a fresh clone the hook stayed inactive + adapters absent). Folds the first-run init into the **top of `copilot-instructions.md`** so Copilot runs `bash .githooks/init.sh` before summarizing. Re-sync that one file; the `init.sh` fallback + CI floor are unchanged |
 | 4.20.2 | **Windows line-ending hardening (PATCH):** adds a **`.gitattributes`** pinning `*.sh` + `.githooks/*` to **LF**, so Git for Windows (`core.autocrlf=true`) doesn't rewrite them to CRLF on checkout (which breaks bash: `bad interpreter: /usr/bin/env bash^M`, silently disabling the hook + `init.sh`). Installed/merged into targets additively (like the `.gitignore` block). Makes the bootstrap + hooks robust on Windows (Git Bash / WSL), not luck-of-the-default. From a Copilot Windows-feasibility check |
+| 4.20.3 | **memory-lint catches an empty/malformed version manifest (PATCH):** adds a deterministic **`check_version_manifest`** ERROR to both runtimes (`memory-lint.py` + `memory-lint.mjs`, at parity, with mirror tests) so a present-but-empty/malformed `.agent/version.md` fails the lint floor (CI + reviews) instead of silently breaking Mode B upgrade detection. Closes the loop on the v4.20.1 bug (a truncating stamp one-liner emptied a target's `version.md` → an agent misread the version). A *missing* `version.md` stays valid (pre-versioning baseline) and is not flagged. Re-copy the memory-lint skill files |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1150,3 +1151,24 @@ rewrites `*.sh` + `.githooks/*` to CRLF and bash fails (`bad interpreter: /usr/b
    and `mode`.
 3. **Report**: `.gitattributes` added/merged (LF for `*.sh` + `.githooks/*`); the bootstrap + hooks are now
    robust on Windows (Git Bash / WSL).
+
+## Rung: 4.20.2 → 4.20.3 — memory-lint catches an empty/malformed version manifest (PATCH)
+
+Skill-only: re-copy the updated `memory-lint` files. No memory-file shape change. Adds a deterministic
+`check_version_manifest` ERROR so a present-but-empty/malformed `.agent/version.md` fails the lint floor
+instead of silently breaking Mode B upgrade detection — closing the loop on the v4.20.1 bug (a truncating
+stamp one-liner emptied a target's `version.md`, which made an agent misread the repo's version). A
+*missing* `version.md` stays valid (the pre-versioning baseline) and is **not** flagged.
+
+1. **Re-copy the `memory-lint` skill** from `agent-skills/memory-lint/` into the target (this is a
+   tool-provided skill — overwrite in place, don't merge): `scripts/memory-lint.py`, `scripts/memory-lint.mjs`,
+   `scripts/test_memory_lint.py`, `scripts/test_memory_lint.mjs`, and `SKILL.md`. Then re-sync skill
+   adapters (`bash agent-skills/sync-adapters/scripts/sync-adapters.sh`, or any runtime at parity) so each
+   vendor's regenerated copy picks up the change.
+2. **Verify**: run `python3 .../memory-lint.py` (or the `.mjs`) at the target root — it should report
+   `OK` (a correctly-stamped `version.md` passes). Optionally run the test suite.
+3. **Stamp** `.agent/version.md` → `version: 4.20.3`, `last_upgraded: <today>`, preserving `enabled_with`
+   and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a truncate-first
+   one-liner** (the very bug this rung guards against).
+4. **Report**: `check_version_manifest` added to memory-lint (both runtimes, at parity, with tests); an
+   empty/malformed `.agent/version.md` now fails the lint, a missing one does not.
