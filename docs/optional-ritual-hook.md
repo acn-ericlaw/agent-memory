@@ -1,12 +1,16 @@
-# Optional: reinforce the after-session ritual with a hook
+# Reinforcing the after-session ritual with hooks
 
-> **Optional and opt-in.** agent-memory is deliberately no-code — the markdown files
-> are the product, and the after-session ritual (write a session log, update
-> `continuity.md`, run the review when due) is a convention an agent follows.
-> Conventions get skipped under time pressure. If you want the ritual *prompted*
-> rather than only documented, wire one of the lightweight, advisory hooks below.
-> **None of this is installed by `ENABLE.md`** — add it yourself if you want it, and
-> keep it advisory (a nudge, never a hard block) so the no-code philosophy holds.
+> **As of v4.19.0 the vendor-neutral reinforcement is installed by `ENABLE.md` and agent-activated** — a
+> committed **`.githooks/post-commit`** (auto-stubs a session log when a commit does real work without
+> one; activated via `git config core.hooksPath .githooks`) and a **CI floor**
+> (`.github/workflows/agent-memory.yml`, zero per-user setup). Both are **advisory** (never block) and
+> **no-code** (git/CI run them in the user's env; the tool runs nothing). Rationale + design:
+> `docs/DESIGN-ritual-triggers.md`; activation: `.githooks/README.md`.
+>
+> **This doc covers two *further, optional* layers** you add yourself if you want them — keep them
+> advisory (a nudge, never a hard block) so the no-code philosophy holds:
+> (1) **per-vendor end-of-turn hooks** (Claude `Stop`, Copilot `sessionEnd`/`postToolUse`) for real-time
+> nudges where a vendor supports them; (2) a **git pre-commit reminder**.
 
 The schemas below are illustrative — confirm the exact format against your runtime's
 current hook documentation before relying on them.

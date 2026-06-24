@@ -62,6 +62,7 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.15.0 | **ADR log upkeep trigger (MINOR):** the optional `docs/ADR.md` log is now *maintained*, not just documented — **once it exists**, making a new durable architecture decision, or superseding/invalidating a continuity fact carrying an `(ADR-NNNN)` tag, **prompts a human-gated ledger update** (add a newer ADR; mark the old `Superseded`/`Deprecated`, never delete; keep `formalizes:` ↔ `(ADR-NNNN)` in sync). Closes the 4.14.0 gap where the log could be adopted but had no cue to evolve. Re-syncs `templates/AGENTS.md` + root `AGENTS.md`, `templates/.agent/schema.md`, and `DECAY.md §12`; still **not auto-installed**. Surfaced dogfooding `mercury-composable`'s ADR opt-in |
 | 4.17.0 | **GitHub Copilot CLI skills adapter (MINOR):** a **5th** skills adapter target `.github/skills/<name>/SKILL.md` — Copilot CLI follows the open Agent Skills standard (same `SKILL.md` shape as the Claude/Kiro adapter) and auto-matches by `description` (also accepts `/<name>`). `sync skill adapters` now writes **five** adapters; `.github/skills/` is gitignored **path-scoped** (the rest of `.github/` — `copilot-instructions.md`, `workflows/` — stays tracked). Copilot also gains skills in the Mode C detection/migration table (`.github/skills/`, `.agents/skills/` → `agent-skills/`); `templates/.github/copilot-instructions.md` now points Copilot at the skills layer. Mirrors the 4.5.0 Kiro rung. Surfaced dogfooding `~/sandbox/simple-proxy` (Copilot CLI couldn't find a skill authored only in `agent-skills/`) |
 | 4.18.0 | **`sync skill adapters` is now a runnable script (MINOR):** a new built-in **`sync-adapters`** skill ships a deterministic adapter-regeneration script (Node + Python at parity, built-ins only) that (re)writes the five vendor adapters for every skill and prunes the orphans it generated. Replaces the prose-recipe-only sync that agents (e.g. Copilot CLI / Gemini) struggled to *run* — they hunted for a non-existent npm/MCP command and flailed. Enable + every Mode B re-enable now invoke the script; an agent also triggers it by description. Consistent with `no-build-step-agent-run` (same category as the `memory-lint` script). Surfaced dogfooding `~/sandbox/simple-proxy` |
+| 4.19.0 | **Vendor-neutral ritual triggers (MINOR):** the after-session ritual no longer relies on the agent self-triggering. Enable installs a committed **`.githooks/post-commit`** (auto-stubs a session log when a commit does real work without one; re-syncs adapters), **agent-activated** via `git config core.hooksPath .githooks` (no manual user step), plus a **CI floor** (`.github/workflows/agent-memory.yml`: `memory-lint` + advisory session-log check on push/PR, zero per-user setup). Advisory by default (opt-in `AGENT_MEMORY_STRICT=1` gate); `no-build-step-agent-run` holds (git/CI invoke them; the tool runs nothing). Honest limit: git can't auto-run hooks on a bare clone → CI is the backstop. From real client-team pain (ritual not followed even with Claude; Copilot-only teams had no triggers) + the zero-manual/untrained-user constraint; design `docs/DESIGN-ritual-triggers.md` |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1066,3 +1067,30 @@ agent/vendor/CI invokes, never the tool).
    `enabled_with` and `mode`.
 5. **Report**: `sync-adapters` built-in installed; `sync skill adapters` is now a runnable script;
    adapters re-synced via the script.
+
+## Rung: 4.18.0 → 4.19.0 — vendor-neutral ritual triggers (MINOR)
+
+Additive: installs the committed `.githooks/` + the CI workflow and **agent-activates** the local hook, so
+the after-session ritual fires reliably for any vendor **without the agent self-triggering**. No
+memory-file shape change. Surfaced from real client-team pain (ritual not followed through even with
+Claude; a Copilot-only team had no triggers) + the maintainer's **zero-manual / untrained-user** adoption
+constraint ("any manual operation is a barrier"). Design: `docs/DESIGN-ritual-triggers.md`.
+
+1. **Install the triggers** (copy verbatim from this tool's root): **`.githooks/`** (the `post-commit`
+   hook + its `README.md`) and **`.github/workflows/agent-memory.yml`** (the CI floor). Both are
+   **tracked** (committed, they travel); **no `.gitignore` change** (only `.github/skills/` is ignored,
+   path-scoped — `.github/workflows/` stays tracked). **Ensure `.githooks/post-commit` is executable**
+   (`chmod +x`; committed mode `100755`) — git silently ignores a non-executable hook. Warn-before-overwrite
+   if a target already has a customized `.github/workflows/agent-memory.yml`.
+2. **Activate the local hook:** run `git config core.hooksPath .githooks` in the target — **the agent does
+   this; never ask the user.** Idempotent; reversible (`git config --unset core.hooksPath`). CI needs no
+   activation (a committed workflow runs server-side). *Honest limit:* git can't auto-run committed hooks
+   on a fresh clone (security), so where no agent has run, **CI is the backstop**.
+3. **Re-sync the generic docs** (copy verbatim where different — see "Source of truth"): `AGENTS.md` (from
+   `templates/AGENTS.md` — the "reinforced, not just documented" note + definition-of-done framing).
+   `docs/optional-ritual-hook.md` is **tool-only** (not installed into targets);
+   `DECAY.md`/`REVIEW.md`/`SKILLS.md`/`.agent/schema.md` unchanged.
+4. **Stamp** `.agent/version.md` → `version: 4.19.0`, `last_upgraded: <today>`, preserving `enabled_with`
+   and `mode`.
+5. **Report**: ritual triggers installed (`.githooks/` + CI) and the local hook activated; the
+   after-session ritual now fires vendor-neutrally (advisory; CI is the zero-config floor).

@@ -11,6 +11,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.19.0, 6/24/2026
+
+> **Vendor-neutral ritual triggers (MINOR).** The after-session ritual (session log, review, sync) no
+> longer depends on the agent *self-triggering* — which failed in practice: client teams report it isn't
+> followed through even with Claude, a Copilot-only team had no triggers at all, and the hook layer was
+> opt-in, per-vendor, and didn't travel into targets. Enable now installs a committed, vendor-neutral
+> **`.githooks/post-commit`** and a **CI floor**, and the **agent activates** the local hook — **zero
+> manual user step** (the adoption constraint: any manual op is a barrier as the protocol gains traction
+> and lands with untrained users). `no-build-step-agent-run` holds: git/CI invoke them in the user's env;
+> the tool runs nothing. Design: `docs/DESIGN-ritual-triggers.md`.
+
+### Added
+- **`.githooks/post-commit`** (bash, advisory, never blocks) — after a commit: auto-stubs a session log
+  when the commit did real work but carried none (capture; the thoughtful summary stays the agent's job —
+  same split as `memory-lint`) and re-syncs adapters when a skill changed. Activated by
+  `git config core.hooksPath .githooks` (the agent runs this at enable). Plus `.githooks/README.md`.
+- **`.github/workflows/agent-memory.yml`** — the **CI floor**: runs `memory-lint` + an advisory
+  session-log presence check on push/PR with **zero per-user setup** (the untrained-user-proof layer).
+  Advisory by default; opt-in gate via `AGENT_MEMORY_STRICT=1`.
+- **`docs/DESIGN-ritual-triggers.md`** — the design (layered: agent-primary + git-hook/CI net + optional
+  vendor hooks; the capture/judgment split; the no-code reconciliation).
+
+### Changed
+- **`ENABLE.md`** — Step 6 installs `.githooks/` + the CI workflow and **activates** `core.hooksPath`
+  (agent-run, no user step); Notes scope + the honest git-clone-activation limit (CI backstops).
+- **`AGENTS.md` (root + template)** — the ritual note is now "reinforced, not just documented" + a
+  **definition-of-done** framing (*a task that changed tracked files isn't done until its log exists*).
+- **`docs/optional-ritual-hook.md`** — reframed: the vendor-neutral git-hook + CI are now installed and
+  agent-activated; this doc is the *optional* per-vendor end-of-turn hooks + git pre-commit reminder.
+- `UPGRADE.md` (rung + table), `README`, `VERSION` → 4.19.0.
+
+### Honest limit
+- Git **cannot** auto-run committed hooks on a fresh clone (security). So local hooks are
+  **agent-activated** (no user step in the common path) and **CI is the always-on, zero-config backstop**.
+
 ## Version 4.18.0, 6/24/2026
 
 > **`sync skill adapters` is now a runnable script (MINOR).** A new built-in **`sync-adapters`** skill

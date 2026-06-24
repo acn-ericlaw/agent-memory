@@ -421,6 +421,24 @@ verbatim from this tool's root** (they are generic — no placeholders):
 These must travel into the target because the review ritual (and skill sync/adopt) run
 *inside* the enabled repo. (`UPGRADE.md` is tool-operator-only — do **not** install it.)
 
+**Ritual triggers (v4.19.0) — install + activate (no manual user step).** Also copy verbatim from this
+tool's root, so the after-session ritual fires reliably for *any* vendor (see `docs/DESIGN-ritual-triggers.md`):
+
+- **`.githooks/`** — the committed, vendor-neutral git hooks (`post-commit` + its `README.md`): auto-stub
+  a session log when a commit does real work without one; re-sync adapters when a skill changed.
+- **`.github/workflows/agent-memory.yml`** — the **CI floor**: runs `memory-lint` + an advisory
+  session-log check on push/PR.
+
+**Ensure `.githooks/post-commit` is executable** (`chmod +x`; it must be committed with mode `100755`) —
+git **silently ignores** a non-executable hook. Then **the agent activates the local hook**: run
+`git config core.hooksPath .githooks` in the target — **do this yourself; never ask the user** (the
+adoption constraint: any manual step is a barrier). CI needs
+no activation (a committed workflow runs server-side, zero per-user config). *Honest limit:* git can't
+auto-run committed hooks on a fresh clone (security), so where no agent has run, **CI is the backstop**.
+Both `.githooks/` and `.github/workflows/` are **tracked** (they travel); only `.github/skills/` is
+gitignored. The hooks/CI are **advisory** (never block); the tool runs nothing itself
+(`no-build-step-agent-run` — git/CI invoke them in the user's env).
+
 **Conflict handling:**
 - If Mode C ran and a vendor bootstrap file was migrated, the migration step
   already moved it to `legacy/` — proceed to install our version.
@@ -585,7 +603,11 @@ Respond accordingly.
   `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`, `.github/skills/`), `review-scratch/` (gitignored
   fresh-context review scratch, if the review pair is accepted), `DECAY.md`, `REVIEW.md`,
   `SKILLS.md`, `.gitignore` (add-only, never remove existing entries),
-  `.github/copilot-instructions.md`, and the bootstrap files listed in Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a
+  `.github/copilot-instructions.md`, `.githooks/` + `.github/workflows/agent-memory.yml` (the v4.19.0
+  ritual triggers), and the bootstrap files listed in Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a
   target.)
+- **Activating the local git hook** (`git config core.hooksPath .githooks`) is the one allowed git-*config*
+  change in the target — it points git at the committed `.githooks/`; it writes no source and is reversible
+  (`git config --unset core.hooksPath`). Do it for the user; never ask them to.
 - If the target repo is the agent-memory tool itself, say so and stop.
 - Always preserve vendor originals under `legacy/` — they are user data.

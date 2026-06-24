@@ -159,9 +159,12 @@ expected (the decay math counts log files — `DECAY.md` §4).
 > The ledger stays continuous for anything that touched a *tracked* file; the review treats a lite log
 > as a normal reference-free session, so usage is unaffected.
 
-> Optional reinforcement: wire a lightweight Stop or pre-commit hook so this ritual
-> is *prompted*, not merely documented (see `docs/optional-ritual-hook.md`). It stays
-> optional — the protocol itself is no-code.
+> **Reinforced, not just documented (v4.19.0).** Enabled repos ship vendor-neutral triggers — a committed
+> `.githooks/post-commit` (auto-stubs a session log when a commit does real work without one;
+> agent-activated via `git config core.hooksPath .githooks`) + a CI floor
+> (`.github/workflows/agent-memory.yml`, zero per-user setup) — so the ritual fires for any vendor. Treat
+> the log as part of **done**. Advisory (never blocks) + no-code (git/CI run them in your env; the tool
+> runs nothing). Design + per-vendor hook extras: `docs/DESIGN-ritual-triggers.md`, `docs/optional-ritual-hook.md`.
 
 ### Multi-Agent Continuity
 
