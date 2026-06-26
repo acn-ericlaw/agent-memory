@@ -216,6 +216,7 @@ it in place** — additively, never destructively.
 | 4.20.1 | **Self-init in `copilot-instructions.md`:** v4.20.0's self-init reached Claude but not Copilot CLI (its `start` front-loads `copilot-instructions.md` + summarizes). Folds the first-run init into the top of `copilot-instructions.md` so Copilot runs `bash .githooks/init.sh` before summarizing; the `init.sh` fallback + CI floor are unchanged |
 | 4.20.2 | **Windows line-ending hardening:** a `.gitattributes` pins `*.sh` + `.githooks/*` to LF so Git for Windows (`core.autocrlf=true`) doesn't rewrite them to CRLF and break bash (`bad interpreter: …^M`). Installed/merged into targets additively. Makes the bootstrap + hooks robust on Windows (Git Bash / WSL), not luck-of-the-default. From a Copilot Windows-feasibility check |
 | 4.20.3 | **memory-lint catches an empty/malformed version manifest:** a deterministic `check_version_manifest` ERROR (both runtimes, at parity, with tests) so a present-but-empty/malformed `.agent/version.md` fails the lint floor (CI + reviews) instead of silently breaking Mode B upgrade detection. Closes the loop on the v4.20.1 bug (a truncating stamp one-liner emptied a target's `version.md` → an agent misread the version). A *missing* `version.md` stays valid (pre-versioning baseline) and is not flagged |
+| 4.21.0 | **Google Antigravity (`agy`) skills adapter:** a **6th** skills adapter target `.agents/skills/<name>/SKILL.md` — Antigravity (the Gemini CLI successor) merged custom commands into the open Agent Skills standard and reads `.agents/skills/`, **not** the old `.gemini/commands/*.toml`, so `agy` reported `/<command>` as not found despite `init.sh` populating the Gemini adapter. `sync skill adapters` now writes six adapters (same `SKILL.md` shape as the Claude/Kiro/Copilot adapter); `.agents/` is gitignored. The `.gemini/commands` TOML adapter stays for now so Gemini CLI keeps working during the transition. Antigravity added to the Mode C detection/migration + bootstrap tables. Found dogfooding `agy` on an enabled repo |
 
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
@@ -240,6 +241,7 @@ The tool detects and migrates from these vendors:
 | GPT / Codex | `AGENTS.md` (non-ours), `.codex/` | Steering, history |
 | Zed AI | `.rules`, `.zed/` | Steering, history (with safety check) |
 | Gemini CLI | `GEMINI.md` (non-ours), `.gemini/` | Steering, history |
+| Google Antigravity (`agy`) | `.agents/` (`skills/`, `mcp_config.json`), `~/.gemini/antigravity-cli/` | Steering, **skills → `agent-skills/`** (Antigravity is the Gemini CLI successor; reads `.agents/skills/`, not `.gemini/commands/`) |
 | Kiro | `.kiro/` (`steering/`, `skills/`, `specs/`); also auto-reads root `AGENTS.md` | Steering → instructions, **skills → `agent-skills/`**, specs preserved under `legacy/` |
 
 Migration rules per vendor: see [`MIGRATE.md`](./MIGRATE.md).
@@ -290,6 +292,7 @@ claude
 |---|---|
 | Claude Code | `CLAUDE.md` |
 | Gemini CLI | `GEMINI.md` |
+| Google Antigravity (`agy`) | `AGENTS.md` (Agent Skills standard; reads `.agents/skills/`) |
 | ChatGPT / Codex | `AGENTS.md` |
 | Cursor | `.cursorrules` |
 | Windsurf | `.windsurfrules` |

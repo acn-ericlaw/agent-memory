@@ -11,6 +11,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.21.0, 6/26/2026
+
+> **Google Antigravity (`agy`) skills adapter (MINOR).** Adds a **6th** skills adapter target,
+> `.agents/skills/<name>/SKILL.md`. Antigravity — the successor to Gemini CLI — merged custom commands
+> into the open **Agent Skills** standard and reads workspace skills from **`.agents/skills/`**, **not**
+> the old `.gemini/commands/*.toml`. So on an enabled repo, `init.sh` faithfully populated the Gemini
+> adapter, yet `agy` reported `/<command>` (e.g. `/memory-lint`) as **not found** — it never looks in
+> `.gemini/commands`. The new adapter uses the same `SKILL.md` shape as the Claude/Kiro/Copilot adapters,
+> so it is a one-line addition per runtime, no new format. The `.gemini/commands` TOML adapter **stays**
+> for now so Gemini CLI keeps working through the transition. Found dogfooding `agy` on an enabled repo.
+
+### Added
+- **6th vendor adapter `.agents/skills/<name>/SKILL.md`** in all three sync-adapters runtimes
+  (`sync-adapters.py` / `.mjs` / `.sh`, kept byte-for-byte equivalent — verified identical output): each
+  now writes **six** adapters per skill and prunes orphaned `.agents/skills/` dirs by the shared pointer
+  signature. `.agents/` added to the root and template `.gitignore` (regenerated, local-only).
+- **Google Antigravity (`agy`)** added to the Mode C detection/migration table and the bootstrap-files
+  table in `README.md` (reads `AGENTS.md` + `.agents/skills/`; Gemini CLI successor). Vendor adapter
+  lists updated across `ENABLE.md`, `templates/AGENTS.md`, `templates/.agent/schema.md`, and the
+  `sync-adapters` `SKILL.md` (five → six). `VERSION` → 4.21.0.
+
 ## Version 4.20.3, 6/24/2026
 
 > **memory-lint catches an empty/malformed version manifest (PATCH).** Adds a deterministic

@@ -8,9 +8,11 @@
 #
 # The shared skills layer (agent-skills/) is likewise TRACKED. The runtime dirs below
 # also hold local, regenerated skill *adapters* (.claude/skills/, .gemini/commands/,
-# .cursor/rules/, .kiro/skills/, .github/skills/) — local-only; the neutral agent-skills/
-# is the shared source of truth. (GitHub Copilot's adapter lives at .github/skills/, ignored
-# path-scoped below — .github/ itself stays tracked for copilot-instructions.md + workflows/.)
+# .cursor/rules/, .kiro/skills/, .github/skills/, .agents/skills/) — local-only; the neutral
+# agent-skills/ is the shared source of truth. (GitHub Copilot's adapter lives at .github/skills/,
+# ignored path-scoped below — .github/ itself stays tracked for copilot-instructions.md + workflows/.
+# .agents/skills/ is the Agent Skills standard dir read by Google Antigravity 'agy', the Gemini CLI
+# successor — Antigravity ignores .gemini/commands, so this adapter is what makes /commands work there.)
 
 # Agent / AI-IDE runtime directories
 .kiro/
@@ -21,6 +23,7 @@
 .codeium/
 .gemini/
 .github/skills/
+.agents/
 .cline/
 .roo/
 .zed/

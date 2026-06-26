@@ -264,7 +264,8 @@ per-vendor engine needed (the agent is the runtime).
 For vendors with a native skill/command system, thin **adapters** auto-trigger the skill
 in that runtime — each a generated *pointer* to the neutral skill, never a copy:
 `.claude/skills/<name>/SKILL.md`, `.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc`,
-`.kiro/skills/<name>/SKILL.md`, `.github/skills/<name>/SKILL.md`.
+`.kiro/skills/<name>/SKILL.md`, `.github/skills/<name>/SKILL.md`, `.agents/skills/<name>/SKILL.md`
+(the last is the Agent Skills standard dir read by Google Antigravity `agy`, the Gemini CLI successor).
 Adapter dirs are personal/per-machine (gitignored) and are **regenerated locally** on
 enable/migrate, and **on demand** — say **"sync skill adapters"** to (re)create them after a
 clone/pull, since they're gitignored and don't travel. Only the neutral `agent-skills/` is shared.

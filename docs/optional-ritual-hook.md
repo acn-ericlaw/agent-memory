@@ -92,7 +92,7 @@ Save to `.github/hooks/`:
 ```
 
 **Notes:**
-- It invokes the **canonical `sync-adapters` script** — so it regenerates **all five** vendor adapters
+- It invokes the **canonical `sync-adapters` script** — so it regenerates **all six** vendor adapters
   and prunes orphans, with **no recipe duplication** (the script is the single source of truth).
 - It runs on **every tool use** (idempotent; a quick Node/Python invocation). Switch the event to
   `sessionEnd` if you'd rather sync once per session.

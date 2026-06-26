@@ -139,9 +139,9 @@ clone/pull, and a rung that adds a new adapter target (e.g. Kiro in 4.5.0) leave
 adapters incomplete. So on **any** enable and **any** Mode B re-enable — including "already up to
 date" — **run the `sync skill adapters` script** (v4.18.0: `bash
 agent-skills/sync-adapters/scripts/sync-adapters.sh`, or the `.mjs`/`.py`; see `SKILLS.md`) as the
-closing skills step. For each `agent-skills/<name>/` it (re)writes the five vendor adapters
+closing skills step. For each `agent-skills/<name>/` it (re)writes the six vendor adapters
 (`.claude/skills/<name>/SKILL.md`, `.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc`,
-`.kiro/skills/<name>/SKILL.md`, `.github/skills/<name>/SKILL.md`) and **prunes** orphaned adapters it
+`.kiro/skills/<name>/SKILL.md`, `.github/skills/<name>/SKILL.md`, `.agents/skills/<name>/SKILL.md`) and **prunes** orphaned adapters it
 generated (signature-guarded — never touches a hand-authored vendor file; for Copilot, only
 `.github/skills/`, never the rest of `.github/`). Older targets without the `sync-adapters` built-in
 get it from the 4.18.0 rung; if absent, fall back to the prose recipe in `SKILLS.md`.
@@ -1172,3 +1172,27 @@ stamp one-liner emptied a target's `version.md`, which made an agent misread the
    one-liner** (the very bug this rung guards against).
 4. **Report**: `check_version_manifest` added to memory-lint (both runtimes, at parity, with tests); an
    empty/malformed `.agent/version.md` now fails the lint, a missing one does not.
+
+## Rung: 4.20.3 → 4.21.0 — Google Antigravity (`agy`) skills adapter (MINOR)
+
+Skill-only: re-copy the updated `sync-adapters` files, add `.agents/` to `.gitignore`, then re-sync. No
+memory-file shape change. Adds a **6th** vendor adapter target, `.agents/skills/<name>/SKILL.md` — the
+open Agent Skills standard dir read by **Google Antigravity (`agy`)**, the Gemini CLI successor.
+Antigravity reads `.agents/skills/`, **not** the old `.gemini/commands/*.toml`, so on an enabled repo
+`init.sh` populated the Gemini adapter yet `agy` reported `/<command>` (e.g. `/memory-lint`) as **not
+found**. The `.gemini/commands` TOML adapter **stays** (Gemini CLI keeps working through the transition).
+
+1. **Re-copy the `sync-adapters` skill** from `agent-skills/sync-adapters/` into the target (tool-provided
+   — overwrite in place, don't merge): `scripts/sync-adapters.sh`, `scripts/sync-adapters.mjs`,
+   `scripts/sync-adapters.py`, and `SKILL.md`. (All three runtimes now write the `.agents/skills/`
+   adapter and prune its orphans; they remain byte-for-byte equivalent.)
+2. **Add `.agents/` to `.gitignore`** (after the `.github/skills/` line), add-only — it joins the other
+   regenerated, local-only adapter dirs. Update the adapter-list comment (five → six) if you mirror it.
+3. **Re-sync skill adapters** at the target root: `bash agent-skills/sync-adapters/scripts/sync-adapters.sh`
+   (or any runtime at parity). Confirm `.agents/skills/<name>/SKILL.md` now exists for every skill.
+4. **Verify**: in Antigravity, `/<name>` (e.g. `/memory-lint`) now resolves; reload/rescan if `agy`
+   loads skills at startup. Run `memory-lint` — should report `OK`.
+5. **Stamp** `.agent/version.md` → `version: 4.21.0`, `last_upgraded: <today>`, preserving `enabled_with`
+   and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a truncate-first one-liner.**
+6. **Report**: 6th adapter (`.agents/skills/`) added for Antigravity; `.agents/` gitignored; adapters
+   re-synced; Gemini CLI (`.gemini/commands`) still served during the transition.

@@ -328,8 +328,8 @@ on any vendor). See `docs/DESIGN-skills-layer.md` and `.agent/schema.md`.
 
 **Adapter generation** is the canonical **`sync skill adapters`** operation in **`SKILLS.md`** — a
 **runnable script** (v4.18.0; the `sync-adapters` built-in, installed in 5i): for each
-`agent-skills/<name>/SKILL.md` it writes the Claude / Gemini / Cursor / Kiro / Copilot pointers and
-prunes orphans — idempotent, gitignored-only. **Run the script as the closing skills step of every
+`agent-skills/<name>/SKILL.md` it writes the Claude / Gemini / Cursor / Kiro / Copilot / Antigravity
+pointers and prunes orphans — idempotent, gitignored-only. **Run the script as the closing skills step of every
 enable** (`bash agent-skills/sync-adapters/scripts/sync-adapters.sh`, or the `.mjs`/`.py`; and, per
 `UPGRADE.md`, on every Mode B re-enable), so the adapters are *materialized*, not merely recommended —
 a skill is then usable via its vendor's native auto-trigger immediately. Adapters don't travel with a clone/pull (they're gitignored), so a
@@ -355,7 +355,7 @@ gets**, because they support the core workflow:
   returned critique through a bounded, validated, human-gated loop. See
   `docs/DESIGN-fresh-context-review.md`.
 - **`sync-adapters`** (v4.18.0) — the runnable **`sync skill adapters`** operation (bash + Node + Python
-  at parity; **bash needs no runtime install**): (re)writes the five vendor adapters for every skill and
+  at parity; **bash needs no runtime install**): (re)writes the six vendor adapters for every skill and
   prunes the orphans it generated (signature-guarded). Enable and every Mode B re-enable invoke it; an agent can also trigger it by
   description. Replaces the prior prose-recipe-only sync that agents (e.g. Copilot CLI) struggled to
   perform — they hunted for a non-existent command.
@@ -537,9 +537,9 @@ describe what was intended.
    vendor skills (e.g. `.claude/skills/`), confirm each was promoted to
    `agent-skills/<name>/SKILL.md` (committed), the original preserved under `legacy/`.
    **Assert adapter completeness (v4.12.0):** after the closing `sync skill adapters` (Step 5h),
-   **every** `agent-skills/<name>/` has all five adapters present
+   **every** `agent-skills/<name>/` has all six adapters present
    (`.claude/skills/<name>/SKILL.md`, `.gemini/commands/<name>.toml`, `.cursor/rules/<name>.mdc`,
-   `.kiro/skills/<name>/SKILL.md`, `.github/skills/<name>/SKILL.md`) and no *generated* adapter is orphaned (each has a live
+   `.kiro/skills/<name>/SKILL.md`, `.github/skills/<name>/SKILL.md`, `.agents/skills/<name>/SKILL.md`) and no *generated* adapter is orphaned (each has a live
    `agent-skills/<name>/`). Any miss or orphan ⇒ re-run sync. (Enforcement is now *checked*, not
    convention — the loose end that a recommend-only check left open.)
 
@@ -565,7 +565,7 @@ Print a clear summary including migration details if Mode C ran:
   Migrated (Mode C only):
   • <vendor>:  <files>  →  <where>
   • Sessions converted: N (from <oldest>  to  <newest>)
-  • Skills promoted: N → agent-skills/  (+ Claude / Gemini / Cursor / Kiro / Copilot adapters regenerated)
+  • Skills promoted: N → agent-skills/  (+ Claude / Gemini / Cursor / Kiro / Copilot / Antigravity adapters regenerated)
 
   Created:
   • memory/instructions.md
@@ -616,7 +616,7 @@ Respond accordingly.
 - Never modify `package.json`, `Cargo.toml`, etc.
 - Only create/modify files within: `memory/`, `.agent/`, `legacy/`, `agent-skills/` (the
   neutral capability layer) and its regenerated per-machine adapters (`.claude/skills/`,
-  `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`, `.github/skills/`), `review-scratch/` (gitignored
+  `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`, `.github/skills/`, `.agents/skills/`), `review-scratch/` (gitignored
   fresh-context review scratch, if the review pair is accepted), `DECAY.md`, `REVIEW.md`,
   `SKILLS.md`, `.gitignore` (add-only, never remove existing entries),
   `.github/copilot-instructions.md`, `.githooks/` + `.github/workflows/agent-memory.yml` (the v4.19.0

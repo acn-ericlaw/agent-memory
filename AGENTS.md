@@ -77,7 +77,7 @@ If a `agent-skills/` directory exists, it holds the project's **capabilities** �
 vendor-neutral `agent-skills/<name>/SKILL.md` files. When a task matches a skill's
 `description`, read and follow that `SKILL.md` (and any scripts it references) — the agent
 is the runtime, so it works on any vendor. Native adapters (`.claude/skills/`,
-`.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`, `.github/skills/`) are thin, gitignored, regenerated
+`.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`, `.github/skills/`, `.agents/skills/`) are thin, gitignored, regenerated
 pointers — **never commit them** (only `agent-skills/` is shared); the source of truth is
 always `agent-skills/<name>/SKILL.md`.
 

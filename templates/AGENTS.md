@@ -52,7 +52,7 @@ matches a skill's `description`, read and follow that `SKILL.md` (and any script
 references). The agent is the runtime — works on any vendor, no engine.
 
 Per-vendor adapters (`.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`,
-`.github/skills/`) are thin, gitignored, regenerated pointers — **never commit them** (only
+`.github/skills/`, `.agents/skills/`) are thin, gitignored, regenerated pointers — **never commit them** (only
 `agent-skills/` is shared); the source of truth is always `agent-skills/<name>/SKILL.md`.
 
 **Authoring, syncing, adopting, sanity-checking, or editing a tool-provided skill?** See **`SKILLS.md`**
