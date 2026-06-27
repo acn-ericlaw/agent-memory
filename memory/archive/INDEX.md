@@ -43,3 +43,17 @@
 - ot-reverify-invariants-20260618 — completed Open Thread: invariants + Vision re-confirmed 2026-06-18 — swept: completed 2026-06-18, > archive_window — 2026-Q2.md
 - ot-copilot-cli-validation — completed Open Thread: GitHub Copilot CLI validated (reads AGENTS.md, full protocol; baseline skills) — swept: completed 2026-06-18, > archive_window — 2026-Q2.md
 - skills-layer-v411-fixes — shipped v4.1.1 skills-layer refinements (folder→agent-skills/, Cursor adapter fix, collision guard) — faded (sslu 21 > archive_window; reactivated 2026-06-18 then re-faded) — 2026-Q2.md
+- ot-system-skill-provenance-v4130 — shipped v4.13.0 — tool-provided (system) skills marked provenance: agent-memory-builtin + fork/upstream advisory — faded (sslu 22 > archive_window 20) — 2026-Q2.md
+- ot-memlint-dangling-crossfile-v4121 — shipped v4.12.1 — memory-lint dangling-link check resolves supersession targets across memory/*.md (e.g. vision.md) — faded (sslu 23 > archive_window 20) — 2026-Q2.md
+- ot-enforce-sync-adapters-v4120 — shipped v4.12.0 — enforce 'sync skill adapters' at enable + every Mode B re-enable (adapters materialized) — faded (sslu 23 > archive_window 20) — 2026-Q2.md
+- ot-review-step6-prose — fixed v4.11.1 — REVIEW.md step-6 archival guard counts only ## Memory References hits (prose-livelock fix) — faded (sslu 26 > archive_window 20) — 2026-Q2.md
+- memlint-node-runtime-v4110 — shipped v4.11.0 — memory-lint Node runtime (memory-lint.mjs) at byte-parity with Python — faded (sslu 24 > archive_window 20) — 2026-Q2.md
+- ot-memlint-anchor-bug — fixed v4.10.1 — memory-lint Memory-References parser line-anchored (prose false-positive guard) — faded (sslu 34 > archive_window 20) — 2026-Q2.md
+- ot-memlint-pinned-nested — fixed v4.10.4 — memory-lint pinned_open_threads handles deeply-nested sub-items — faded (sslu 29 > archive_window 20) — 2026-Q2.md
+- lightweight-tracked-change-v4103 — shipped v4.10.3 — lightweight-mode keyed to tracked-file (git-diff) change; gitignored-only writes = no log — faded (sslu 25 > archive_window 20) — 2026-Q2.md
+- dogfood-hello-world-skill — dogfood: hello-world portable skill (skills-layer self-test) — faded (sslu 25 > archive_window 20) — 2026-Q2.md
+- lightweight-skills-v440 — shipped v4.4.0 — lightweight skills; per-session skills check removed (conscious on-demand action) — faded (sslu 25 > archive_window 20) — 2026-Q2.md
+- review-verify-v480 — shipped v4.8.0 — review self-verify guard against decay miscounts (grep last archive_window before archiving) — faded (sslu 38 > archive_window 20) — 2026-Q2.md
+- fresh-review-v4100 — shipped v4.10.0 — fresh-context second-opinion + apply-critique skill pair; ENABLE installs the built-ins — faded (sslu 23 > archive_window 20) — 2026-Q2.md
+- bp-fresh-context-review — blueprint (completed) — fresh-context second-opinion review loop; realized by v4.10.0 — faded (sslu 37 > archive_window 20) — 2026-Q2.md
+- ot-reverify-invariants-20260620 — completed invariant re-verify thread (5 core + Vision confirmed 2026-06-20); superseded by the 2026-06-27 cadence check — faded (sslu 21 > archive_window 20) — 2026-Q2.md
