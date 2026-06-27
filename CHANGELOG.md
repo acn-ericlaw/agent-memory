@@ -11,6 +11,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.22.0, 6/27/2026
+
+> **Discovery, consent & merge-friendliness + `MERGE.md` (MINOR).** One release bundling four additive
+> improvements developed iteratively in a single session (dev-numbered 4.22–4.25) and **consolidated into
+> one version** per a new *"one version per release"* policy — `VERSION` and the upgrade ladder track
+> *releases*, not per-feature dev iterations (granular history lives in the session logs + Open Threads).
+> The work came from three real signals — a client enablement complaint, a teammate-concurrency review,
+> and a GitHub Copilot review — and was hardened by a full **fresh-context review loop validated
+> end-to-end by a different vendor**: Gemini 3.1 Pro critiqued the milestone *and* re-validated the
+> applied fixes, proving the `second-opinion` → `apply-critique` pair cross-vendor on this very release.
+
+### Added
+- **Curious knowledge harvest at enable** (`ENABLE.md` Step 4b) — discovery now **recursively** descends
+  every documentation tree (`docs/`, `doc/`, `wiki/`, `rfcs/`, `adr/`, … all subfolders) and sweeps repo +
+  module roots for human-authored knowledge markdown (decision logs, ADRs, kanban/roadmap, architecture &
+  design notes, CONTRIBUTING, RFCs), distilling the durable facts into memory (map-don't-mirror). Bounded
+  by a read **budget with disclosure** — overflow is recorded as a `(knowledge-harvest)` Open Thread so
+  nothing vanishes silently. From a client complaint: a canonical `docs/` tree was skipped entirely and a
+  recursive re-ask still stopped at depth-1.
+- **Fresh-enable advisory + discovery depth** (`ENABLE.md` Mode A) — a fresh enable now opens with a
+  concise **exec summary of the protocol** (what it is, what it writes, what it leaves untouched, that it's
+  committed + shared) and a `cancel` gate, for **informed consent** rather than a blind yes. It then offers
+  a **discovery depth**: standard scan (default) or an **`/init`-depth deep analysis** — which borrows the
+  *capability* of a vendor's built-in `/init` but writes findings into the **neutral** memory layer, never
+  a vendor steering file. A **first enable session log** records the chosen depth.
+- **`MERGE.md`** — a new installed, no-code, on-demand protocol for resolving a git merge/rebase conflict
+  in `memory/`. Tiered + human-gated, enforcing the `never-pick-a-winner` invariant: classify the hunk →
+  Tier-1 mechanical (additive → union/keep-both; scalar → take-later, deterministic) → Tier-2 semantic
+  clash (**the AI never decides** — preserve both + raise a Contradiction; a supersession only on the
+  human's explicit instruction) → `memory-lint` gate → **human approves the merge commit** (never
+  auto-commit). Joins `DECAY`/`REVIEW`/`SKILLS` as a root protocol doc, read on demand.
+- **`memory-lint` check 7** — a leftover VCS merge-conflict marker (`<<<<<<<` / `>>>>>>>` / diff3
+  `|||||||`) in the **live top-level `memory/*.md`** files is now an **ERROR** (a bare `=======` line is
+  exempt — it's a valid Markdown setext heading underline). `sessions/` and `archive/` are **excluded**
+  (immutable/append narrative that legitimately *quotes* markers — e.g. a session log pasting a diff). Both
+  runtimes at parity, with mirror tests.
+
+### Changed
+- **`continuity.md` merge-friendliness** — `status` is now spec'd as a **short current-state line, not a
+  changelog** (`.agent/schema.md` + `AGENTS.md`): a single ~20 KB accreted `status` line was a
+  merge-conflict hotspot for concurrent teammates and duplicated the upgrade ladder. A new schema section
+  **"Concurrency & merge-friendliness"** documents the conventions (one fact per line; append-only sections
+  → keep-both/union on conflict; scalar bumps → take-later; same-thread clash → human). This repo's own
+  `status` line slimmed 19,828 → ~1,100 chars.
+- **"One version per release" policy** added to `UPGRADE.md`'s versioning model — bump for a release event,
+  not per feature; keep a single pending version while unreleased; magnitude = the largest change in the
+  batch; consolidate working-tree bumps beyond `HEAD` before committing. (This release is the first to
+  apply it: four dev-iterations → one v4.22.0.)
+- **`upgrades-additive` invariant + ADR-0005** — added `sync-adapters` to the managed-built-ins example
+  list (it became a tool-managed built-in in v4.18.0). Surfaced and applied during a maintainer
+  **invariant re-verification** (all five core invariants + the Vision re-confirmed, none superseded).
+- **`REVIEW.md` step 9** now codifies that archived ids go in the `## Memory Review` block, **never** under
+  `## Memory References` (which re-arms the over-archival guard → false reactivation). **`.githooks/README.md`**
+  documents that a feat/memory commit split trips the advisory hook on the code commit (expected/benign;
+  prefer an atomic commit). `VERSION` → 4.22.0.
+
+### Notes
+- **Mostly operator-side** (`ENABLE.md`) plus the `memory-lint` skill and one new root doc (`MERGE.md`) —
+  **no memory-file shape change**. The single `4.21.0 → 4.22.0` upgrade rung bundles all four features.
+- A full **memory review** ran alongside this release (continuity 753 → 577 lines; 14 faded facts archived).
+
 ## Version 4.21.0, 6/26/2026
 
 > **Google Antigravity (`agy`) skills adapter (MINOR).** Adds a **6th** skills adapter target,
