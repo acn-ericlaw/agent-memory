@@ -299,3 +299,28 @@ test("check_conflict_markers reports one per file", () => {
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("check_conflict_markers ignores a marker in a session log (sessions/ excluded)", () => {
+  // sessions/ legitimately quotes markers (documenting a diff/terminal output).
+  const root = setupMemFiles({
+    "continuity.md": "# c\nclean\n",
+    "sessions/2026-06-27-120000.md": "# Session\n```\n<<<<<<< HEAD\nx\n=======\ny\n>>>>>>> b\n```\n",
+  });
+  try {
+    assert.deepEqual(check_conflict_markers(root), []);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("check_conflict_markers ignores a marker in the archive (archive/ excluded)", () => {
+  const root = setupMemFiles({
+    "continuity.md": "# c\nclean\n",
+    "archive/2026-Q2.md": "<<<<<<< HEAD\nx\n>>>>>>> b\n",
+  });
+  try {
+    assert.deepEqual(check_conflict_markers(root), []);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});

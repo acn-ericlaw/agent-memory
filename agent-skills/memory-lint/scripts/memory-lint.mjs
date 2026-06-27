@@ -246,34 +246,27 @@ export function check_version_manifest(root) {
   return [];
 }
 
-function collect_md(dir, out) {
-  // Collect every *.md under dir recursively; caller sorts by full path to match
-  // Python's sorted(glob("**/*.md")) code-point ordering.
-  if (!existsSync(dir)) return out;
-  for (const ent of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, ent.name);
-    if (ent.isDirectory()) collect_md(full, out);
-    else if (ent.name.endsWith(".md")) out.push(full);
-  }
-  return out;
-}
-
 export function check_conflict_markers(root) {
-  // (7) No leftover VCS merge-conflict markers in any memory/*.md — an unresolved
-  // conflict silently corrupts shared memory, and continuity.md (one file every
-  // teammate edits) is the likely culprit. Match git's `<<<<<<<` / `>>>>>>>` and the
-  // diff3 `|||||||` line markers; deliberately do NOT match a bare `=======` line,
-  // which is a valid Markdown setext heading underline (would false-positive).
+  // (7) No leftover VCS merge-conflict markers in the LIVE top-level memory files —
+  // the ones every teammate concurrently edits and the agent reads as truth
+  // (continuity.md, instructions.md, vision.md, decay-policy.md, smoke-test.md). We scan
+  // `memory/*.md` only (non-recursive): `sessions/` and `archive/` are deliberately
+  // EXCLUDED — they are immutable/append narrative that legitimately *quotes* conflict
+  // markers (a session log pasting terminal output or a real diff to document it), so
+  // scanning them would false-positive. Match git's `<<<<<<<` / `>>>>>>>` and the diff3
+  // `|||||||` line markers; deliberately do NOT match a bare `=======` line (a valid
+  // Markdown setext heading underline).
   const out = [];
   const mem = join(root, "memory");
   const marker = /^(<{7}|>{7}|\|{7})(\s|$)/;
-  for (const path of collect_md(mem, []).sort(byCodePoint)) {
-    const lines = read_text(path).split("\n");
+  if (!existsSync(mem)) return out;
+  const files = readdirSync(mem).filter((n) => n.endsWith(".md")).sort(byCodePoint);
+  for (const name of files) {
+    const lines = read_text(join(mem, name)).split("\n");
     for (let i = 0; i < lines.length; i++) {
       if (marker.test(lines[i])) {
-        const rel = path.startsWith(root + "/") ? path.slice(root.length + 1) : path;
         out.push(
-          `[conflict-marker] ${rel}:${i + 1} unresolved merge-conflict marker ` +
+          `[conflict-marker] memory/${name}:${i + 1} unresolved merge-conflict marker ` +
             "— resolve it before committing"
         );
         break; // one report per file is enough

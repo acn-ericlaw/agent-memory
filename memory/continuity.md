@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.22.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-27 | agent: Claude Code (2026-06-27-222424)
+- **last_session:** 2026-06-27 | agent: Claude Code (2026-06-27-224339)
 - **last_review:** 2026-06-27 | through 2026-06-27-215825
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -97,6 +97,30 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Applied a fresh-context critique (second-opinion → apply-critique) to the v4.22.0 work — 4 fixes,
+  all folded into the unreleased v4.22.0 (no version bump, per the one-version-per-release policy).** A
+  clean-context reviewer (different vendor, via `review-scratch/`) challenged the milestone; 3 of 4 items
+  were real and applied, 1 validated-no-change: **(1) version consolidation — reviewer agreed, no change.
+  (2) `MERGE.md` Tier 2 supersession was AI-discretionary** ("one side genuinely supersedes" = a disguised
+  winner-pick risk) → **tightened**: a semantic clash is **always** keep-both + Contradiction *unless the
+  human explicitly instructs* a supersession; the AI no longer judges "unambiguous." Reinforces
+  `never-pick-a-winner`. **(3) `memory-lint` check 7 false-positive** — session logs legitimately *quote*
+  conflict markers (a pasted diff/terminal block), so scanning `memory/**` would false-fail → **rescoped to
+  live top-level `memory/*.md`** (continuity/instructions/vision/decay-policy/smoke-test); `sessions/` +
+  `archive/` excluded. Both runtimes + 2 new tests each (now 22/22 at parity). **(4a) Review-block gotcha
+  codified in `REVIEW.md` step 9** — don't list archived ids under `## Memory References` (re-arms the
+  over-archival guard); they go in the `## Memory Review` block. **(4b) Hook-fatigue note** in
+  `.githooks/README.md` — a feat/memory split trips the advisory on the code commit (expected/benign);
+  prefer an atomic commit to avoid it. Gate: tests 22/22 both runtimes, `memory-lint` 0/0, parity OK. The
+  fresh reviewer earned its keep (the check-7 false-positive was latent — it didn't fire only because this
+  session's markers sit inline in backticks, not at line-start). **Cross-vendor re-validated 2026-06-27:**
+  **Gemini 3.1 Pro** re-reviewed the *applied* fixes (read-only) and confirmed all four correctly address the
+  critique with **no new issues** — closing the second-opinion → apply-critique loop **end-to-end across
+  vendors** (Claude built + applied; Gemini critiqued + re-validated). Gemini also correctly followed
+  **lightweight mode** (read-only → no session log) — incidental cross-vendor proof of that protocol too.
+  → serves: vision-agent-memory (`apply-critique-v4220-fixes`).
+  <!-- id: apply-critique-v4220-fixes | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: working | origin: 2026-06-27-224339 -->
 
 - [x] **Consolidated this session's four unreleased version bumps into a single v4.22.0 release + encoded
   the policy.** Maintainer observation: v4.22.0–v4.25.0 were all developed in one session with **nothing

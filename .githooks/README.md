@@ -27,4 +27,10 @@ with no per-user setup, so the ritual is enforced even on a clone where the loca
   enrich it. The stub guarantees the ledger never has a silent gap; the *thoughtful* summary stays the
   agent's job (capture vs. judgment — same split as `memory-lint`).
 
+  > **Splitting code and memory into two commits?** The advisory **will** fire on the code-only commit
+  > (it carries no session log) and stay quiet on the following `memory/` commit — **expected and benign**,
+  > not a failure. To skip the nudge entirely, prefer a **single atomic commit** that includes the work
+  > *and* its session log. Either way the hook is advisory and never blocks — don't let a routine split
+  > train you to ignore it.
+
 To deactivate: `git config --unset core.hooksPath`.

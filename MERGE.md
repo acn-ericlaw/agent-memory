@@ -62,12 +62,15 @@ You may **not** decide which version is "right." Preserve intent as structured f
   `DECAY.md` §10 / `.agent/schema.md`):
   `- [ ] Contradiction: <id-A> vs <id-B> — <one line on what diverged>; human to reconcile`
   Both survive until the human reconciles.
-- **One side genuinely supersedes the other** (a real, unambiguous reversal — *not* a guess) →
-  record a **supersession**, not a deletion: the successor is born `tier: working` with
-  `supersedes: <old>`; mark the old `superseded` + `superseded-by: <new>` (`DECAY.md` §9). If
-  there's any doubt it's a true replacement, treat it as a Contradiction and let the human decide.
-- **`[ ]`→`[x]` race** → keep it **checked `[x]`** if either side completed it (completion wins
-  over incomplete; the review later sweeps it). If the bodies also diverged, handle as a clash above.
+- **Supersession is the human's call, never yours.** Do **not** judge that one side "genuinely
+  supersedes" the other — that judgment is exactly where a disguised winner-pick hides (you talk
+  yourself into your preferred side being the "real" one). A semantic clash is **always** resolved
+  as **keep-both + a Contradiction thread**, *unless the human explicitly instructs* a supersession —
+  in which case record it: successor born `tier: working` with `supersedes: <old>`; mark the old
+  `superseded` + `superseded-by: <new>` (`DECAY.md` §9). Absent that explicit instruction, keep both.
+- **`[ ]`→`[x]` race** → this is a *mechanical* state transition, not a substance clash: keep it
+  **checked `[x]`** if either side completed it (completion wins over incomplete; the review later
+  sweeps it). If the bodies *also* diverged, that's a substance clash — handle as Contradiction above.
 - Preserve **provenance** — keep each fact's `origin`; don't rewrite footers to erase where a
   fact came from.
 

@@ -241,6 +241,25 @@ class TestConflictMarkers(unittest.TestCase):
             self._setup(root, {"continuity.md": "<<<<<<< a\n>>>>>>> b\n<<<<<<< c\n"})
             self.assertEqual(len(memory_lint.check_conflict_markers(root)), 1)
 
+    def test_session_log_marker_ignored(self):
+        # sessions/ legitimately QUOTES conflict markers (documenting a diff/terminal output);
+        # check 7 scans only top-level memory/*.md, so a marker there must NOT be flagged.
+        with tempfile.TemporaryDirectory() as root:
+            self._setup(root, {
+                "continuity.md": "# c\nclean\n",
+                "sessions/2026-06-27-120000.md": "# Session\n```\n<<<<<<< HEAD\nx\n=======\ny\n>>>>>>> b\n```\n",
+            })
+            self.assertEqual(memory_lint.check_conflict_markers(root), [])
+
+    def test_archive_marker_ignored(self):
+        # archive/ is cold append-storage, likewise excluded from check 7.
+        with tempfile.TemporaryDirectory() as root:
+            self._setup(root, {
+                "continuity.md": "# c\nclean\n",
+                "archive/2026-Q2.md": "<<<<<<< HEAD\nx\n>>>>>>> b\n",
+            })
+            self.assertEqual(memory_lint.check_conflict_markers(root), [])
+
 
 if __name__ == "__main__":
     unittest.main()
