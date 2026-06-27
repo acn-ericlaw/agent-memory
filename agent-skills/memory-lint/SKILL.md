@@ -48,6 +48,10 @@ script, so the riskiest operation is verified against observable evidence.
    - **`.agent/version.md`, if present, carries a parseable `- **version:** X.Y.Z` line** — an
      empty/malformed manifest breaks Mode B upgrade detection (this was a real bug: a truncating stamp
      one-liner emptied it). A *missing* file is the valid pre-versioning baseline and is not flagged.
+   - **no leftover merge-conflict markers** (`<<<<<<<` / `>>>>>>>` / diff3 `|||||||`) in any
+     `memory/*.md` — an unresolved conflict silently corrupts shared memory (`continuity.md`, edited by
+     every teammate, is the likely culprit). A bare `=======` line is *not* flagged (it's a valid
+     Markdown setext heading underline).
 3. **ERROR** (exit 1) → fix per `DECAY.md` / `REVIEW.md`: reactivate an over-archived fact (move it
    back into `continuity.md`), de-duplicate, or repair a link. **WARN** is advisory — the next review
    may act on it.

@@ -91,6 +91,11 @@ expected (the decay math counts log files — `DECAY.md` §4).
    ritual reads — see `DECAY.md`.
 2. **Update** `memory/continuity.md`:
    - Set `last_session` to today's date and your agent name.
+   - Keep **`status` a short current-state line — never a changelog.** Don't accrete
+     per-version history onto it (that line is shared by every teammate; a long mutable
+     line is a merge-conflict bomb). History belongs in the session logs / `CHANGELOG`,
+     not `status`. One fact per line; see `.agent/schema.md` → "Concurrency &
+     merge-friendliness" for the keep-both / take-later merge conventions.
    - Mark completed Open Threads `- [x]` and **leave them in place** — the review
      sweeps them once older than `archive_window`; don't archive them by hand.
    - Add new Open Threads surfaced during the session.

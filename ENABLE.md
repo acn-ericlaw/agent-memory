@@ -106,7 +106,64 @@ Build a list of detected footprints. Categorise each as:
 Based on detection, choose one of three modes:
 
 ### Mode A — Fresh Enable
-No AI footprint found. Proceed to Step 4 (generate from scratch).
+No AI footprint found.
+
+**Before generating anything, show an advisory and offer a discovery depth.** A fresh
+enable is the one moment to set how rich the initial memory is, and the user should know
+what is about to happen to their repo. **Lead with a concise exec summary of what the
+agent-memory protocol is** — so the user is giving *informed* consent, not a blind "yes."
+Honesty and integrity are an architect's first duty: state plainly what it does, what it
+writes, what it leaves alone, and that it's committed and shared. Then let them choose:
+
+> **About to AI-enable `<repo>` with the agent-memory protocol — here's what that means:**
+>
+> **What it is.** A **vendor-neutral, no-code, markdown** layer that gives your repo a
+> **shared AI memory** (`memory/`) plus AI **steering** files. Any teammate — on Claude
+> Code, Cursor, Gemini, Copilot, Kiro, etc. — reads and writes the *same* project memory, so
+> context survives across people, sessions, and tools. It **adds** this layer; it does **not**
+> replace or reconfigure your own CLI/IDE.
+>
+> **What I will write into the repo** (nothing outside it, ever):
+> - `memory/` — the shared memory layer (project facts, decisions, an evolving/decaying log).
+> - Steering/bootstrap files at the root for each vendor — `AGENTS.md`, `CLAUDE.md`,
+>   `GEMINI.md`, `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md`.
+> - `agent-skills/` (portable capabilities) + protocol docs (`DECAY.md`, `REVIEW.md`, `SKILLS.md`, `MERGE.md`).
+> - Add-only edits to `.gitignore`/`.gitattributes`, and a committed git hook I activate locally.
+>
+> **What I will NOT touch.** Your **source code**, build manifests, and anything **outside
+> this repo** (your home dir, global AI config, other projects) — never read or modified.
+>
+> **It's committed and shared.** `memory/` and the steering files travel with the repo in
+> git, so they're visible to everyone with access (personal/per-machine runtime dirs stay
+> gitignored). It's all plain markdown you can read, edit, or delete by hand at any time.
+>
+> **To seed the memory I'll analyse the repo — pick a depth:**
+> - **Standard scan** (default) — read the build manifests and **recursively harvest the
+>   repo's markdown knowledge** (docs trees, decision logs, ADRs, kanban, roadmap — Step 4 /
+>   4b) and distill the durable facts into memory.
+> - **Deep analysis** — an **`/init`-depth pass** over the codebase (entry points,
+>   module/architecture map, control & data flow, conventions, build/test/CI) *plus* that
+>   same markdown harvest, for a richer initial memory. Reads more of the repo; takes longer.
+>
+> **Proceed? And standard scan or deep analysis?** (standard / deep / cancel)"
+
+If the user declines (`cancel`), **write nothing** and stop — consent is the gate, not a
+formality.
+
+- **Default = standard scan.** If the user doesn't choose, or the enable is
+  non-interactive, proceed to Step 4 as normal.
+- **Deep analysis** replaces the standard path (it does **not** skip the markdown harvest —
+  it *subsumes* it, so the docs are never skipped — and adds the code/architecture pass).
+  Seed Step 5 from the richer findings. **Critical — keep the output neutral:** a vendor's
+  built-in `/init` writes a *vendor* steering file (e.g. `CLAUDE.md`); here you use that
+  *capability* but write everything you learn into the **neutral memory layer**
+  (`memory/instructions.md` + `memory/continuity.md`), **never** into a vendor file. You are
+  borrowing the analysis depth, not its default destination.
+- **Record the choice in the first session log** (Step 5c) — `standard` or `deep` — so the
+  depth of the initial analysis is traceable and a later session/review knows what was (and
+  wasn't) examined.
+
+Then proceed to Step 4 (generate from scratch).
 
 ### Mode B — Already Ours (Idempotent, version-aware)
 `memory/` exists and matches our schema. Now check the version:
@@ -161,8 +218,11 @@ Read the following files if they exist:
 - `*.gemspec`
 - `pubspec.yaml`
 
-**Structure signals**
-- Top-level folder names (src/, app/, lib/, api/, frontend/, backend/, etc.)
+**Structure signals** (these classify the repo; the *knowledge harvest* below is what
+reads the team's own docs — don't stop at top-level names)
+- Folder names (src/, app/, lib/, api/, frontend/, backend/, etc.) — and **descend**:
+  a `docs/` (or `doc/`, `documentation/`, `wiki/`) tree is a structure signal *and* a
+  knowledge source; recurse it in the harvest below, don't just note that it exists.
 - Presence of `Dockerfile`, `docker-compose.yml`, `.github/workflows/`
 - Presence of `Makefile`, `justfile`, `Taskfile.yml`
 - Presence of test directories (`tests/`, `spec/`, `__tests__/`, `test/`)
@@ -204,6 +264,63 @@ per-module `memory/` directories if modules are independently deployed and
 maintained by separate teams who never collaborate across module boundaries —
 and note that recommendation as an Open Thread rather than implementing it.
 
+### Step 4b — Harvest existing project knowledge (be curious)
+
+The steps above *classify* the repo. This step asks the more important question:
+**what does this team already know that the memory layer should inherit?** A repo's
+canonical knowledge usually already lives in human-authored markdown — and the most
+common enablement complaint is that the first pass was *not curious enough*: it read
+the manifest files and stopped, skipping a `docs/` tree, a decision log, or a kanban
+board sitting in plain sight. **Do not stop at the fixed list above. Go look.**
+
+**1. Enumerate, recursively.** Find candidate knowledge artifacts across the *whole*
+repo tree (not depth-1). These are **human-authored prose**, not source or generated
+output. Cast a wide net by location and by name:
+
+- **Recurse every documentation tree fully** — `docs/`, `doc/`, `documentation/`,
+  `wiki/`, `rfcs/`, `adr/`, `design/`, `notes/`, **including all subfolders**. The
+  reported failure mode is grabbing a folder's top-level files and never descending —
+  descend.
+- **Sweep the repo root and module roots** for stray knowledge markdown the manifest
+  scan ignores: decision logs / `DECISIONS*`, `ADR*` / architecture-decision records,
+  `ROADMAP*`, `TODO*`, `BACKLOG*`, kanban boards (`KANBAN*`, `BOARD*`), `CHANGELOG*`,
+  `ARCHITECTURE*`, `DESIGN*`, `CONTRIBUTING*`, `RFC*`, `SECURITY*`, `GLOSSARY*`,
+  onboarding / runbook / postmortem notes.
+- **Match by extension** `.md`, `.markdown`, `.mdx`, `.rst`, `.txt`, `.adoc` — but treat
+  prose, not data. (Use a recursive listing, e.g. `find`/`rg --files`, then filter.)
+
+**Exclude** (knowledge harvest only — these are not team prose): `node_modules/`,
+`vendor/`, `.venv`/`venv/`, `target/`, `dist/`, `build/`, `.git/`, generated API
+reference, minified or vendored files, and anything already ignored by `.gitignore`.
+
+**2. Read within a budget, and disclose what you skipped.** On a large repo the doc
+tree can be huge, so don't blindly read everything:
+
+- Read up to a sensible budget (e.g. ~40 files / ~400 KB of prose). **Prioritize**:
+  repo-root knowledge files → `docs/` (breadth first, then depth) → most-recently-modified
+  (recent docs reflect current reality) → everything else.
+- If the budget is hit, **never let the remainder vanish silently.** Record an Open
+  Thread in `memory/continuity.md` listing what was found-but-not-yet-ingested, e.g.:
+  `- [ ] (knowledge-harvest) N knowledge docs found beyond the enable-time read budget (<paths/globs>) — skim and fold the durable facts into memory when convenient.`
+- A re-run / upgrade can resume from that thread (see `UPGRADE.md`).
+
+**3. Distill — do not transcribe.** These docs are *source material*, not memory.
+Extract the durable, project-defining facts and feed them into the Step 5 seeding:
+
+- Conventions, architecture decisions, hard constraints → `memory/instructions.md`
+  (and seed **Architectural Invariants** in `continuity.md` from explicit
+  "must / never" rules; record an `(ADR-…)` cross-link only if an ADR log exists).
+- Current goals, roadmap, in-flight work, kanban "in progress" / decision-log open
+  items → **Open Threads** in `continuity.md`, and the aspiration → the
+  **Current-state context** of `memory/vision.md` (5g) — still never *fabricate* the
+  target.
+- Newcomer-facing knowledge → candidate **smoke-test questions** (5f).
+
+Do not copy doc bodies into memory or duplicate a living doc; **map, don't mirror** —
+link to the canonical doc and capture only the enduring fact (`DECAY.md` map-don't-duplicate).
+If a harvested fact contradicts a manifest or another doc, raise a `- [ ] Contradiction:`
+Open Thread rather than silently picking one.
+
 ---
 
 ## Step 5 — Generate or Complete Memory Files
@@ -218,7 +335,9 @@ analysis. Do NOT overwrite content that migration already placed.
 ### 5a. `memory/instructions.md`
 
 Fill in:
-- What this project actually is (from README / package description)
+- What this project actually is (from README / package description **and the Step 4b
+  knowledge harvest** — fold in conventions, architecture decisions, and hard
+  constraints distilled from the team's own docs)
 - The tech stack at an **enduring, high-level** altitude (e.g. "async Rust CLI") —
   *not* a precise dependency list. The volatile specifics (current language version,
   deps, tool versions) belong in `continuity.md` → `## Stack & Tools`; don't
@@ -251,13 +370,28 @@ Fill in:
   unchecked Open Threads get an id but never decay. `uses: 1` / `last_used: today` is
   the honest seed (the enable counts as the first reference) — the review owns those
   fields thereafter; don't hand-edit them. See `.agent/schema.md` and `DECAY.md` §1.
-  (The optional `origin` field is set when facts are created in normal sessions; omit
-  it at enable — there's no session log yet. A later review can backfill it.)
+  (Set the optional `origin` field to the **first enable session log** (Step 5c) — the
+  enable now writes one. If you skip that log, omit `origin`; a later review can backfill it.)
 
 ### 5c. `memory/sessions/`
 
 If Mode C, sessions will already be populated from migrated history.
-Otherwise create the directory with a `.gitkeep` file.
+Otherwise create the directory.
+
+**Write a first enable session log** (all fresh enables — Mode A). The enable *is* the
+first piece of work, so record it like any session: create
+`memory/sessions/YYYY-MM-DD-HHMMSS.md` (persist-time UTC stamp, `date -u +%Y-%m-%d-%H%M%S`)
+with the standard title line and a short summary that captures:
+
+- that the repo was AI-enabled with agent-memory v<version> (Mode A), and
+- **the discovery depth the user chose** (`standard scan` or `deep analysis`) — and, if
+  `deep`, a one-line note of what the deep pass covered (so a later session knows what was
+  examined). This is the decision the Step 3 advisory asked the user to make.
+- a `## Memory References` section listing the fact ids you seeded at enable.
+
+This makes the enable traceable and lets the facts you seed in 5b set a real `origin`. (A
+`.gitkeep` is then unnecessary — the directory is non-empty; only add one if for some reason
+no first log is written.)
 
 ### 5d. `.agent/schema.md`
 
@@ -280,8 +414,9 @@ Install the layer so the repo's memory can decay, review, and archive over time:
 
 Copy from `templates/memory/smoke-test.md`, filling `{{PROJECT_NAME}}` and `{{TODAY}}`.
 Seed `{{PROJECT_SMOKE_QUESTIONS}}` with **2–4 project-specific questions** drawn from your
-Step 4 analysis — things a newcomer should be able to learn from memory alone (e.g. "How
-does `<entry point>` discover/route X?", "What gates Y?"). They join the generic
+Step 4 analysis **and the Step 4b knowledge harvest** — things a newcomer should be able to
+learn from memory alone (e.g. "How does `<entry point>` discover/route X?", "What gates Y?",
+or a key decision/constraint surfaced from the docs). They join the generic
 orientation questions already in the template. It's a manual memory-quality check — see
 the file's header for how it's run.
 
@@ -296,7 +431,9 @@ and `docs/DESIGN-vbdi-lifecycle.md`). Copy from `templates/memory/vision.md`, fi
 target is the human's to set (same principle as User Preferences: never infer). So:
 
 - Pre-fill **only** the safe *Current-state context* (`{{PROJECT_DESCRIPTION}}`,
-  `{{PROJECT_TYPE}}` from your Step 4 analysis — what the project *is* today).
+  `{{PROJECT_TYPE}}` from your Step 4 analysis **and the Step 4b harvest** — what the
+  project *is* today; a roadmap/decision-log may describe direction, but the *target* is
+  still the human's to confirm, never inferred).
 - Leave the **target, success criteria, and non-goals as prompts** (the template's `(…)`
   placeholders) — do not infer the aspiration. Keep the ⚠️ DRAFT banner.
 - Raise a human-gate Open Thread in `memory/continuity.md`:
@@ -417,9 +554,11 @@ verbatim from this tool's root** (they are generic — no placeholders):
 - `DECAY.md`
 - `REVIEW.md`
 - `SKILLS.md`
+- `MERGE.md`
 
-These must travel into the target because the review ritual (and skill sync/adopt) run
-*inside* the enabled repo. (`UPGRADE.md` is tool-operator-only — do **not** install it.)
+These must travel into the target because the review ritual, skill sync/adopt, and
+**conflict resolution** (`MERGE.md`) all run *inside* the enabled repo. (`UPGRADE.md` is
+tool-operator-only — do **not** install it.)
 
 **Ritual triggers (v4.19.0) — install + activate (no manual user step).** Also copy verbatim from this
 tool's root, so the after-session ritual fires reliably for *any* vendor (see `docs/DESIGN-ritual-triggers.md`):
@@ -506,7 +645,7 @@ describe what was intended.
    - `memory/instructions.md`, `memory/continuity.md`, `memory/sessions/`
    - `memory/decay-policy.md`, `memory/archive/INDEX.md`, `memory/smoke-test.md`, `memory/vision.md`
    - `.agent/schema.md`, `.agent/version.md`
-   - `DECAY.md`, `REVIEW.md`, `SKILLS.md`
+   - `DECAY.md`, `REVIEW.md`, `SKILLS.md`, `MERGE.md`
    - `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`,
      `.github/copilot-instructions.md`
    - `.gitignore` exists and contains the agent-memory sentinel line plus the
@@ -543,6 +682,21 @@ describe what was intended.
    `agent-skills/<name>/`). Any miss or orphan ⇒ re-run sync. (Enforcement is now *checked*, not
    convention — the loose end that a recommend-only check left open.)
 
+7. **Knowledge harvest ran (curious discovery).** Confirm Step 4b actually descended
+   into any documentation tree (recursively, not depth-1) and swept the repo root for
+   knowledge markdown (decision logs, ADRs, kanban/roadmap, architecture notes). If a
+   `docs/` tree or root-level knowledge doc exists, its durable facts should be reflected
+   in `instructions.md` / `continuity.md` / smoke-test / vision — or, if it exceeded the
+   read budget, captured in a `- [ ] (knowledge-harvest)` Open Thread. A docs folder that
+   exists but left **no trace anywhere** means the harvest was skipped — re-run Step 4b.
+
+8. **First enable session log written (Mode A).** Confirm a session log exists under
+   `memory/sessions/` (title line `# Session (…Z)`, persist-time UTC filename) recording
+   the enable **and the discovery depth the user chose** (`standard scan` / `deep analysis`).
+   If the user chose `deep`, confirm the deep findings landed in the **neutral** memory layer
+   (`instructions.md` / `continuity.md`) and **not** in a vendor steering file. Missing log ⇒
+   write it now (Step 5c).
+
 Log any issue you cannot fix as an Open Thread in `memory/continuity.md` and
 note it in the report.
 
@@ -561,6 +715,7 @@ Print a clear summary including migration details if Mode C ran:
   • Language:   <language>
   • Stack:      <stack>
   • Type:       <type>
+  • Discovery:  <standard scan | deep analysis>  (Fresh Enable — user's choice, recorded in the first session log)
 
   Migrated (Mode C only):
   • <vendor>:  <files>  →  <where>
@@ -575,8 +730,9 @@ Print a clear summary including migration details if Mode C ran:
   • memory/vision.md   (⚠️ DRAFT — maintainer to confirm the target; see the (vision-bootstrap) thread)
   • memory/sessions/   (N session files)
   • memory/archive/INDEX.md
+  • memory/sessions/<first enable log>  (Fresh Enable — records the enable + chosen discovery depth)
   • .agent/schema.md, .agent/version.md  (v<version>)
-  • DECAY.md, REVIEW.md
+  • DECAY.md, REVIEW.md, SKILLS.md, MERGE.md
   • agent-skills/  (built-in skills: memory-lint, second-opinion, apply-critique — + regenerated adapters)
   • AGENTS.md, CLAUDE.md, GEMINI.md, .cursorrules,
     .windsurfrules, .github/copilot-instructions.md
@@ -618,7 +774,7 @@ Respond accordingly.
   neutral capability layer) and its regenerated per-machine adapters (`.claude/skills/`,
   `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`, `.github/skills/`, `.agents/skills/`), `review-scratch/` (gitignored
   fresh-context review scratch, if the review pair is accepted), `DECAY.md`, `REVIEW.md`,
-  `SKILLS.md`, `.gitignore` (add-only, never remove existing entries),
+  `SKILLS.md`, `MERGE.md`, `.gitignore` (add-only, never remove existing entries),
   `.github/copilot-instructions.md`, `.githooks/` + `.github/workflows/agent-memory.yml` (the v4.19.0
   ritual triggers), and the bootstrap files listed in Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a
   target.)

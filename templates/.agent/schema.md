@@ -60,6 +60,43 @@ Live project state. Update every session.
 version, dependencies, tool versions. `instructions.md` gives only an enduring
 high-level descriptor and points here; don't maintain the dep list in both.
 
+**`status:` is a SHORT current-state line — not a changelog.** One or two sentences on
+what the project *is right now*. **Never accrete per-version history into it** (a
+"v4.1 did X… v4.2 did Y…" run-on): that turns one shared line into a giant merge-conflict
+hotspot for concurrent teammates and duplicates the real history. Version/changelog history
+lives in the project's own `CHANGELOG`/release notes and the **session logs** (each change's
+`origin`); a fact's durable *why* lives in `docs/arch-decisions/ADR.md` if adopted. Keep
+`status` resolvable at a glance.
+
+### Concurrency & merge-friendliness (continuity.md is a shared file)
+
+`continuity.md` is committed and edited by every teammate, on any vendor — so author it to
+**merge cleanly**. Session logs avoid conflicts by construction (timestamped filenames);
+`continuity.md` cannot, so follow these conventions:
+
+- **One fact per line.** No monster lines. A short line that two people change is a trivial
+  conflict; a 20 KB line is an unresolvable one.
+- **Append-only sections are independent facts.** `## Open Threads`, `## Key Decisions`,
+  `## Conventions` accrete bullets that don't depend on each other.
+- **Conflict resolution = keep both, by default.** When two branches both added to an
+  append-only section, the merge is a **union** — keep every side's bullets (they're
+  independent facts); never drop one to "resolve" faster.
+- **Scalar bumps take the later value.** `last_session` / `last_review` /
+  `last_invariant_check` / the `status` version token: on conflict, keep the **later date /
+  higher version**. (`.agent/version.md` is the canonical version; `status`'s token is just a
+  human cue.) `last_session` is also derivable from the newest `sessions/` filename, so it's
+  informational — never block on it.
+- **Same-thread edits need a human.** Only a genuine semantic clash — both sides editing the
+  *same* Open Thread, or a `[ ]`→`[x]` race — warrants judgment; everything else is mechanical.
+- A left-behind conflict marker (`<<<<<<<`, `=======`, `>>>>>>>`) corrupts memory; `memory-lint`
+  flags it as an ERROR.
+
+These conventions keep conflicts *rare and mechanical*. When git **does** report a conflict in
+`memory/`, follow **`MERGE.md`** (read on demand) — the tiered, human-gated resolution protocol:
+mechanical hunks resolve by rule (union / take-later), a genuine semantic clash is **never** decided
+by the AI (preserve both sides + raise a Contradiction or supersession for the human), and
+`memory-lint` is the deterministic gate before the human approves the merge.
+
 Each fact carries a metadata footer (HTML comment), maintained by the review ritual
 — invisible when rendered, read/written by agents:
 

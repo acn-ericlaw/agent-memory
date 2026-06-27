@@ -16,6 +16,28 @@ The current tool version lives in the root **`VERSION`** file (semver):
 - **MINOR** — additive, backward-compatible (new optional file, vendor, section).
 - **PATCH** — wording/clarity only.
 
+### One version per *release*, not per feature (consolidate unreleased increments)
+
+`VERSION` and the ladder below are **release** artifacts — there is **one rung per released
+version**, i.e. per state a user could actually have been running. So:
+
+- **Bump for a release event** (the commit/push that ships the work), not once per feature.
+  Several features developed before a release **collapse into a single version bump**.
+- While work is **unreleased**, treat the next version as **pending and mutable**: keep adding
+  features under that one number; the rung enumerates them. Do not mint 4.23, 4.24, … for
+  successive features that never shipped independently — that inflates the ladder with rungs no
+  repo ever stepped through.
+- **Bump magnitude = the largest change in the batch** (MAJOR > MINOR > PATCH). Four additive
+  features ⇒ one **MINOR**.
+- **The released baseline is `VERSION` at `HEAD`** (the last commit/push). Before committing a
+  batch, **consolidate** any working-tree bumps beyond that baseline into the single next version.
+- The **per-feature** record is not lost — it lives in the **session logs** (immutable journal)
+  and the `## Open Threads` in `continuity.md`, which carry each feature's id, origin, and detail.
+  Version numbers track releases; memory tracks the work.
+
+*(Precedent: v4.22.0 bundles four features iterated in one unreleased session — originally
+dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
+
 | Version | Capability |
 |---|---|
 | 1.0.0 | Fresh enable from templates (Mode A) |
@@ -67,6 +89,8 @@ The current tool version lives in the root **`VERSION`** file (semver):
 | 4.20.1 | **Self-init in `copilot-instructions.md` (PATCH):** v4.20.0's self-init reached Claude (acts on `AGENTS.md`) but **not Copilot CLI** (its `start` front-loads `copilot-instructions.md` + summarizes — so on a fresh clone the hook stayed inactive + adapters absent). Folds the first-run init into the **top of `copilot-instructions.md`** so Copilot runs `bash .githooks/init.sh` before summarizing. Re-sync that one file; the `init.sh` fallback + CI floor are unchanged |
 | 4.20.2 | **Windows line-ending hardening (PATCH):** adds a **`.gitattributes`** pinning `*.sh` + `.githooks/*` to **LF**, so Git for Windows (`core.autocrlf=true`) doesn't rewrite them to CRLF on checkout (which breaks bash: `bad interpreter: /usr/bin/env bash^M`, silently disabling the hook + `init.sh`). Installed/merged into targets additively (like the `.gitignore` block). Makes the bootstrap + hooks robust on Windows (Git Bash / WSL), not luck-of-the-default. From a Copilot Windows-feasibility check |
 | 4.20.3 | **memory-lint catches an empty/malformed version manifest (PATCH):** adds a deterministic **`check_version_manifest`** ERROR to both runtimes (`memory-lint.py` + `memory-lint.mjs`, at parity, with mirror tests) so a present-but-empty/malformed `.agent/version.md` fails the lint floor (CI + reviews) instead of silently breaking Mode B upgrade detection. Closes the loop on the v4.20.1 bug (a truncating stamp one-liner emptied a target's `version.md` → an agent misread the version). A *missing* `version.md` stays valid (pre-versioning baseline) and is not flagged. Re-copy the memory-lint skill files |
+| 4.21.0 | **Google Antigravity (`agy`) skills adapter (MINOR):** a **6th** adapter target `.agents/skills/<name>/SKILL.md` — the open Agent Skills standard dir read by Google Antigravity (the Gemini CLI successor), which reads `.agents/skills/`, **not** the old `.gemini/commands/*.toml`. `sync skill adapters` now writes six; `.agents/` gitignored; `.gemini/commands` kept for the transition. Skill-only re-copy + re-sync; no memory-file shape change |
+| 4.22.0 | **Discovery, consent & merge-friendliness — four bundled additive improvements (MINOR).** One release; developed iteratively in one unreleased session (dev-numbered 4.22–4.25), consolidated per "one version per release." **(a) Curious knowledge harvest at enable** — `ENABLE.md` Step 4b recursively descends every doc tree (`docs/`/`wiki/`/`rfcs/`/`adr/`/…, all subfolders) + sweeps repo roots for human-authored knowledge markdown (decision logs, ADRs, kanban/roadmap, architecture notes), distilling durable facts into memory (map-don't-mirror), bounded by a read **budget with disclosure** (overflow → a `(knowledge-harvest)` thread). **(b) Fresh-enable advisory + discovery depth** — Mode A opens with a concise **exec summary of the protocol** (what it is / writes / won't touch / is committed+shared) + a `cancel` gate (**informed consent**), then offers **standard scan vs `/init`-depth deep analysis** (deep written to the neutral memory layer, never a vendor file); a first enable session log records the choice. **(c) `continuity.md` merge-friendliness** — `status` is spec'd a SHORT current-state line, **not a changelog** (`.agent/schema.md` + `AGENTS.md`); new **"Concurrency & merge-friendliness"** conventions (one fact/line; append-only union/keep-both; scalar take-later); `memory-lint` **check 7** flags a leftover conflict marker (`<<<<<<<`/`>>>>>>>`/diff3 `|||||||`) as an ERROR (bare `=======` setext underline exempt), both runtimes + tests. **(d) `MERGE.md`** — a new installed, no-code on-demand protocol for resolving a git conflict in `memory/`: tiered + human-gated, enforcing **`never-pick-a-winner`** (mechanical → rule; semantic clash → preserve both + Contradiction/supersession; `memory-lint` gate; human approves). Mostly operator-side (`ENABLE.md`) + the `memory-lint` skill + one new root doc (`MERGE.md`); no memory-file shape change. From a client enablement complaint, a teammate-concurrency review, and a GitHub Copilot review |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -108,7 +132,7 @@ silently installs operator-facing docs into a target:
 
 | Target file | Copy from (this tool's checkout) |
 |---|---|
-| `DECAY.md`, `REVIEW.md`, `SKILLS.md` | the tool **root** (`<tool>/DECAY.md`, …) — generic, no placeholders |
+| `DECAY.md`, `REVIEW.md`, `SKILLS.md`, `MERGE.md` | the tool **root** (`<tool>/DECAY.md`, …) — generic, no placeholders |
 | **`AGENTS.md`** | **`<tool>/templates/AGENTS.md`** — the *target* memory-protocol hub |
 | `.agent/schema.md` | `<tool>/templates/.agent/schema.md` |
 | `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md` | `<tool>/templates/` |
@@ -1196,3 +1220,51 @@ found**. The `.gemini/commands` TOML adapter **stays** (Gemini CLI keeps working
    and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a truncate-first one-liner.**
 6. **Report**: 6th adapter (`.agents/skills/`) added for Antigravity; `.agents/` gitignored; adapters
    re-synced; Gemini CLI (`.gemini/commands`) still served during the transition.
+
+---
+
+## Rung: 4.21.0 → 4.22.0 — discovery, consent & merge-friendliness (MINOR, four bundled features)
+
+One release bundling four additive features (developed iteratively in one unreleased session,
+dev-numbered 4.22–4.25; see "one version per release"). Mostly operator-side (`ENABLE.md`), plus the
+`memory-lint` skill re-copy and one new installed root doc (`MERGE.md`). **No memory-file shape change.**
+
+**(a) + (b) Curious discovery & fresh-enable advisory — operator-side `ENABLE.md`.** These change how
+*future* enables behave; an already-enabled repo has nothing structural to migrate. Optionally, to
+enrich a repo enabled by the older shallow scan, offer (human-gated):
+   > "v4.22.0 makes enable-time discovery curious (recursively reads `docs/` trees + root knowledge
+   > markdown) and can do an `/init`-depth analysis. Run that now to enrich `memory/instructions.md` +
+   > `continuity.md` from docs the first pass may have skipped? (yes / no / dry-run)"
+   - **If yes:** run `ENABLE.md` Step 4b (recursive doc-tree descent + root sweep, budgeted with
+     disclosure), and optionally the `/init`-depth deep analysis, then distill **additively** into the
+     existing memory files — never overwrite curated facts; write to the **neutral** layer, never a
+     vendor steering file; conflicts → a `- [ ] Contradiction:` thread; over-budget → a
+     `- [ ] (knowledge-harvest)` thread.
+   - **If no:** skip — future fresh enables are curious + show the advisory/depth choice by default.
+
+**(c) Merge-friendliness — installed docs + the linter:**
+1. **Re-sync `.agent/schema.md`** (from `templates/.agent/schema.md`) — gains the
+   `status`-is-not-a-changelog note + the **"Concurrency & merge-friendliness"** section (which points
+   to `MERGE.md`). Ensure the target's `AGENTS.md` (from `templates/AGENTS.md`) carries the "keep
+   `status` a short current-state line" bullet. Merge additively into a customized `AGENTS.md`.
+2. **Re-copy the `memory-lint` skill** (tool-managed built-in — overwrite in place; warn first if
+   locally modified, §5i): `scripts/memory-lint.py`, `.mjs`, the test files, `SKILL.md`. **Check 7**
+   (leftover merge-conflict markers → ERROR) joins the lint floor.
+3. **Slim a bloated `status`** (optional, recommended): if the target's `status` line has accreted a
+   per-version changelog, rewrite it to a short current-state descriptor (history lives in session logs
+   / changelog). **Read fully, then write** — never a truncate-first one-liner (`version-md-stamp-safe-write`).
+   Leave append-only sections to the review ritual; don't hand-archive.
+
+**(d) MERGE.md:**
+4. **Install `MERGE.md`** at the target root — copy verbatim from this tool's root (generic, no
+   placeholders; see the source-of-truth map). It joins `DECAY`/`REVIEW`/`SKILLS` as an on-demand
+   protocol doc that runs *inside* the enabled repo. (No further `memory-lint` change — `MERGE.md`
+   reuses check 7 as its validation gate.)
+
+5. **Run `memory-lint`** at the target — must report `OK` (0 errors): no conflict markers, files parse.
+6. **Stamp** `.agent/version.md` → `version: 4.22.0`, `last_upgraded: <today>`, preserving `enabled_with`
+   and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a truncate-first one-liner.**
+7. **Report**: discovery is curious + budgeted; fresh enable shows an advisory + standard-vs-deep depth
+   choice; `status` is a short current-state line with documented merge conventions; `memory-lint` errors
+   on leftover conflict markers; `MERGE.md` gives git conflicts a tiered, human-gated,
+   `never-pick-a-winner` resolution protocol.

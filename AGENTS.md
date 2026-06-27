@@ -112,6 +112,11 @@ expected (the decay math counts log files — `DECAY.md` §4).
    reactivated) — the event log the review ritual reads (`DECAY.md`).
 2. **Update** `memory/continuity.md`:
    - Set `last_session` to today's date and your agent name.
+   - Keep **`status` a short current-state line — never a changelog.** Don't accrete
+     per-version history onto it; that shared line becomes a merge-conflict hotspot for
+     concurrent teammates. History lives in the session logs / `UPGRADE.md` ladder. One
+     fact per line; see `.agent/schema.md` → "Concurrency & merge-friendliness" for the
+     keep-both / take-later merge conventions.
    - Mark completed Open Threads `- [x]` and **leave them** — the review sweeps them
      once older than `archive_window`; don't archive them by hand.
    - Add new Open Threads; give each new fact a kebab `id` + footer: set `id`,
