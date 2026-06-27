@@ -277,10 +277,16 @@ agent-memory/
   DECAY.md                           ← evolving-memory rules (installed into targets)
   REVIEW.md                          ← the review ritual (installed into targets)
   SKILLS.md                          ← skills reference: author/sync/adopt/sanity (installed; on-demand)
+  MERGE.md                           ← git-conflict resolution protocol (installed; on-demand)
   AGENTS.md                          ← memory protocol + enable dispatch
   CLAUDE.md / GEMINI.md              ← vendor bootstraps for this repo
   .cursorrules / .windsurfrules      ← Cursor / Windsurf bootstraps
-  .github/copilot-instructions.md
+  .github/copilot-instructions.md    ← GitHub Copilot bootstrap
+  .github/workflows/agent-memory.yml ← CI floor: memory-lint + session-log check (installed)
+  .githooks/                         ← vendor-neutral ritual triggers (committed; agent-activated)
+    post-commit · init.sh · README.md
+  .gitignore / .gitattributes        ← AI-infra ignores + LF pinning (merged into targets)
+  CHANGELOG.md / LICENSE             ← official release notes / Apache-2.0
 
   templates/                         ← installed into target repos
     AGENTS.md, CLAUDE.md, GEMINI.md, ...
@@ -299,8 +305,13 @@ agent-memory/
     sessions/                        ← dated logs (immutable event log)
     archive/                         ← faded facts (cold storage, never deleted)
 
-  agent-skills/                      ← this tool's own portable skills (dogfood)
-    hello-world/SKILL.md             ← demo skill: neutral source of truth (adapters gitignored)
+  agent-skills/                      ← portable skills: neutral source of truth (vendor adapters gitignored)
+    memory-lint/                     ← built-in: deterministic memory verifier (Python + Node, at parity)
+    second-opinion/                  ← built-in: snapshot the task for a clean-memory reviewer
+    apply-critique/                  ← built-in: apply a critique via a gated, human-approved loop
+    sync-adapters/                   ← built-in: regenerate per-vendor adapters (bash · node · python)
+    hello-world/                     ← dogfood demo skill
+    (the four built-ins ship provenance: agent-memory-builtin and install into every enabled repo)
 
   docs/                              ← design rationale + governance (human-facing, on-demand)
     arch-decisions/
