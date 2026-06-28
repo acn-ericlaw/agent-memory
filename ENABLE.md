@@ -496,8 +496,14 @@ gets**, because they support the core workflow:
   prunes the orphans it generated (signature-guarded). Enable and every Mode B re-enable invoke it; an agent can also trigger it by
   description. Replaces the prior prose-recipe-only sync that agents (e.g. Copilot CLI) struggled to
   perform — they hunted for a non-existent command.
+- **`harvest-knowledge`** (v4.23.0) — the on-demand, recurring counterpart to the enable-time knowledge
+  harvest (Step 4b): re-scan the repo's human-authored docs (docs trees, ADRs, decision logs, design
+  specs, roadmaps) and fold newly-durable facts into `memory/` **additively** (map-don't-mirror;
+  conflicts → a `Contradiction` thread; never overwrites curated facts). No-code/agent-run. Keeps memory
+  in sync as a living repo's docs evolve — and is the home for "re-harvest," so the enable-time harvest
+  stays a fresh-enable event, not an upgrade behavior.
 
-**Install all four** (every mode, including a fresh Mode A enable): copy `agent-skills/<name>/`
+**Install all five** (every mode, including a fresh Mode A enable): copy `agent-skills/<name>/`
 **verbatim from this tool's root** into the target's `agent-skills/` (including `memory-lint`'s and
 `sync-adapters`' bundled `scripts/`), then regenerate their adapters via the 5h recipe (which now
 *runs* the freshly-installed `sync-adapters` script). Each ships marked
@@ -671,8 +677,8 @@ describe what was intended.
    and no Blueprint gaps were derived yet (they await the confirmed Vision).
 
 6. **Skills installed + promoted + adapters complete.** Confirm the **built-in skills**
-   (`memory-lint`, `second-opinion`, `apply-critique`) were installed into `agent-skills/`
-   (Step 5i) and `review-scratch/` is gitignored. Additionally (Mode C), if the source repo had
+   (`memory-lint`, `second-opinion`, `apply-critique`, `sync-adapters`, `harvest-knowledge`) were
+   installed into `agent-skills/` (Step 5i) and `review-scratch/` is gitignored. Additionally (Mode C), if the source repo had
    vendor skills (e.g. `.claude/skills/`), confirm each was promoted to
    `agent-skills/<name>/SKILL.md` (committed), the original preserved under `legacy/`.
    **Assert adapter completeness (v4.12.0):** after the closing `sync skill adapters` (Step 5h),

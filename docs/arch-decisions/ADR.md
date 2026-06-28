@@ -80,7 +80,7 @@ than on a build gate.
 
 **Abstract.** In-place upgrades (Mode B) only **enrich and add** — never rewrite or delete
 a user's content — **except** the tool's own managed built-ins (`memory-lint`,
-`second-opinion`, `apply-critique`, `sync-adapters`), which are re-copied (overwritten) on upgrade. That
+`second-opinion`, `apply-critique`, `sync-adapters`, `harvest-knowledge`), which are re-copied (overwritten) on upgrade. That
 overwrite is scoped to tool-owned files; a user customizes a built-in only by **forking**
 it under a new skill name.
 

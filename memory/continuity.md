@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.22.4 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.23.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-025906)
+- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-032539)
 - **last_review:** 2026-06-28 | through 2026-06-28-025152
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -77,7 +77,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-20 | uses: 31 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
 - Upgrades are additive and non-destructive (ADR-0005) — enrich and add, never rewrite or delete —
   **except the tool's own managed built-ins** (`memory-lint`, `second-opinion`, `apply-critique`,
-  `sync-adapters`), which are re-copied (overwritten) on upgrade; that overwrite is scoped to those tool-owned files,
+  `sync-adapters`, `harvest-knowledge`), which are re-copied (overwritten) on upgrade; that overwrite is scoped to those tool-owned files,
   and a user customizes only by forking under a new skill name (see `ENABLE.md` §5i). For everything
   the user authors, the invariant holds unchanged.
   <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-20 | uses: 22 | tier: core -->
@@ -97,6 +97,25 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.23.0 (MINOR) — `harvest-knowledge` built-in skill (on-demand doc→memory harvest).**
+  Surfaced when test-driving the mercury-composable upgrade: the curious harvest (v4.22.0, `ENABLE.md`
+  Step 4b) seeds memory **once** at enable, but a *living* repo's docs keep evolving with no recurring way
+  to fold new ADRs/design-specs/decision-log entries into memory. Maintainer's call: **leave the
+  enable-time (re-)harvest a fresh-enable event (Mode A), and make the recurring need a skill.** Added a
+  **5th built-in** `agent-skills/harvest-knowledge/` (`provenance: agent-memory-builtin`, no-code/agent-run):
+  re-scan human-authored docs (same net as Step 4b) → distill durable facts into **neutral, shared**
+  `memory/` **additively** (map-don't-mirror; check-existing-first so a re-run doesn't duplicate; conflicts
+  → `Contradiction`; supersede a genuine replacement; budget-with-disclosure). **Explicitly not a vendor
+  `/init`** (which does *code*-analysis → a *vendor* steering file, overwriting): this does
+  knowledge-distillation → neutral memory, additive + repeatable — borrow /init's muscle, output stays
+  neutral. Removed the inline Mode B re-harvest from the `4.21.0→4.22.0` upgrade rung (it's the skill's job
+  now). Wired: `ENABLE.md` §5i (5 built-ins) + Step 8 list, `upgrades-additive` invariant + ADR-0005 (5
+  built-ins), README (tree + version table), `CHANGELOG`, `UPGRADE` (row + `4.22.4→4.23.0` rung),
+  `VERSION`→4.23.0; adapters synced (6 skills → 36; harvest-knowledge 6/6). `memory-lint` OK. → serves:
+  vision-agent-memory (curiosity becomes a recurring capability for living repos, not a one-shot)
+  (`harvest-knowledge-skill-v4230`).
+  <!-- id: harvest-knowledge-skill-v4230 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-032539 -->
 
 - [x] **Shipped v4.22.4 (PATCH) — safe-write safeguard moved into the SHARED layer (`REVIEW.md`).**
   Maintainer correction: the safe-write lesson from the 2026-06-28 archive-truncation incident

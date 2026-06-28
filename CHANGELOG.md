@@ -30,6 +30,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   session-count. Wording-only — no file shape, skill, or script change. `VERSION` → 4.22.2; re-synced into
   targets on the `4.22.1 → 4.22.2` rung (re-copy `templates/AGENTS.md`).
 
+## Version 4.23.0, 6/28/2026
+
+> **`harvest-knowledge` — on-demand knowledge harvest as a built-in skill (MINOR).** The curious harvest
+> (v4.22.0, `ENABLE.md` Step 4b) seeds memory from the team's docs **once**, at enable. But a *living*
+> repo's docs keep evolving, and there was no recurring way to fold new ADRs / design specs / decision-log
+> entries into memory short of re-enabling. This adds a **5th built-in skill** that does exactly that, on
+> demand — and moves "re-harvest" out of the Mode B upgrade path (it was a one-time backfill bolted onto a
+> rung) into a proper, repeatable skill. The enable-time harvest stays a **fresh-enable** event.
+
+### Added
+- **`agent-skills/harvest-knowledge/`** — a no-code, agent-run built-in (`provenance: agent-memory-builtin`).
+  Re-scans the repo's human-authored documentation (recursive `docs/` trees + root sweep for ADRs, decision
+  logs, design specs, roadmaps, kanban — same net as Step 4b) and distills **durable** facts into the
+  **neutral, shared** `memory/` layer **additively**: map-don't-mirror, check-existing-first so a re-run
+  doesn't duplicate, conflicts → a `Contradiction` thread (`never-pick-a-winner`), genuine replacements →
+  supersession, budget-with-disclosure → a `(knowledge-harvest)` Open Thread. Installed into every repo by
+  `ENABLE.md` §5i (now **five** built-ins); added to the `upgrades-additive` managed-built-ins list.
+  **Explicitly not a vendor `/init`:** `/init` does a deep *code* analysis and (re)writes/overwrites a
+  *vendor* steering file; `harvest-knowledge` reads *human-authored knowledge*, writes *neutral shared
+  memory*, and is *additive + repeatable* — borrow `/init`'s analysis muscle, but the output goes to
+  `memory/`, never a vendor file.
+
+### Changed
+- **`UPGRADE.md`** — the `4.21.0 → 4.22.0` rung no longer offers an inline Mode B re-harvest; backfilling an
+  already-enabled repo from docs is now the `harvest-knowledge` skill's job (run on demand). The
+  enable-time harvest remains a fresh-enable event. `VERSION` → 4.23.0; the `4.22.4 → 4.23.0` rung installs
+  the new built-in.
+
 ## Version 4.22.4, 6/28/2026
 
 > **Safe-write safeguard in `REVIEW.md` (PATCH).** A truncate-before-read antipattern

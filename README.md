@@ -173,6 +173,7 @@ it in place** — additively, never destructively.
 
 | Version | Capability |
 |---|---|
+| 4.23.0 | **`harvest-knowledge` built-in skill:** a 5th built-in — the on-demand, recurring counterpart to the enable-time curious harvest. Re-scans the repo's human-authored docs (ADRs, decision logs, design specs, roadmaps) and folds newly-durable facts into the **neutral, shared** `memory/` **additively** (map-don't-mirror; check-existing-first; conflicts → a `Contradiction` thread). Keeps a living repo's memory in sync as docs evolve. **Not** a vendor `/init` (code-analysis → a vendor file, overwriting); this is knowledge-distillation → neutral memory, additive + repeatable. "Re-harvest" moves out of the Mode B upgrade into this skill; the enable-time harvest stays a fresh-enable event |
 | 4.22.4 | **Safe-write safeguard in `REVIEW.md`:** a truncate-before-read antipattern (`open(f,"w").write(open(f).read()+…)`) wiped this repo's archive during a review (caught by `memory-lint`, recovered from git). The review ritual's **Safety** section now mandates **append-mode / read-into-var (never truncate-before-read)** for scripted archive/continuity edits, and **running `memory-lint` after any scripted memory mutation** (it catches truncation; git recovers). A shared, committed safeguard so every contributor + vendor inherits it — not a per-machine note |
 | 4.22.3 | **Tighten the post-commit session window: 2h → 30 min:** v4.22.1 used a 2-hour active-session window, but follow-up stubs were observed **minutes** apart, and 2h is long enough to wrongly conflate a *new* session that starts within 2h of the previous one's log. Default is now **30 min** (override `AGENT_MEMORY_SESSION_WINDOW_MINUTES` — unit changed to minutes since BSD `date -v` rejects a fractional hour). A real new session (longer pause) still gets its own stub |
 | 4.22.2 | **Lightweight mode: one log per working *session*, not per commit:** the agent-side mirror of 4.22.1. `AGENTS.md` lightweight mode now says that if you already wrote a session log earlier in *this* working session, a later **memory-neutral** commit should **enrich that existing log** rather than spawn another near-duplicate lite log (which would clutter `memory/sessions/` and inflate the decay session-count). Distinct **memory-relevant** work still gets its own full log. The agent needs no time-window (unlike the hook) — it knows it's the same session |
@@ -182,7 +183,6 @@ it in place** — additively, never destructively.
 | 4.20.3 | **memory-lint catches an empty/malformed version manifest:** a deterministic `check_version_manifest` ERROR (both runtimes, at parity, with tests) so a present-but-empty/malformed `.agent/version.md` fails the lint floor (CI + reviews) instead of silently breaking Mode B upgrade detection. Closes the loop on the v4.20.1 bug (a truncating stamp one-liner emptied a target's `version.md` → an agent misread the version). A *missing* `version.md` stays valid (pre-versioning baseline) and is not flagged |
 | 4.20.2 | **Windows line-ending hardening:** a `.gitattributes` pins `*.sh` + `.githooks/*` to LF so Git for Windows (`core.autocrlf=true`) doesn't rewrite them to CRLF and break bash (`bad interpreter: …^M`). Installed/merged into targets additively. Makes the bootstrap + hooks robust on Windows (Git Bash / WSL), not luck-of-the-default. From a Copilot Windows-feasibility check |
 | 4.20.1 | **Self-init in `copilot-instructions.md`:** v4.20.0's self-init reached Claude but not Copilot CLI (its `start` front-loads `copilot-instructions.md` + summarizes). Folds the first-run init into the top of `copilot-instructions.md` so Copilot runs `bash .githooks/init.sh` before summarizing; the `init.sh` fallback + CI floor are unchanged |
-| 4.20.0 | **First-run init for fresh clones:** a Copilot dogfood showed a fresh clone self-initializes the *memory* bootstrap but not the gitignored adapters or the (unactivated) hook. Adds **`.githooks/init.sh`** (one idempotent command: regenerate adapters + activate the hook) + an **`AGENTS.md` self-init note** so the agent does it on its first session — one step (or one human command) instead of two. CI stays the zero-config floor |
 
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
@@ -310,8 +310,9 @@ agent-memory/
     second-opinion/                  ← built-in: snapshot the task for a clean-memory reviewer
     apply-critique/                  ← built-in: apply a critique via a gated, human-approved loop
     sync-adapters/                   ← built-in: regenerate per-vendor adapters (bash · node · python)
+    harvest-knowledge/               ← built-in: re-scan docs → fold durable facts into memory (on-demand)
     hello-world/                     ← dogfood demo skill
-    (the four built-ins ship provenance: agent-memory-builtin and install into every enabled repo)
+    (the five built-ins ship provenance: agent-memory-builtin and install into every enabled repo)
 
   docs/                              ← design rationale + governance (human-facing, on-demand)
     arch-decisions/
