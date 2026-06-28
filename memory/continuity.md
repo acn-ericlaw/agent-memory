@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.23.2 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.26.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-172159)
+- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-175909)
 - **last_review:** 2026-06-28 | through 2026-06-28-162543
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -77,7 +77,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-20 | uses: 31 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
 - Upgrades are additive and non-destructive (ADR-0005) — enrich and add, never rewrite or delete —
   **except the tool's own managed built-ins** (`memory-lint`, `second-opinion`, `apply-critique`,
-  `sync-adapters`, `harvest-knowledge`, `archive-fact`), which are re-copied (overwritten) on upgrade; that overwrite is scoped to those tool-owned files,
+  `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`), which are re-copied (overwritten) on upgrade; that overwrite is scoped to those tool-owned files,
   and a user customizes only by forking under a new skill name (see `ENABLE.md` §5i). For everything
   the user authors, the invariant holds unchanged.
   <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-20 | uses: 22 | tier: core -->
@@ -97,6 +97,26 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.26.0 (MINOR) — `refresh-metadata` (7th built-in) + a `memory-lint` `[stale-metadata]`
+  advisory.** From a **cross-vendor field test**: Copilot / Gemini 3.1 Pro committed the v4.25.0 upgrade to
+  mercury and, seeing `[review-overdue]`, **ran the review unprompted** — correctly using `archive-fact`
+  (the over-archival guard even caught a premature archive of `adr-pattern-adopted` → it reverted). But it did
+  Step 4 (archive) + Step 5 (sweep) and **skipped Step 2 (apply events) + Step 3 (re-tier)**, leaving stale
+  `last_used`/`uses`/`tier` footers. **Third instance of one failure class** (truncation → `archive-fact`;
+  never-fired review → `[review-overdue]`; now half-done ritual): multi-step agent rituals get partially
+  executed. **The fix refines the judgment-vs-arithmetic boundary** — deciding *what to archive* is judgment
+  (stays with the agent); recomputing metadata is **arithmetic** (REVIEW.md's "full rebuild," deterministic),
+  safe to mechanize. **Built** `agent-skills/refresh-metadata/` (recompute footers from the reference log,
+  read-into-memory-write-once; `core`/`superseded`/never-referenced untouched; clamps at `archive-candidate`,
+  never archives) + `memory-lint` check (9) `[stale-metadata]` (stored tier ≠ recomputed). Both Python+Node at
+  parity + mirror tests (memory-lint 33, refresh-metadata 5). **Dogfooded:** the new advisory flagged 11 stale
+  footers on THIS repo (my own earlier reviews skipped re-tiering too — universal, not vendor-specific);
+  `refresh-metadata` cleared all 11 → lint 0/0. Lockstep: skill + tests, memory-lint + tests, `REVIEW.md`
+  (steps 2–3), `ENABLE.md` §5i (7 built-ins), `README`/`ADR`/continuity lists, adapters (8 skills → 48),
+  `VERSION`→4.26.0, `CHANGELOG`, `UPGRADE` (row + rung). → serves: vision-agent-memory (the review's
+  deterministic half is now mechanized; only judgment is left to the agent — across vendors)
+  <!-- id: refresh-metadata-builtin-v4260 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-175909 -->
 
 - [x] **Shipped v4.25.0 (MINOR) — `archive-fact`, a deterministic safe archive-move helper (6th built-in).**
   From a **cross-vendor critique** (Copilot / Gemini 3.1 Pro, `review-scratch/critique.md`): "agent behaviors
@@ -180,7 +200,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.23.0; adapters synced (6 skills → 36; harvest-knowledge 6/6). `memory-lint` OK. → serves:
   vision-agent-memory (curiosity becomes a recurring capability for living repos, not a one-shot)
   (`harvest-knowledge-skill-v4230`).
-  <!-- id: harvest-knowledge-skill-v4230 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-032539 -->
+  <!-- id: harvest-knowledge-skill-v4230 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 2 | tier: active | origin: 2026-06-28-032539 -->
 
 - [x] **Shipped v4.22.4 (PATCH) — safe-write safeguard moved into the SHARED layer (`REVIEW.md`).**
   Maintainer correction: the safe-write lesson from the 2026-06-28 archive-truncation incident
@@ -252,7 +272,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `UPGRADE` (row + `4.22.0→4.22.1` rung). First post-release patch under the *one version per release*
   policy (4.22.0 was pushed). → serves: vision-agent-memory (the decay model's integrity depends on a
   session-file count that tracks *sessions*, not commits) (`post-commit-per-session-v4221`).
-  <!-- id: post-commit-per-session-v4221 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-022903 -->
+  <!-- id: post-commit-per-session-v4221 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 3 | tier: archive-candidate | origin: 2026-06-28-022903 -->
 
 - [x] **Applied a fresh-context critique (second-opinion → apply-critique) to the v4.22.0 work — 4 fixes,
   all folded into the unreleased v4.22.0 (no version bump, per the one-version-per-release policy).** A
@@ -276,7 +296,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   vendors** (Claude built + applied; Gemini critiqued + re-validated). Gemini also correctly followed
   **lightweight mode** (read-only → no session log) — incidental cross-vendor proof of that protocol too.
   → serves: vision-agent-memory (`apply-critique-v4220-fixes`).
-  <!-- id: apply-critique-v4220-fixes | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: working | origin: 2026-06-27-224339 -->
+  <!-- id: apply-critique-v4220-fixes | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: archive-candidate | origin: 2026-06-27-224339 -->
 
 - [x] **Consolidated this session's four unreleased version bumps into a single v4.22.0 release + encoded
   the policy.** Maintainer observation: v4.22.0–v4.25.0 were all developed in one session with **nothing
@@ -293,7 +313,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   **headers relabeled** "Shipped in v4.22.0 (dev-iter 4.2X)"; `status` token → v4.22.0. → serves:
   vision-agent-memory (a clean, easy upgrade ladder is part of "adoption stays 'point it at a repo'")
   (`version-consolidation-policy-v4220`).
-  <!-- id: version-consolidation-policy-v4220 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: working | origin: 2026-06-27-222424 -->
+  <!-- id: version-consolidation-policy-v4220 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: archive-candidate | origin: 2026-06-27-222424 -->
 
 - [x] **Re-verify invariants (due at the 2026-06-27 review) — CONFIRMED by maintainer 2026-06-27,
   one by one.** All 5 core invariants (`target-repo-scope-only`, `never-delete-vendor-files`,
@@ -305,7 +325,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `sync-adapters` to the `upgrades-additive` managed-built-ins example list (it became a tool-managed
   built-in in v4.18.0) — updated in both the invariant text and ADR-0005. The review only prompts;
   the human confirmed.
-  <!-- id: ot-reverify-invariants-20260627 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: active | origin: 2026-06-27-215825 -->
+  <!-- id: ot-reverify-invariants-20260627 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: archive-candidate | origin: 2026-06-27-215825 -->
 
 - [x] **Shipped in v4.22.0 (MINOR; dev-iter 4.25) — `MERGE.md` conflict-resolution protocol.** From a **GitHub Copilot
   review** of the v4.24.0 marker check (relayed by the maintainer): *don't let the LLM directly edit git
@@ -327,7 +347,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   token only (no changelog prose) — exercising the v4.24.0 rule live. → serves: vision-agent-memory (a shared
   memory layer must survive concurrent multi-vendor use *without an AI silently losing a teammate's fact*).
   Builds on `continuity-merge-friendly-v4240` (`merge-conflict-protocol-v4250`).
-  <!-- id: merge-conflict-protocol-v4250 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: working | origin: 2026-06-27-215127 -->
+  <!-- id: merge-conflict-protocol-v4250 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 2 | tier: archive-candidate | origin: 2026-06-27-215127 -->
 
 - [x] **Shipped in v4.22.0 (MINOR; dev-iter 4.24) — `continuity.md` merge-friendliness.** From a **teammate-concurrency
   observation** (maintainer): session logs are conflict-free by construction (timestamped filenames),
@@ -350,7 +370,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   300) — that bloat is accumulated `[x] Shipped` Open Threads, the **review ritual's** job to archive (overdue);
   not hand-archived here. → serves: vision-agent-memory (a shared memory layer must survive real *concurrent*
   team use; conflict-friendliness is part of faithful multi-vendor collaboration) (`continuity-merge-friendly-v4240`).
-  <!-- id: continuity-merge-friendly-v4240 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: working | origin: 2026-06-27-214222 -->
+  <!-- id: continuity-merge-friendly-v4240 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 3 | tier: archive-candidate | origin: 2026-06-27-214222 -->
 
 - [x] **Shipped in v4.22.0 (MINOR; dev-iter 4.22) — curious knowledge harvest at enable.** From a **client-team
   enablement complaint** (another team, first run on their repo): discovery "was less curious than
@@ -374,7 +394,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   confirmed with the maintainer before authoring. → serves: vision-agent-memory (a memory layer should
   inherit what the team already knows; curiosity is part of faithful enablement). Complaints = adoption
   signal.
-  <!-- id: knowledge-harvest-curious-v4220 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: working | origin: 2026-06-27-210953 -->
+  <!-- id: knowledge-harvest-curious-v4220 | created: 2026-06-27 | last_used: 2026-06-28 | uses: 3 | tier: active | origin: 2026-06-27-210953 -->
 
 - [x] **Shipped v4.20.0 (MINOR) — first-run init for fresh clones.** Dogfooding `~/sandbox/simple-proxy`
   with Copilot (fresh clone) exposed the gap: the **memory bootstrap self-initializes** (Copilot read
@@ -402,7 +422,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   **self-inited**, running `.githooks/init.sh` as its first step ("explicit and straightforward") before
   summarizing. So a fresh clone now self-initializes with **zero manual steps on both Claude and Copilot**
   — the untrained-user / fresh-clone goal is met cross-vendor. Closes the Copilot arc (v4.17.0 → 4.20.1).
-  <!-- id: ritual-init-v4200 | created: 2026-06-24 | last_used: 2026-06-24 | uses: 1 | tier: working | origin: 2026-06-24-193329 -->
+  <!-- id: ritual-init-v4200 | created: 2026-06-24 | last_used: 2026-06-28 | uses: 7 | tier: archive-candidate | origin: 2026-06-24-193329 -->
 
 ### Evolving long-term memory layer (v3.0.0) — BUILT 2026-06-13
 - [ ] **Dogfood backfill (optional):** this repo adopted the layer — added
@@ -433,7 +453,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   hand-waving); keep gates lightweight (Open-Thread-like, not Jira); the trace must be
   enforceable (grep/review), not just documented. Validated motivation: the Node→Rust
   rewrite delivered deterministically with no drift — VBDI generalizes that to creation.
-  <!-- id: vbdi-lifecycle-direction | created: 2026-06-14 | last_used: 2026-06-15 | uses: 3 | tier: active | origin: 2026-06-14-030729 -->
+  <!-- id: vbdi-lifecycle-direction | created: 2026-06-14 | last_used: 2026-06-20 | uses: 4 | tier: active | origin: 2026-06-14-030729 -->
 
 ### Shipped — v4.1.0: cross-vendor skills layer (2026-06-15)
 
@@ -477,7 +497,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   enable surfaced v3.1.0 (`.gitignore`), and the simple-proxy Node→Rust refactor's
   field report drove v3.2.0 (protocol clarifications). Keep feeding real-work insights
   back into this backlog. (Stated 2026-06-13.)
-  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-06-20 | uses: 5 | tier: active -->
+  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-06-24 | uses: 11 | tier: active -->
 
 - [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**
   (2026-06-13) in favor of the markdown-native evolving-memory layer above. Not
