@@ -11,6 +11,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.24.0, 6/28/2026
+
+> **Decay-policy retune + a review-cadence/size advisory in `memory-lint` (MINOR).** Grounded in
+> real measurements across two enabled repos: this tool (121 sessions, continuity 490 lines / 24 facts
+> *right after a clean review*) and a product repo (61 sessions, **585 lines / 41 facts, 0 archived** —
+> the cadence review never fired in the field). Findings: (1) `continuity_max_lines: 300` was
+> permanently-red on both (alert fatigue) and conflates non-decaying structural sections (Vision,
+> Invariants, Key Decisions, Blueprint) with the decaying region; (2) there was **no count-based trigger**,
+> though fact-count is the verbosity- and velocity-independent signal; (3) **nothing enforced the review
+> cadence**, so a real repo silently accumulated; (4) `verify_invariants_every: 20` meant near-daily
+> human re-confirms at burst velocity (10–20 sessions/day).
+
+### Changed
+- **`memory-lint` — new advisory check (8), both runtimes at parity + mirror tests (29 each).**
+  `[review-overdue]` fires when `sessions_since_last_review ≥ review_every` (read from the `last_review`
+  Project-State stamp; never reviewed ⇒ all sessions count). `[continuity-bloat]` fires when continuity
+  holds more than `continuity_max_facts` decaying facts/threads, or more than `continuity_max_lines` lines.
+  All **advisory (WARN)** — a review is a ritual, never a hard gate — but they ride every lint run + the CI
+  floor, so a lapsed review can't hide. This is the keystone: parameters alone don't fix a review that
+  never runs.
+- **Decay-policy defaults retuned** (`templates/memory/decay-policy.md` + this repo's): `continuity_max_facts: 30`
+  (NEW — primary lean signal), `continuity_max_lines: 300 → 600` (a mature layer sits ~450–600 when healthy),
+  `verify_invariants_every: 20 → 40` (anti-fatigue). `working/active/archive_window` and `review_every`
+  unchanged — they work; the bloat came from reviews not running, not from the windows.
+- **Docs:** `REVIEW.md` size trigger (facts primary + the new lint advisories), `agent-skills/memory-lint/SKILL.md`
+  (check 8), `AGENTS.md` (root + template) review-cadence note, `templates/.agent/schema.md` windows list.
+  Skill *description* unchanged → adapters need no re-sync.
+
+## Version 4.23.2, 6/28/2026
+
+> **Context-hygiene guidance: keep state externalized so compaction is safe (PATCH).** From a maintainer
+> exchange about multi-hour AI sessions. Two corrections to an initial "brain fog" framing: **(1)** the
+> agent usually **can't compact itself** (compaction is user-invoked or a harness auto-compact), so the
+> agent's reliable lever is *externalizing state*, not self-compacting; **(2)** "retrieval degrades over
+> hours" is a judgment call — the **objective** health signal is **context-window utilization (tokens used
+> vs. the model's limit)**, which the harness tracks and may auto-act on, while time and a felt "fog" are
+> only proxies. `AGENTS.md` now teaches: write the session log + `continuity.md` at each natural seam
+> (milestone, phase shift, before a topic pivot) **before** compaction; at a seam with high utilization,
+> suggest compacting (or rely on auto-compact), never mid-task; re-verify specifics against live files
+> after any compaction. Reinforces *why* the memory layer lives in files, not the chat buffer.
+
+### Changed
+- **`templates/AGENTS.md` + root `AGENTS.md`** — new "Long session? Keep state externalized so compaction is
+  safe" block, placed as a corollary to lightweight mode (the session-log write is the seam). Vendor-neutral
+  (`/compact` / auto-compact / fresh session). Doc-only, additive, no memory-file shape change; re-sync
+  `templates/AGENTS.md` into targets on the `4.23.1 → 4.23.2` rung.
+
 ## Version 4.23.1, 6/28/2026
 
 > **`last_harvest` marker for incremental harvests (PATCH).** From a cross-vendor test drive: mercury's

@@ -90,6 +90,8 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.20.2 | **Windows line-ending hardening (PATCH):** adds a **`.gitattributes`** pinning `*.sh` + `.githooks/*` to **LF**, so Git for Windows (`core.autocrlf=true`) doesn't rewrite them to CRLF on checkout (which breaks bash: `bad interpreter: /usr/bin/env bash^M`, silently disabling the hook + `init.sh`). Installed/merged into targets additively (like the `.gitignore` block). Makes the bootstrap + hooks robust on Windows (Git Bash / WSL), not luck-of-the-default. From a Copilot Windows-feasibility check |
 | 4.20.3 | **memory-lint catches an empty/malformed version manifest (PATCH):** adds a deterministic **`check_version_manifest`** ERROR to both runtimes (`memory-lint.py` + `memory-lint.mjs`, at parity, with mirror tests) so a present-but-empty/malformed `.agent/version.md` fails the lint floor (CI + reviews) instead of silently breaking Mode B upgrade detection. Closes the loop on the v4.20.1 bug (a truncating stamp one-liner emptied a target's `version.md` → an agent misread the version). A *missing* `version.md` stays valid (pre-versioning baseline) and is not flagged. Re-copy the memory-lint skill files |
 | 4.21.0 | **Google Antigravity (`agy`) skills adapter (MINOR):** a **6th** adapter target `.agents/skills/<name>/SKILL.md` — the open Agent Skills standard dir read by Google Antigravity (the Gemini CLI successor), which reads `.agents/skills/`, **not** the old `.gemini/commands/*.toml`. `sync skill adapters` now writes six; `.agents/` gitignored; `.gemini/commands` kept for the transition. Skill-only re-copy + re-sync; no memory-file shape change |
+| 4.24.0 | **Decay-policy retune + review-cadence/size advisory in `memory-lint` (MINOR):** from real measurements across two enabled repos (one ran 61 sessions / 41 facts / 585 lines and **archived nothing** — the cadence review never fired in the field). `memory-lint` gains advisory check (8), both runtimes + mirror tests: `[review-overdue]` (`sessions_since_last_review ≥ review_every`, from the `last_review` stamp) and `[continuity-bloat]` (> `continuity_max_facts` / `continuity_max_lines`) — so a lapsed review rides every lint run + CI. New default `continuity_max_facts: 30` (count-based primary signal); `continuity_max_lines: 300 → 600`; `verify_invariants_every: 20 → 40`. Re-copy the memory-lint skill files; re-sync `REVIEW.md` + `AGENTS.md` + `.agent/schema.md`; merge the policy additively (preserve any custom-tuned values). Skill description unchanged → adapters need no re-sync |
+| 4.23.2 | **Context-hygiene guidance — keep state externalized so compaction is safe (PATCH):** `AGENTS.md` (template + root) gains a "Long session? Keep state externalized" block. Two corrections to an initial "brain fog" framing: the agent usually **can't compact itself** (so its lever is *externalizing state*), and the **objective** health signal is **context-window utilization (tokens vs. limit)**, not time or a felt "fog." Teaches: write the session log + `continuity.md` at each natural seam **before** compaction; at high utilization suggest compacting (or rely on auto-compact), never mid-task; re-verify against live files afterward. Re-sync `templates/AGENTS.md`; doc-only, no shape change |
 | 4.23.1 | **`last_harvest` marker for incremental harvests (PATCH):** Project State gains an optional `last_harvest: YYYY-MM-DD | through <session>` field (in `continuity.md`, with `last_review`/`last_invariant_check` — **not** `version.md`); `harvest-knowledge` reads it to scope the next run to docs changed since then (full pass if absent) and stamps it on completion (even a no-op). From a cross-vendor test drive where the agent had to infer the window. Re-sync `.agent/schema.md` + the `harvest-knowledge` skill; no shape change (the field is additive + optional) |
 | 4.23.0 | **`harvest-knowledge` built-in skill (MINOR):** a **5th** built-in (`provenance: agent-memory-builtin`) — the on-demand, recurring counterpart to the enable-time curious harvest (Step 4b). Re-scans the repo's human-authored docs and folds newly-durable facts into the neutral, shared `memory/` **additively** (map-don't-mirror; check-existing-first; conflicts → `Contradiction`; budget-with-disclosure). Keeps a living repo's memory in sync as docs evolve; **not** a vendor `/init` (that does code-analysis → a vendor steering file; this does knowledge-distillation → neutral memory, additive + repeatable). "Re-harvest" moves out of the Mode B upgrade path into this skill — the enable-time harvest stays a fresh-enable event. Installed by §5i (now 5 built-ins); on the rung, re-copy the skill + re-sync adapters |
 | 4.22.4 | **Safe-write safeguard in `REVIEW.md` (PATCH):** the review ritual's Safety section now mandates **append-mode / read-into-var (never `open(f,"w").write(open(f).read()+…)`, which truncates before the read)** for scripted archive/`continuity.md` edits, and **running `memory-lint` after any scripted memory mutation** (it catches truncation; git recovers). From a real archive-truncation incident during a review. Re-sync `REVIEW.md`; no shape change |
@@ -1373,3 +1375,47 @@ Doc/skill-only; additive. No memory-file *shape* change (the new Project State f
 4. **Stamp** `.agent/version.md` → `version: 4.23.1`, `last_upgraded: <today>`, preserving `enabled_with`
    and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a truncate-first one-liner.**
 5. **Report**: harvests now scope incrementally via a `last_harvest` Project-State marker.
+
+---
+
+## Rung: 4.23.1 → 4.23.2 — context-hygiene guidance (keep state externalized) (PATCH)
+
+Doc-only; additive. No memory-file shape change, no skill change.
+
+1. **Re-sync `AGENTS.md`** (from `templates/AGENTS.md` — the memory hub, **never** the tool's root
+   `AGENTS.md` dispatcher; see the 4.14.1 rung). It now carries a "Long session? Keep state externalized so
+   compaction is safe" block: the objective health signal is **context-window utilization**, not time/"fog";
+   the agent can't self-compact, so its lever is writing the session log + `continuity.md` at each natural
+   seam **before** compaction (never mid-task), then re-verifying against live files afterward. Merge
+   additively — keep any target-local `AGENTS.md` customizations.
+2. **Stamp** `.agent/version.md` → `version: 4.23.2`, `last_upgraded: <today>`, preserving `enabled_with`
+   and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a truncate-first one-liner.**
+3. **Report**: `AGENTS.md` now teaches when to compact a long session (seam + after a memory write).
+
+---
+
+## Rung: 4.23.2 → 4.24.0 — decay-policy retune + review-cadence advisory (MINOR)
+
+Additive. No memory-file shape change. The `memory-lint` check is advisory (never an ERROR), and the
+policy retune is **merge-additive** — a repo that has tuned its own windows keeps them.
+
+1. **Re-copy the memory-lint skill files** (tool-managed, byte-parity): `agent-skills/memory-lint/scripts/`
+   `memory-lint.py`, `memory-lint.mjs`, `test_memory_lint.py`, `test_memory_lint.mjs`. They add advisory
+   check (8): `[review-overdue]` + `[continuity-bloat]`. Skill **description unchanged** → adapters need no
+   regeneration (re-running sync is a harmless no-op).
+2. **Merge `memory/decay-policy.md` additively** (from `templates/memory/decay-policy.md`):
+   - **Add** `continuity_max_facts: 30` under Review triggers if absent (the new primary lean signal).
+   - If the repo still carries the **old defaults**, bump them: `continuity_max_lines: 300 → 600`,
+     `verify_invariants_every: 20 → 40`. **If the repo has custom-tuned values, preserve them** — these
+     are user knobs. (The `memory-lint` script defaults to 30 / 600 / 40 when a field is absent, so an
+     un-retuned repo still gets sane thresholds.)
+3. **Re-sync** `REVIEW.md` (size trigger now names `continuity_max_facts` + the lint advisories),
+   `AGENTS.md` (root + template — review-cadence note), `.agent/schema.md` (windows list adds
+   `continuity_max_facts`). Merge additively; keep target-local customizations.
+4. **Run `memory-lint`** — expect it may now emit `[review-overdue]` / `[continuity-bloat]` advisories on a
+   repo that's overdue (that's the point — they're informational, not errors). Address by running the
+   `REVIEW.md` ritual when convenient.
+5. **Stamp** `.agent/version.md` → `version: 4.24.0`, `last_upgraded: <today>`, preserving `enabled_with`
+   and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a truncate-first one-liner.**
+6. **Report**: `memory-lint` now surfaces overdue reviews + continuity bloat; defaults retuned
+   (facts:30 / lines:600 / invariants:40).

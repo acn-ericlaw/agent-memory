@@ -162,8 +162,9 @@ Integer windows measured in **sessions**. No weights, no half-life, no floats.
 - archive_window:   20    # not referenced for more than this → archived
 
 ## Review triggers
-- review_every:        10   # run a review this many sessions after the last one
-- continuity_max_lines: 300 # or when continuity.md exceeds this
+- review_every:         10   # run a review this many sessions after the last one
+- continuity_max_facts:  30  # primary lean signal — count of decaying facts/threads (verbosity/velocity-immune)
+- continuity_max_lines: 600  # coarse backstop (a mature layer sits ~450–600 even when healthy)
 
 ## Auto-core (default: off — core is human-set)
 - enabled:          false

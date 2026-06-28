@@ -15,7 +15,15 @@ Three triggers:
 1. **Cadence** — when `sessions_since_last_review ≥ review_every` (from
    `memory/decay-policy.md`). Checked during the post-session update.
 2. **On command** — the user says *"review memory"* / *"compact memory"*.
-3. **Size** — when `memory/continuity.md` exceeds `continuity_max_lines`.
+3. **Size** — when `memory/continuity.md` holds more than `continuity_max_facts`
+   decaying facts/threads (the primary signal — a count, immune to verbosity and session
+   velocity), **or** exceeds `continuity_max_lines` (a coarse backstop).
+
+> **The triggers don't rely on the agent remembering.** `memory-lint` surfaces all three as
+> advisories — `[review-overdue]` (cadence) and `[continuity-bloat]` (facts/lines) — so a lapsed
+> review shows up on every lint run + the CI floor, not just when someone thinks to check. (Added
+> v4.24.0, after a real product repo ran 61 sessions and never archived because the cadence
+> trigger only ever fired in the agent's head.)
 
 Within a review, one more cadence is checked — **invariant verification**: when
 `sessions_since_last_invariant_check ≥ verify_invariants_every`, the review prompts a

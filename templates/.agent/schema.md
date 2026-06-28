@@ -196,7 +196,7 @@ story — lexical + indexed, by design (see `DECAY.md` §11).
 ## memory/decay-policy.md
 
 Tunable integer windows + triggers for the evolving-memory layer (`working_window`,
-`active_window`, `archive_window`, `review_every`, `continuity_max_lines`,
+`active_window`, `archive_window`, `review_every`, `continuity_max_facts`, `continuity_max_lines`,
 `verify_invariants_every`, and auto-core). All windows are in **sessions**. The rules these feed live in `DECAY.md`
 and `REVIEW.md` at the repo root.
 

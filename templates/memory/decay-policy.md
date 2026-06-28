@@ -12,13 +12,18 @@
 - archive_window:   20    # not referenced for more than this → archived
 
 ## Review triggers
-- review_every:        10   # run a review this many sessions after the last one
-- continuity_max_lines: 300 # ...or when continuity.md grows past this many lines
+- review_every:         10   # run a review this many sessions after the last one
+- continuity_max_facts:  30  # ...or when continuity.md holds more than this many decaying facts/threads
+                             #    (the PRIMARY lean signal — a count, immune to verbosity & session velocity)
+- continuity_max_lines: 600  # ...or this many lines (a coarse backstop; raised from 300 — a mature,
+                             #    actively-developed layer legitimately sits ~450–600 lines even when healthy,
+                             #    since structural sections (Vision, Invariants, Key Decisions, Blueprint) don't decay)
 
 ## Invariant verification
-- verify_invariants_every: 20  # sessions between human re-checks of core / Architectural
-                               # Invariants — never-decay ≠ never-checked. Checked during a
-                               # review; raises a prompt to confirm or supersede (DECAY.md §9).
+- verify_invariants_every: 40  # sessions between human re-checks of core / Architectural Invariants —
+                               # never-decay ≠ never-checked. Raised from 20: invariants are stable, and at
+                               # burst velocity (10–20 sessions/day) every-20 became a near-daily re-confirm
+                               # prompt (fatigue). Checked during a review; prompts to confirm or supersede (DECAY.md §9).
 
 ## Auto-core (default: off — core is human-set)
 - enabled:          false
