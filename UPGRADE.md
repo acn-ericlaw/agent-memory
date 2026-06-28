@@ -90,6 +90,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.20.2 | **Windows line-ending hardening (PATCH):** adds a **`.gitattributes`** pinning `*.sh` + `.githooks/*` to **LF**, so Git for Windows (`core.autocrlf=true`) doesn't rewrite them to CRLF on checkout (which breaks bash: `bad interpreter: /usr/bin/env bash^M`, silently disabling the hook + `init.sh`). Installed/merged into targets additively (like the `.gitignore` block). Makes the bootstrap + hooks robust on Windows (Git Bash / WSL), not luck-of-the-default. From a Copilot Windows-feasibility check |
 | 4.20.3 | **memory-lint catches an empty/malformed version manifest (PATCH):** adds a deterministic **`check_version_manifest`** ERROR to both runtimes (`memory-lint.py` + `memory-lint.mjs`, at parity, with mirror tests) so a present-but-empty/malformed `.agent/version.md` fails the lint floor (CI + reviews) instead of silently breaking Mode B upgrade detection. Closes the loop on the v4.20.1 bug (a truncating stamp one-liner emptied a target's `version.md` → an agent misread the version). A *missing* `version.md` stays valid (pre-versioning baseline) and is not flagged. Re-copy the memory-lint skill files |
 | 4.21.0 | **Google Antigravity (`agy`) skills adapter (MINOR):** a **6th** adapter target `.agents/skills/<name>/SKILL.md` — the open Agent Skills standard dir read by Google Antigravity (the Gemini CLI successor), which reads `.agents/skills/`, **not** the old `.gemini/commands/*.toml`. `sync skill adapters` now writes six; `.agents/` gitignored; `.gemini/commands` kept for the transition. Skill-only re-copy + re-sync; no memory-file shape change |
+| 4.23.1 | **`last_harvest` marker for incremental harvests (PATCH):** Project State gains an optional `last_harvest: YYYY-MM-DD | through <session>` field (in `continuity.md`, with `last_review`/`last_invariant_check` — **not** `version.md`); `harvest-knowledge` reads it to scope the next run to docs changed since then (full pass if absent) and stamps it on completion (even a no-op). From a cross-vendor test drive where the agent had to infer the window. Re-sync `.agent/schema.md` + the `harvest-knowledge` skill; no shape change (the field is additive + optional) |
 | 4.23.0 | **`harvest-knowledge` built-in skill (MINOR):** a **5th** built-in (`provenance: agent-memory-builtin`) — the on-demand, recurring counterpart to the enable-time curious harvest (Step 4b). Re-scans the repo's human-authored docs and folds newly-durable facts into the neutral, shared `memory/` **additively** (map-don't-mirror; check-existing-first; conflicts → `Contradiction`; budget-with-disclosure). Keeps a living repo's memory in sync as docs evolve; **not** a vendor `/init` (that does code-analysis → a vendor steering file; this does knowledge-distillation → neutral memory, additive + repeatable). "Re-harvest" moves out of the Mode B upgrade path into this skill — the enable-time harvest stays a fresh-enable event. Installed by §5i (now 5 built-ins); on the rung, re-copy the skill + re-sync adapters |
 | 4.22.4 | **Safe-write safeguard in `REVIEW.md` (PATCH):** the review ritual's Safety section now mandates **append-mode / read-into-var (never `open(f,"w").write(open(f).read()+…)`, which truncates before the read)** for scripted archive/`continuity.md` edits, and **running `memory-lint` after any scripted memory mutation** (it catches truncation; git recovers). From a real archive-truncation incident during a review. Re-sync `REVIEW.md`; no shape change |
 | 4.22.3 | **Tighten the post-commit session window: 2h → 30 min (PATCH):** v4.22.1's window was 2h, but observed follow-up stubs were **minutes** apart and 2h can conflate a *new* session started within 2h of the prior log. Default now **30 min**; override env var renamed to **`AGENT_MEMORY_SESSION_WINDOW_MINUTES`** (integer minutes — BSD `date -v` rejects fractional hours). Re-copy `.githooks/post-commit`; no shape change |
@@ -1355,3 +1356,20 @@ Adds a 5th tool-managed built-in skill. No memory-file shape change.
    and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a truncate-first one-liner.**
 5. **Report**: `harvest-knowledge` installed (5 built-ins); on-demand doc→memory harvest available; the
    enable-time harvest remains a fresh-enable event.
+
+---
+
+## Rung: 4.23.0 → 4.23.1 — last_harvest marker for incremental harvests (PATCH)
+
+Doc/skill-only; additive. No memory-file *shape* change (the new Project State field is optional).
+
+1. **Re-sync `.agent/schema.md`** (from `templates/.agent/schema.md`) — Project State now lists an optional
+   `last_harvest:` field (sits with `last_review` / `last_invariant_check`). Merge additively.
+2. **Re-copy the `harvest-knowledge` skill** (`agent-skills/harvest-knowledge/SKILL.md`, tool-managed) — it
+   now reads `last_harvest` to scope the run and stamps it on completion. Skill **description unchanged**, so
+   adapters need no regeneration (re-running sync is a harmless no-op).
+3. **Do not add `last_harvest` by hand** — it appears the next time `harvest-knowledge` runs. (An existing
+   repo simply has no marker until then; the first post-upgrade harvest is a full pass, as designed.)
+4. **Stamp** `.agent/version.md` → `version: 4.23.1`, `last_upgraded: <today>`, preserving `enabled_with`
+   and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a truncate-first one-liner.**
+5. **Report**: harvests now scope incrementally via a `last_harvest` Project-State marker.

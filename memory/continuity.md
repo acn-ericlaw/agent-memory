@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.23.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.23.1 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-032539)
+- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-041540)
 - **last_review:** 2026-06-28 | through 2026-06-28-025152
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -97,6 +97,22 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.23.1 (PATCH) — `last_harvest` marker for incremental harvests.** From a **cross-vendor
+  test drive**: mercury-composable's own agent ran `harvest-knowledge` correctly (clean no-op — memory was
+  already current; full protocol followed, good map-don't-mirror judgment) but had to **infer the harvest
+  window** ("since enable") because nothing recorded *when the last harvest ran*. **Fix:** an optional
+  `last_harvest: YYYY-MM-DD | through <session>` field in `continuity.md` Project State (with `last_review`
+  / `last_invariant_check` — same family: "when did this periodic memory ritual last run"). **Decided
+  against `.agent/version.md`** (the install manifest, version-gating — a different concern; like-with-like
+  + separation-of-concerns favored Project State; maintainer agreed). `harvest-knowledge` now **reads** it
+  to scope the next run and **stamps** it on completion (even a no-op — "docs checked through here"); the
+  check-existing-first guard still prevents duplicates so a re-scan stays safe (`last_harvest` only
+  *scopes*). Wired: `templates/.agent/schema.md` (field), `harvest-knowledge/SKILL.md` (read step 2 + stamp
+  step 7), `VERSION`→4.23.1, `CHANGELOG`, `README` (table), `UPGRADE` (row + `4.23.0→4.23.1` rung). Skill
+  *description* unchanged → adapters unchanged. → serves: vision-agent-memory (recurring harvest scopes
+  incrementally; the marker mirrors the review's `last_review`) (`last-harvest-marker-v4231`).
+  <!-- id: last-harvest-marker-v4231 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-041540 -->
 
 - [x] **Shipped v4.23.0 (MINOR) — `harvest-knowledge` built-in skill (on-demand doc→memory harvest).**
   Surfaced when test-driving the mercury-composable upgrade: the curious harvest (v4.22.0, `ENABLE.md`

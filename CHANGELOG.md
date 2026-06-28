@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.23.1, 6/28/2026
+
+> **`last_harvest` marker for incremental harvests (PATCH).** From a cross-vendor test drive: mercury's
+> agent ran `harvest-knowledge` correctly but had to **infer the harvest window** ("since enable") because
+> nothing recorded *when the last harvest ran*. Add a `last_harvest` marker so each run scopes "docs changed
+> since then" deterministically. Decided to keep it in **`continuity.md` Project State** (with `last_review`
+> / `last_invariant_check` — same family: "when did this periodic memory ritual last run"), **not**
+> `.agent/version.md` (the install manifest, a different concern).
+
+### Changed
+- **`templates/.agent/schema.md`** — Project State gains an optional **`last_harvest:` `YYYY-MM-DD | through
+  <session-file>`** field (omitted until the first harvest).
+- **`agent-skills/harvest-knowledge/SKILL.md`** — now **reads** `last_harvest` to scope the next run to
+  docs changed since then (full first pass if absent), and **stamps** it on completion (even on a no-op
+  run — "docs checked through here"). The harvest owns `last_harvest` as the review owns `last_review`. The
+  check-existing-first guard still prevents duplicates, so a re-scan is always safe — `last_harvest` only
+  *scopes* the read. `VERSION` → 4.23.1; re-synced on the `4.23.0 → 4.23.1` rung (skill description
+  unchanged → adapters unchanged).
+
 ## Version 4.23.0, 6/28/2026
 
 > **`harvest-knowledge` — on-demand knowledge harvest as a built-in skill (MINOR).** The curious harvest
