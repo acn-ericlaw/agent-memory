@@ -11,6 +11,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.25.0, 6/28/2026
+
+> **`archive-fact` — a deterministic, safe archive-move helper (MINOR).** From a cross-vendor critique
+> (Copilot / Gemini 3.1 Pro): "agent behaviors vary by vendor; the reliance on agent interpretation of
+> `REVIEW.md` to safely mutate state is vulnerable to LLM regressions / file-editing precision — harden the
+> memory-writing mechanism itself, perhaps a small CLI helper for safe writes." Spot-on, and it names our
+> most-repeated bug: the `open(f,"w").write(open(f).read()+…)` truncate-before-read trap wiped a
+> `version.md` stamp and then this repo's archive (50 facts → 6), once each. The v4.22.4 safeguard moved
+> the rule from a personal note → shared doc; this is the logical next step — doc → **tool**.
+
+### Added
+- **`agent-skills/archive-fact/`** — the **6th** built-in (`provenance: agent-memory-builtin`). Executes
+  `REVIEW.md` step 4's archive-move deterministically: given fact id(s) the agent has *decided* to retire, it
+  extracts each block (the column-0 bullet through its `<!-- id: … -->` footer, whole), **appends** it to the
+  quarter archive + `INDEX.md` (append-mode), and rewrites `continuity.md` without it (**read whole file into
+  memory, write once** — truncation is structurally impossible). Python *or* Node at output parity, with
+  mirror tests (`test_archive_fact.py` / `.mjs`). Guards (refuse, exit 1): id with no footer, id already
+  archived, or a move that would empty continuity; the move is **all-or-nothing**. `--dry-run` to preview.
+  Keeps the meaning/mechanics split intact (same as `memory-lint`): the **agent judges what to archive**;
+  the helper performs the **move** safely — it never decides (`never-pick-a-winner`).
+
+### Changed
+- **`REVIEW.md`** step 4 now leads with `archive-fact` as the preferred path (manual append-mode / read-into-var
+  stays the no-runtime fallback). **`ENABLE.md` §5i** installs **six** built-ins. **`README.md`** / **`ADR.md`** /
+  `continuity.md` built-in lists updated. `sync skill adapters` now writes 7 skills → 42 adapters.
+
+### Critique disposition (also from the same review)
+- *Auto-fix, not just lint* — **declined for semantic decay** (auto-deciding what to archive violates
+  `never-pick-a-winner`); the `REVIEW.md` ritual **is** the agent-driven fix, the v4.24.0 advisory triggers it,
+  and `archive-fact` now makes the *move* deterministic. *Upgrade automation* — logged as a backlog thread
+  (the mechanical steps could be scripted, but the rungs are semantic merges that must stay agent-judged;
+  the chosen mitigation is deterministic guardrails like `memory-lint`).
+
 ## Version 4.24.0, 6/28/2026
 
 > **Decay-policy retune + a review-cadence/size advisory in `memory-lint` (MINOR).** Grounded in

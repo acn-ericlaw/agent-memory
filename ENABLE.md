@@ -502,8 +502,13 @@ gets**, because they support the core workflow:
   conflicts → a `Contradiction` thread; never overwrites curated facts). No-code/agent-run. Keeps memory
   in sync as a living repo's docs evolve — and is the home for "re-harvest," so the enable-time harvest
   stays a fresh-enable event, not an upgrade behavior.
+- **`archive-fact`** (v4.25.0) — the deterministic executor for the **review ritual's archive-move**
+  (`REVIEW.md` step 4): given fact id(s) the agent has *decided* to retire, it moves each block from
+  `continuity.md` to the quarter archive + `INDEX.md` safely (reads into memory, writes once — the
+  truncate-before-read trap is structurally impossible). Python *or* Node at parity, with mirror tests;
+  refuses if an id is missing or already archived. The agent judges *what*; the helper does the *move*.
 
-**Install all five** (every mode, including a fresh Mode A enable): copy `agent-skills/<name>/`
+**Install all six** (every mode, including a fresh Mode A enable): copy `agent-skills/<name>/`
 **verbatim from this tool's root** into the target's `agent-skills/` (including `memory-lint`'s and
 `sync-adapters`' bundled `scripts/`), then regenerate their adapters via the 5h recipe (which now
 *runs* the freshly-installed `sync-adapters` script). Each ships marked
