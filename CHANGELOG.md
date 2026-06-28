@@ -11,6 +11,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.26.0, 6/28/2026
+
+> **`refresh-metadata` + a `memory-lint` `[stale-metadata]` advisory — close the skipped-re-tier gap (MINOR).**
+> From a cross-vendor field test: Copilot / Gemini 3.1 Pro committed the v4.25.0 upgrade to mercury and,
+> seeing the `[review-overdue]` advisory, **ran the review unprompted** — correctly using `archive-fact`
+> (the over-archival guard even caught a premature-archive attempt and it reverted). But it did Step 4
+> (archive) + Step 5 (sweep) and **skipped Step 2 (apply events) + Step 3 (re-tier)** — leaving stale
+> `last_used`/`uses`/`tier` footers on the facts that stayed. A capable agent silently did half the ritual.
+> This is the **third instance of one failure class** (after the truncation trap → `archive-fact`, and the
+> never-fired review → `[review-overdue]`): *multi-step agent rituals get partially executed.* The fix
+> refines the earlier "reject auto-fix" stance — the real boundary is **judgment vs. arithmetic**: deciding
+> *what to archive* is judgment (stays with the agent); recomputing metadata is **arithmetic** (the "full
+> rebuild" path REVIEW.md already calls deterministic + reproducible) and is safe to mechanize.
+
+### Added
+- **`agent-skills/refresh-metadata/`** — the **7th** built-in (`provenance: agent-memory-builtin`). Executes
+  REVIEW.md steps 2–3 deterministically: recomputes every fact's `last_used` / `uses` / `tier` from the
+  `## Memory References` across `memory/sessions/` and writes the footers back (reads into memory, writes
+  once). Pure arithmetic — `core`/`superseded` and never-referenced facts are untouched, and it clamps at
+  `archive-candidate` (it never archives; that's `archive-fact` + the agent's judgment). Python *or* Node at
+  parity, with mirror tests; `--dry-run`; idempotent.
+- **`memory-lint` check (9) `[stale-metadata]`** — flags a fact whose stored `tier` ≠ the tier recomputed
+  from the reference log (i.e. steps 2–3 were skipped), excluding `core`/`superseded`/never-referenced. Both
+  runtimes + mirror tests. This is what makes the skipped-re-tier gap *visible* on every lint run + CI.
+
+### Changed
+- **`REVIEW.md`** steps 2–3 now lead with `refresh-metadata` (the deterministic path; hand-editing 30
+  footers is discouraged). **`ENABLE.md` §5i** installs **seven** built-ins. **`README` / `ADR` /
+  `continuity`** built-in lists updated. `sync skill adapters` now writes 8 skills → 48 adapters.
+
 ## Version 4.25.0, 6/28/2026
 
 > **`archive-fact` — a deterministic, safe archive-move helper (MINOR).** From a cross-vendor critique

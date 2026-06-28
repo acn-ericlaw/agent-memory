@@ -507,8 +507,13 @@ gets**, because they support the core workflow:
   `continuity.md` to the quarter archive + `INDEX.md` safely (reads into memory, writes once — the
   truncate-before-read trap is structurally impossible). Python *or* Node at parity, with mirror tests;
   refuses if an id is missing or already archived. The agent judges *what*; the helper does the *move*.
+- **`refresh-metadata`** (v4.26.0) — the deterministic executor for **review steps 2–3** (apply events +
+  re-tier): recomputes every fact's `last_used` / `uses` / `tier` from the session reference log and writes
+  the footers back (the "full rebuild" path, made runnable). Pure arithmetic — `core`/`superseded` untouched,
+  never archives. Closes the gap where agents archive but skip the metadata pass (`memory-lint` flags it as
+  `[stale-metadata]`). Python *or* Node at parity, with mirror tests.
 
-**Install all six** (every mode, including a fresh Mode A enable): copy `agent-skills/<name>/`
+**Install all seven** (every mode, including a fresh Mode A enable): copy `agent-skills/<name>/`
 **verbatim from this tool's root** into the target's `agent-skills/` (including `memory-lint`'s and
 `sync-adapters`' bundled `scripts/`), then regenerate their adapters via the 5h recipe (which now
 *runs* the freshly-installed `sync-adapters` script). Each ships marked
