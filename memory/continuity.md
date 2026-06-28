@@ -7,7 +7,7 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.26.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.26.1 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
 - **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-181738)
 - **last_review:** 2026-06-28 | through 2026-06-28-162543
@@ -131,7 +131,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (steps 2–3), `ENABLE.md` §5i (7 built-ins), `README`/`ADR`/continuity lists, adapters (8 skills → 48),
   `VERSION`→4.26.0, `CHANGELOG`, `UPGRADE` (row + rung). → serves: vision-agent-memory (the review's
   deterministic half is now mechanized; only judgment is left to the agent — across vendors)
-  <!-- id: refresh-metadata-builtin-v4260 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-175909 -->
+  <!-- id: refresh-metadata-builtin-v4260 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 2 | tier: active | origin: 2026-06-28-175909 -->
 
 - [x] **Shipped v4.25.0 (MINOR) — `archive-fact`, a deterministic safe archive-move helper (6th built-in).**
   From a **cross-vendor critique** (Copilot / Gemini 3.1 Pro, `review-scratch/critique.md`): "agent behaviors
