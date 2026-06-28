@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.26.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-175909)
+- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-181738)
 - **last_review:** 2026-06-28 | through 2026-06-28-162543
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -97,6 +97,21 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.26.1 (PATCH) — `[stale-metadata]` / `refresh-metadata` no longer opine on a pinned
+  thread's tier.** From a **mercury sanity check** (post-Copilot review): v4.26.0 flagged every
+  `working`-tagged pinned `- [ ]` open thread as "should be `active`" — noise, since a pinned thread never
+  decays *regardless* of its tier label (its **pinned-ness** protects it, not the label). Refinement: both
+  `expected_tier`s (memory-lint check 9 + refresh-metadata) now return a pinned thread's **stored** tier — no
+  flag, no rewrite — while still refreshing its factual `uses`/`last_used`. Surfaced by the comparison of
+  `refresh-metadata` vs Copilot's `update-metadata.py` (which *skipped* pinned threads; this lands on the same
+  outcome by a cleaner rule, and `refresh-metadata` is otherwise a strict, safer superset — preserves all
+  footer fields, reads `decay-policy.md`, clamps at archive-candidate). The same sanity check confirmed
+  **no data loss** on mercury (it never used `supersedes`/`superseded-by`/`formalizes` footer fields) and a
+  **correct archival**. Lockstep: memory-lint + refresh-metadata scripts + tests (memory-lint 34), `DECAY.md`
+  rule 4, both SKILL.md notes, `VERSION`→4.26.1, `CHANGELOG`, `README`, `UPGRADE` (row + rung). Descriptions
+  unchanged → adapters untouched. → serves: vision-agent-memory (the advisory stays signal, not noise)
+  <!-- id: pinned-tier-refinement-v4261 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-181738 -->
 
 - [x] **Shipped v4.26.0 (MINOR) — `refresh-metadata` (7th built-in) + a `memory-lint` `[stale-metadata]`
   advisory.** From a **cross-vendor field test**: Copilot / Gemini 3.1 Pro committed the v4.25.0 upgrade to
