@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.22.2, 6/27/2026
+
+> **Lightweight mode: one log per working *session*, not per commit (PATCH).** The agent-side mirror of
+> v4.22.1. The lightweight-mode rule wrote a lite session log for *every* memory-neutral tracked-file
+> change — so an agent making several small commits in one sitting produced a near-duplicate lite log per
+> commit (the same clutter + decay session-count inflation the v4.22.1 hook fix addressed, but on the
+> agent-behavior side). The agent has context the hook lacks — it *knows* it's the same working session —
+> so it needs no time-window: it simply enriches the log it already wrote.
+
+### Changed
+- **`AGENTS.md` (root + `templates/`)** — the lightweight-mode "lite log" tier gains: *if you already wrote
+  a session log earlier in **this** working session, a later **memory-neutral** commit should **enrich that
+  existing log** (a one-line "also: …" note) rather than spawn another lite log — a burst of commits in one
+  sitting is one session.* Explicitly preserves the existing model for **memory-relevant** work (distinct
+  events still each get their own log, so a multi-task conversation may still yield several); the rule only
+  stops *trivial* follow-on commits from minting near-duplicate lite logs that would also inflate the decay
+  session-count. Wording-only — no file shape, skill, or script change. `VERSION` → 4.22.2; re-synced into
+  targets on the `4.22.1 → 4.22.2` rung (re-copy `templates/AGENTS.md`).
+
 ## Version 4.22.1, 6/27/2026
 
 > **post-commit auto-stub is now per *session*, not per *commit* (PATCH).** A downstream report

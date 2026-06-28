@@ -140,8 +140,15 @@ expected (the decay math counts log files — `DECAY.md` §4).
 >   summary + `## Memory References` → `(none)`) and skip the rest (full template, fact-footers,
 >   continuity edits; `last_session` is derivable from the newest session file). **Don't skip the log
 >   just because it felt "trivial"** — a misjudged change that actually mattered must still be logged.
+>   **One log per working *session*, not per commit:** if you already wrote a session log earlier in
+>   *this* working session, a later **memory-neutral** commit should **enrich that existing log** (a
+>   one-line "also: …" note) rather than spawn another near-duplicate lite log — a burst of commits in
+>   one sitting is *one* session. This keeps the decay session-count honest (it counts log files) and
+>   mirrors the post-commit hook's per-session windowing (v4.22.1).
 > - **A memory-relevant event** (fact / decision / Open Thread / project-state change, or anything
->   touching Vision / Blueprint / invariant / supersession): the **full** ritual.
+>   touching Vision / Blueprint / invariant / supersession): the **full** ritual. (Distinct
+>   memory-relevant work still gets its **own** log, so a multi-task conversation may still yield several —
+>   the rule above only stops *trivial* follow-on commits from each minting a near-duplicate lite log.)
 > The ledger stays continuous for anything that touched a *tracked* file; the review treats a lite log
 > as a normal reference-free session, so usage is unaffected.
 

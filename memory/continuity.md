@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.22.1 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.22.2 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-022903)
+- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-023654)
 - **last_review:** 2026-06-27 | through 2026-06-27-215825
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -97,6 +97,24 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.22.2 (PATCH) — lightweight mode: one log per *session*, not per *commit* (agent-side
+  mirror of v4.22.1).** Maintainer accepted the recommendation flagged at v4.22.1: the same per-commit
+  granularity the hook fix addressed also lived on the **agent-behavior** side — the lightweight-mode rule
+  wrote a lite session log for *every* memory-neutral tracked-file change, so an agent making several small
+  commits in one sitting produced a near-duplicate lite log per commit (clutter + decay session-count
+  inflation). **Fix:** `AGENTS.md` (root + template) lightweight "lite log" tier now says — if a session log
+  already exists for *this* working session, a later **memory-neutral** commit **enriches** that log (a
+  one-line "also: …" note) rather than spawning another. The agent needs **no time-window** (unlike the
+  hook): it *knows* it's the same working session. Explicitly preserves the existing model for
+  **memory-relevant** work — distinct events each get their own full log (a multi-task conversation may
+  still yield several), so this only coalesces *trivial* follow-ons. **Dogfooded immediately:** this very
+  v4.22.2 work is memory-relevant → it got its **own** full log (this session), while the prior trivial doc
+  commits would now coalesce. Wording-only — no shape/skill/hook change. Lockstep: `AGENTS.md` (root +
+  template), `VERSION`→4.22.2, `CHANGELOG`, `README` (table +1/−1, drops 4.17.0), `UPGRADE` (row +
+  `4.22.1→4.22.2` rung). → serves: vision-agent-memory (the decay model's integrity needs the session-file
+  count to track *sessions*, not commits — closed on both the hook and agent sides) (`lite-log-per-session-v4222`).
+  <!-- id: lite-log-per-session-v4222 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-023654 -->
 
 - [x] **Shipped v4.22.1 (PATCH) — post-commit auto-stub is per *session*, not per *commit*.** From
   **downstream `mercury-composable` feedback** (`review-scratch/feedback-2026-06-27-post-commit-session-stub.md`):
