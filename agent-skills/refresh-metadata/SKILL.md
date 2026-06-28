@@ -21,6 +21,9 @@ stay), leaving stale footers; a cross-vendor review proved it. This closes that 
   marked `archived` (that tier means *moved*).
 - It does **not** touch `core` or `superseded` facts (human-set / terminal), or facts with **no** reference
   in any session log (legacy — can't recompute, so preserved), and it never **adds** missing fields.
+- For a **pinned `- [ ]` open thread** it refreshes the factual fields (`uses` / `last_used`) but **leaves
+  the tier label as-is** (v4.26.1) — pinned-ness protects an open thread, not its tier, so the tool doesn't
+  opine on it (a `working`-tagged open thread is fine).
 
 So the division of labor across the three memory tools mirrors the meaning/mechanics split:
 `memory-lint` **verifies** (read-only) · `refresh-metadata` **re-tiers** (arithmetic) · `archive-fact`

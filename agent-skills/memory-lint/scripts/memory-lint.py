@@ -313,8 +313,8 @@ def expected_tier(fields, fid, sslu_val, uses_val, created_ago, pinned, ww, acw,
         return "superseded"
     if fields.get("tier") == "core":
         return "core"
-    if fid in pinned:                      # unchecked Open Thread → pinned active
-        return "active"
+    if fid in pinned:                      # unchecked Open Thread → never decays; its pinned-ness
+        return fields.get("tier")          # protects it, not the tier label — so leave the label as-is
     if sslu_val is None:                   # never referenced — can't recompute; don't flag
         return fields.get("tier")
     if created_ago is not None and created_ago <= ww and uses_val <= 1:

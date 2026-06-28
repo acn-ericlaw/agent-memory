@@ -11,6 +11,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.26.1, 6/28/2026
+
+> **`[stale-metadata]` / `refresh-metadata` no longer opine on a pinned thread's tier (PATCH).** A sanity
+> check of mercury (post-Copilot review) surfaced that v4.26.0 flagged every `working`-tagged **pinned
+> `- [ ]` open thread** as "should be `active`" — noise, since a pinned thread never decays *regardless* of
+> its tier label. The protection is its pinned-ness (being unchecked), not the label. Refinement: the tooling
+> now has **no opinion** on a pinned thread's tier — `memory-lint` won't flag it and `refresh-metadata` won't
+> rewrite it (it still refreshes the factual `uses`/`last_used`). Surfaced comparing `refresh-metadata`
+> against Copilot's own `update-metadata.py` (which *skipped* pinned threads); this lands on the same
+> outcome, by a cleaner rule.
+
+### Changed
+- **`memory-lint` `expected_tier`** (check 9) + **`refresh-metadata` `expected_tier`**: a pinned thread
+  returns its **stored** tier (no drift, no rewrite) instead of being forced to `active`. Both runtimes at
+  parity; tests added (memory-lint 34, refresh-metadata unchanged count — assertion updated).
+- **`DECAY.md` rule 4** + both SKILL.md notes clarify: pinned-ness protects an open thread, not its tier
+  label; `working` on a pinned thread is fine. Doc-only otherwise; no shape change.
+
 ## Version 4.26.0, 6/28/2026
 
 > **`refresh-metadata` + a `memory-lint` `[stale-metadata]` advisory — close the skipped-re-tier gap (MINOR).**

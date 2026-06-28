@@ -346,6 +346,13 @@ class TestStaleMetadata(unittest.TestCase):
         refs = [set(), set(), set()]  # sslu None → can't recompute → no flag
         self.assertEqual(memory_lint.check_stale_metadata(cont, set(), refs, self.STEMS, 3, 2, 4), [])
 
+    def test_pinned_thread_tier_not_flagged(self):
+        # v4.26.1 refinement: a pinned `- [ ]` thread never decays; the tool doesn't opine on its
+        # tier label, so a 'working'-tagged pinned thread is NOT drift (would be 'active' if unpinned).
+        cont = {"open-fact": {"tier": "working", "created": "2026-01-01"}}
+        refs = [{"open-fact"}, {"open-fact"}, set()]
+        self.assertEqual(memory_lint.check_stale_metadata(cont, {"open-fact"}, refs, self.STEMS, 3, 2, 4), [])
+
 
 if __name__ == "__main__":
     unittest.main()

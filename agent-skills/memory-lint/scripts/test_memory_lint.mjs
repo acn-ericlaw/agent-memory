@@ -414,3 +414,10 @@ test("check_stale_metadata: never-referenced not flagged", () => {
   const refs = [new Set(), new Set(), new Set()];
   assert.deepEqual(check_stale_metadata(cont, new Set(), refs, STALE_STEMS, 3, 2, 4), []);
 });
+
+test("check_stale_metadata: a pinned thread's tier is not flagged (v4.26.1)", () => {
+  // pinned `- [ ]` thread never decays; the tool leaves its tier label alone.
+  const cont = new Map([["open-fact", { tier: "working", created: "2026-01-01" }]]);
+  const refs = [new Set(["open-fact"]), new Set(["open-fact"]), new Set()];
+  assert.deepEqual(check_stale_metadata(cont, new Set(["open-fact"]), refs, STALE_STEMS, 3, 2, 4), []);
+});

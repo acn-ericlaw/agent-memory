@@ -74,7 +74,8 @@ test("re-tier and re-count from references", () => {
     assert.equal(fields(root, "promoted-fact").uses, "2");
     assert.equal(fields(root, "aged-fact").tier, "archive-candidate");
     assert.equal(fields(root, "fresh-fact").tier, "working");
-    assert.equal(fields(root, "open-fact").tier, "active");
+    assert.equal(fields(root, "open-fact").tier, "working");      // pinned: tier label left as-is
+    assert.equal(fields(root, "open-fact").last_used, "2026-06-06"); // …but factual fields still refresh
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 

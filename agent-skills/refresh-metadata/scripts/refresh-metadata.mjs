@@ -96,7 +96,7 @@ function load_windows(root) {
 export function expected_tier(fields, fid, sslu_val, uses_val, created_ago, pinned, ww, acw) {
   if (fields["superseded-by"] || fields.tier === "superseded") return "superseded";
   if (fields.tier === "core") return "core";
-  if (pinned.has(fid)) return "active";
+  if (pinned.has(fid)) return fields.tier ?? null;  // pinned: never decays; leave the tier label as-is
   if (sslu_val === null) return fields.tier ?? null;
   if (created_ago !== null && created_ago <= ww && uses_val <= 1) return "working";
   if (sslu_val <= acw) return "active";

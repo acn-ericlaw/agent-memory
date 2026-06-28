@@ -83,7 +83,8 @@ class TestRefreshMetadata(unittest.TestCase):
         self.assertEqual(self._tier(root, "promoted-fact")["uses"], "2")          # uses recount
         self.assertEqual(self._tier(root, "aged-fact")["tier"], "archive-candidate")  # sslu>aw
         self.assertEqual(self._tier(root, "fresh-fact")["tier"], "working")       # recent + uses≤1 stays working
-        self.assertEqual(self._tier(root, "open-fact")["tier"], "active")         # pinned open thread
+        self.assertEqual(self._tier(root, "open-fact")["tier"], "working")        # pinned: tier label left as-is
+        self.assertEqual(self._tier(root, "open-fact")["last_used"], "2026-06-06")  # …but factual fields still refresh
 
     def test_core_and_superseded_untouched(self):
         root = self._setup()
