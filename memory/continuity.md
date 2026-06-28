@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.22.2 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.22.3 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-023654)
+- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-024518)
 - **last_review:** 2026-06-27 | through 2026-06-27-215825
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -97,6 +97,21 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.22.3 (PATCH) — tightened the post-commit session window 2h → 30 min.** Maintainer
+  observed the v4.22.1 window (2h) was too long: the real problem was follow-up stubs **minutes** apart,
+  and 2h is long enough to wrongly conflate a *genuinely new* session that starts within 2h of the prior
+  session's log (the hook would nudge "enrich the old log" for new work). **Fix:** default window → **30
+  min** (spans a session's commit cadence incl. a short test/think gap; a new session after a >30-min pause
+  still gets its own stub). The override env var changed unit to **minutes** —
+  `AGENT_MEMORY_SESSION_WINDOW_MINUTES` (was `_HOURS`) — because BSD `date -v` rejects a fractional hour
+  (`-v-0.5H`), so a sub-hour default needs integer minutes; both runtimes still supported (`date -v-30M` /
+  `date -d "30 minutes ago"`). Re-validated (2m/25m → suppress; 45m/none → stub; custom override honored).
+  Lockstep: `.githooks/post-commit`, `.githooks/README.md`, `docs/DESIGN-ritual-triggers.md`,
+  `VERSION`→4.22.3, `CHANGELOG`, `README` (table +1/−1, drops 4.18.0), `UPGRADE` (row + `4.22.2→4.22.3` rung).
+  → serves: vision-agent-memory (the backstop should distinguish a session from a new one, not over-suppress)
+  (`session-window-30min-v4223`).
+  <!-- id: session-window-30min-v4223 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-024518 -->
 
 - [x] **Shipped v4.22.2 (PATCH) — lightweight mode: one log per *session*, not per *commit* (agent-side
   mirror of v4.22.1).** Maintainer accepted the recommendation flagged at v4.22.1: the same per-commit

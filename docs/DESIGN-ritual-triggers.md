@@ -78,8 +78,10 @@ The session log felt un-automatable because two things were conflated:
 - **The log's *existence* and *triggering*** = **deterministic**. A commit-time hook can **auto-write a
   stub** so the ledger never has a gap, and the agent/review **enriches** it.
 
-> **Granularity: per *session*, not per *commit* (v4.22.1).** A "session" is a burst of work within a
-> window (default 2h), so the hook stubs **at most once per session**: if a session log already exists
+> **Granularity: per *session*, not per *commit* (v4.22.1; window retuned to 30 min in v4.22.3).** A
+> "session" is a burst of work within a window (default **30 min** — long enough for a session's commit
+> cadence incl. a short test/think gap, short enough that a genuinely new session gets its own stub;
+> override `AGENT_MEMORY_SESSION_WINDOW_MINUTES`), so the hook stubs **at most once per session**: if a session log already exists
 > within the window — committed *or* a waiting stub, detected by the newest session **filename** (immutable
 > and clone-safe; mtime is reset by `git clone`/checkout) — it **nudges to enrich that log** instead of
 > writing another. A multi-commit session therefore yields **one** enriched log, and the decay

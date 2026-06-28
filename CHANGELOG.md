@@ -30,6 +30,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   session-count. Wording-only — no file shape, skill, or script change. `VERSION` → 4.22.2; re-synced into
   targets on the `4.22.1 → 4.22.2` rung (re-copy `templates/AGENTS.md`).
 
+## Version 4.22.3, 6/27/2026
+
+> **Tighten the post-commit session window: 2h → 30 min (PATCH).** v4.22.1 shipped a 2-hour
+> active-session window, but the observed problem was follow-up stubs **minutes** apart, and 2h is long
+> enough to wrongly conflate a *genuinely new* session that starts within 2h of the previous one's log
+> (the hook would nudge "enrich the old log" for a new session). 30 minutes spans a working session's
+> commit cadence — including a short test/think gap — while a real new session (a longer pause) still
+> gets its own stub.
+
+### Changed
+- **`.githooks/post-commit`** — the active-session window default is now **30 minutes** (was 2h), and the
+  override env var is **`AGENT_MEMORY_SESSION_WINDOW_MINUTES`** (integer minutes), replacing
+  `AGENT_MEMORY_SESSION_WINDOW_HOURS`. The unit changed to minutes because BSD `date -v` rejects a
+  fractional hour (`-v-0.5H`), so sub-hour windows need integer minutes; both runtimes stay supported
+  (`date -v-30M` / `date -d "30 minutes ago"`). Re-validated (2 min & 25 min → suppress; 45 min & none →
+  stub; custom override honored). `.githooks/README.md` + `docs/DESIGN-ritual-triggers.md` updated;
+  `VERSION` → 4.22.3; re-copied into targets on the `4.22.2 → 4.22.3` rung.
+
 ## Version 4.22.1, 6/27/2026
 
 > **post-commit auto-stub is now per *session*, not per *commit* (PATCH).** A downstream report

@@ -24,8 +24,8 @@ with no per-user setup, so the ritual is enforced even on a clone where the loca
 
 - **`post-commit`** — after a commit: re-syncs skill adapters if a skill changed; and if the commit did
   real work but carried no session log, ensures the session is captured — **once per working session, not
-  per commit.** If there is **no** session log within the active-session window (default **2h**; override
-  `AGENT_MEMORY_SESSION_WINDOW_HOURS`) it **auto-stubs** `memory/sessions/<ts>.md`; if a recent log already
+  per commit.** If there is **no** session log within the active-session window (default **30 min**; override
+  `AGENT_MEMORY_SESSION_WINDOW_MINUTES`) it **auto-stubs** `memory/sessions/<ts>.md`; if a recent log already
   covers this session — committed *or* a waiting stub, detected by the newest session **filename** (immutable
   and clone-safe, unlike mtime) — it instead **nudges you to enrich that existing log**. The stub guarantees
   the ledger never has a silent gap; the *thoughtful* summary stays the agent's job (capture vs. judgment —
