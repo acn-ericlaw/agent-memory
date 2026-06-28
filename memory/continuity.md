@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.23.2 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.23.2 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-165455)
+- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-172159)
 - **last_review:** 2026-06-28 | through 2026-06-28-162543
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -77,7 +77,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-20 | uses: 31 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
 - Upgrades are additive and non-destructive (ADR-0005) — enrich and add, never rewrite or delete —
   **except the tool's own managed built-ins** (`memory-lint`, `second-opinion`, `apply-critique`,
-  `sync-adapters`, `harvest-knowledge`), which are re-copied (overwritten) on upgrade; that overwrite is scoped to those tool-owned files,
+  `sync-adapters`, `harvest-knowledge`, `archive-fact`), which are re-copied (overwritten) on upgrade; that overwrite is scoped to those tool-owned files,
   and a user customizes only by forking under a new skill name (see `ENABLE.md` §5i). For everything
   the user authors, the invariant holds unchanged.
   <!-- id: upgrades-additive | created: 2026-06-13 | last_used: 2026-06-20 | uses: 22 | tier: core -->
@@ -97,6 +97,34 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.25.0 (MINOR) — `archive-fact`, a deterministic safe archive-move helper (6th built-in).**
+  From a **cross-vendor critique** (Copilot / Gemini 3.1 Pro, `review-scratch/critique.md`): "agent behaviors
+  vary by vendor; relying on agent interpretation of `REVIEW.md` to safely mutate state is vulnerable to LLM
+  regressions / file-editing precision — harden the memory-writing mechanism itself (a small CLI helper for
+  safe writes)." Spot-on, and it names our **most-repeated bug**: the `open(f,"w").write(open(f).read()+…)`
+  truncate-before-read trap (wiped a `version.md` stamp, then this repo's archive 50→6, once each;
+  [[version-md-stamp-safe-write]]). v4.22.4 moved the safeguard personal-note → shared doc; this is doc →
+  **tool**. **Built** `agent-skills/archive-fact/` (`provenance: agent-memory-builtin`): executes `REVIEW.md`
+  step 4's move (extract block by footer id → append to quarter archive + INDEX → rewrite continuity
+  *read-into-memory-then-write-once*). Python + Node at output parity + mirror tests; guards refuse a missing/
+  already-archived id or a would-empty move (all-or-nothing); `--dry-run`. **Keeps the meaning/mechanics
+  split** (same as `memory-lint`): the agent decides *what* to archive, the helper does the *move* — it never
+  decides (`never-pick-a-winner`). Lockstep: skill + tests, `REVIEW.md` step 4 (preferred path), `ENABLE.md`
+  §5i (6 built-ins), `README`/`ADR`/continuity built-in lists, adapters synced (7 skills → 42),
+  `VERSION`→4.25.0, `CHANGELOG`, `UPGRADE` (row + rung). → serves: vision-agent-memory (faithful enablement —
+  the riskiest state-mutation is now deterministic, not left to per-vendor agent diligence)
+  <!-- id: archive-fact-builtin-v4250 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-172159 -->
+
+- [ ] **(backlog) Mode B upgrade automation — scope the mechanical steps only.** From the same Gemini critique
+  (point 1): as the user base grows, the high-touch Mode B upgrade (re-sync specific files, run tools, stamp
+  version) could be a source of drift/user error; "consider automating more of `ENABLE.md` Mode B via a
+  script." **Deliberate tension:** the rungs are *semantic merges* (additive, preserve customizations, "re-sync
+  `AGENTS.md` but never the root one") that must stay agent-judged — the chosen mitigation is **deterministic
+  guardrails** (`check_version_manifest`, the v4.24.0 review-cadence advisory), not full automation. *If*
+  revisited, script only the **mechanical** parts (file copies, version stamp — like `sync-adapters` did in
+  v4.18.0) and leave the merges to the agent. Lower priority; logged so the critique isn't lost.
+  <!-- id: ot-mode-b-automation-backlog | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: active | origin: 2026-06-28-172159 -->
 
 - [x] **Shipped v4.24.0 (MINOR) — decay-policy retune + a review-cadence/size advisory in `memory-lint`.**
   From a maintainer question (after the v4.23.2 review flagged continuity at 490 lines, still over the old
@@ -323,33 +351,6 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   not hand-archived here. → serves: vision-agent-memory (a shared memory layer must survive real *concurrent*
   team use; conflict-friendliness is part of faithful multi-vendor collaboration) (`continuity-merge-friendly-v4240`).
   <!-- id: continuity-merge-friendly-v4240 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: working | origin: 2026-06-27-214222 -->
-
-- [x] **Shipped in v4.22.0 (MINOR; dev-iter 4.23) — fresh-enable advisory + discovery-depth choice.** From a
-  **user suggestion** (same conversation as v4.22.0): every agentic AI CLI has a built-in
-  deep `/init` that analyses a repo and writes the findings to a **vendor** steering file
-  (e.g. `CLAUDE.md`). For a *fresh* AI-enable, **show an advisory** ("about to AI-enable
-  `<repo>` with the agent-memory protocol"), **say you'll scan for markdown knowledge
-  artifacts, and ask whether a deep analysis is preferred** — if yes, do the deep analysis
-  **and record the decision in the first session log**. **Implemented:** `ENABLE.md` **Mode A**
-  now opens with the advisory + a **standard-scan (default) vs deep-analysis** choice. The
-  advisory **leads with a concise exec summary** of the protocol (what it is, what it writes,
-  what it won't touch, that it's committed + shared) so the user gives **informed consent**,
-  plus a `cancel` option that writes nothing — added on maintainer feedback ("honesty and
-  integrity are an architect's most important virtue"). **Key
-  reframe (mine):** deep analysis borrows the *capability* of a vendor `/init` but writes into
-  the **neutral** `memory/` layer (`instructions.md` + `continuity.md`), **never** a vendor
-  file — *capability, not destination* — and deep **subsumes** (doesn't skip) the 4b markdown
-  harvest, so docs are never dropped. **Mode A now writes a first enable session log** capturing
-  the enable + chosen depth (faithful to "record that decision in the first session log"); this
-  retires the `.gitkeep`-only sessions dir and lets enable-seeded facts set a real `origin`
-  (5b note updated). Default = standard scan (also the non-interactive default; deep is opt-in).
-  Lockstep: `ENABLE.md` (Mode A + 5b + 5c + Step 8 check 8 + Step 9 report line), `VERSION`→4.23.0,
-  `UPGRADE.md` (table row + a `4.22.0→4.23.0` rung that optionally offers the deep analysis to
-  enrich a repo enabled by the lighter path). `memory-lint` OK. **Operator-side only** — no
-  installed-file shape change, no template/skill/adapter touched. → serves: vision-agent-memory
-  (faithful enablement: use the best analysis the runtime offers, but keep the memory vendor-neutral
-  and the choice transparent + logged). Builds on `knowledge-harvest-curious-v4220`.
-  <!-- id: fresh-enable-advisory-depth-v4230 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: working | origin: 2026-06-27-211817 -->
 
 - [x] **Shipped in v4.22.0 (MINOR; dev-iter 4.22) — curious knowledge harvest at enable.** From a **client-team
   enablement complaint** (another team, first run on their repo): discovery "was less curious than

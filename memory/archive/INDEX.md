@@ -68,3 +68,4 @@
 - memlint-version-manifest-v4203 — shipped v4.20.3 — memory-lint check_version_manifest: a present-but-empty/malformed .agent/version.md fails the lint floor (ERROR); a missing file stays the valid pre-versioning baseline — faded (sslu 23 > archive_window 20) — 2026-Q2.md
 - sync-adapters-script-v4180 — shipped v4.18.0 — sync-adapters built-in: a runnable adapter-regen script (bash/node/python parity) replacing the prose-only sync recipe agents could not execute — faded (sslu 22 > archive_window 20) — 2026-Q2.md
 - copilot-adapter-v4170 — shipped v4.17.0 — GitHub Copilot CLI skills adapter (.github/skills/, the 5th adapter) + Copilot Mode C promotion; closed the cross-vendor Copilot arc — faded (sslu 22 > archive_window 20) — 2026-Q2.md
+- fresh-enable-advisory-depth-v4230 — Shipped in v4.22.0 (MINOR; dev-iter 4.23) — fresh-enable advisory + discovery-depth choice… — faded — 2026-Q2.md
