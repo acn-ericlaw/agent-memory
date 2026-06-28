@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.22.3 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.22.4 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-025152)
+- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-025906)
 - **last_review:** 2026-06-28 | through 2026-06-28-025152
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -97,6 +97,23 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.22.4 (PATCH) — safe-write safeguard moved into the SHARED layer (`REVIEW.md`).**
+  Maintainer correction: the safe-write lesson from the 2026-06-28 archive-truncation incident
+  (`open(f,"w").write(open(f).read()+…)` wiped the archive 50→6) had only been recorded in my **personal**
+  `~/.claude/` memory — per-machine, useless to teammates/other vendors. A safeguard protecting the review
+  ritual belongs in the **committed shared layer** (the tool's own two-layer principle: personal prefs in
+  `~/`, shared project knowledge in the repo). **Fix:** added two rules to `REVIEW.md` → **Safety** —
+  (1) never truncate a memory file when scripting the move (append-mode `>>` / read-into-var for the
+  archive/`INDEX.md`/`continuity.md`; never the truncate-before-read one-liner); (2) **run `memory-lint`
+  after any scripted memory mutation** (it catches truncation — count drops, links dangle — and git-tracked
+  files recover via `git checkout HEAD`). `REVIEW.md` is installed verbatim into every enabled repo, so all
+  contributors + vendors now inherit it. (Kept the personal memory too — broadened it — but `REVIEW.md` is
+  the authoritative team-facing safeguard.) Lockstep: `REVIEW.md`, `VERSION`→4.22.4, `CHANGELOG`, `README`
+  (table +1/−1, drops 4.19.0), `UPGRADE` (row + `4.22.3→4.22.4` rung). → serves: vision-agent-memory
+  (operational safety for the shared memory layer must itself be shared, not per-machine)
+  (`safe-write-review-safety-v4224`).
+  <!-- id: safe-write-review-safety-v4224 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-025906 -->
 
 - [x] **Shipped v4.22.3 (PATCH) — tightened the post-commit session window 2h → 30 min.** Maintainer
   observed the v4.22.1 window (2h) was too long: the real problem was follow-up stubs **minutes** apart,

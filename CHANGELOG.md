@@ -30,6 +30,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   session-count. Wording-only — no file shape, skill, or script change. `VERSION` → 4.22.2; re-synced into
   targets on the `4.22.1 → 4.22.2` rung (re-copy `templates/AGENTS.md`).
 
+## Version 4.22.4, 6/28/2026
+
+> **Safe-write safeguard in `REVIEW.md` (PATCH).** A truncate-before-read antipattern
+> (`open(f,"w").write(open(f).read() + …)`) wiped this repo's archive during a review (50 facts → 6;
+> caught by `memory-lint`, recovered from git). The lesson belonged in the **shared, committed protocol**
+> (every contributor + every vendor's agent inherits it), not a per-machine personal note — so it's now a
+> rule in the review ritual's **Safety** section.
+
+### Changed
+- **`REVIEW.md` → Safety** gains two rules: (1) **never truncate a memory file when scripting the move** —
+  append with `>>` / append-mode for the archive + `INDEX.md`, read-into-a-variable-then-write for
+  `continuity.md`; never `open(f,"w").write(open(f).read() + …)` (opening `"w"` truncates *before* the
+  read). (2) **After any scripted memory mutation, run `memory-lint`** — it catches a truncation (count
+  drops, links dangle), and git-tracked memory files recover via `git checkout HEAD -- <file>`. Installed
+  verbatim into every enabled repo; re-synced on the `4.22.3 → 4.22.4` rung. `VERSION` → 4.22.4.
+
 ## Version 4.22.3, 6/27/2026
 
 > **Tighten the post-commit session window: 2h → 30 min (PATCH).** v4.22.1 shipped a 2-hour

@@ -90,6 +90,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.20.2 | **Windows line-ending hardening (PATCH):** adds a **`.gitattributes`** pinning `*.sh` + `.githooks/*` to **LF**, so Git for Windows (`core.autocrlf=true`) doesn't rewrite them to CRLF on checkout (which breaks bash: `bad interpreter: /usr/bin/env bash^M`, silently disabling the hook + `init.sh`). Installed/merged into targets additively (like the `.gitignore` block). Makes the bootstrap + hooks robust on Windows (Git Bash / WSL), not luck-of-the-default. From a Copilot Windows-feasibility check |
 | 4.20.3 | **memory-lint catches an empty/malformed version manifest (PATCH):** adds a deterministic **`check_version_manifest`** ERROR to both runtimes (`memory-lint.py` + `memory-lint.mjs`, at parity, with mirror tests) so a present-but-empty/malformed `.agent/version.md` fails the lint floor (CI + reviews) instead of silently breaking Mode B upgrade detection. Closes the loop on the v4.20.1 bug (a truncating stamp one-liner emptied a target's `version.md` → an agent misread the version). A *missing* `version.md` stays valid (pre-versioning baseline) and is not flagged. Re-copy the memory-lint skill files |
 | 4.21.0 | **Google Antigravity (`agy`) skills adapter (MINOR):** a **6th** adapter target `.agents/skills/<name>/SKILL.md` — the open Agent Skills standard dir read by Google Antigravity (the Gemini CLI successor), which reads `.agents/skills/`, **not** the old `.gemini/commands/*.toml`. `sync skill adapters` now writes six; `.agents/` gitignored; `.gemini/commands` kept for the transition. Skill-only re-copy + re-sync; no memory-file shape change |
+| 4.22.4 | **Safe-write safeguard in `REVIEW.md` (PATCH):** the review ritual's Safety section now mandates **append-mode / read-into-var (never `open(f,"w").write(open(f).read()+…)`, which truncates before the read)** for scripted archive/`continuity.md` edits, and **running `memory-lint` after any scripted memory mutation** (it catches truncation; git recovers). From a real archive-truncation incident during a review. Re-sync `REVIEW.md`; no shape change |
 | 4.22.3 | **Tighten the post-commit session window: 2h → 30 min (PATCH):** v4.22.1's window was 2h, but observed follow-up stubs were **minutes** apart and 2h can conflate a *new* session started within 2h of the prior log. Default now **30 min**; override env var renamed to **`AGENT_MEMORY_SESSION_WINDOW_MINUTES`** (integer minutes — BSD `date -v` rejects fractional hours). Re-copy `.githooks/post-commit`; no shape change |
 | 4.22.2 | **Lightweight mode: one log per session, not per commit (PATCH):** the agent-side mirror of 4.22.1. `AGENTS.md` lightweight mode now says that if a session log already exists for *this* working session, a later **memory-neutral** commit **enriches** it rather than spawning another lite log (clutter + decay session-count inflation). Memory-relevant work still gets its own full log. Doc-only; re-sync `templates/AGENTS.md` (+ root `AGENTS.md`). No shape change |
 | 4.22.1 | **post-commit auto-stub: per session, not per commit (PATCH):** the `.githooks/post-commit` auto-stub now suppresses a new stub when a session log already exists within an **active-session window** (default 2h; override `AGENT_MEMORY_SESSION_WINDOW_HOURS`), nudging the agent to enrich the existing log instead. Detected by the newest session **filename** timestamp (immutable + clone-safe; `mtime` is reset by checkout) vs a window-ago stamp. The old guard checked only for an *untracked* stub, so after the log was committed every later work commit wrote a fresh stub — ~6 near-identical lite logs/session, inflating the decay session-count. New session (no log in window) still stubbed; bash 3.2-compatible. From downstream `mercury-composable` feedback |
@@ -1324,3 +1325,19 @@ A one-file retune of the **installed** git hook. No memory-file shape change, no
    and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a truncate-first one-liner.**
 4. **Report**: the post-commit session window is now 30 min (override via
    `AGENT_MEMORY_SESSION_WINDOW_MINUTES`); a new session after a >30-min pause still gets its own stub.
+
+---
+
+## Rung: 4.22.3 → 4.22.4 — safe-write safeguard in REVIEW.md (PATCH)
+
+Doc-only; re-sync one installed protocol doc. No memory-file shape change, no skill/hook change.
+
+1. **Re-sync `REVIEW.md`** from the tool root (verbatim — it's installed). Its **Safety** section now adds:
+   never truncate a memory file when scripting the move (append-mode / read-into-var; never
+   `open(f,"w").write(open(f).read()+…)`), and run `memory-lint` after any scripted memory mutation (it
+   catches truncation; git-tracked files recover via `git checkout HEAD -- <file>`). Merge additively into
+   a repo-customized `REVIEW.md`.
+2. **Stamp** `.agent/version.md` → `version: 4.22.4`, `last_upgraded: <today>`, preserving `enabled_with`
+   and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a truncate-first one-liner.**
+3. **Report**: the review ritual now carries a shared safe-write safeguard against the archive-truncation
+   antipattern.

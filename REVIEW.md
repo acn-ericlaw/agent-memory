@@ -158,6 +158,16 @@ This two-way movement is what keeps the system smart rather than merely lossy.
 ## Safety
 
 - Never delete a fact — archiving is a *move*, not a removal.
+- **Never truncate a memory file when scripting the move.** To append to the archive / `INDEX.md`,
+  use **append mode** (`>> file`, or `open(f, "a")`); to rewrite `continuity.md`, **read the whole file
+  into a variable, then write**. **Never** `open(f, "w").write(open(f).read() + …)` — opening in `"w"`
+  truncates `f` to **empty before** the inner read runs, so it silently wipes the file (this exact trap
+  has wiped a `version.md` stamp *and* this repo's archive — 50 facts → 6 — once each). Same caution for
+  any `sed -i`-style in-place rewrite.
+- **After any scripted memory mutation, run `memory-lint`.** It catches a truncation immediately — the
+  archived/continuity count drops and supersession links dangle. Every memory file is git-tracked, so
+  `git checkout HEAD -- <file>` recovers cleanly. Treat the lint as the deterministic gate on your own
+  edits, not just on the review's arithmetic.
 - Never overwrite a hand-set `tier:` (especially `core`) or a hand-set `id`.
 - Never edit past session logs — they are the immutable ledger this ritual reads.
 - Stay within the repo's `memory/` and `archive/`; never touch `~/`, `~/.claude/`,
