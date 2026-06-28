@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# agent-memory post-commit hook — vendor-neutral, advisory ritual reinforcement (v4.19.0).
+# agent-memory post-commit hook — vendor-neutral, advisory ritual reinforcement.
+# (Introduced v4.19.0; auto-stub made per-session in v4.22.1, window retuned to 30 min in v4.22.3.)
 #
 # Activated by `git config core.hooksPath .githooks` (the agent runs this at enable — no manual
 # user step). Fires after every commit; NEVER blocks (post-commit exit codes are ignored by git).
@@ -8,8 +9,10 @@
 #
 # What it does, only in an agent-memory repo:
 #   1) keep skill adapters current when a skill changed (idempotent, gitignored-only);
-#   2) if the commit did real work but carried no session log, auto-stub one + nudge (capture);
-#      the thoughtful summary is still the agent's job — this just guarantees no silent gap.
+#   2) if the commit did real work but no session log exists within the active-session window
+#      (default 30 min; override AGENT_MEMORY_SESSION_WINDOW_MINUTES), auto-stub one; if a recent
+#      log already covers this session, nudge to enrich it instead — at most ONE stub per session,
+#      not per commit. Capture only; the thoughtful summary stays the agent's job (no silent gap).
 
 [ -f memory/continuity.md ] || exit 0          # only act in an agent-memory repo
 git rev-parse -q --verify HEAD^2 >/dev/null 2>&1 && exit 0   # skip merge commits
