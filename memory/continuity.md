@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.22.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.22.1 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-27 | agent: Claude Code (2026-06-27-224339)
+- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-022903)
 - **last_review:** 2026-06-27 | through 2026-06-27-215825
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -97,6 +97,28 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.22.1 (PATCH) — post-commit auto-stub is per *session*, not per *commit*.** From
+  **downstream `mercury-composable` feedback** (`review-scratch/feedback-2026-06-27-post-commit-session-stub.md`):
+  the `.githooks/post-commit` auto-stub fired on **every** work commit because its only de-dup guard checked
+  for an *untracked* stub — once the agent committed the session log, the next work commit found no waiting
+  stub and wrote a fresh one (~6 near-identical lite logs/session, each with an extra `memory:` commit, and
+  — since the decay model counts session files — `sessions_since_last_used` inflated so facts decayed ~N×
+  fast; ironic given `memory-lint` exists to catch decay miscounts). **Fix:** the auto-stub now suppresses a
+  new stub when a session log exists **within an active-session window** (default 2h; override
+  `AGENT_MEMORY_SESSION_WINDOW_HOURS`), nudging the agent to **enrich that log** instead. Detected by the
+  newest session **filename** timestamp — **immutable + clone-safe** (deliberately *not* `mtime`, which
+  `git clone`/checkout resets to now → would wrongly suppress stubs for hours after a clone) — compared
+  lexicographically to a window-ago stamp (`YYYY-MM-DD-HHMMSS` sorts chronologically). Subsumes the old
+  untracked guard (a fresh stub has a recent filename) and covers the just-committed case; a genuinely new
+  session (no log in window) still stubs (no silent gap). **Tested end-to-end** in a temp repo (S1 work →
+  stub; S2 commit log; S3 work → *suppress*, not a 2nd stub) + the threshold/comparison in isolation (5m/90m
+  → suppress; 3h/none → stub); BSD `date -v` with GNU `date -d` fallback. Lockstep: `.githooks/post-commit`,
+  `.githooks/README.md`, `docs/DESIGN-ritual-triggers.md`, `VERSION`→4.22.1, `CHANGELOG`, `README` (table +1/−1),
+  `UPGRADE` (row + `4.22.0→4.22.1` rung). First post-release patch under the *one version per release*
+  policy (4.22.0 was pushed). → serves: vision-agent-memory (the decay model's integrity depends on a
+  session-file count that tracks *sessions*, not commits) (`post-commit-per-session-v4221`).
+  <!-- id: post-commit-per-session-v4221 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-022903 -->
 
 - [x] **Applied a fresh-context critique (second-opinion → apply-critique) to the v4.22.0 work — 4 fixes,
   all folded into the unreleased v4.22.0 (no version bump, per the one-version-per-release policy).** A

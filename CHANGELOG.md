@@ -11,6 +11,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.22.1, 6/27/2026
+
+> **post-commit auto-stub is now per *session*, not per *commit* (PATCH).** A downstream report
+> (`mercury-composable`) found the hook's auto-stub fired on **every** work commit: its only de-dup guard
+> checked for an *untracked* stub, so once the agent enriched and **committed** the session log, the next
+> work commit found no waiting stub and wrote a **fresh** one. One long session produced ~6 near-identical
+> lite logs (each with an extra `memory: session log …` commit), and — since the decay model counts session
+> files — inflated `sessions_since_last_used`, so facts decayed ~N× too fast (ironic, given `memory-lint`
+> exists to catch decay miscounts).
+
+### Fixed
+- **`.githooks/post-commit`** — the auto-stub now suppresses a new stub when a session log already exists
+  **within an active-session window** (default **2h**; override `AGENT_MEMORY_SESSION_WINDOW_HOURS`),
+  nudging the agent to **enrich that log** instead. Detection is by the newest session **filename**
+  timestamp (immutable + **clone-safe** — `mtime` is reset by `git clone`/checkout, which would wrongly
+  suppress stubs for hours after a clone), compared lexicographically against a window-ago stamp in the
+  same `YYYY-MM-DD-HHMMSS` form. This subsumes the old untracked-stub guard (a fresh stub has a recent
+  filename) and covers the just-committed case too. A genuinely **new** session (no log within the window)
+  still gets a stub — the "no silent gap" guarantee holds. Net: **one enriched log per working session**,
+  and the session-file count tracks sessions, not commits. Bash 3.2-compatible (BSD `date -v` with a GNU
+  `date -d` fallback). `VERSION` → 4.22.1; re-copied into targets on the `4.22.0 → 4.22.1` rung.
+
 ## Version 4.22.0, 6/27/2026
 
 > **Discovery, consent & merge-friendliness + `MERGE.md` (MINOR).** One release bundling four additive

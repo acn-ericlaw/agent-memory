@@ -90,6 +90,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.20.2 | **Windows line-ending hardening (PATCH):** adds a **`.gitattributes`** pinning `*.sh` + `.githooks/*` to **LF**, so Git for Windows (`core.autocrlf=true`) doesn't rewrite them to CRLF on checkout (which breaks bash: `bad interpreter: /usr/bin/env bash^M`, silently disabling the hook + `init.sh`). Installed/merged into targets additively (like the `.gitignore` block). Makes the bootstrap + hooks robust on Windows (Git Bash / WSL), not luck-of-the-default. From a Copilot Windows-feasibility check |
 | 4.20.3 | **memory-lint catches an empty/malformed version manifest (PATCH):** adds a deterministic **`check_version_manifest`** ERROR to both runtimes (`memory-lint.py` + `memory-lint.mjs`, at parity, with mirror tests) so a present-but-empty/malformed `.agent/version.md` fails the lint floor (CI + reviews) instead of silently breaking Mode B upgrade detection. Closes the loop on the v4.20.1 bug (a truncating stamp one-liner emptied a target's `version.md` → an agent misread the version). A *missing* `version.md` stays valid (pre-versioning baseline) and is not flagged. Re-copy the memory-lint skill files |
 | 4.21.0 | **Google Antigravity (`agy`) skills adapter (MINOR):** a **6th** adapter target `.agents/skills/<name>/SKILL.md` — the open Agent Skills standard dir read by Google Antigravity (the Gemini CLI successor), which reads `.agents/skills/`, **not** the old `.gemini/commands/*.toml`. `sync skill adapters` now writes six; `.agents/` gitignored; `.gemini/commands` kept for the transition. Skill-only re-copy + re-sync; no memory-file shape change |
+| 4.22.1 | **post-commit auto-stub: per session, not per commit (PATCH):** the `.githooks/post-commit` auto-stub now suppresses a new stub when a session log already exists within an **active-session window** (default 2h; override `AGENT_MEMORY_SESSION_WINDOW_HOURS`), nudging the agent to enrich the existing log instead. Detected by the newest session **filename** timestamp (immutable + clone-safe; `mtime` is reset by checkout) vs a window-ago stamp. The old guard checked only for an *untracked* stub, so after the log was committed every later work commit wrote a fresh stub — ~6 near-identical lite logs/session, inflating the decay session-count. New session (no log in window) still stubbed; bash 3.2-compatible. From downstream `mercury-composable` feedback |
 | 4.22.0 | **Discovery, consent & merge-friendliness — four bundled additive improvements (MINOR).** One release; developed iteratively in one unreleased session (dev-numbered 4.22–4.25), consolidated per "one version per release." **(a) Curious knowledge harvest at enable** — `ENABLE.md` Step 4b recursively descends every doc tree (`docs/`/`wiki/`/`rfcs/`/`adr/`/…, all subfolders) + sweeps repo roots for human-authored knowledge markdown (decision logs, ADRs, kanban/roadmap, architecture notes), distilling durable facts into memory (map-don't-mirror), bounded by a read **budget with disclosure** (overflow → a `(knowledge-harvest)` thread). **(b) Fresh-enable advisory + discovery depth** — Mode A opens with a concise **exec summary of the protocol** (what it is / writes / won't touch / is committed+shared) + a `cancel` gate (**informed consent**), then offers **standard scan vs `/init`-depth deep analysis** (deep written to the neutral memory layer, never a vendor file); a first enable session log records the choice. **(c) `continuity.md` merge-friendliness** — `status` is spec'd a SHORT current-state line, **not a changelog** (`.agent/schema.md` + `AGENTS.md`); new **"Concurrency & merge-friendliness"** conventions (one fact/line; append-only union/keep-both; scalar take-later); `memory-lint` **check 7** flags a leftover conflict marker (`<<<<<<<`/`>>>>>>>`/diff3 `|||||||`) as an ERROR (bare `=======` setext underline exempt), both runtimes + tests. **(d) `MERGE.md`** — a new installed, no-code on-demand protocol for resolving a git conflict in `memory/`: tiered + human-gated, enforcing **`never-pick-a-winner`** (mechanical → rule; semantic clash → preserve both + Contradiction/supersession; `memory-lint` gate; human approves). Mostly operator-side (`ENABLE.md`) + the `memory-lint` skill + one new root doc (`MERGE.md`); no memory-file shape change. From a client enablement complaint, a teammate-concurrency review, and a GitHub Copilot review |
 
 
@@ -1268,3 +1269,24 @@ enrich a repo enabled by the older shallow scan, offer (human-gated):
    choice; `status` is a short current-state line with documented merge conventions; `memory-lint` errors
    on leftover conflict markers; `MERGE.md` gives git conflicts a tiered, human-gated,
    `never-pick-a-winner` resolution protocol.
+
+---
+
+## Rung: 4.22.0 → 4.22.1 — post-commit auto-stub per session, not per commit (PATCH)
+
+A one-file fix to the **installed** git hook. No memory-file shape change, no skill/template change.
+
+1. **Re-copy `.githooks/post-commit`** from this tool's root into the target (verbatim; it's installed,
+   like the rest of `.githooks/`). The auto-stub now suppresses a new stub when a session log exists within
+   the **active-session window** (default 2h; `AGENT_MEMORY_SESSION_WINDOW_HOURS`), detected by the newest
+   session **filename** (clone-safe), and nudges to enrich the existing log instead — so a multi-commit
+   session yields **one** log, not one stub per commit. Ensure it stays executable (`chmod +x`; mode `100755`).
+2. **Re-sync `.githooks/README.md`** (it documents the per-session window) and, if the target tracks it,
+   `docs/DESIGN-ritual-triggers.md` (the granularity note). Both are verbatim copies from the tool root.
+3. **(Optional) prune duplicate stubs** the old per-commit behavior may have left: if `memory/sessions/`
+   has several near-identical auto-stubs from a single past session, the next **review** will sweep the
+   reference-free ones normally — no manual action required; do **not** hand-delete session logs.
+4. **Stamp** `.agent/version.md` → `version: 4.22.1`, `last_upgraded: <today>`, preserving `enabled_with`
+   and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a truncate-first one-liner.**
+5. **Report**: the post-commit hook now stubs at most once per working session (windowed); a recent log
+   triggers an enrich-nudge instead of a duplicate stub.

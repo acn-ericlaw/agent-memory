@@ -78,6 +78,14 @@ The session log felt un-automatable because two things were conflated:
 - **The log's *existence* and *triggering*** = **deterministic**. A commit-time hook can **auto-write a
   stub** so the ledger never has a gap, and the agent/review **enriches** it.
 
+> **Granularity: per *session*, not per *commit* (v4.22.1).** A "session" is a burst of work within a
+> window (default 2h), so the hook stubs **at most once per session**: if a session log already exists
+> within the window — committed *or* a waiting stub, detected by the newest session **filename** (immutable
+> and clone-safe; mtime is reset by `git clone`/checkout) — it **nudges to enrich that log** instead of
+> writing another. A multi-commit session therefore yields **one** enriched log, and the decay
+> session-count isn't inflated (N commits ≠ N sessions). From downstream feedback (`mercury-composable`):
+> the original untracked-only guard re-stubbed on every work commit after the log was committed.
+
 This mirrors `memory-lint`: **deterministic capture + the agent judges meaning.** It is the move that lets
 "reliable" and "agent-is-the-runtime" coexist.
 
