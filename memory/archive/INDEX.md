@@ -57,3 +57,11 @@
 - fresh-review-v4100 — shipped v4.10.0 — fresh-context second-opinion + apply-critique skill pair; ENABLE installs the built-ins — faded (sslu 23 > archive_window 20) — 2026-Q2.md
 - bp-fresh-context-review — blueprint (completed) — fresh-context second-opinion review loop; realized by v4.10.0 — faded (sslu 37 > archive_window 20) — 2026-Q2.md
 - ot-reverify-invariants-20260620 — completed invariant re-verify thread (5 core + Vision confirmed 2026-06-20); superseded by the 2026-06-27 cadence check — faded (sslu 21 > archive_window 20) — 2026-Q2.md
+
+- ot-agents-source-fix-v4141 — shipped v4.14.1 — UPGRADE 'source of truth' map; a target's AGENTS.md comes from templates/AGENTS.md, never the root operator file (+ corrective rung) — faded (sslu 27 > archive_window 20) — 2026-Q2.md
+- adr-ledger-v4140 — shipped v4.14.0 — optional human-facing docs/ADR.md decision log at the VBDI Design altitude (map-don't-duplicate; read on-demand) — faded (sslu 27 > archive_window 20) — 2026-Q2.md
+- skills-layer-v410 — shipped v4.1.0 — cross-vendor skills layer: neutral committed agent-skills/ + AGENTS.md runtime baseline + regenerated per-vendor adapters — faded (sslu 24 > archive_window 20) — 2026-Q2.md
+- kiro-adapter-v450 — shipped v4.5.0 — Kiro skills adapter (.kiro/skills/) + Kiro Mode C detection/migration (open Agent Skills standard) — faded (sslu 24 > archive_window 20) — 2026-Q2.md
+- lightweight-mode-v470 — shipped v4.7.0 — lightweight mode for memory-neutral tasks (one-line lite session log; scales ceremony to memory impact) — faded (sslu 21 > archive_window 20) — 2026-Q2.md
+- lint-skill-v490 — shipped v4.9.0 — memory-lint deterministic verifier skill (moves decay arithmetic off the LLM; caught a real over-archival on first run) — faded (sslu 21 > archive_window 20) — 2026-Q2.md
+- bp-ritual-triggers — blueprint (completed): vendor-neutral ritual triggers — realized by v4.19.0 (committed .githooks/post-commit + CI floor, agent-activated) — faded (sslu 21 > archive_window 20) — 2026-Q2.md
