@@ -1,7 +1,8 @@
 name: docs
 
-# Build the MkDocs site and publish it to the gh-pages branch on every push to
-# main that touches the docs. Manual runs are allowed via the Actions tab.
+# Build the MkDocs site and publish it via the official GitHub Pages deployment
+# (Settings → Pages → Source: "GitHub Actions"). Runs on every push to main that
+# touches the docs surface; also runnable manually from the Actions tab.
 on:
   push:
     branches: [main]
@@ -14,14 +15,17 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
+# Allow one concurrent deployment; don't cancel an in-progress production deploy.
 concurrency:
-  group: docs-${{ github.ref }}
+  group: pages
   cancel-in-progress: false
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,5 +41,21 @@ jobs:
       - name: Install MkDocs toolchain
         run: pip install -r docs-requirements.txt
 
-      - name: Build (strict) and deploy to gh-pages
-        run: mkdocs gh-deploy --force --strict
+      - name: Build (strict)
+        run: mkdocs build --strict
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
