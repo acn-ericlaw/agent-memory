@@ -32,6 +32,7 @@ jobs:
         with:
           python-version: "3.x"
           cache: pip
+          cache-dependency-path: docs-requirements.txt
 
       - name: Install MkDocs toolchain
         run: pip install -r docs-requirements.txt
