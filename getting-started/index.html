@@ -1700,6 +1700,14 @@ the zero-config backstop.</p>
 <p>From now on, <strong>open the target repo with any AI agent and just work</strong>. It reads <code>memory/</code>
 automatically, orients without re-explaining, and records decisions as it goes. Commits stay
 deliberate and human-initiated, with a self-identifying <code>Co-Authored-By:</code> trailer.</p>
+<div class="admonition tip">
+<p class="admonition-title">Pull requests lead with What &amp; Why</p>
+<p>Enable installs a <code>.github/pull_request_template.md</code> so every PR description opens with two
+short sections — <strong>What</strong> (the change) and <strong>Why</strong> (the intent it serves) — and closes with a
+self-identifying <code>Co-Authored-By:</code> footer, all drawn from the session log(s) in the PR. It's
+advisory, never a gate; the <em>why</em> is a first-class artifact throughout the protocol, so a PR is
+no exception.</p>
+</div>
 <p>A typical session:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>flowchart LR
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  A[Read continuity.md&lt;br/&gt;+ Vision] --&gt; B[Do the work]
@@ -1746,6 +1754,10 @@ gitignored and per-machine — it never touches the shared <code>memory/</code> 
 <tr>
 <td><code>agent-skills/</code></td>
 <td>Portable, vendor-neutral skills (with seven built-ins)</td>
+</tr>
+<tr>
+<td><code>.github/pull_request_template.md</code></td>
+<td>Seeds the <strong>What / Why</strong> PR-description convention</td>
 </tr>
 <tr>
 <td><code>.agent/version.md</code></td>
