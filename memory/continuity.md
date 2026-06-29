@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.26.1 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.27.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-28 | agent: Claude Code (2026-06-28-181738)
+- **last_session:** 2026-06-29 | agent: Claude Code (2026-06-29-175644)
 - **last_review:** 2026-06-28 | through 2026-06-28-162543
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -97,6 +97,24 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.27.0 (MINOR) — standardized PR descriptions: lead with What / Why.** From a **maintainer
+  suggestion** to standardize the look-and-feel of pull-request descriptions and **propagate it to every
+  AI-enabled repo**. A natural fit — *why* is already a first-class artifact throughout the protocol (VBDI
+  intent trace, ADR rationale, supersession reasons, the changelog's own `> summary + Why` shape), and the
+  content projects from the session log(s) in the PR (What from the change, Why from the Blueprint gap /
+  decision). Confirmed **no prior PR guidance existed** (only the commit `Co-Authored-By` trailer) — a real
+  gap. **Shape:** two sections, **What** + **Why** (substantive intent, not a restatement of What), each 1–2
+  short paragraphs (flexible, not rigidly two), closing with a self-identifying `Co-Authored-By:` footer
+  (extends the commit/session-log authorship convention to the PR altitude); **advisory, never a gate**
+  (`guide-don't-prescribe`). **Built**
+  `.github/pull_request_template.md` (this repo + `templates/`, so enabled repos inherit it) + an `AGENTS.md`
+  convention (root + template) as the **vendor-neutral backstop** (the template only covers GitHub web UI /
+  `gh pr create`; the steering line covers agents composing a PR body) + a checklist line. Lockstep:
+  `ENABLE.md` Step 6 (install template), `VERSION`→4.27.0, `CHANGELOG`, `README` (row + file tree), `UPGRADE`
+  (row + rung), docs site (`getting-started`). No memory-file shape change. → serves: vision-agent-memory
+  (faithful, traceable delivery — intent is carried at the PR altitude too, across vendors)
+  <!-- id: pr-what-why-convention-v4270 | created: 2026-06-29 | last_used: 2026-06-29 | uses: 1 | tier: working | origin: 2026-06-29-175644 -->
 
 - [x] **Shipped v4.26.1 (PATCH) — `[stale-metadata]` / `refresh-metadata` no longer opine on a pinned
   thread's tier.** From a **mercury sanity check** (post-Copilot review): v4.26.0 flagged every

@@ -11,6 +11,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.27.0, 6/29/2026
+
+> **Standardized PR description — lead with What / Why (MINOR).** From a maintainer suggestion:
+> standardize the look-and-feel of pull-request descriptions created under the agent-memory
+> protocol with two short summary sections — **What** and **Why** — so the standard propagates to
+> every AI-enabled repo. A natural fit: *why* is already a first-class artifact throughout the
+> protocol (the VBDI intent trace, ADR rationale, supersession reasons, even this changelog's own
+> `> summary + Why` shape), and the content projects straight from the session log(s) in the PR —
+> What from the change, Why from the Blueprint gap / decision it serves. There was no PR guidance
+> before this (only a commit `Co-Authored-By` trailer convention), so it fills a real gap.
+
+### Added
+- **`.github/pull_request_template.md`** (this repo + `templates/`, so every enabled repo inherits
+  it) — two sections, **What** (the change) and **Why** (the intent it serves; substantive intent,
+  **not** a restatement of What), each **1–2 short paragraphs** (flexible — a trivial PR isn't
+  padded; a What may use a bullet or two). GitHub auto-populates the PR body from it; the agent
+  draws the content from the session log(s) in the PR. The template also closes with a
+  self-identifying **`Co-Authored-By:`** footer — the same authorship-traceability convention as
+  commits and session logs, now extended to the PR altitude. **Advisory, never a gate**
+  (`guide-don't-prescribe`). Installed by `ENABLE.md` Step 6 (tracked — it travels).
+
+### Changed
+- **`AGENTS.md` (root + `templates/`)** — the after-session commit step gains an "Opening a pull
+  request? → lead with **What** / **Why**" convention next to the co-author-trailer note, plus a
+  checklist line. This is the **vendor-neutral backstop**: the `.github/` template only covers the
+  GitHub web UI / `gh pr create`, so the steering line carries the convention for agents that
+  compose a PR body themselves. Re-sync a target's `AGENTS.md` from `templates/AGENTS.md`.
+- **`ENABLE.md` Step 6** installs the new template; **`UPGRADE.md`** gains the `4.26.1 → 4.27.0`
+  rung + version-table row; **`README`** version-table row + file-tree entry; docs site updated.
+  `VERSION` → 4.27.0. No memory-file shape change.
+
 ## Version 4.26.1, 6/28/2026
 
 > **`[stale-metadata]` / `refresh-metadata` no longer opine on a pinned thread's tier (PATCH).** A sanity

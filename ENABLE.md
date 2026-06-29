@@ -558,6 +558,9 @@ Copy from `templates/` into target repo root:
 - `.cursorrules`
 - `.windsurfrules`
 - `.github/copilot-instructions.md`
+- `.github/pull_request_template.md` — seeds the **What / Why** PR-description convention (v4.27.0);
+  installs verbatim, **tracked** (it travels). If the target already has one, ask per-file
+  (overwrite / skip / rename) like any other bootstrap file.
 
 `CLAUDE.md` and `GEMINI.md` contain `{{PROJECT_NAME}}` and `{{PROJECT_ONELINE}}`
 placeholders — fill them from your Step 4 analysis (project name + a one-line

@@ -90,6 +90,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.20.2 | **Windows line-ending hardening (PATCH):** adds a **`.gitattributes`** pinning `*.sh` + `.githooks/*` to **LF**, so Git for Windows (`core.autocrlf=true`) doesn't rewrite them to CRLF on checkout (which breaks bash: `bad interpreter: /usr/bin/env bash^M`, silently disabling the hook + `init.sh`). Installed/merged into targets additively (like the `.gitignore` block). Makes the bootstrap + hooks robust on Windows (Git Bash / WSL), not luck-of-the-default. From a Copilot Windows-feasibility check |
 | 4.20.3 | **memory-lint catches an empty/malformed version manifest (PATCH):** adds a deterministic **`check_version_manifest`** ERROR to both runtimes (`memory-lint.py` + `memory-lint.mjs`, at parity, with mirror tests) so a present-but-empty/malformed `.agent/version.md` fails the lint floor (CI + reviews) instead of silently breaking Mode B upgrade detection. Closes the loop on the v4.20.1 bug (a truncating stamp one-liner emptied a target's `version.md` → an agent misread the version). A *missing* `version.md` stays valid (pre-versioning baseline) and is not flagged. Re-copy the memory-lint skill files |
 | 4.21.0 | **Google Antigravity (`agy`) skills adapter (MINOR):** a **6th** adapter target `.agents/skills/<name>/SKILL.md` — the open Agent Skills standard dir read by Google Antigravity (the Gemini CLI successor), which reads `.agents/skills/`, **not** the old `.gemini/commands/*.toml`. `sync skill adapters` now writes six; `.agents/` gitignored; `.gemini/commands` kept for the transition. Skill-only re-copy + re-sync; no memory-file shape change |
+| 4.27.0 | **Standardized PR description: lead with What / Why (MINOR):** every agent-memory-enabled repo now ships a **`.github/pull_request_template.md`** with two sections — **What** (the change) and **Why** (the intent it serves — Blueprint gap / decision / problem, not a restatement of What), each 1–2 short paragraphs drawn from the session log(s) in the PR. Mirrored by an `AGENTS.md` convention (the vendor-neutral backstop for agents composing PR bodies via `gh`, not the web UI) + a checklist line. Advisory, never a gate — consistent with *why-as-first-class-artifact* throughout the protocol. Install the template into the target (`.github/`); re-sync `AGENTS.md` from `templates/AGENTS.md`. No memory-file shape change |
 | 4.26.1 | **Pinned-thread tier no longer flagged/rewritten (PATCH):** v4.26.0's `[stale-metadata]` flagged every `working`-tagged pinned `- [ ]` open thread as "should be `active`" — noise (a pinned thread never decays regardless of tier label; pinned-ness protects it). `memory-lint` `expected_tier` + `refresh-metadata` `expected_tier` now return a pinned thread's **stored** tier (no flag, no rewrite; factual `uses`/`last_used` still refresh). Re-copy the `memory-lint` + `refresh-metadata` skill files; `DECAY.md` rule 4 clarified. From a mercury sanity check + comparison with Copilot's `update-metadata.py`. Both runtimes at parity + tests |
 | 4.26.0 | **`refresh-metadata` + `memory-lint` `[stale-metadata]` advisory (MINOR):** a **7th** built-in executing REVIEW.md steps 2–3 (apply events + re-tier) deterministically — recomputes every fact's `last_used`/`uses`/`tier` from the session reference log and writes footers back (the "full rebuild" path, runnable; pure arithmetic, never archives, `core`/`superseded` untouched). Python + Node at parity + mirror tests; `--dry-run`; idempotent. `memory-lint` gains check (9) `[stale-metadata]` (stored tier ≠ recomputed tier) to make the skipped-re-tier gap visible. From a cross-vendor field test where Gemini 3.1 Pro ran the overdue review but did the archive and skipped the metadata pass. Install via §5i (now 7 built-ins); re-copy the skill + re-copy memory-lint + re-sync adapters + re-sync `REVIEW.md`/`ENABLE.md` |
 | 4.25.0 | **`archive-fact` — deterministic safe archive-move (MINOR):** a **6th** built-in (`provenance: agent-memory-builtin`) executing `REVIEW.md` step 4's move (continuity → quarter archive + INDEX) deterministically — reads the file into memory and writes once, so the truncate-before-read trap that wiped this repo's archive can't recur. Python + Node at parity + mirror tests; all-or-nothing guards (missing id / already-archived / would-empty); `--dry-run`. The agent decides *what* to archive; the helper does the *move* (`never-pick-a-winner` intact). From a cross-vendor critique (Gemini 3.1 Pro: "harden the memory-writing mechanism itself"). doc → tool, after v4.22.4's doc safeguard. Install via §5i (now 6 built-ins); re-copy the skill + re-sync adapters; re-sync `REVIEW.md`/`ENABLE.md` |
@@ -1464,6 +1465,24 @@ Additive — a new built-in skill + a new `memory-lint` advisory check. No memor
    skipped re-tier visible.
 
 ---
+
+## Rung: 4.26.1 → 4.27.0 — standardized PR description (What / Why) (MINOR)
+
+Additive convention + one new tracked bootstrap file. No memory-file shape change.
+
+1. **Install `.github/pull_request_template.md`** into the target from
+   `templates/.github/pull_request_template.md` (verbatim; tracked — it travels). Create
+   `.github/` if absent. If the target already has a `pull_request_template.md`, **don't
+   overwrite silently** — ask the user (overwrite / skip / merge the What/Why headings in).
+2. **Re-sync `AGENTS.md`** from **`templates/AGENTS.md`** (the memory hub — *not* the tool root):
+   it now carries the "Opening a pull request? → lead with What / Why" convention next to the
+   commit-trailer note, plus the checklist line. Merge into a repo-customized `AGENTS.md` rather
+   than overwrite.
+3. **Stamp** `.agent/version.md` → `version: 4.27.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+4. **Report**: PRs opened in this repo now lead with **What** and **Why** (advisory; the template
+   seeds it, the `AGENTS.md` convention is the vendor-neutral backstop).
 
 ## Rung: 4.26.0 → 4.26.1 — pinned-thread tier not flagged/rewritten (PATCH)
 
