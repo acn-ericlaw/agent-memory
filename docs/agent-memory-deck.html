@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>agent-memory — v4.10.0</title>
+<title>agent-memory — v4.26.1</title>
 <style>
   :root{
     --bg:#0b1020; --bg2:#0e1530; --panel:#131c3a; --panel2:#18224a;
@@ -71,7 +71,7 @@
 
   <!-- 1 -->
   <section class="slide active">
-    <div class="kicker">agent-memory · v4.10.0</div>
+    <div class="kicker">agent-memory · v4.26.1</div>
     <h1>A lightweight, vendor-neutral<br><span class="grad">AI memory + cognitive loop</span></h1>
     <p class="lead" style="margin-top:.6em">Turning shared project context into <b>deterministic delivery with near-zero drift</b> — for human–AI collaboration, across any AI vendor.</p>
     <div class="foot">Peer / leadership review · June 2026</div>
@@ -196,14 +196,42 @@
     <div class="grid g3" style="margin-top:.6em">
       <div class="card"><h3>Neutral source</h3><p>Committed <code>agent-skills/&lt;name&gt;/SKILL.md</code> — a name, a when-to-use description, a procedure. The single source of truth; travels with the repo.</p></div>
       <div class="card"><h3>Universal runtime</h3><p>The <code>AGENTS.md</code> "Skills" baseline: when a task matches, the agent reads &amp; follows the skill. The agent <i>is</i> the runtime — any vendor, no engine.</p></div>
-      <div class="card"><h3>Thin adapters</h3><p>Regenerated, gitignored pointers for Claude, Gemini, Cursor &amp; Kiro give native auto-trigger — never copies, so the neutral skill never drifts.</p></div>
+      <div class="card"><h3>Thin adapters</h3><p>Regenerated, gitignored pointers across <b>six</b> vendors — Claude, Gemini, Cursor, Kiro, GitHub Copilot &amp; Google Antigravity — give native auto-trigger; never copies, so the neutral skill never drifts.</p></div>
     </div>
     <p class="lead" style="margin-top:1em">Migration <b>promotes</b> a vendor's skills (e.g. <code>.claude/skills/</code>) into the shared layer — originals preserved under <code>legacy/</code>, never flattened into steering.</p>
   </section>
 
+  <!-- 9a · seven built-ins + judgment vs arithmetic -->
+  <section class="slide">
+    <div class="kicker">capability layer · matured</div>
+    <h2><span class="grad">Seven</span> built-ins, one boundary</h2>
+    <p class="lead">Installed into every enabled repo, tool-managed. They sort along the principle the layer learned the hard way: <b>mechanize the arithmetic, leave the judgment to the agent.</b></p>
+    <div class="two" style="margin-top:.8em">
+      <div class="layer back">
+        <div class="tag">Arithmetic · mechanized</div>
+        <ul style="margin:.4em 0">
+          <li><code>memory-lint</code> — 9-check integrity verifier (Python <i>and</i> Node)</li>
+          <li><code>refresh-metadata</code> — recompute every fact's tier/usage</li>
+          <li><code>archive-fact</code> — the archive <i>move</i>, truncation-proof</li>
+          <li><code>sync-adapters</code> — regenerate the 6 vendor adapters</li>
+        </ul>
+      </div>
+      <div class="layer fwd">
+        <div class="tag">Judgment · stays with the agent</div>
+        <ul style="margin:.4em 0">
+          <li><code>harvest-knowledge</code> — distil durable facts from docs</li>
+          <li><code>second-opinion</code> — snapshot for a clean-memory reviewer</li>
+          <li><code>apply-critique</code> — bounded, human-gated apply loop</li>
+          <li class="muted"><i>what to archive · how to resolve a clash · the Vision</i></li>
+        </ul>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:.9em"><b>Why:</b> capable agents silently do <i>half</i> a multi-step ritual. The fix is structural — a runnable helper for the arithmetic + a lint advisory for the gap — never automating the <b>decision</b>.</p>
+  </section>
+
   <!-- 9b · fresh-context second opinion -->
   <section class="slide">
-    <div class="kicker">v4.10.0 · fresh-context review</div>
+    <div class="kicker">fresh-context review</div>
     <h2>A <span class="grad">second opinion</span> from clean memory</h2>
     <p class="lead">A long session over-trusts its own trajectory. The highest-value antidote is a reviewer with <b>clean memory</b> — a fresh session or a different vendor that didn't live the work. Shipped as two built-in skills, installed into every enabled repo.</p>
     <div class="loop" style="margin-top:.8em">
@@ -220,9 +248,22 @@
     </div>
   </section>
 
+  <!-- 9c · operational reliability -->
+  <section class="slide">
+    <div class="kicker">making the ritual happen</div>
+    <h2>No protocol survives a <span class="grad">manual step</span></h2>
+    <p class="lead">A ritual that depends on the agent self-triggering fails the moment it lands with an untrained team. So execution got hardened, not just documented — <b>zero manual user step</b>.</p>
+    <div class="grid g3" style="margin-top:.6em">
+      <div class="card"><h3>Agent-activated triggers</h3><p>A committed <code>post-commit</code> git hook auto-stubs a missing session log + re-syncs adapters; a <b>CI floor</b> runs <code>memory-lint</code> with zero per-user setup. The tool runs nothing — git &amp; CI do.</p></div>
+      <div class="card"><h3>First-run init + Windows</h3><p>One idempotent <code>init.sh</code> regenerates adapters &amp; activates the hook on a fresh clone; <code>.gitattributes</code> pins shell scripts to LF so Git for Windows can't break them.</p></div>
+      <div class="card"><h3><code>MERGE.md</code> + safe-write</h3><p>Conflict resolution that <b>never picks a winner</b> (clash → preserve both + Contradiction); and a read-into-memory-write-once discipline that makes the old truncate-before-read bug structurally impossible.</p></div>
+    </div>
+    <p class="lead" style="margin-top:.9em">Enable opens with an <b>exec summary + cancel gate</b> — informed consent before a single file is written.</p>
+  </section>
+
   <!-- 10 · supported vendors -->
   <section class="slide">
-    <div class="kicker">Vendor support · v4.5.0</div>
+    <div class="kicker">Vendor support</div>
     <h2>One shared memory, <span class="grad">every major AI tool</span></h2>
     <p class="lead">"AI enable this repo" detects whatever AI footprint already exists, folds it into the shared layer, and routes that vendor's agent to the one hub — originals preserved, never deleted.</p>
     <div class="loop" style="margin-top:.8em">
@@ -237,11 +278,12 @@
       <span class="step">Continue.dev</span>
       <span class="step">Codeium / Windsurf</span>
       <span class="step">Zed AI</span>
-      <span class="step new">Amazon Kiro <span class="pill" style="border-color:var(--accent);color:var(--ink)">new</span></span>
+      <span class="step">Amazon Kiro</span>
+      <span class="step new">Google Antigravity <span class="pill" style="border-color:var(--accent);color:var(--ink)">new</span></span>
     </div>
     <div class="grid g2" style="margin-top:1.1em">
       <div class="card"><h3>Detected &amp; migrated, not re-typed</h3><p>Steering folds into <code>memory/</code>; chat history becomes session logs; a vendor's skills are <b>promoted</b> into the neutral <code>agent-skills/</code> layer.</p></div>
-      <div class="card new"><h3>Riding open standards = future-proof</h3><p>We bet on <code>AGENTS.md</code> (steering) and the open <b>Agent Skills</b> standard (capabilities). Tools that adopt them — Kiro, Codex — plug in with little or no glue. <b>Kiro shipped as a point release.</b></p></div>
+      <div class="card new"><h3>Riding open standards = future-proof</h3><p>We bet on <code>AGENTS.md</code> (steering) and the open <b>Agent Skills</b> standard (capabilities). Tools that adopt them — Kiro, Copilot, Antigravity, Codex — plug in with little or no glue. <b>Each shipped as a point release.</b></p></div>
     </div>
   </section>
 
@@ -263,9 +305,10 @@
   <section class="slide">
     <div class="kicker">Proof</div>
     <h2>It earned its thesis on real work</h2>
-    <div class="grid g2">
+    <div class="grid g3">
       <div class="card"><h3>Node.js → Rust rewrite</h3><p>A full rewrite delivered against recorded intent — invariants, decisions, and their <i>why</i> pinned and traceable — <b>deterministic, faithful, no drift.</b></p></div>
       <div class="card"><h3>Dogfooded</h3><p>The tool carries its own memory, Vision, and Blueprint — and the VBDI layer was designed <b>using the VBDI loop</b>. Using the thing to build the thing.</p></div>
+      <div class="card new"><h3>Cross-vendor, real product repo</h3><p>Driven end-to-end on a large Accenture repo by <b>GitHub Copilot / Gemini 3.1 Pro</b>. It even <i>independently reinvented</i> <code>refresh-metadata</code> — converging on the design that shipped.</p></div>
     </div>
     <p class="lead" style="margin-top:1em">An industry-alignment self-assessment's known gaps — supersession, <span style="white-space:nowrap">invariant re-checking</span>, contradiction, evaluation, provenance — all shipped as additive, versioned releases.</p>
   </section>
@@ -282,7 +325,8 @@
       <tr><td class="us">Intent → delivery</td><td class="t">unmanaged</td><td>VBDI trace, grep-detectable drift</td></tr>
       <tr><td class="us">Governance</td><td class="t">opaque</td><td>git history + markdown + human gates</td></tr>
       <tr><td class="us">Vendor coupling</td><td class="t">locked to one tool</td><td>neutral; one hub</td></tr>
-      <tr><td class="us">Capabilities</td><td class="t">per-vendor skill files</td><td>neutral <code>agent-skills/</code> + regenerated adapters; any agent</td></tr>
+      <tr><td class="us">Capabilities</td><td class="t">per-vendor skill files</td><td>neutral <code>agent-skills/</code>: 7 built-ins × 6 adapters; any agent</td></tr>
+      <tr><td class="us">Ritual execution</td><td class="t">relies on the agent self-triggering</td><td>git hook + CI + runnable helpers; arithmetic mechanized, judgment left to the agent; no manual step</td></tr>
     </table>
   </section>
 
@@ -306,9 +350,9 @@
   <section class="slide">
     <div class="kicker">Roadmap &amp; mission</div>
     <p class="quote"><span class="grad">Memory is the deterministic substrate.<br>The loop is the lightweight control layer.</span></p>
-    <p class="lead" style="margin-top:1em">Next (tracked as Blueprint gaps): greenfield flow · multi-user hardening · an optional SDLC overlay for teams that want it.</p>
+    <p class="lead" style="margin-top:1em">Next (tracked as Blueprint gaps): greenfield flow · more multi-user hardening (<code>MERGE.md</code> shipped) · an optional SDLC overlay for teams that want it.</p>
     <p class="big" style="margin-top:1em"><b>Predictable innovation with human partnership</b> — bold ideas, faithful delivery, the human in the loop at every altitude.</p>
-    <div class="foot">agent-memory · v4.10.0</div>
+    <div class="foot">agent-memory · v4.26.1</div>
   </section>
 
 </div>

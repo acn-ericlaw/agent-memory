@@ -2,9 +2,9 @@
 
 ## Deterministic memory as a substrate; a lightweight cognitive loop as the control layer
 
-**Version:** 1.1 (describes agent-memory **v4.1.1**)
+**Version:** 1.2 (describes agent-memory **v4.26.1**)
 **Status:** Draft for peer / leadership review
-**Date:** June 16, 2026
+**Date:** June 29, 2026
 
 ---
 
@@ -40,13 +40,28 @@ ceremony), and it **migrates** existing vendor AI files into the unified format.
 
 The shared, committed layer carries three things across vendors: **memory**, **steering**,
 and — as of **v4.1.0** — **portable skills** (reusable capabilities authored once and run
-by any agent; see §5).
+by any agent; see §5). The skills layer has since matured into **seven tool-managed
+built-ins** spanning **six vendor adapters** (Claude, Gemini, Cursor, Kiro, GitHub Copilot,
+Google Antigravity), and is governed by a principle that emerged from real cross-vendor use:
+the **judgment-vs-arithmetic boundary** — the deterministic, mechanical parts of a memory
+ritual (re-tiering, the archive move, adapter regeneration, integrity checks) are
+**mechanized as runnable helpers**, while every act of *judgment* (what to archive, how to
+resolve a contradiction, what the Vision is) stays with the agent and the human (§5, §6).
+
+A second line of maturation hardened **operational reliability** (§5b): the after-session
+ritual no longer depends on an agent reliably self-triggering. Enable now installs a
+vendor-neutral **git post-commit hook + a CI floor** (agent-activated, **zero manual user
+step**), a one-command **first-run init** for fresh clones, Windows line-ending hardening, a
+**`MERGE.md`** conflict protocol, and a **safe-write** discipline — all from the adoption
+constraint that *any manual step is a barrier once the protocol lands with untrained users*.
 
 Its central claim: pairing a **deterministic memory substrate** with a **lightweight
 cognitive loop** yields **predictable innovation with human partnership** — bold ideas,
 faithful delivery, a human in the loop at every altitude. This was demonstrated on a real
-Node.js→Rust rewrite that delivered with **no drift**, and the tool was built **using its
-own loop** (dogfooded).
+Node.js→Rust rewrite that delivered with **no drift**, the tool was built **using its own
+loop** (dogfooded), and the design has been **validated cross-vendor on a real product repo**
+— GitHub Copilot (Gemini 3.1 Pro) independently exercised, critiqued, and even *reinvented*
+parts of the toolchain, converging on the same designs (§8).
 
 ---
 
@@ -86,7 +101,9 @@ A **no-code, markdown-only** system with three jobs in one repository:
    the unified format (originals preserved under `legacy/`, never deleted).
 
 As of **v4.1.0**, the shared layer also carries **portable skills** (§5) — reusable
-capabilities beside memory and steering.
+capabilities beside memory and steering — and a **knowledge harvest** that, at enable and on
+demand, distills durable facts from the team's existing human-authored docs (ADRs, decision
+logs, design specs) into the shared `memory/` layer (§3, §7).
 
 There is **no build, lint, or test step**: the markdown files *are* the product, and the
 "runtime" is an AI agent reading and acting on them. Two memory layers coexist by design —
@@ -108,7 +125,12 @@ Memory here is **event-sourced**, not a mutable blob:
 - **Deterministic decay.** A periodic **review** recomputes usage by *counting session
   files* — never a floating-point score — so any agent (Claude, Gemini, …) reaches the
   **same** result. Facts fade through tiers (`working → active → archive-candidate →
-  archived`); nothing is ever deleted (archived, with a greppable index).
+  archived`); nothing is ever deleted (archived, with a greppable index). The mechanical
+  steps of this review — recomputing every fact's tier/usage, and the archive *move* — are
+  now packaged as **runnable helpers** (`refresh-metadata`, `archive-fact`) so a capable
+  agent can't silently skip them, while *deciding what to retire* stays the agent's judgment
+  (§5). A **review-cadence advisory** (`memory-lint`) flags a layer that has gone too long
+  without a review, or grown past a fact/line budget — so a lapsed review can't hide.
 
 On top of that substrate sit four capabilities that make the memory *trustworthy*:
 
@@ -122,6 +144,14 @@ On top of that substrate sit four capabilities that make the memory *trustworthy
   contradicts → supersede it, or raise an Open Thread. The system *never picks a winner*.
 - **Provenance.** Each fact can carry an `origin` pointer to its source session — one-hop
   traceability and a cheap defense against memory poisoning.
+
+Beyond per-session writes, memory also seeds itself from the team's existing knowledge: a
+**knowledge harvest** recursively reads human-authored docs (ADRs, decision logs, design
+specs, roadmaps) and distills the **durable** facts into `memory/` — additively,
+*map-don't-mirror*, check-existing-first so a re-run never duplicates, conflicts raised as a
+Contradiction thread (never silently resolved). It runs once at enable and on demand
+thereafter (the `harvest-knowledge` built-in), scoped incrementally by a `last_harvest`
+marker.
 
 Retrieval is deliberately **lexical + indexed** (grep + a greppable archive index +
 provenance pointers), bounded by project scale — *not* a vector/index server. That keeps
@@ -182,9 +212,12 @@ procedure, optionally helper scripts) authored once and usable by any agent.
   matches a skill's `description`, the agent reads and follows that `SKILL.md`. Because the
   agent *is* the runtime, this works on **any** vendor with no engine.
 - **Thin per-vendor adapters.** For runtimes with a native skill/command system, the tool
-  regenerates *pointers* — `.claude/skills/`, `.gemini/commands/`, `.cursor/rules/` — for
-  native auto-trigger. Adapters are gitignored and regenerated (never copies), so the
-  neutral skill never drifts.
+  regenerates *pointers* for native auto-trigger across **six** vendor targets —
+  `.claude/skills/`, `.gemini/commands/`, `.cursor/rules/`, `.kiro/`, `.github/skills/`
+  (GitHub Copilot), and `.agents/skills/` (Google Antigravity). Adapters are gitignored and
+  regenerated (never copies), so the neutral skill never drifts — and regeneration is itself
+  a **runnable script** (`sync-adapters`, in bash / Node / Python at output parity) so it
+  doesn't depend on an agent improvising the recipe.
 - **Migration promotes, never flattens.** A vendor's existing skills (e.g.
   `.claude/skills/`) are *promoted* into `agent-skills/` (originals preserved under
   `legacy/`), not folded into steering — skills are procedures, not rules.
@@ -194,20 +227,81 @@ never-pick-a-winner, additive/non-destructive — and it refined the tool's own 
 invariant into **"no build step; agent-run"**: the *tool* runs no code, while a skill may
 carry optional, **agent-invoked** helper scripts.
 
-**v4.10.0 — built-in skills + a fresh-context second opinion.** The layer now ships its own
-built-ins, *installed into every enabled repo*: `memory-lint` (the deterministic verifier the
-review ritual relies on) and a **fresh-context review** pair. `second-opinion` distills a compact
-snapshot **from** `continuity.md` + recent session logs (never a parallel state file) and, behind a
-**security advisory** the human must acknowledge, hands it to a reviewer with *clean memory* — a
-fresh session or a different vendor that did not live the work. `apply-critique` feeds the returned
-critique through a **bounded, validated, human-gated** loop (a few scoped fixes → build/tests +
-`memory-lint` → an applied-vs-rejected summary). The reviewer is a **hypothesis generator, not an
-authority**: its critique is advisory, gated by deterministic checks and a human — the lesson the
-layer learned when a clean-context reviewer once over-archived still-referenced facts. This
-externalizes the smoke-test intuition (a fresh agent should orient from memory alone) into a
-deliberate gate at milestones and risk points, and the advisory extends `target-repo-scope-only`
-from *what the tool touches* to *what the human exports*. The built-ins are tool-managed (fork under
-a new name to customize) and, like everything else, **zero overhead by default** — installed ≠ run.
+**Built-in skills (v4.10.0 → v4.26.x).** The layer ships its own built-ins, *installed into
+every enabled repo* and **tool-managed** (marked `provenance: agent-memory-builtin`; fork
+under a new name to customize, upstream a genuine fix). There are now **seven**, and they
+sort cleanly along the boundary the layer learned to draw — **mechanize the arithmetic, leave
+the judgment to the agent**:
+
+| Built-in | Role | Side of the boundary |
+|---|---|---|
+| `memory-lint` | Deterministic integrity verifier (decay counts, dangling links, over-archival, review-cadence, stale metadata, merge markers — **nine checks**, Python *and* Node at parity) | arithmetic — read-only |
+| `refresh-metadata` | Recomputes every fact's `tier`/`uses`/`last_used` from the session ledger and writes the footers back | arithmetic |
+| `archive-fact` | Performs the archive *move* safely (append to archive + index, rewrite continuity, all-or-nothing, truncation structurally impossible) | arithmetic |
+| `sync-adapters` | Regenerates the six vendor adapters from each neutral `SKILL.md` | arithmetic |
+| `harvest-knowledge` | Distills durable facts from the team's docs into `memory/` (additive, dedup-guarded) | judgment-assisted |
+| `second-opinion` | Distils a snapshot from `continuity.md` + recent logs for a clean-memory reviewer | judgment-assisted |
+| `apply-critique` | Runs a returned critique through a bounded, validated, human-gated apply loop | judgment-assisted |
+
+**The fresh-context second opinion.** `second-opinion` distills a compact snapshot **from**
+`continuity.md` + recent session logs (never a parallel state file) and, behind a **security
+advisory** the human must acknowledge, hands it to a reviewer with *clean memory* — a fresh
+session or a different vendor that did not live the work. `apply-critique` feeds the returned
+critique through a **bounded, validated, human-gated** loop (a few scoped fixes → build/tests
++ `memory-lint` → an applied-vs-rejected summary). The reviewer is a **hypothesis generator,
+not an authority**: its critique is advisory, gated by deterministic checks and a human — the
+lesson the layer learned when a clean-context reviewer once over-archived still-referenced
+facts. The advisory extends `target-repo-scope-only` from *what the tool touches* to *what the
+human exports*.
+
+**Why the arithmetic helpers exist.** Real cross-vendor use surfaced a recurring failure
+class: *a capable agent silently does only part of a multi-step ritual.* A truncate-before-read
+shortcut wiped an archive; the cadence review never fired on a busy repo; an agent ran the
+archive step of a review but **skipped the re-tier**. Each was fixed the same way — **mechanize
+the deterministic part** (a runnable helper) **+ make the gap visible** (a `memory-lint`
+advisory) **+ leave the judgment to the agent**. So `refresh-metadata` and `archive-fact` are
+not automation of *decisions* — `never-pick-a-winner` still holds — they are safe execution of
+the *moves* the agent has already decided. Like everything else, the built-ins are **zero
+overhead by default** — installed ≠ run.
+
+---
+
+## 5b. Operational Reliability — Making the Ritual Happen
+
+A protocol that *depends on an agent reliably self-triggering* fails the moment it lands with
+an untrained team or a less-agentic vendor. The governing adoption constraint became: **any
+manual user step is a barrier**. A line of work hardened the ritual's *execution*, not just
+its documentation:
+
+- **Vendor-neutral triggers, agent-activated.** Enable installs a committed **`post-commit`
+  git hook** (advisory; auto-stubs a session log when a commit did real work but carried none,
+  and re-syncs adapters when a skill changed) and a **CI floor** (`memory-lint` + a session-log
+  presence check, zero per-user setup). The agent activates the local hook at enable — **no
+  manual user step** in the common path. `no-build-step-agent-run` still holds: git and CI
+  invoke them in the user's environment; the tool itself runs nothing. *Honest limit:* git
+  cannot auto-run a committed hook on a fresh clone, so CI is the always-on backstop.
+- **One log per session, not per commit.** The hook windows by session (the decay model counts
+  session *files*, so per-commit logs would inflate the count and decay facts too fast) — a
+  downstream report where one session minted ~6 near-identical logs drove this fix.
+- **First-run init + Windows hardening.** A fresh clone has gitignored adapters absent and the
+  hook unactivated; **`.githooks/init.sh`** is a single idempotent command to regenerate
+  adapters and activate the hook, and a **`.gitattributes`** pins shell scripts to LF so Git
+  for Windows doesn't break them. `memory-lint` also catches an empty/malformed install
+  manifest, so a botched stamp fails the lint instead of silently breaking upgrade detection.
+- **`MERGE.md` — conflict resolution without picking a winner.** A no-code, human-gated
+  protocol for a git conflict in `memory/`: mechanical hunks reconcile deterministically
+  (additive → union; scalar → take-later); a semantic clash **preserves both + raises a
+  Contradiction** (a supersession only on the human's explicit instruction); `memory-lint`
+  gates; the human approves the merge commit. The `status` line was respecified as a short
+  current-state line (not an accreted changelog) to stop it being a merge hotspot.
+- **Safe-write discipline.** The most-repeated bug was a truncate-before-read shortcut
+  (`open(f,"w").write(open(f).read()+…)`) that wiped a file before reading it. The rule —
+  append-mode or read-into-a-variable-then-write, and run `memory-lint` after any scripted
+  memory mutation — is now in the shared protocol, and the `archive-fact` helper makes
+  truncation *structurally impossible* for the one move that kept hitting it.
+- **Informed consent at enable.** A fresh enable opens with a concise **exec summary** (what
+  the protocol is, what it writes, what it leaves untouched, that it's committed + shared) and
+  a **cancel gate** — a blind "yes" is replaced by informed consent before anything is written.
 
 ---
 
@@ -224,6 +318,13 @@ a new name to customize) and, like everything else, **zero overhead by default**
   over completeness.
 - **Never pick a winner; never fabricate intent.** Contradictions and the Vision are
   surfaced for a human, not resolved silently.
+- **Mechanize the arithmetic, not the judgment.** The deterministic, mechanical parts of a
+  ritual (re-tiering, the archive move, adapter sync, integrity checks) become runnable
+  helpers so a capable agent can't silently skip them; every act of judgment stays with the
+  agent and the human. The boundary is *judgment vs. arithmetic*, never *automate the decision*.
+- **No manual user step.** Once the protocol lands with untrained users, any manual op is an
+  adoption barrier — so triggers, init, and adapter sync are agent-activated, with CI as the
+  zero-config backstop.
 - **Additive, non-destructive upgrades.** Versioned (`VERSION` + per-repo stamp); a repo on
   an older version upgrades in place via an idempotent ladder.
 
@@ -231,17 +332,21 @@ a new name to customize) and, like everything else, **zero overhead by default**
 
 ## 7. How It Works in Practice
 
-- **Enable a repo.** "AI enable this repo `/path`." The tool detects any existing AI
-  footprint and chooses a mode: **Fresh** (generate from analysis), **Already-Ours**
-  (idempotent; upgrade in place if on an older version), or **Migrate** (fold vendor files
-  in, preserving originals). It generates `memory/`, the bootstrap pointers, and a DRAFT
-  Vision + gate.
+- **Enable a repo.** "AI enable this repo `/path`." It opens with an **exec summary + cancel
+  gate** (informed consent), then detects any existing AI footprint and chooses a mode:
+  **Fresh** (generate from analysis), **Already-Ours** (idempotent; upgrade in place if on an
+  older version), or **Migrate** (fold vendor files in, preserving originals). It generates
+  `memory/`, **harvests durable facts from the repo's docs**, installs the bootstrap pointers,
+  the six skill adapters, the **git hook + CI triggers**, and a DRAFT Vision + gate — **no
+  manual user step**.
 - **A session.** The agent reads Current State (`continuity.md`) + the Vision, does the
   work tying it to a Blueprint gap and the Design it realizes, writes a session log with
   `## Memory References`, and updates `continuity.md`.
-- **A review.** On cadence (or on demand), the review replays the ledger, re-tiers facts,
-  archives faded ones, applies supersessions, prompts invariant re-verification, and scans
-  for contradictions/altitude drift.
+- **A review.** On cadence (or on demand — and a `memory-lint` advisory flags an overdue one
+  so it can't silently lapse), the review replays the ledger, re-tiers facts (`refresh-metadata`),
+  archives the ones the agent judges faded (`archive-fact`), applies supersessions, prompts
+  invariant re-verification, and scans for contradictions/altitude drift. The deterministic
+  steps run via helpers; the judgment of *what* to retire stays with the agent.
 - **A memory smoke test.** A short, manual eval — questions a *fresh* agent should answer
   from memory alone. A failure is a memory *gap* to fill, not a test to soften.
 
@@ -268,6 +373,20 @@ a new name to customize) and, like everything else, **zero overhead by default**
   session memory) critiqued the change and surfaced a real invariant tension the in-session author
   had missed — an upgrade silently overwriting a user-customized built-in vs. the additive-upgrades
   invariant — which `apply-critique` then fixed. Using the reviewer to review the reviewer.
+- **Cross-vendor, on a real product repo.** The protocol was driven end-to-end on a large
+  Accenture product repo (`mercury-composable`) by **GitHub Copilot / Gemini 3.1 Pro** — a
+  different vendor and model from the author. It exercised the second-opinion loop *across*
+  vendors, ran the cadence-advisory-triggered review unprompted, and the over-archival guard
+  caught a premature archive it then reverted. Two convergence signals stand out: a Copilot
+  critique independently named the safe-write hardening that became `archive-fact`, and Copilot
+  *independently wrote* a metadata-refresh script — converging on the same design that shipped
+  as `refresh-metadata` (the built-in is a strict, safer superset: reads the decay policy,
+  preserves all footer fields, clamps at archive-candidate, dual-runtime with tests).
+- **A repeating failure class, structurally closed.** Three field incidents shared one shape —
+  *a capable agent partially executes a multi-step ritual* (a truncating write; a review that
+  never fired; a re-tier step skipped). Rather than exhort the agent to try harder, each was
+  closed structurally: a runnable helper for the arithmetic + a `memory-lint` advisory for the
+  gap. This is the evidence behind the *mechanize-the-arithmetic* principle (§6).
 
 ---
 
@@ -303,7 +422,8 @@ loop with human gates.**
 | Intent → delivery | unmanaged | VBDI altitude trace, grep-detectable drift |
 | Governance | opaque | git history + markdown + human gates |
 | Vendor coupling | locked to one tool | neutral; thin pointers to one hub |
-| Capabilities / skills | per-vendor skill files, not shared | neutral `agent-skills/` + regenerated per-vendor adapters; authored once, any agent |
+| Capabilities / skills | per-vendor skill files, not shared | neutral `agent-skills/` + 7 built-ins, regenerated across 6 vendor adapters; authored once, any agent |
+| Ritual execution | relies on the agent self-triggering | agent-activated git hook + CI floor + runnable helpers; deterministic arithmetic mechanized, judgment left to the agent; no manual user step |
 | Second opinion / review | self-review in the same (polluted) context | fresh-context reviewer (any vendor) + bounded, deterministically-gated apply |
 | Process weight | often heavy | lightweight default; SDLC is the target's opt-in |
 
@@ -314,8 +434,9 @@ loop with human gates.**
 Tracked as Blueprint gaps against the Vision:
 
 - **Greenfield flow** — start from a Vision with no code yet (the substrate now exists).
-- **Multi-user hardening** — strengthen conventions for simultaneous contributors on one
-  enabled repo.
+- **Multi-user hardening** — *first increment shipped* (the `MERGE.md` conflict protocol +
+  merge-friendly `continuity.md` conventions + a merge-marker lint check); continue
+  strengthening conventions for simultaneous contributors on one enabled repo.
 - **Optional SDLC overlay** — a scrum-inspired profile a target *owner* can opt into
   (`(sprint)` tagging + sprint-boundary review, no points/ceremony). Optional, never core.
 
