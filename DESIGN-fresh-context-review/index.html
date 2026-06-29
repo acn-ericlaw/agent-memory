@@ -1,0 +1,2269 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A lightweight, vendor-neutral AI memory + cognitive-loop system. No-code, markdown-only. Shared memory and portable skills across any AI agent.">
+      
+      
+        <meta name="author" content="Eric Law">
+      
+      
+        <link rel="canonical" href="https://acn-ericlaw.github.io/agent-memory/DESIGN-fresh-context-review/">
+      
+      
+        <link rel="prev" href="../DESIGN-ritual-triggers/">
+      
+      
+        <link rel="next" href="../agent-cognitive-framework/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="https://raw.githubusercontent.com/squidfunk/mkdocs-material/master/docs/assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Design: Fresh-Context Review - agent-memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#design-fresh-context-second-opinion-a-critique-gate-over-the-vbdi-loop" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="agent-memory" class="md-header__button md-logo" aria-label="agent-memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.33 12.91c.09 1.55-.62 3.04-1.89 3.95l.77 1.49c.23.45.26.98.06 1.45-.19.47-.58.84-1.06 1l-.79.25a1.687 1.687 0 0 1-1.86-.55L14.44 18c-.89-.15-1.73-.53-2.44-1.1-.5.15-1 .23-1.5.23-.88 0-1.76-.27-2.5-.79-.53.16-1.07.23-1.62.22-.79.01-1.57-.15-2.3-.45a4.1 4.1 0 0 1-2.43-3.61c-.08-.72.04-1.45.35-2.11-.29-.75-.32-1.57-.07-2.33C2.3 7.11 3 6.32 3.87 5.82c.58-1.69 2.21-2.82 4-2.7 1.6-1.5 4.05-1.66 5.83-.37.42-.11.86-.17 1.3-.17 1.36-.03 2.65.57 3.5 1.64 2.04.53 3.5 2.35 3.58 4.47.05 1.11-.25 2.2-.86 3.13.07.36.11.72.11 1.09m-5-1.41c.57.07 1.02.5 1.02 1.07a1 1 0 0 1-1 1h-.63c-.32.9-.88 1.69-1.62 2.29.25.09.51.14.77.21 5.13-.07 4.53-3.2 4.53-3.25a2.59 2.59 0 0 0-2.69-2.49 1 1 0 0 1-1-1 1 1 0 0 1 1-1c1.23.03 2.41.49 3.33 1.3.05-.29.08-.59.08-.89-.06-1.24-.62-2.32-2.87-2.53-1.25-2.96-4.4-1.32-4.4-.4-.03.23.21.72.25.75a1 1 0 0 1 1 1c0 .55-.45 1-1 1-.53-.02-1.03-.22-1.43-.56-.48.31-1.03.5-1.6.56-.57.05-1.04-.35-1.07-.9a.97.97 0 0 1 .88-1.1c.16-.02.94-.14.94-.77 0-.66.25-1.29.68-1.79-.92-.25-1.91.08-2.91 1.29C6.75 5 6 5.25 5.45 7.2 4.5 7.67 4 8 3.78 9c1.08-.22 2.19-.13 3.22.25.5.19.78.75.59 1.29-.19.52-.77.78-1.29.59-.73-.32-1.55-.34-2.3-.06-.32.27-.32.83-.32 1.27 0 .74.37 1.43 1 1.83.53.27 1.12.41 1.71.4q-.225-.39-.39-.81a1.038 1.038 0 0 1 1.96-.68c.4 1.14 1.42 1.92 2.62 2.05 1.37-.07 2.59-.88 3.19-2.13.23-1.38 1.34-1.5 2.56-1.5m2 7.47-.62-1.3-.71.16 1 1.25zm-4.65-8.61a1 1 0 0 0-.91-1.03c-.71-.04-1.4.2-1.93.67-.57.58-.87 1.38-.84 2.19a1 1 0 0 0 1 1c.57 0 1-.45 1-1 0-.27.07-.54.23-.76.12-.1.27-.15.43-.15.55.03 1.02-.38 1.02-.92"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            agent-memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Design: Fresh-Context Review
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="cyan"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/acn-ericlaw/agent-memory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    acn-ericlaw/agent-memory
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../getting-started/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../concepts/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Concepts
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../guides/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../agent-memory-whitepaper/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Background
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="agent-memory" class="md-nav__button md-logo" aria-label="agent-memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.33 12.91c.09 1.55-.62 3.04-1.89 3.95l.77 1.49c.23.45.26.98.06 1.45-.19.47-.58.84-1.06 1l-.79.25a1.687 1.687 0 0 1-1.86-.55L14.44 18c-.89-.15-1.73-.53-2.44-1.1-.5.15-1 .23-1.5.23-.88 0-1.76-.27-2.5-.79-.53.16-1.07.23-1.62.22-.79.01-1.57-.15-2.3-.45a4.1 4.1 0 0 1-2.43-3.61c-.08-.72.04-1.45.35-2.11-.29-.75-.32-1.57-.07-2.33C2.3 7.11 3 6.32 3.87 5.82c.58-1.69 2.21-2.82 4-2.7 1.6-1.5 4.05-1.66 5.83-.37.42-.11.86-.17 1.3-.17 1.36-.03 2.65.57 3.5 1.64 2.04.53 3.5 2.35 3.58 4.47.05 1.11-.25 2.2-.86 3.13.07.36.11.72.11 1.09m-5-1.41c.57.07 1.02.5 1.02 1.07a1 1 0 0 1-1 1h-.63c-.32.9-.88 1.69-1.62 2.29.25.09.51.14.77.21 5.13-.07 4.53-3.2 4.53-3.25a2.59 2.59 0 0 0-2.69-2.49 1 1 0 0 1-1-1 1 1 0 0 1 1-1c1.23.03 2.41.49 3.33 1.3.05-.29.08-.59.08-.89-.06-1.24-.62-2.32-2.87-2.53-1.25-2.96-4.4-1.32-4.4-.4-.03.23.21.72.25.75a1 1 0 0 1 1 1c0 .55-.45 1-1 1-.53-.02-1.03-.22-1.43-.56-.48.31-1.03.5-1.6.56-.57.05-1.04-.35-1.07-.9a.97.97 0 0 1 .88-1.1c.16-.02.94-.14.94-.77 0-.66.25-1.29.68-1.79-.92-.25-1.91.08-2.91 1.29C6.75 5 6 5.25 5.45 7.2 4.5 7.67 4 8 3.78 9c1.08-.22 2.19-.13 3.22.25.5.19.78.75.59 1.29-.19.52-.77.78-1.29.59-.73-.32-1.55-.34-2.3-.06-.32.27-.32.83-.32 1.27 0 .74.37 1.43 1 1.83.53.27 1.12.41 1.71.4q-.225-.39-.39-.81a1.038 1.038 0 0 1 1.96-.68c.4 1.14 1.42 1.92 2.62 2.05 1.37-.07 2.59-.88 3.19-2.13.23-1.38 1.34-1.5 2.56-1.5m2 7.47-.62-1.3-.71.16 1 1.25zm-4.65-8.61a1 1 0 0 0-.91-1.03c-.71-.04-1.4.2-1.93.67-.57.58-.87 1.38-.84 2.19a1 1 0 0 0 1 1c.57 0 1-.45 1-1 0-.27.07-.54.23-.76.12-.1.27-.15.43-.15.55.03 1.02-.38 1.02-.92"/></svg>
+
+    </a>
+    agent-memory
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/acn-ericlaw/agent-memory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    acn-ericlaw/agent-memory
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../concepts/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/evolving-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evolving Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/vbdi-loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The VBDI Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skills & Built-ins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/decay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decay & Tiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/reliability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reliability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../guides/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/enable-a-repo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enable a Repo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/upgrade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upgrade in Place
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/review-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Review Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/resolve-merge-conflicts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resolve Merge Conflicts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/author-a-skill/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Author a Skill
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/built-in-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Built-in Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/decay-parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decay Parameters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/vendor-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vendor Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/protocol-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Protocol Files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Background
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Background
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agent-memory-whitepaper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Whitepaper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DESIGN-evolving-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Evolving Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DESIGN-vbdi-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: VBDI Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DESIGN-skills-layer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Skills Layer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DESIGN-ritual-triggers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Ritual Triggers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Fresh-Context Review
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Fresh-Context Review
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Why
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-principles-inherited-already-ours" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Principles (inherited — already ours)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-observation-the-net-new-surface-is-tiny" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Observation — the net-new surface is tiny
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-two-modes-map-onto-vbdi-altitudes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The two modes (map onto VBDI altitudes)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-the-design-a-skill-pair-delivery-via-the-skills-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. The design — a skill pair (delivery via the skills layer)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. The design — a skill pair (delivery via the skills layer)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#5a-second-opinion-generate-the-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5a. second-opinion — generate the snapshot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5b-apply-critique-consume-the-critique-bounded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5b. apply-critique — consume the critique, bounded
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5c-the-critique-artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5c. The critique artifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-the-security-advisory-the-clearest-net-new-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The security advisory — the clearest net-new value
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-the-honest-hard-part-the-reviewer-is-a-hypothesis-generator-not-an-authority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. The honest hard part — the reviewer is a hypothesis generator, not an authority
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-alignment-with-the-architectural-invariants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Alignment with the Architectural Invariants
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-scope-non-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Scope / non-goals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-open-questions-resolved-2026-06-18-maintainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Open questions — resolved (2026-06-18, maintainer)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-test-drive-dogfood" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Test-drive (dogfood)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-integration-points-as-built-v4100" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Integration points (as built — v4.10.0)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agent-cognitive-framework/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Cognitive Framework
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arch-decisions/ADR/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Record
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Why
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-principles-inherited-already-ours" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Principles (inherited — already ours)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-observation-the-net-new-surface-is-tiny" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Observation — the net-new surface is tiny
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-two-modes-map-onto-vbdi-altitudes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The two modes (map onto VBDI altitudes)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-the-design-a-skill-pair-delivery-via-the-skills-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. The design — a skill pair (delivery via the skills layer)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. The design — a skill pair (delivery via the skills layer)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#5a-second-opinion-generate-the-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5a. second-opinion — generate the snapshot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5b-apply-critique-consume-the-critique-bounded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5b. apply-critique — consume the critique, bounded
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5c-the-critique-artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5c. The critique artifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-the-security-advisory-the-clearest-net-new-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The security advisory — the clearest net-new value
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-the-honest-hard-part-the-reviewer-is-a-hypothesis-generator-not-an-authority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. The honest hard part — the reviewer is a hypothesis generator, not an authority
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-alignment-with-the-architectural-invariants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Alignment with the Architectural Invariants
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-scope-non-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Scope / non-goals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-open-questions-resolved-2026-06-18-maintainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Open questions — resolved (2026-06-18, maintainer)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-test-drive-dogfood" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Test-drive (dogfood)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-integration-points-as-built-v4100" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Integration points (as built — v4.10.0)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="design-fresh-context-second-opinion-a-critique-gate-over-the-vbdi-loop">DESIGN — Fresh-Context Second Opinion (a critique gate over the VBDI loop)<a class="headerlink" href="#design-fresh-context-second-opinion-a-critique-gate-over-the-vbdi-loop" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Status:</strong> <strong>implemented v4.10.0</strong> (2026-06-18) — the §10 forks were settled by the
+maintainer and built as a skill pair. Sibling to <code>DESIGN-evolving-memory.md</code>,
+<code>DESIGN-vbdi-lifecycle.md</code>, and <code>DESIGN-skills-layer.md</code>.
+<strong>Source:</strong> an independent brainstorming artifact — the <em>Agent Interchange Format (AIF)</em>
+draft (architecture paper + snapshot/critique specs, 2026-06). This document maps that
+idea onto the agent-memory foundation, <strong>lightweight</strong>, and deliberately keeps the tool's
+own vocabulary ("fresh-context second opinion") rather than importing a "format / protocol
+/ standard" framing — the latter cuts against the lightweight, never-heavyweight Vision
+non-goals.
+<strong>Decision locked (2026-06-18, maintainer):</strong> fold into the <strong>skills layer + VBDI</strong>, not a
+standalone spec.</p>
+</blockquote>
+<hr />
+<h2 id="1-why">1. Why<a class="headerlink" href="#1-why" title="Permanent link">&para;</a></h2>
+<p>A long AI session accumulates assumptions, partial conclusions, and self-trust: the model
+that built a solution over-trusts its own trajectory. agent-memory already <em>bets on the
+opposite</em> — its <strong>smoke test</strong> asks whether a <strong>fresh</strong> agent can orient from memory alone,
+and <strong>multi-agent continuity</strong> has different vendors read each other's logs. What it has no
+<em>deliberate ritual</em> for is the highest-value version of that: <strong>at a milestone or a risk
+point, hand a curated snapshot to an AI with clean memory and ask it to challenge the
+work.</strong> The reviewer's value is precisely that it did <em>not</em> live the session.</p>
+<p>This is not theoretical here. In v4.8.0/v4.9.0 a fresh-context reviewer (GitHub Copilot CLI)
+reviewed this repo's memory and <strong>over-archived three still-referenced facts</strong> because it
+lacked the session context and miscounted. That episode is the design's anchor in <strong>both</strong>
+directions: it proves fresh-context review surfaces things the in-session agent misses <strong>and</strong>
+that the reviewer is not an authority — it can introduce its own errors. The remediation was
+a <em>deterministic verifier</em> (<code>memory-lint</code>), not "trust the reviewer." This design carries
+that lesson in its bones (§7, §9).</p>
+<h2 id="2-principles-inherited-already-ours">2. Principles (inherited — already ours)<a class="headerlink" href="#2-principles-inherited-already-ours" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>No-code, markdown-only</strong> — the snapshot and critique are markdown; the agent is the
+  runtime. Any helper is an optional, agent-invoked script (<code>no-build-step-agent-run</code>).</li>
+<li><strong>Zero overhead by default</strong> — nothing runs during ordinary interaction; the ritual fires
+  only on explicit human invocation, exactly like <code>memory-lint</code>.</li>
+<li><strong>Human-gated</strong> — the human decides when to invoke, acknowledges the trust boundary, and
+  gates whether critique is applied. Critique is <strong>advisory</strong>, never auto-merged.</li>
+<li><strong>Vendor-neutral / never-pick-a-winner</strong> — the reviewer may be any vendor or a clean
+  session of the same one; the critique is one input, not a verdict.</li>
+<li><strong>Map, don't duplicate</strong> — reuse <code>continuity.md</code> + session logs (state), VBDI gates
+  (when), <code>memory-lint</code> + the target's build/tests (validation). Add the <em>minimum</em> that is
+  genuinely missing.</li>
+<li><strong>Additive / non-destructive</strong> — an optional skill pair; absent it, the tool is unchanged.</li>
+</ul>
+<h2 id="3-observation-the-net-new-surface-is-tiny">3. Observation — the net-new surface is tiny<a class="headerlink" href="#3-observation-the-net-new-surface-is-tiny" title="Permanent link">&para;</a></h2>
+<p>Compare the AIF snapshot spec to what the tool already holds:</p>
+<table>
+<thead>
+<tr>
+<th>Snapshot field (AIF)</th>
+<th>Already in the tool?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Context / Objective / Actions / State Changes / Current State</td>
+<td>✅ <code>continuity.md</code> + recent session logs</td>
+</tr>
+<tr>
+<td>Open Questions / Next Actions</td>
+<td>✅ Open Threads</td>
+</tr>
+<tr>
+<td>Reasoning / Assumptions</td>
+<td>✅ Key Decisions + session logs</td>
+</tr>
+<tr>
+<td>Verification (build / tests / structural)</td>
+<td>✅ target build/tests + <code>memory-lint</code></td>
+</tr>
+<tr>
+<td><strong>Milestone Check</strong> (why complete, risk areas, confidence)</td>
+<td>◐ implicit in a VBDI gate — not structured</td>
+</tr>
+<tr>
+<td><strong>Exchange Intent / trigger</strong> (blocked | risk | milestone)</td>
+<td>❌ net-new framing</td>
+</tr>
+<tr>
+<td><strong>Security advisory</strong> before export to another system</td>
+<td>❌ <strong>net-new</strong></td>
+</tr>
+<tr>
+<td><strong>Critique artifact</strong> (structured feedback shape)</td>
+<td>❌ net-new shape</td>
+</tr>
+</tbody>
+</table>
+<p>So ~70% of the snapshot is <em>derivable from existing memory</em>. <strong>Net-new is three things:</strong>
+(1) the <strong>security advisory</strong> as a trust-boundary event, (2) the <strong>fresh-context handoff
+ritual</strong> as a named, repeatable skill, (3) the <strong>critique artifact shape</strong>. Everything else
+is reuse — the same "map, don't duplicate" discipline that kept VBDI to two new primitives.</p>
+<blockquote>
+<p><strong>Hard rule: do not introduce a parallel, hand-maintained state file.</strong> The snapshot is
+<em>generated from</em> <code>continuity.md</code> + the last N session logs and is <strong>transient scratch</strong>
+(§5). A second source of truth for "current state" would be exactly the drift/bloat the
+lightweight-mode work (v4.7) fought.</p>
+</blockquote>
+<h2 id="4-the-two-modes-map-onto-vbdi-altitudes">4. The two modes (map onto VBDI altitudes)<a class="headerlink" href="#4-the-two-modes-map-onto-vbdi-altitudes" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Reactive:   stuck/uncertain/risky  → snapshot → fresh critique → scoped repair → validate
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Milestone:  looks complete         → snapshot → clean-context gate → accept or revise
+</code></pre></div>
+<ul>
+<li><strong>Reactive mode</strong> = a critique when the in-session agent is stuck at <strong>Design</strong> or
+  <strong>Implementation</strong>. On-demand; the human invokes it.</li>
+<li><strong>Milestone mode</strong> = the <strong>fresh-context flavor of a VBDI human gate</strong> at an altitude
+  transition (<code>DESIGN-vbdi-lifecycle.md</code> §7). The gate already exists ("AI proposes, human
+  approves"); this adds an <em>optional</em> second-opinion step the human can run before approving.</li>
+</ul>
+<p>Neither mode is automatic. Milestone mode is the more distinctive contribution — it is
+valuable <em>even when the session looks successful</em>, which is exactly when the in-session
+agent is least likely to challenge itself.</p>
+<h2 id="5-the-design-a-skill-pair-delivery-via-the-skills-layer">5. The design — a skill pair (delivery via the skills layer)<a class="headerlink" href="#5-the-design-a-skill-pair-delivery-via-the-skills-layer" title="Permanent link">&para;</a></h2>
+<p>The skills layer is the natural vehicle: author once in <code>agent-skills/</code>, run on any vendor,
+optional, not auto-installed (same posture as <code>memory-lint</code>).</p>
+<h3 id="5a-second-opinion-generate-the-snapshot">5a. <code>second-opinion</code> — generate the snapshot<a class="headerlink" href="#5a-second-opinion-generate-the-snapshot" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Compute trigger context (reactive vs. milestone) from the human's invocation.</li>
+<li><strong>Show the security advisory and wait for explicit acknowledgment</strong> (§6).</li>
+<li>Distill a snapshot <strong>from <code>continuity.md</code> + the last N session logs</strong> — only the
+   decision-relevant deltas, open questions, assumptions, risk areas, and (milestone) "why I
+   believe this is complete / confidence before review." Not a memory dump.</li>
+<li>Emit the snapshot as <strong>transient scratch</strong> the human carries to a fresh reviewer (a clean
+   session, or another vendor). The reviewer needs no session history — that is the point.
+   <strong>Self-contained + an attach-manifest (v4.10.0 refinement, from a real-use consideration):</strong>
+   a repo-access reviewer (a CLI agent pointed at the repo) can read cited paths, but a
+   <strong>repo-less reviewer</strong> (a web-based chat AI — the common case) sees only the snapshot. So the
+   snapshot carries the decision-relevant substance inline (not bare path citations) and names,
+   under <em>Attach to reviewer</em>, the exact files/excerpts the human must attach — so delivery
+   works for any reviewer, not just one with filesystem access.</li>
+</ol>
+<h3 id="5b-apply-critique-consume-the-critique-bounded">5b. <code>apply-critique</code> — consume the critique, bounded<a class="headerlink" href="#5b-apply-critique-consume-the-critique-bounded" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Parse the returned critique (critical issues / gaps / execution guidance / risks /
+   confidence).</li>
+<li>Plan <strong>≤ a small number</strong> of focused, scoped actions — a bounded critique→repair loop,
+   never an open autonomous loop.</li>
+<li>Apply scoped changes; <strong>run validation</strong> — the target's build/tests and, for memory
+   changes, <code>memory-lint</code>.</li>
+<li>Summarize <strong>applied vs. rejected</strong> recommendations and <strong>why</strong> — the human gates the
+   result. A genuine conflict surfaces as an Open Thread (<code>never-pick-a-winner</code>), not a
+   silent overwrite.</li>
+<li>A completed cycle is a <strong>memory-relevant event</strong> → it writes a normal session log +
+   <code>## Memory References</code> (it stays <em>inside</em> the existing ritual, not beside it).</li>
+</ol>
+<h3 id="5c-the-critique-artifact">5c. The critique artifact<a class="headerlink" href="#5c-the-critique-artifact" title="Permanent link">&para;</a></h3>
+<p>Markdown, transient scratch (not committed, not memory): summary, critical issues, gaps,
+design feedback, execution guidance (numbered), validation strategy, risks, confidence.
+(The AIF <code>CRITIQUE_SPEC.md</code> shape is a fine starting template — bundle it with the skill.)</p>
+<h2 id="6-the-security-advisory-the-clearest-net-new-value">6. The security advisory — the clearest net-new value<a class="headerlink" href="#6-the-security-advisory-the-clearest-net-new-value" title="Permanent link">&para;</a></h2>
+<p>Packaging cognitive state for <em>another AI system</em> is a <strong>trust-boundary event</strong>, even when
+the reviewer is internal. The tool today has <code>target-repo-scope-only</code> (don't read/write
+outside the repo) and the no-home-path rule, but nothing that pauses before <strong>exporting</strong>
+state outward. <code>second-opinion</code> shows an advisory and waits for acknowledgment before
+generating a snapshot:</p>
+<ul>
+<li>no client secrets, credentials, or tokens;</li>
+<li>no PII;</li>
+<li>content appropriate to share beyond the immediate project perimeter.</li>
+</ul>
+<p>Framing stays <strong>assertive, not fear-based</strong> (the AIF banner wording is a good base). This is
+a no-code gate: the <em>agent shows the advisory and waits for "acknowledge"</em> — runtime behavior
+expressed as a skill instruction, consistent with agent-as-runtime. It <em>strengthens</em>
+<code>target-repo-scope-only</code> by extending it from "what the tool touches" to "what the human
+exports."</p>
+<h2 id="7-the-honest-hard-part-the-reviewer-is-a-hypothesis-generator-not-an-authority">7. The honest hard part — the reviewer is a hypothesis generator, not an authority<a class="headerlink" href="#7-the-honest-hard-part-the-reviewer-is-a-hypothesis-generator-not-an-authority" title="Permanent link">&para;</a></h2>
+<p>The v4.8/v4.9 episode is the cautionary tale: a fresh reviewer's confident output was
+<strong>wrong</strong> because it lacked context and miscounted. So this design's load-bearing rule:</p>
+<blockquote>
+<p><strong>Fresh-context critique is advisory. It is gated by deterministic checks (<code>memory-lint</code>,
+build/tests) and a human decision before anything is applied.</strong> <code>apply-critique</code> never
+merges on the critique's say-so alone.</p>
+</blockquote>
+<p>This is not a weakness in the pitch — it is the strongest evidence the repo has. We ran this
+pattern ad-hoc, learned exactly where it breaks, and already built the guardrail. The skill
+makes the <em>good</em> part repeatable and bakes in the guardrail.</p>
+<h2 id="8-alignment-with-the-architectural-invariants">8. Alignment with the Architectural Invariants<a class="headerlink" href="#8-alignment-with-the-architectural-invariants" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Invariant</th>
+<th>How this honors it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>no-build-step-agent-run</code></td>
+<td>snapshot + critique are markdown; agent is the runtime; any helper is optional/agent-invoked</td>
+</tr>
+<tr>
+<td><code>target-repo-scope-only</code></td>
+<td>snapshot derived from the target's own memory; the advisory <em>strengthens</em> the perimeter on export</td>
+</tr>
+<tr>
+<td><code>never-pick-a-winner</code></td>
+<td>critique is advisory; conflicts → Open Threads; human gates application</td>
+</tr>
+<tr>
+<td><code>upgrades-additive</code></td>
+<td>optional skill pair; absent it, no behavior change; un-upgraded agent ignores it</td>
+</tr>
+</tbody>
+</table>
+<h2 id="9-scope-non-goals">9. Scope / non-goals<a class="headerlink" href="#9-scope-non-goals" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Not an orchestration runtime / A2A transport.</strong> No automatic agent-to-agent messaging;
+  the <strong>human carries the snapshot</strong> (or runs a clean session). Low-friction,
+  human-mediated, by design — the AIF paper's own stance.</li>
+<li><strong>Not a new state format.</strong> The snapshot is <em>derived and transient</em>; <code>continuity.md</code> +
+  session logs remain the single source of truth (§3 hard rule).</li>
+<li><strong>Not the AIF metrics / governance dashboard.</strong> Defer (§10 of the AIF paper leans
+  heavyweight) — markdown-recorded observations only, if anything.</li>
+<li><strong>Installed, but zero-overhead-by-default.</strong> The built-in skills <em>are</em> installed into every
+  enabled repo (they support the core workflow — <code>memory-lint</code> for the review ritual, the pair
+  for milestone/risk review), but <strong>nothing runs unless explicitly invoked</strong> — installing a
+  skill ≠ running it. <code>review-scratch/</code> is created on first use and gitignored.</li>
+<li><strong>Not a re-brand.</strong> Land it in the tool's vocabulary; "AIF" stays an origin reference here.</li>
+</ul>
+<h2 id="10-open-questions-resolved-2026-06-18-maintainer">10. Open questions — resolved (2026-06-18, maintainer)<a class="headerlink" href="#10-open-questions-resolved-2026-06-18-maintainer" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Naming</strong> — ✅ a <strong>skill pair</strong>: <code>second-opinion</code> (snapshot) + <code>apply-critique</code> (return
+   path). Tool-native vocabulary; "AIF" stays an origin reference.</li>
+<li><strong>One skill vs. pair</strong> — ✅ a <strong>pair</strong> (generate vs. apply are distinct triggers/moments;
+   better usability than one flagged skill).</li>
+<li><strong>Critique/snapshot location</strong> — ✅ <strong>gitignored <code>review-scratch/</code></strong>, with a README marking
+   it personal and "sharing is a conscious decision." Never committed, never memory.</li>
+<li><strong>Snapshot delivery</strong> — ✅ a <strong>file</strong> in <code>review-scratch/</code>, ephemeral; the human carries it.</li>
+<li><strong>Security advisory</strong> — ✅ adopt the AIF banner (assertive, non-fear-based); the
+   "acknowledge to proceed" gate is a no-code agent-instruction in the skill.</li>
+<li><strong>ENABLE behavior</strong> — ✅ <strong>installed</strong> into every enabled repo, via both ENABLE (Step 5i,
+   all modes) and the UPGRADE 4.10.0 rung — <code>second-opinion</code> + <code>apply-critique</code> <strong>and
+   <code>memory-lint</code></strong> (the review ritual relies on it; this supersedes its v4.9.0 "tool-local"
+   stance). <em>(Maintainer revised the initial opt-in choice: these are essential/important
+   enough to ship by default. Installing a skill ≠ running it — still zero-overhead-by-default.)</em></li>
+<li><strong>Version rung</strong> — ✅ additive <strong>MINOR</strong> → <strong>v4.10.0</strong>.</li>
+</ol>
+<h2 id="11-test-drive-dogfood">11. Test-drive (dogfood)<a class="headerlink" href="#11-test-drive-dogfood" title="Permanent link">&para;</a></h2>
+<p>The natural first run reproduces the episode that motivated it — <strong>structured this time.</strong>
+At the milestone where this feature's <em>own</em> implementation looks complete, invoke
+<code>second-opinion</code>, carry the snapshot to a clean session (or a different vendor), and run the
+critique→<code>apply-critique</code>→validate loop. Using fresh-context review to ship fresh-context
+review — if that loop feels light and catches something real, that is the strongest
+validation we can give it. (And it directly re-tests the v4.8/v4.9 failure mode under the
+new guardrail.)</p>
+<h2 id="12-integration-points-as-built-v4100">12. Integration points (as built — v4.10.0)<a class="headerlink" href="#12-integration-points-as-built-v4100" title="Permanent link">&para;</a></h2>
+<p>Touched, additively: <code>agent-skills/second-opinion/SKILL.md</code> +
+<code>agent-skills/apply-critique/SKILL.md</code> (neutral skills with <strong>inline</strong> snapshot/critique
+templates — no scripts), <code>ENABLE.md</code> Step 5i (built-in-skills <strong>install</strong>, all modes +
+report/scope/verify), the <code>UPGRADE.md</code> 4.10.0 rung (installs the three built-ins into existing
+repos), root &amp; <code>templates/.gitignore</code> (<code>review-scratch/</code>), <code>.agent/schema.md</code> (<code>review-scratch/</code>
+section), and the version ladder (<code>VERSION</code> → 4.10.0, <code>UPGRADE.md</code> rung + table, <code>README</code>,
+<code>CHANGELOG</code>). <code>AGENTS.md</code> / <code>SKILLS.md</code> / <code>DECAY.md</code> / <code>REVIEW.md</code> <strong>unchanged</strong> — skills
+auto-discover via the existing <code>AGENTS.md</code> "Skills" baseline, and the critique→repair loop
+reuses the existing session ritual.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../DESIGN-ritual-triggers/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Design: Ritual Triggers">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Design: Ritual Triggers
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../agent-cognitive-framework/" class="md-footer__link md-footer__link--next" aria-label="Next: Agent Cognitive Framework">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Agent Cognitive Framework
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Apache-2.0 &middot; agent-memory is independent research, not an official Accenture product.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/acn-ericlaw/agent-memory" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.footer", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

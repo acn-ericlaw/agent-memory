@@ -1,0 +1,2578 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A lightweight, vendor-neutral AI memory + cognitive-loop system. No-code, markdown-only. Shared memory and portable skills across any AI agent.">
+      
+      
+        <meta name="author" content="Eric Law">
+      
+      
+        <link rel="canonical" href="https://acn-ericlaw.github.io/agent-memory/DESIGN-evolving-memory/">
+      
+      
+        <link rel="prev" href="../agent-memory-whitepaper/">
+      
+      
+        <link rel="next" href="../DESIGN-vbdi-lifecycle/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="https://raw.githubusercontent.com/squidfunk/mkdocs-material/master/docs/assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Design: Evolving Memory - agent-memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#design-evolving-long-term-memory" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="agent-memory" class="md-header__button md-logo" aria-label="agent-memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.33 12.91c.09 1.55-.62 3.04-1.89 3.95l.77 1.49c.23.45.26.98.06 1.45-.19.47-.58.84-1.06 1l-.79.25a1.687 1.687 0 0 1-1.86-.55L14.44 18c-.89-.15-1.73-.53-2.44-1.1-.5.15-1 .23-1.5.23-.88 0-1.76-.27-2.5-.79-.53.16-1.07.23-1.62.22-.79.01-1.57-.15-2.3-.45a4.1 4.1 0 0 1-2.43-3.61c-.08-.72.04-1.45.35-2.11-.29-.75-.32-1.57-.07-2.33C2.3 7.11 3 6.32 3.87 5.82c.58-1.69 2.21-2.82 4-2.7 1.6-1.5 4.05-1.66 5.83-.37.42-.11.86-.17 1.3-.17 1.36-.03 2.65.57 3.5 1.64 2.04.53 3.5 2.35 3.58 4.47.05 1.11-.25 2.2-.86 3.13.07.36.11.72.11 1.09m-5-1.41c.57.07 1.02.5 1.02 1.07a1 1 0 0 1-1 1h-.63c-.32.9-.88 1.69-1.62 2.29.25.09.51.14.77.21 5.13-.07 4.53-3.2 4.53-3.25a2.59 2.59 0 0 0-2.69-2.49 1 1 0 0 1-1-1 1 1 0 0 1 1-1c1.23.03 2.41.49 3.33 1.3.05-.29.08-.59.08-.89-.06-1.24-.62-2.32-2.87-2.53-1.25-2.96-4.4-1.32-4.4-.4-.03.23.21.72.25.75a1 1 0 0 1 1 1c0 .55-.45 1-1 1-.53-.02-1.03-.22-1.43-.56-.48.31-1.03.5-1.6.56-.57.05-1.04-.35-1.07-.9a.97.97 0 0 1 .88-1.1c.16-.02.94-.14.94-.77 0-.66.25-1.29.68-1.79-.92-.25-1.91.08-2.91 1.29C6.75 5 6 5.25 5.45 7.2 4.5 7.67 4 8 3.78 9c1.08-.22 2.19-.13 3.22.25.5.19.78.75.59 1.29-.19.52-.77.78-1.29.59-.73-.32-1.55-.34-2.3-.06-.32.27-.32.83-.32 1.27 0 .74.37 1.43 1 1.83.53.27 1.12.41 1.71.4q-.225-.39-.39-.81a1.038 1.038 0 0 1 1.96-.68c.4 1.14 1.42 1.92 2.62 2.05 1.37-.07 2.59-.88 3.19-2.13.23-1.38 1.34-1.5 2.56-1.5m2 7.47-.62-1.3-.71.16 1 1.25zm-4.65-8.61a1 1 0 0 0-.91-1.03c-.71-.04-1.4.2-1.93.67-.57.58-.87 1.38-.84 2.19a1 1 0 0 0 1 1c.57 0 1-.45 1-1 0-.27.07-.54.23-.76.12-.1.27-.15.43-.15.55.03 1.02-.38 1.02-.92"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            agent-memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Design: Evolving Memory
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="cyan"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/acn-ericlaw/agent-memory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    acn-ericlaw/agent-memory
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../getting-started/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../concepts/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Concepts
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../guides/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../agent-memory-whitepaper/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Background
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="agent-memory" class="md-nav__button md-logo" aria-label="agent-memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.33 12.91c.09 1.55-.62 3.04-1.89 3.95l.77 1.49c.23.45.26.98.06 1.45-.19.47-.58.84-1.06 1l-.79.25a1.687 1.687 0 0 1-1.86-.55L14.44 18c-.89-.15-1.73-.53-2.44-1.1-.5.15-1 .23-1.5.23-.88 0-1.76-.27-2.5-.79-.53.16-1.07.23-1.62.22-.79.01-1.57-.15-2.3-.45a4.1 4.1 0 0 1-2.43-3.61c-.08-.72.04-1.45.35-2.11-.29-.75-.32-1.57-.07-2.33C2.3 7.11 3 6.32 3.87 5.82c.58-1.69 2.21-2.82 4-2.7 1.6-1.5 4.05-1.66 5.83-.37.42-.11.86-.17 1.3-.17 1.36-.03 2.65.57 3.5 1.64 2.04.53 3.5 2.35 3.58 4.47.05 1.11-.25 2.2-.86 3.13.07.36.11.72.11 1.09m-5-1.41c.57.07 1.02.5 1.02 1.07a1 1 0 0 1-1 1h-.63c-.32.9-.88 1.69-1.62 2.29.25.09.51.14.77.21 5.13-.07 4.53-3.2 4.53-3.25a2.59 2.59 0 0 0-2.69-2.49 1 1 0 0 1-1-1 1 1 0 0 1 1-1c1.23.03 2.41.49 3.33 1.3.05-.29.08-.59.08-.89-.06-1.24-.62-2.32-2.87-2.53-1.25-2.96-4.4-1.32-4.4-.4-.03.23.21.72.25.75a1 1 0 0 1 1 1c0 .55-.45 1-1 1-.53-.02-1.03-.22-1.43-.56-.48.31-1.03.5-1.6.56-.57.05-1.04-.35-1.07-.9a.97.97 0 0 1 .88-1.1c.16-.02.94-.14.94-.77 0-.66.25-1.29.68-1.79-.92-.25-1.91.08-2.91 1.29C6.75 5 6 5.25 5.45 7.2 4.5 7.67 4 8 3.78 9c1.08-.22 2.19-.13 3.22.25.5.19.78.75.59 1.29-.19.52-.77.78-1.29.59-.73-.32-1.55-.34-2.3-.06-.32.27-.32.83-.32 1.27 0 .74.37 1.43 1 1.83.53.27 1.12.41 1.71.4q-.225-.39-.39-.81a1.038 1.038 0 0 1 1.96-.68c.4 1.14 1.42 1.92 2.62 2.05 1.37-.07 2.59-.88 3.19-2.13.23-1.38 1.34-1.5 2.56-1.5m2 7.47-.62-1.3-.71.16 1 1.25zm-4.65-8.61a1 1 0 0 0-.91-1.03c-.71-.04-1.4.2-1.93.67-.57.58-.87 1.38-.84 2.19a1 1 0 0 0 1 1c.57 0 1-.45 1-1 0-.27.07-.54.23-.76.12-.1.27-.15.43-.15.55.03 1.02-.38 1.02-.92"/></svg>
+
+    </a>
+    agent-memory
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/acn-ericlaw/agent-memory" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    acn-ericlaw/agent-memory
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../concepts/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/evolving-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evolving Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/vbdi-loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The VBDI Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skills & Built-ins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/decay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decay & Tiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/reliability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reliability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../guides/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/enable-a-repo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enable a Repo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/upgrade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upgrade in Place
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/review-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Review Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/resolve-merge-conflicts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resolve Merge Conflicts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/author-a-skill/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Author a Skill
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/built-in-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Built-in Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/decay-parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decay Parameters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/vendor-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vendor Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/protocol-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Protocol Files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Background
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Background
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agent-memory-whitepaper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Whitepaper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Evolving Memory
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Evolving Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-problem-stated-precisely" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The Problem (stated precisely)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-what-changed-from-the-original-insight-and-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. What Changed From the Original Insight — and Why
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-memory-shape-metadata-stable-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Memory Shape — Metadata + Stable IDs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Memory Shape — Metadata + Stable IDs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-event-log-how-sessions-record-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The Event Log — How Sessions Record References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-tiers-deterministic-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Tiers + Deterministic Rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Tiers + Deterministic Rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-only-arithmetic-counting-session-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The only arithmetic: counting session files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tier-decision-applied-in-order-first-match-wins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier decision (applied in order — first match wins)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-core-conservative-off-by-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto-core (conservative; off by default)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-policy-file-templatesmemorydecay-policymd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Policy File — templates/memory/decay-policy.md
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-the-review-ritual-reviewmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. The Review Ritual — REVIEW.md
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. The Review Ritual — REVIEW.md">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#review-summary-in-the-session-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Review summary (in the session log)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-archive-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Archive Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-what-the-agent-does-each-session-after-this-lands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. What the Agent Does Each Session (after this lands)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-implementation-plan-when-approved" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Implementation Plan (when approved)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-resolved-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Resolved Decisions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-tool-versioning-upgrade-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Tool Versioning &amp; Upgrade Path
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. Tool Versioning &amp; Upgrade Path">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#semantic-version-single-source-of-truth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Semantic version — single source of truth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-repo-install-stamp-agentversionmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-repo install stamp — .agent/version.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-upgrade-ladder-upgrademd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The upgrade ladder — UPGRADE.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-scope-reminder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Scope Reminder
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DESIGN-vbdi-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: VBDI Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DESIGN-skills-layer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Skills Layer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DESIGN-ritual-triggers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Ritual Triggers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DESIGN-fresh-context-review/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Fresh-Context Review
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agent-cognitive-framework/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Cognitive Framework
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arch-decisions/ADR/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Record
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-problem-stated-precisely" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The Problem (stated precisely)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-what-changed-from-the-original-insight-and-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. What Changed From the Original Insight — and Why
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-memory-shape-metadata-stable-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Memory Shape — Metadata + Stable IDs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Memory Shape — Metadata + Stable IDs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-event-log-how-sessions-record-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The Event Log — How Sessions Record References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-tiers-deterministic-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Tiers + Deterministic Rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Tiers + Deterministic Rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-only-arithmetic-counting-session-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The only arithmetic: counting session files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tier-decision-applied-in-order-first-match-wins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier decision (applied in order — first match wins)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-core-conservative-off-by-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto-core (conservative; off by default)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-policy-file-templatesmemorydecay-policymd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Policy File — templates/memory/decay-policy.md
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-the-review-ritual-reviewmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. The Review Ritual — REVIEW.md
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. The Review Ritual — REVIEW.md">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#review-summary-in-the-session-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Review summary (in the session log)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-archive-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Archive Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-what-the-agent-does-each-session-after-this-lands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. What the Agent Does Each Session (after this lands)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-implementation-plan-when-approved" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Implementation Plan (when approved)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-resolved-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Resolved Decisions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-tool-versioning-upgrade-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Tool Versioning &amp; Upgrade Path
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. Tool Versioning &amp; Upgrade Path">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#semantic-version-single-source-of-truth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Semantic version — single source of truth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-repo-install-stamp-agentversionmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-repo install stamp — .agent/version.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-upgrade-ladder-upgrademd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The upgrade ladder — UPGRADE.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-scope-reminder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Scope Reminder
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="design-evolving-long-term-memory">Design — Evolving Long-Term Memory<a class="headerlink" href="#design-evolving-long-term-memory" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Status:</strong> proposal, for review. Nothing here is wired into the protocol yet.
+When approved, this doc spawns <code>DECAY.md</code> + <code>REVIEW.md</code> and edits to the
+templates/schema/examples (see §10 Implementation Plan).</p>
+<p>Refines <code>~/Downloads/INSIGHT-evolving-memory.md</code> (the Claude.io sketch). Two
+design forks were settled before writing this: tier decisions use
+<strong>deterministic integer rules</strong> (no floating-point strength score), and usage
+metadata is <strong>event-sourced</strong> (derived from session logs, not hand-maintained).
+See §2 for what changed from the original insight and why.</p>
+<p><strong>Update (2026-06-13):</strong> §11 open questions resolved; <strong>tool versioning + an
+in-place upgrade path added (§12)</strong> so repos enabled by an older version can be
+upgraded. Design approved in principle — implementation pending green light.</p>
+</blockquote>
+<hr />
+<h2 id="1-the-problem-stated-precisely">1. The Problem (stated precisely)<a class="headerlink" href="#1-the-problem-stated-precisely" title="Permanent link">&para;</a></h2>
+<p><code>continuity.md</code> is a flat ledger — everything appended stays forever at equal
+weight. The goal is human-like memory: frequently-used facts strengthen, unused
+ones fade, truly important ones stay permanent.</p>
+<p>But check the premise against this repo's <em>actual</em> state: <code>continuity.md</code> is
+~113 lines and most of it is <strong>Open Threads</strong> (many already <code>[x]</code>) plus Key
+Decisions. The thing that grows unboundedly by design is <code>sessions/</code> (one file
+per session, forever). So the lean-ness win comes from two targets the original
+sketch under-weighted:</p>
+<ol>
+<li><strong>Stale facts</strong> — Key Decisions / free facts nobody references anymore.</li>
+<li><strong>Completed Open Threads</strong> (<code>[x]</code>) — these pile up and are the bulk of the
+   current file.</li>
+</ol>
+<p><code>sessions/</code> is <strong>not</strong> a decay target. It is the event log (see §4). We never
+rewrite or archive it.</p>
+<hr />
+<h2 id="2-what-changed-from-the-original-insight-and-why">2. What Changed From the Original Insight — and Why<a class="headerlink" href="#2-what-changed-from-the-original-insight-and-why" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Original sketch</th>
+<th>This design</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>strength</code> float, <code>w1·recency + w2·frequency + w3·importance</code>, <code>exp(-n/half_life)</code></td>
+<td><strong>Dropped.</strong> Tiers from two integers + override flags</td>
+<td>An LLM cannot reliably compute <code>exp(-7/30)</code>, and two vendors (Claude/Gemini/Cursor) will disagree. In a vendor-neutral tool that means one agent archives what another just promoted. The float was false precision the substrate can't deliver.</td>
+</tr>
+<tr>
+<td>Each session edits <code>uses</code>/<code>last_used</code> inline on every referenced fact</td>
+<td><strong>Event-sourced.</strong> Sessions record a short reference list; review <em>recomputes</em> metadata from logs</td>
+<td>Per-session inline editing is the most forgettable step; if skipped, every fact reads stale and live facts get archived. Counts derived from logs are reproducible by any agent re-running review.</td>
+</tr>
+<tr>
+<td>(implicit fact identity)</td>
+<td><strong>Stable fact IDs</strong> (kebab-case) on every fact</td>
+<td>The linchpin of event-sourcing: a session log references facts by ID; review tallies by ID. Without IDs, "which fact did this session touch?" is fuzzy matching — non-deterministic.</td>
+</tr>
+<tr>
+<td><code>tunable weights</code> in <code>decay-policy.md</code></td>
+<td><strong>Integer thresholds only</strong> (windows in <em>sessions</em>)</td>
+<td>Nothing to tune that requires arithmetic. The agent counts files; LLMs count short lists reliably.</td>
+</tr>
+<tr>
+<td><code>sessions/</code> "unchanged" (by omission)</td>
+<td><code>sessions/</code> is the <strong>immutable event log</strong> (by principle)</td>
+<td>Once metadata is derived from logs, mutating a log corrupts the projection's source of truth. This is now a hard constraint.</td>
+</tr>
+<tr>
+<td>decay targets "facts"</td>
+<td>decay targets facts <strong>and completed <code>[x]</code> Open Threads</strong></td>
+<td>That's where the real bloat is in practice.</td>
+</tr>
+</tbody>
+</table>
+<p>Kept from the original (these were right): tier system, archive-as-cold-storage,
+two-way reactivation, sessions-not-days as the time unit, Open Threads never
+decay, <code>core</code> as a human override, all-markdown / agent-does-the-work.</p>
+<hr />
+<h2 id="3-memory-shape-metadata-stable-ids">3. Memory Shape — Metadata + Stable IDs<a class="headerlink" href="#3-memory-shape-metadata-stable-ids" title="Permanent link">&para;</a></h2>
+<p>Each fact carries a short HTML-comment footer. Invisible in rendered markdown,
+fully readable by any agent, hand-editable, clean-ish diffs.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gu">## Key Decisions</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">-</span><span class="w"> </span>POST-only for mutations, no PUT/PATCH (legacy decision, do not change)
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  &lt;!-- id: post-only-mutations | created: 2026-06-08 | last_used: 2026-06-12 | uses: 14 | tier: core --&gt;
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">-</span><span class="w"> </span>Webhooks use fire-and-forget, no retry queue
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  &lt;!-- id: webhook-fire-forget | created: 2026-06-10 | last_used: 2026-06-10 | uses: 1 | tier: working --&gt;
+</code></pre></div>
+<h3 id="fields">Fields<a class="headerlink" href="#fields" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Set when</th>
+<th>Recomputed at review?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>once, at fact creation (kebab-case, unique within the file)</td>
+<td>no — stable forever</td>
+</tr>
+<tr>
+<td><code>created</code></td>
+<td>once, at fact creation (date)</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>last_used</code></td>
+<td>date of the most recent session referencing this id</td>
+<td><strong>yes</strong> (from logs)</td>
+</tr>
+<tr>
+<td><code>uses</code></td>
+<td>count of sessions that referenced this id</td>
+<td><strong>yes</strong> (from logs)</td>
+</tr>
+<tr>
+<td><code>tier</code></td>
+<td>lifecycle bucket</td>
+<td><strong>yes</strong> (from rules)</td>
+</tr>
+</tbody>
+</table>
+<p>No <code>strength</code>. No <code>importance</code> field — importance is expressed by <code>tier: core</code>
+or living under <code>## Architectural Invariants</code>.</p>
+<hr />
+<h2 id="4-the-event-log-how-sessions-record-references">4. The Event Log — How Sessions Record References<a class="headerlink" href="#4-the-event-log-how-sessions-record-references" title="Permanent link">&para;</a></h2>
+<p>Session logs gain one lightweight section. The agent writes it at session end
+(it's already writing the log), so there is <strong>no per-fact bookkeeping</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="gu">## Memory References</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">-</span><span class="w"> </span>Referenced: post-only-mutations, webhook-fire-forget
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">-</span><span class="w"> </span>Created: graphql-gateway-added (tier: working)
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">-</span><span class="w"> </span>Reactivated: drizzle-vs-prisma
+</code></pre></div>
+<ul>
+<li><strong>Referenced</strong> — ids the session relied on or reinforced.</li>
+<li><strong>Created</strong> — new facts this session added to <code>continuity.md</code> (born <code>working</code>).</li>
+<li><strong>Reactivated</strong> — ids pulled back from the archive because they came up again.</li>
+</ul>
+<p>That's it. The agent never counts and never edits metadata mid-session. Counting
+is the review's job, and it's derivable: <code>uses</code> for an id = number of session
+logs listing it; <code>last_used</code> = date of the latest such log.</p>
+<blockquote>
+<p><strong>Constraint:</strong> session logs are append-only and immutable. They are the
+source of truth for the projection. Never rewrite, renumber, or archive them.
+(Optional quarterly <em>summaries</em> are fine — see §7 — but the raw logs stay.)</p>
+</blockquote>
+<hr />
+<h2 id="5-tiers-deterministic-rules">5. Tiers + Deterministic Rules<a class="headerlink" href="#5-tiers-deterministic-rules" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>core              ← permanent. Human-set (or sustained auto-core). Never decays.
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>active            ← referenced within active_window sessions.
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>working           ← created within working_window sessions, not yet re-referenced. Probationary.
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>archive-candidate ← not referenced for &gt; active_window but ≤ archive_window. Flagged.
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>archived          ← not referenced for &gt; archive_window. Moved to memory/archive/YYYY-QN.md.
+</code></pre></div>
+<p>Movement is <strong>bidirectional</strong> — an archived id that appears in a session's
+<code>Referenced</code>/<code>Reactivated</code> list is pulled back to <code>active</code>. Nothing is deleted.</p>
+<h3 id="the-only-arithmetic-counting-session-files">The only arithmetic: counting session files<a class="headerlink" href="#the-only-arithmetic-counting-session-files" title="Permanent link">&para;</a></h3>
+<p><code>sessions_since_last_used</code> = <strong>the number of session files chronologically after
+the one named in <code>last_used</code></strong>. Session files sort lexicographically =
+chronologically (<code>YYYY-MM-DD-HHMMSS.md</code>), so this is a count of a list, not a
+formula. Any agent gets the same integer.</p>
+<h3 id="tier-decision-applied-in-order-first-match-wins">Tier decision (applied in order — first match wins)<a class="headerlink" href="#tier-decision-applied-in-order-first-match-wins" title="Permanent link">&para;</a></h3>
+<ol>
+<li><code>tier: core</code> → <strong>stays core</strong>. (human override; never auto-demoted)</li>
+<li>Lives under <code>## Architectural Invariants</code> → <strong>pinned</strong>, treated as core.</li>
+<li>Unchecked Open Thread (<code>- [ ]</code>) → <strong>pinned active</strong>, never decays.</li>
+<li><code>created</code> within <code>working_window</code> sessions ago AND <code>uses ≤ 1</code> → <strong>working</strong>.</li>
+<li><code>sessions_since_last_used ≤ active_window</code> → <strong>active</strong>.</li>
+<li><code>active_window &lt; sessions_since_last_used ≤ archive_window</code> → <strong>archive-candidate</strong> (warn).</li>
+<li><code>sessions_since_last_used &gt; archive_window</code> → <strong>archived</strong> (move to archive/).</li>
+</ol>
+<h3 id="auto-core-conservative-off-by-default">Auto-core (conservative; off by default)<a class="headerlink" href="#auto-core-conservative-off-by-default" title="Permanent link">&para;</a></h3>
+<p>The system never silently makes something permanent. Optional rule, documented
+but disabled unless the user opts in: promote to <code>core</code> only if <code>uses ≥
+core_min_uses</code> AND it has stayed <code>active</code> across <code>core_min_reviews</code> consecutive
+reviews. Default posture: <strong><code>core</code> is human-only.</strong></p>
+<hr />
+<h2 id="6-policy-file-templatesmemorydecay-policymd">6. Policy File — <code>templates/memory/decay-policy.md</code><a class="headerlink" href="#6-policy-file-templatesmemorydecay-policymd" title="Permanent link">&para;</a></h2>
+<p>Integer windows measured in <strong>sessions</strong>. No weights, no half-life, no floats.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gh"># Memory Policy</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="gu">## Lifecycle windows (sessions)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">-</span><span class="w"> </span>working_window:   3     # new facts stay &quot;working&quot; until re-referenced within this many sessions
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">-</span><span class="w"> </span>active_window:    8     # referenced within this many sessions → active
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">-</span><span class="w"> </span>archive_window:   20    # not referenced for more than this → archived
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="gu">## Review triggers</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="k">-</span><span class="w"> </span>review_every:         10   # run a review this many sessions after the last one
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="k">-</span><span class="w"> </span>continuity_max_facts:  30  # primary lean signal — count of decaying facts/threads (verbosity/velocity-immune)
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="k">-</span><span class="w"> </span>continuity_max_lines: 600  # coarse backstop (a mature layer sits ~450–600 even when healthy)
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="gu">## Auto-core (default: off — core is human-set)</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="k">-</span><span class="w"> </span>enabled:          false
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="k">-</span><span class="w"> </span>core_min_uses:    12
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="k">-</span><span class="w"> </span>core_min_reviews: 5
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="gu">## Never decays</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="k">-</span><span class="w"> </span>tier: core
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="k">-</span><span class="w"> </span>anything under &quot;## Architectural Invariants&quot;
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="k">-</span><span class="w"> </span>unchecked Open Threads ( - [ ] )
+</code></pre></div>
+<p>Users tune by editing integers. Hand-editing any <code>tier:</code> in <code>continuity.md</code>
+always wins over the rules.</p>
+<hr />
+<h2 id="7-the-review-ritual-reviewmd">7. The Review Ritual — <code>REVIEW.md</code><a class="headerlink" href="#7-the-review-ritual-reviewmd" title="Permanent link">&para;</a></h2>
+<p><strong>Triggered</strong> three ways: every <code>review_every</code> sessions (automatic, post-session);
+on user command (<em>"review memory"</em> / <em>"compact memory"</em>); or when
+<code>continuity.md</code> exceeds <code>continuity_max_lines</code>.</p>
+<p><strong>Steps (incremental — the routine path):</strong></p>
+<ol>
+<li>Determine the window: session logs since <code>last_review</code> (tracked in
+   <code>continuity.md</code>). Read their <code>## Memory References</code> sections.</li>
+<li>For each referenced id: <code>uses += (count in window)</code>, <code>last_used = latest date</code>.</li>
+<li>For each id in <code>continuity.md</code>: count <code>sessions_since_last_used</code>, apply the
+   §5 tier rules.</li>
+<li><strong>Archive</strong> ids that fell to <code>archived</code> → append to <code>memory/archive/YYYY-QN.md</code>,
+   update <code>archive/INDEX.md</code>, remove from <code>continuity.md</code>.</li>
+<li><strong>Reactivate</strong> any archived id named in the window → move back to
+   <code>continuity.md</code> as <code>active</code>, refresh <code>last_used</code>/<code>uses</code>.</li>
+<li><strong>Sweep completed Open Threads:</strong> <code>[x]</code> threads whose completion is older than
+   <code>archive_window</code> sessions → move to the archive (this is the real bloat win).</li>
+<li>Set <code>last_review</code> to today; write the review summary into the session log.</li>
+</ol>
+<p><strong>Full rebuild (the ground-truth path):</strong> because everything is derived, an agent
+can ignore stored counts and recompute <code>uses</code>/<code>last_used</code>/<code>tier</code> for every id by
+scanning <em>all</em> session logs. Use this to repair drift or after manual edits.</p>
+<h3 id="review-summary-in-the-session-log">Review summary (in the session log)<a class="headerlink" href="#review-summary-in-the-session-log" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gu">## Memory Review (2026-06-20)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">-</span><span class="w"> </span>Reactivated:  1  (drizzle-vs-prisma — referenced today after 9 dormant sessions)
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">-</span><span class="w"> </span>Archived:     3  (→ memory/archive/2026-Q2.md)
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">-</span><span class="w"> </span>Swept threads: 4 completed Open Threads archived
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">-</span><span class="w"> </span>Tier changes: 6  (2 working→active, 1 active→archive-candidate, 3 →archived)
+</code></pre></div>
+<hr />
+<h2 id="8-archive-structure">8. Archive Structure<a class="headerlink" href="#8-archive-structure" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>memory/
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  continuity.md        ← active + core + working + open threads (stays lean)
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  decay-policy.md      ← integer windows + triggers
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  sessions/            ← immutable event log (NEVER archived/rewritten)
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>  archive/
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    2026-Q1.md         ← archived facts + swept completed threads, this quarter
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    2026-Q2.md
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    INDEX.md           ← id → one-line + which quarter file it lives in (greppable)
+</code></pre></div>
+<p>Before saying "I don't have context on that," an agent greps <code>archive/INDEX.md</code>.</p>
+<hr />
+<h2 id="9-what-the-agent-does-each-session-after-this-lands">9. What the Agent Does Each Session (after this lands)<a class="headerlink" href="#9-what-the-agent-does-each-session-after-this-lands" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Before:
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>  Read continuity.md (lean: active + core + working + open threads).
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>  Optionally grep archive/INDEX.md for relevant past topics.
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>During:
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>  Note which fact ids you rely on, which you create, which you pull from archive.
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>  (No metadata editing. Just remember for the log.)
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>After:
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>  Write the session log as usual + a &quot;## Memory References&quot; section.
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>  Born-this-session facts get an id and tier: working.
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>  If sessions-since-last-review ≥ review_every (or continuity.md &gt; max lines):
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    run REVIEW.md.
+</code></pre></div>
+<hr />
+<h2 id="10-implementation-plan-when-approved">10. Implementation Plan (when approved)<a class="headerlink" href="#10-implementation-plan-when-approved" title="Permanent link">&para;</a></h2>
+<p>Each step is independently testable. Ordering mirrors how <code>MIGRATE.md</code> sits
+beside <code>ENABLE.md</code>.</p>
+<ol>
+<li><strong><code>DECAY.md</code></strong> — reference doc: metadata fields, fact IDs, the deterministic
+   tier rules, the "count session files" rule. (The §3/§5 content, formalized.)</li>
+<li><strong><code>REVIEW.md</code></strong> — the §7 protocol: triggers, incremental vs full rebuild,
+   archive/reactivate/sweep, summary format.</li>
+<li><strong><code>templates/memory/decay-policy.md</code></strong> — the §6 file.</li>
+<li><strong><code>templates/memory/continuity.md</code></strong> — add <code>## Architectural Invariants</code>
+   (above Key Decisions; never decays), show metadata comments + ids on sample
+   facts, add a <code>last_review:</code> field to Project State.</li>
+<li><strong>Session-log schema</strong> — add the <code>## Memory References</code> section to
+   <code>templates/.agent/schema.md</code> <strong>and</strong> anywhere the session block is documented.
+   <em>(CLAUDE.md rule: schema changes move templates/, schema.md, and examples in
+   lockstep.)</em></li>
+<li><strong><code>AGENTS.md</code> + <code>templates/AGENTS.md</code></strong> — Before/During/After additions:
+   grep archive INDEX; record Memory References; run REVIEW every N sessions.</li>
+<li><strong><code>ENABLE.md</code></strong> — Step 5 copies <code>decay-policy.md</code>; generated <code>continuity.md</code>
+   emits <code>## Architectural Invariants</code> + metadata/ids; add the post-session
+   "if ≥ review_every, run REVIEW.md" step.</li>
+<li><strong><code>examples/evolving-memory-example/</code></strong> — a worked before/after: <code>continuity.md</code>
+   pre- and post-review, an <code>archive/2026-Q2.md</code>, and a session log showing a
+   reactivation + a Memory Review summary.</li>
+<li><strong>Versioning files</strong> — add a root <code>VERSION</code> (<code>3.0.0</code>), a
+   <code>templates/.agent/version.md</code> install-manifest template, and make <code>ENABLE.md</code>
+   Mode B version-aware (installed vs. current → up-to-date exits, older runs the
+   ladder, re-stamp). See §12.</li>
+<li><strong><code>UPGRADE.md</code></strong> — the version ladder (reference doc, reached only via Mode B,
+    like <code>MIGRATE.md</code>). Ships with the 2.x→3.0.0 rung: assign ids, backfill
+    metadata, add Architectural Invariants + <code>decay-policy.md</code> + <code>archive/</code>, re-sync
+    bootstrap files.</li>
+<li><strong>Sync the docs that must not drift</strong> — <code>README.md</code> two-layer section + a
+    version table, and the root <code>CLAUDE.md</code> architecture section (standing Open
+    Thread to keep these in sync when file shapes change).</li>
+</ol>
+<hr />
+<h2 id="11-resolved-decisions">11. Resolved Decisions<a class="headerlink" href="#11-resolved-decisions" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Fact IDs everywhere — YES.</strong> Every fact gets a stable kebab <code>id</code> at birth.
+   The linchpin that makes review tallies deterministic.</li>
+<li><strong>Upgrade mechanism — <code>ENABLE.md</code> Mode B, made version-aware</strong> (accepted). The
+   per-version migration steps live in <code>UPGRADE.md</code>, reached only through Mode B
+   (mirrors <code>MIGRATE.md</code> ← Mode C). "AI enable this repo" stays the single entry
+   point. See §12.</li>
+<li><strong>Auto-core — OFF. <code>core</code> is human-set only.</strong> The system never silently makes
+   a fact permanent.</li>
+<li><strong>Default windows — shipping</strong> <code>working_window: 3</code>, <code>active_window: 8</code>,
+   <code>archive_window: 20</code>, <code>review_every: 10</code>; tunable per-repo in <code>decay-policy.md</code>.</li>
+<li><strong>Doc location</strong> — the rules shipped as <code>DECAY.md</code> + <code>REVIEW.md</code> (repo root,
+   installed into enabled repos). This document is kept as the design rationale and
+   now lives under <code>docs/</code> (moved 2026-06-13); history stays in git.</li>
+</ol>
+<hr />
+<h2 id="12-tool-versioning-upgrade-path">12. Tool Versioning &amp; Upgrade Path<a class="headerlink" href="#12-tool-versioning-upgrade-path" title="Permanent link">&para;</a></h2>
+<p>The tool evolves; repos enabled by an older version must be upgradable in place.
+This is what makes <code>ENABLE.md</code> Mode B more than a no-op.</p>
+<h3 id="semantic-version-single-source-of-truth">Semantic version — single source of truth<a class="headerlink" href="#semantic-version-single-source-of-truth" title="Permanent link">&para;</a></h3>
+<p>Root <strong><code>VERSION</code></strong> holds the current tool version (one line, e.g. <code>3.0.0</code>):</p>
+<ul>
+<li><strong>MAJOR</strong> — breaking change to memory-file <em>shape</em> or protocol (an un-upgraded
+  agent couldn't correctly read/maintain the new files).</li>
+<li><strong>MINOR</strong> — additive, backward-compatible (new optional file, vendor, section).</li>
+<li><strong>PATCH</strong> — wording/clarity, no structural change.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Capability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0.0</td>
+<td>Fresh enable from templates (Mode A)</td>
+</tr>
+<tr>
+<td>2.0.0</td>
+<td>Vendor detection + migration (Mode C), idempotent re-runs (Mode B)</td>
+</tr>
+<tr>
+<td>3.0.0</td>
+<td>Evolving memory: metadata + fact IDs, decay-policy, review ritual, archive</td>
+</tr>
+</tbody>
+</table>
+<p>Evolving memory is <strong>3.0.0</strong> and <strong>backward-compatible</strong>: metadata lives in HTML
+comments (invisible to an un-upgraded reader) and new files are additive, so a 2.x
+repo still functions before upgrade — the upgrade just turns the layer on.</p>
+<h3 id="per-repo-install-stamp-agentversionmd">Per-repo install stamp — <code>.agent/version.md</code><a class="headerlink" href="#per-repo-install-stamp-agentversionmd" title="Permanent link">&para;</a></h3>
+<p>Each enabled repo carries a small manifest. It lives in <code>.agent/</code> but <strong>not</strong> in
+<code>schema.md</code> (which is copied verbatim and must stay identical across repos —
+install-specific state can't live in a verbatim file):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gh"># agent-memory install manifest</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">-</span><span class="w"> </span>version:       3.0.0       # what this repo is currently on
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">-</span><span class="w"> </span>enabled_with:  2.0.0       # version that first enabled it
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">-</span><span class="w"> </span>last_upgraded: 2026-06-13
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">-</span><span class="w"> </span>mode:          A           # how first enabled: A fresh / C migrate
+</code></pre></div>
+<p>A <strong>missing</strong> stamp ⇒ enabled before versioning existed (≤ 2.x) ⇒ run the full
+ladder from the 2→3 rung.</p>
+<h3 id="the-upgrade-ladder-upgrademd">The upgrade ladder — <code>UPGRADE.md</code><a class="headerlink" href="#the-upgrade-ladder-upgrademd" title="Permanent link">&para;</a></h3>
+<p>Reference doc with the exact migration per version transition, <strong>reached only
+through <code>ENABLE.md</code> Mode B</strong> — never invoked directly (the <code>MIGRATE.md</code> ← Mode C
+pattern). Keeps one user-facing entry point.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Mode B (Already Ours):
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>  installed = read .agent/version.md   (missing → treat as 2.x baseline)
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>  current   = read root VERSION
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>  if installed == current:  report &quot;up to date&quot;, exit            # idempotent
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>  if installed &lt;  current:  run UPGRADE.md rungs installed→current, in order
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>                            re-stamp .agent/version.md (version, last_upgraded)
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>                            report what changed
+</code></pre></div>
+<p><strong>The 2.x → 3.0.0 rung</strong> (the only rung today):
+1. Assign a kebab <code>id</code> to every fact in <code>continuity.md</code>.
+2. Backfill metadata: <code>created: &lt;today&gt;</code>, <code>last_used: &lt;today&gt;</code>, <code>uses: 1</code>,
+   <code>tier: active</code>. (Old <code>sessions/</code> predate <code>## Memory References</code> and are
+   immutable — leave them; the first review tallies forward only.)
+3. Add <code>## Architectural Invariants</code> above Key Decisions (empty; prompt to fill).
+4. Copy in <code>memory/decay-policy.md</code> (default windows); create empty
+   <code>memory/archive/INDEX.md</code>.
+5. Re-sync changed bootstrap/protocol files (e.g. the session-log schema).
+6. Stamp <code>.agent/version.md</code> → <code>3.0.0</code>.</p>
+<p>Idempotent: a repo already at <code>3.0.0</code> hits "up to date" and exits.</p>
+<hr />
+<h2 id="13-scope-reminder">13. Scope Reminder<a class="headerlink" href="#13-scope-reminder" title="Permanent link">&para;</a></h2>
+<p>All of this lives inside a target repo's <code>memory/</code> directory. Nothing in <code>~/</code>,
+<code>~/.claude/</code>, AppData, or Application Support is touched. The evolving memory is
+the <em>team's</em> shared, git-committed layer — not the user's personal AI tooling.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../agent-memory-whitepaper/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Whitepaper">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Whitepaper
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../DESIGN-vbdi-lifecycle/" class="md-footer__link md-footer__link--next" aria-label="Next: Design: VBDI Lifecycle">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Design: VBDI Lifecycle
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Apache-2.0 &middot; agent-memory is independent research, not an official Accenture product.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/acn-ericlaw/agent-memory" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.footer", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
