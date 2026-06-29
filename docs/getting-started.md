@@ -60,6 +60,13 @@ From now on, **open the target repo with any AI agent and just work**. It reads 
 automatically, orients without re-explaining, and records decisions as it goes. Commits stay
 deliberate and human-initiated, with a self-identifying `Co-Authored-By:` trailer.
 
+!!! tip "Pull requests lead with What & Why"
+    Enable installs a `.github/pull_request_template.md` so every PR description opens with two
+    short sections — **What** (the change) and **Why** (the intent it serves) — and closes with a
+    self-identifying `Co-Authored-By:` footer, all drawn from the session log(s) in the PR. It's
+    advisory, never a gate; the *why* is a first-class artifact throughout the protocol, so a PR is
+    no exception.
+
 A typical session:
 
 ```mermaid
@@ -86,6 +93,7 @@ flowchart LR
 | `memory/archive/` | Faded facts + a greppable `INDEX.md` (nothing is deleted) |
 | `AGENTS.md` | The hub every vendor's agent reads first |
 | `agent-skills/` | Portable, vendor-neutral skills (with seven built-ins) |
+| `.github/pull_request_template.md` | Seeds the **What / Why** PR-description convention |
 | `.agent/version.md` | The install manifest (gates in-place upgrades) |
 
 ## Next steps
