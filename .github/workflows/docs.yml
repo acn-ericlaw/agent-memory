@@ -1,0 +1,40 @@
+name: docs
+
+# Build the MkDocs site and publish it to the gh-pages branch on every push to
+# main that touches the docs. Manual runs are allowed via the Actions tab.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "docs-requirements.txt"
+      - "CHANGELOG.md"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+          cache: pip
+
+      - name: Install MkDocs toolchain
+        run: pip install -r docs-requirements.txt
+
+      - name: Build (strict) and deploy to gh-pages
+        run: mkdocs gh-deploy --force --strict

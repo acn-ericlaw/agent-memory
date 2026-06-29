@@ -1,0 +1,132 @@
+site_name: agent-memory
+site_description: >-
+  A lightweight, vendor-neutral AI memory + cognitive-loop system. No-code,
+  markdown-only. Shared memory and portable skills across any AI agent.
+site_url: https://acn-ericlaw.github.io/agent-memory/
+site_author: Eric Law
+
+repo_name: acn-ericlaw/agent-memory
+repo_url: https://github.com/acn-ericlaw/agent-memory
+edit_uri: edit/main/docs/
+
+copyright: >-
+  Apache-2.0 &middot; agent-memory is independent research, not an official
+  Accenture product.
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/brain
+  favicon: https://raw.githubusercontent.com/squidfunk/mkdocs-material/master/docs/assets/favicon.png
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: ["."]
+      check_paths: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+plugins:
+  - search
+
+# Keep internal / agent-facing material out of the built site.
+exclude_docs: |
+  assessments/
+  optional-ritual-hook.md
+
+# These files live in docs/ but aren't part of the nav on purpose.
+not_in_nav: |
+  agent-memory-deck.html
+
+validation:
+  nav:
+    omitted_files: info
+  links:
+    not_found: warn
+    absolute_links: ignore
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/acn-ericlaw/agent-memory
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Concepts:
+      - concepts/index.md
+      - Evolving Memory: concepts/evolving-memory.md
+      - The VBDI Loop: concepts/vbdi-loop.md
+      - Skills & Built-ins: concepts/skills.md
+      - Decay & Tiers: concepts/decay.md
+      - Reliability: concepts/reliability.md
+  - Guides:
+      - guides/index.md
+      - Enable a Repo: guides/enable-a-repo.md
+      - Upgrade in Place: guides/upgrade.md
+      - Review Memory: guides/review-memory.md
+      - Resolve Merge Conflicts: guides/resolve-merge-conflicts.md
+      - Author a Skill: guides/author-a-skill.md
+  - Reference:
+      - reference/index.md
+      - Built-in Skills: reference/built-in-skills.md
+      - Decay Parameters: reference/decay-parameters.md
+      - Vendor Support: reference/vendor-support.md
+      - Protocol Files: reference/protocol-files.md
+  - Background:
+      - Whitepaper: agent-memory-whitepaper.md
+      - "Design: Evolving Memory": DESIGN-evolving-memory.md
+      - "Design: VBDI Lifecycle": DESIGN-vbdi-lifecycle.md
+      - "Design: Skills Layer": DESIGN-skills-layer.md
+      - "Design: Ritual Triggers": DESIGN-ritual-triggers.md
+      - "Design: Fresh-Context Review": DESIGN-fresh-context-review.md
+      - Agent Cognitive Framework: agent-cognitive-framework.md
+      - Architecture Decision Record: arch-decisions/ADR.md
+  - Changelog: changelog.md
