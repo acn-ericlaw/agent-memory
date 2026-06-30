@@ -11,6 +11,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.28.0, 6/29/2026
+
+> **Co-author convention cleanup — stable agent identity + one trailer (MINOR).** From a real-world
+> finding dogfooding the v4.27.0 convention on `mercury-composable`: a squash-merged PR (#126)
+> surfaced two imperfections in how the `Co-Authored-By` self-identification *renders*. The
+> attribution itself worked (human + AI both credited, Verified) — these are consistency fixes.
+
+### Changed
+- **Stable agent identity, not a model version.** The convention said "identify yourself *the same
+  way you do in session logs*," but session logs use a stable agent name (`Claude Code`) while the
+  commit/PR trailer was a **model-version** string (`Claude Opus 4.8`) — so it (a) wasn't actually
+  "the same," and (b) churns every model release, fragmenting the co-author across many identities
+  over time. `AGENTS.md` (root + `templates/`) and the PR-template footer comment now specify the
+  **stable agent name** — the *actual AI collaborator* (`Claude Code`, `Gemini CLI`, …), kept
+  vendor-neutral via a `<your agent name>` placeholder — explicitly **not** a model version. Where a
+  runtime auto-injects a model-version *commit* trailer it can't override, that's accepted (the
+  agent controls the PR footer + session logs, which carry the stable name).
+- **One trailer on squash-merge.** Every commit carries the trailer (often harness-injected), so a
+  squash-merged PR stacked ~9 identical inline `Co-Authored-By` lines **plus** the consolidated one
+  GitHub appends after the `---------` separator. The convention now notes: on a squash-merge,
+  collapse to a **single** `Co-Authored-By:` — GitHub's appended consolidated line is canonical;
+  trim the redundant inline repeats. Advisory (the agent can't suppress the harness trailer or
+  GitHub's squash template; this is merge-time guidance).
+- **Lockstep:** `VERSION` → 4.28.0; `UPGRADE.md` row + `4.27.0 → 4.28.0` rung; `README` row (and the
+  recent-releases table trimmed back to its 10-most-recent cap); docs site (Getting Started). No
+  memory-file shape change; no skill/adapter change.
+
 ## Version 4.27.0, 6/29/2026
 
 > **Standardized PR description — lead with What / Why (MINOR).** From a maintainer suggestion:

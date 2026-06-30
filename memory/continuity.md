@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.27.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.28.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-29 | agent: Claude Code (2026-06-29-175644)
+- **last_session:** 2026-06-30 | agent: Claude Code (2026-06-30-054342)
 - **last_review:** 2026-06-28 | through 2026-06-28-162543
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -97,6 +97,22 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.28.0 (MINOR) — co-author convention cleanup: stable agent identity + one trailer.** From a
+  real-world finding dogfooding v4.27.0 on **mercury-composable**: a squash-merged PR (#126) showed the
+  `Co-Authored-By` self-identification renders imperfectly (attribution itself worked — human + AI both
+  credited). **(1) Identity churn:** the convention said "identify the same way as session logs," but logs
+  use the stable `Claude Code` while the commit/PR trailer was the **model version** `Claude Opus 4.8` — not
+  "the same," and it fragments attribution across model releases. Fix: use the **stable agent name** (the
+  actual AI collaborator — `Claude Code`/`Gemini CLI`/…, kept neutral via a `<your agent name>` placeholder),
+  **not** a model version. **(2) Trailer pile-up:** every commit carries the trailer, so a squash stacked ~9
+  inline copies **plus** GitHub's consolidated one after `---------`; convention now says collapse to a
+  **single** trailer on squash (GitHub's appended one is canonical; trim the inline repeats). Both advisory —
+  the agent can't suppress the harness trailer or GitHub's squash template. Lockstep: `AGENTS.md` (root +
+  template) + PR-template footer comment, `VERSION`→4.28.0, `CHANGELOG`, `README` (row + 10-cap trim),
+  `UPGRADE` (row + rung), docs site. No memory-shape/skill/adapter change. → serves: vision-agent-memory
+  (authorship stays a faithful, stable representation of the AI collaborator over time)
+  <!-- id: coauthor-stable-identity-v4280 | created: 2026-06-30 | last_used: 2026-06-30 | uses: 1 | tier: working | origin: 2026-06-30-054342 -->
 
 - [x] **Shipped v4.27.0 (MINOR) — standardized PR descriptions: lead with What / Why.** From a **maintainer
   suggestion** to standardize the look-and-feel of pull-request descriptions and **propagate it to every

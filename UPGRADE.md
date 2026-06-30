@@ -103,6 +103,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.26.0 | **`refresh-metadata` + `memory-lint` `[stale-metadata]` advisory (MINOR):** a **7th** built-in executing REVIEW.md steps 2–3 (apply events + re-tier) deterministically — recomputes every fact's `last_used`/`uses`/`tier` from the session reference log and writes footers back (the "full rebuild" path, runnable; pure arithmetic, never archives, `core`/`superseded` untouched). Python + Node at parity + mirror tests; `--dry-run`; idempotent. `memory-lint` gains check (9) `[stale-metadata]` (stored tier ≠ recomputed tier) to make the skipped-re-tier gap visible. From a cross-vendor field test where Gemini 3.1 Pro ran the overdue review but did the archive and skipped the metadata pass. Install via §5i (now 7 built-ins); re-copy the skill + re-copy memory-lint + re-sync adapters + re-sync `REVIEW.md`/`ENABLE.md` |
 | 4.26.1 | **Pinned-thread tier no longer flagged/rewritten (PATCH):** v4.26.0's `[stale-metadata]` flagged every `working`-tagged pinned `- [ ]` open thread as "should be `active`" — noise (a pinned thread never decays regardless of tier label; pinned-ness protects it). `memory-lint` `expected_tier` + `refresh-metadata` `expected_tier` now return a pinned thread's **stored** tier (no flag, no rewrite; factual `uses`/`last_used` still refresh). Re-copy the `memory-lint` + `refresh-metadata` skill files; `DECAY.md` rule 4 clarified. From a mercury sanity check + comparison with Copilot's `update-metadata.py`. Both runtimes at parity + tests |
 | 4.27.0 | **Standardized PR description: lead with What / Why (MINOR):** every agent-memory-enabled repo now ships a **`.github/pull_request_template.md`** with two sections — **What** (the change) and **Why** (the intent it serves — Blueprint gap / decision / problem, not a restatement of What), each 1–2 short paragraphs drawn from the session log(s) in the PR. Mirrored by an `AGENTS.md` convention (the vendor-neutral backstop for agents composing PR bodies via `gh`, not the web UI) + a checklist line. Advisory, never a gate — consistent with *why-as-first-class-artifact* throughout the protocol. Install the template into the target (`.github/`); re-sync `AGENTS.md` from `templates/AGENTS.md`. No memory-file shape change |
+| 4.28.0 | **Co-author convention cleanup — stable agent identity + one trailer (MINOR):** refines the v4.27.0 self-identification. The `Co-Authored-By` trailer should use the **stable agent name** (e.g. `Claude Code`, `Gemini CLI`) — the actual AI collaborator, **not** a model-version string (which churns each release and fragments attribution) — matching session logs. Adds squash-merge guidance: collapse to a **single** trailer (GitHub appends a consolidated one after the `---------` line; trim the redundant inline repeats). Re-sync `AGENTS.md` from `templates/AGENTS.md` + re-copy `.github/pull_request_template.md` (footer comment updated). Doc-only; advisory; no memory-file shape change |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1497,3 +1498,21 @@ Additive convention + one new tracked bootstrap file. No memory-file shape chang
    truncate-first one-liner.**
 4. **Report**: PRs opened in this repo now lead with **What** and **Why** (advisory; the template
    seeds it, the `AGENTS.md` convention is the vendor-neutral backstop).
+
+## Rung: 4.27.0 → 4.28.0 — co-author convention cleanup (stable identity + one trailer) (MINOR)
+
+Doc-only convention refinement. No memory-file shape change.
+
+1. **Re-sync `AGENTS.md`** from **`templates/AGENTS.md`** (the memory hub — *not* the tool root):
+   the commit-trailer note now specifies the **stable agent name** (e.g. `Claude Code`, `Gemini
+   CLI`) — the actual AI collaborator, not a model-version string — and adds the squash-merge
+   "collapse to a single `Co-Authored-By:`" guidance. Merge into a repo-customized `AGENTS.md`
+   rather than overwrite.
+2. **Re-copy `.github/pull_request_template.md`** from `templates/.github/pull_request_template.md`
+   (the footer comment now names the AI collaborator's stable agent name, not a model version). If
+   the target locally customized its template, merge the footer-comment change rather than clobber.
+3. **Stamp** `.agent/version.md` → `version: 4.28.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+4. **Report**: the co-author trailer now uses a stable agent identity, and squash-merges collapse
+   to one trailer.
