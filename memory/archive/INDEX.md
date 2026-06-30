@@ -69,3 +69,8 @@
 - sync-adapters-script-v4180 — shipped v4.18.0 — sync-adapters built-in: a runnable adapter-regen script (bash/node/python parity) replacing the prose-only sync recipe agents could not execute — faded (sslu 22 > archive_window 20) — 2026-Q2.md
 - copilot-adapter-v4170 — shipped v4.17.0 — GitHub Copilot CLI skills adapter (.github/skills/, the 5th adapter) + Copilot Mode C promotion; closed the cross-vendor Copilot arc — faded (sslu 22 > archive_window 20) — 2026-Q2.md
 - fresh-enable-advisory-depth-v4230 — Shipped in v4.22.0 (MINOR; dev-iter 4.23) — fresh-enable advisory + discovery-depth choice… — faded — 2026-Q2.md
+- apply-critique-v4220-fixes — Applied a fresh-context critique (second-opinion → apply-critique) to the v4.22.0 work — 4… — review 2026-06-30: completed/shipped, content lives in CHANGELOG/UPGRADE/MERGE/code — 2026-Q2.md
+- version-consolidation-policy-v4220 — Consolidated this session's four unreleased version bumps into a single v4.22.0 release +… — review 2026-06-30: completed/shipped, content lives in CHANGELOG/UPGRADE/MERGE/code — 2026-Q2.md
+- ot-reverify-invariants-20260627 — Re-verify invariants (due at the 2026-06-27 review) — CONFIRMED by maintainer 2026-06-27, — review 2026-06-30: completed/shipped, content lives in CHANGELOG/UPGRADE/MERGE/code — 2026-Q2.md
+- merge-conflict-protocol-v4250 — Shipped in v4.22.0 (MINOR; dev-iter 4.25) — `MERGE.md` conflict-resolution protocol. From… — review 2026-06-30: completed/shipped, content lives in CHANGELOG/UPGRADE/MERGE/code — 2026-Q2.md
+- continuity-merge-friendly-v4240 — Shipped in v4.22.0 (MINOR; dev-iter 4.24) — `continuity.md` merge-friendliness. From a tea… — review 2026-06-30: completed/shipped, content lives in CHANGELOG/UPGRADE/MERGE/code — 2026-Q2.md

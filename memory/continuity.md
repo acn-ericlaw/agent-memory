@@ -9,8 +9,8 @@
 - **project:** agent-memory
 - **status:** v4.28.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-30 | agent: Claude Code (2026-06-30-054342)
-- **last_review:** 2026-06-28 | through 2026-06-28-162543
+- **last_session:** 2026-06-30 | agent: Claude Code (2026-06-30-055707)
+- **last_review:** 2026-06-30 | through 2026-06-30-055707
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
 
@@ -130,7 +130,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `ENABLE.md` Step 6 (install template), `VERSION`→4.27.0, `CHANGELOG`, `README` (row + file tree), `UPGRADE`
   (row + rung), docs site (`getting-started`). No memory-file shape change. → serves: vision-agent-memory
   (faithful, traceable delivery — intent is carried at the PR altitude too, across vendors)
-  <!-- id: pr-what-why-convention-v4270 | created: 2026-06-29 | last_used: 2026-06-29 | uses: 1 | tier: working | origin: 2026-06-29-175644 -->
+  <!-- id: pr-what-why-convention-v4270 | created: 2026-06-29 | last_used: 2026-06-30 | uses: 2 | tier: active | origin: 2026-06-29-175644 -->
 
 - [x] **Shipped v4.26.1 (PATCH) — `[stale-metadata]` / `refresh-metadata` no longer opine on a pinned
   thread's tier.** From a **mercury sanity check** (post-Copilot review): v4.26.0 flagged every
@@ -145,7 +145,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   **correct archival**. Lockstep: memory-lint + refresh-metadata scripts + tests (memory-lint 34), `DECAY.md`
   rule 4, both SKILL.md notes, `VERSION`→4.26.1, `CHANGELOG`, `README`, `UPGRADE` (row + rung). Descriptions
   unchanged → adapters untouched. → serves: vision-agent-memory (the advisory stays signal, not noise)
-  <!-- id: pinned-tier-refinement-v4261 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-181738 -->
+  <!-- id: pinned-tier-refinement-v4261 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: active | origin: 2026-06-28-181738 -->
 
 - [x] **Shipped v4.26.0 (MINOR) — `refresh-metadata` (7th built-in) + a `memory-lint` `[stale-metadata]`
   advisory.** From a **cross-vendor field test**: Copilot / Gemini 3.1 Pro committed the v4.25.0 upgrade to
@@ -183,7 +183,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   §5i (6 built-ins), `README`/`ADR`/continuity built-in lists, adapters synced (7 skills → 42),
   `VERSION`→4.25.0, `CHANGELOG`, `UPGRADE` (row + rung). → serves: vision-agent-memory (faithful enablement —
   the riskiest state-mutation is now deterministic, not left to per-vendor agent diligence)
-  <!-- id: archive-fact-builtin-v4250 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-172159 -->
+  <!-- id: archive-fact-builtin-v4250 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: active | origin: 2026-06-28-172159 -->
 
 - [ ] **(backlog) Mode B upgrade automation — scope the mechanical steps only.** From the same Gemini critique
   (point 1): as the user base grows, the high-touch Mode B upgrade (re-sync specific files, run tools, stamp
@@ -214,7 +214,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `CHANGELOG`, `README` (table), `UPGRADE` (row + rung). Skill description unchanged → adapters untouched.
   → serves: vision-agent-memory (faithful, verifiable enablement — the layer's own health is enforced by a
   deterministic check, not left to agent diligence; the lesson came from a real product repo's drift)
-  <!-- id: decay-policy-retune-v4240 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-165455 -->
+  <!-- id: decay-policy-retune-v4240 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-165455 -->
 
 - [x] **Shipped v4.23.1 (PATCH) — `last_harvest` marker for incremental harvests.** From a **cross-vendor
   test drive**: mercury-composable's own agent ran `harvest-knowledge` correctly (clean no-op — memory was
@@ -230,7 +230,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   step 7), `VERSION`→4.23.1, `CHANGELOG`, `README` (table), `UPGRADE` (row + `4.23.0→4.23.1` rung). Skill
   *description* unchanged → adapters unchanged. → serves: vision-agent-memory (recurring harvest scopes
   incrementally; the marker mirrors the review's `last_review`) (`last-harvest-marker-v4231`).
-  <!-- id: last-harvest-marker-v4231 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-041540 -->
+  <!-- id: last-harvest-marker-v4231 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-041540 -->
 
 - [x] **Shipped v4.23.0 (MINOR) — `harvest-knowledge` built-in skill (on-demand doc→memory harvest).**
   Surfaced when test-driving the mercury-composable upgrade: the curious harvest (v4.22.0, `ENABLE.md`
@@ -249,7 +249,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.23.0; adapters synced (6 skills → 36; harvest-knowledge 6/6). `memory-lint` OK. → serves:
   vision-agent-memory (curiosity becomes a recurring capability for living repos, not a one-shot)
   (`harvest-knowledge-skill-v4230`).
-  <!-- id: harvest-knowledge-skill-v4230 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 2 | tier: active | origin: 2026-06-28-032539 -->
+  <!-- id: harvest-knowledge-skill-v4230 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 2 | tier: archive-candidate | origin: 2026-06-28-032539 -->
 
 - [x] **Shipped v4.22.4 (PATCH) — safe-write safeguard moved into the SHARED layer (`REVIEW.md`).**
   Maintainer correction: the safe-write lesson from the 2026-06-28 archive-truncation incident
@@ -266,7 +266,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (table +1/−1, drops 4.19.0), `UPGRADE` (row + `4.22.3→4.22.4` rung). → serves: vision-agent-memory
   (operational safety for the shared memory layer must itself be shared, not per-machine)
   (`safe-write-review-safety-v4224`).
-  <!-- id: safe-write-review-safety-v4224 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-025906 -->
+  <!-- id: safe-write-review-safety-v4224 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-025906 -->
 
 - [x] **Shipped v4.22.3 (PATCH) — tightened the post-commit session window 2h → 30 min.** Maintainer
   observed the v4.22.1 window (2h) was too long: the real problem was follow-up stubs **minutes** apart,
@@ -281,7 +281,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.22.3, `CHANGELOG`, `README` (table +1/−1, drops 4.18.0), `UPGRADE` (row + `4.22.2→4.22.3` rung).
   → serves: vision-agent-memory (the backstop should distinguish a session from a new one, not over-suppress)
   (`session-window-30min-v4223`).
-  <!-- id: session-window-30min-v4223 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-024518 -->
+  <!-- id: session-window-30min-v4223 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-024518 -->
 
 - [x] **Shipped v4.22.2 (PATCH) — lightweight mode: one log per *session*, not per *commit* (agent-side
   mirror of v4.22.1).** Maintainer accepted the recommendation flagged at v4.22.1: the same per-commit
@@ -299,7 +299,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   template), `VERSION`→4.22.2, `CHANGELOG`, `README` (table +1/−1, drops 4.17.0), `UPGRADE` (row +
   `4.22.1→4.22.2` rung). → serves: vision-agent-memory (the decay model's integrity needs the session-file
   count to track *sessions*, not commits — closed on both the hook and agent sides) (`lite-log-per-session-v4222`).
-  <!-- id: lite-log-per-session-v4222 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: working | origin: 2026-06-28-023654 -->
+  <!-- id: lite-log-per-session-v4222 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-023654 -->
 
 - [x] **Shipped v4.22.1 (PATCH) — post-commit auto-stub is per *session*, not per *commit*.** From
   **downstream `mercury-composable` feedback** (`review-scratch/feedback-2026-06-27-post-commit-session-stub.md`):
@@ -323,104 +323,6 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   session-file count that tracks *sessions*, not commits) (`post-commit-per-session-v4221`).
   <!-- id: post-commit-per-session-v4221 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 3 | tier: archive-candidate | origin: 2026-06-28-022903 -->
 
-- [x] **Applied a fresh-context critique (second-opinion → apply-critique) to the v4.22.0 work — 4 fixes,
-  all folded into the unreleased v4.22.0 (no version bump, per the one-version-per-release policy).** A
-  clean-context reviewer (different vendor, via `review-scratch/`) challenged the milestone; 3 of 4 items
-  were real and applied, 1 validated-no-change: **(1) version consolidation — reviewer agreed, no change.
-  (2) `MERGE.md` Tier 2 supersession was AI-discretionary** ("one side genuinely supersedes" = a disguised
-  winner-pick risk) → **tightened**: a semantic clash is **always** keep-both + Contradiction *unless the
-  human explicitly instructs* a supersession; the AI no longer judges "unambiguous." Reinforces
-  `never-pick-a-winner`. **(3) `memory-lint` check 7 false-positive** — session logs legitimately *quote*
-  conflict markers (a pasted diff/terminal block), so scanning `memory/**` would false-fail → **rescoped to
-  live top-level `memory/*.md`** (continuity/instructions/vision/decay-policy/smoke-test); `sessions/` +
-  `archive/` excluded. Both runtimes + 2 new tests each (now 22/22 at parity). **(4a) Review-block gotcha
-  codified in `REVIEW.md` step 9** — don't list archived ids under `## Memory References` (re-arms the
-  over-archival guard); they go in the `## Memory Review` block. **(4b) Hook-fatigue note** in
-  `.githooks/README.md` — a feat/memory split trips the advisory on the code commit (expected/benign);
-  prefer an atomic commit to avoid it. Gate: tests 22/22 both runtimes, `memory-lint` 0/0, parity OK. The
-  fresh reviewer earned its keep (the check-7 false-positive was latent — it didn't fire only because this
-  session's markers sit inline in backticks, not at line-start). **Cross-vendor re-validated 2026-06-27:**
-  **Gemini 3.1 Pro** re-reviewed the *applied* fixes (read-only) and confirmed all four correctly address the
-  critique with **no new issues** — closing the second-opinion → apply-critique loop **end-to-end across
-  vendors** (Claude built + applied; Gemini critiqued + re-validated). Gemini also correctly followed
-  **lightweight mode** (read-only → no session log) — incidental cross-vendor proof of that protocol too.
-  → serves: vision-agent-memory (`apply-critique-v4220-fixes`).
-  <!-- id: apply-critique-v4220-fixes | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: archive-candidate | origin: 2026-06-27-224339 -->
-
-- [x] **Consolidated this session's four unreleased version bumps into a single v4.22.0 release + encoded
-  the policy.** Maintainer observation: v4.22.0–v4.25.0 were all developed in one session with **nothing
-  released to GitHub** (HEAD was v4.21.0) — four version numbers + four `UPGRADE.md` rungs for work no repo
-  ever ran independently, inflating the ladder. **Fix:** `VERSION`→**4.22.0** (one MINOR over the released
-  4.21.0; all four changes are additive); the four `UPGRADE.md` table rows + four rungs collapsed into one
-  `4.21.0 → 4.22.0` row + rung that enumerates the four bundled features (a/b discovery+advisory, c
-  merge-friendliness, d MERGE.md). **Policy encoded** in `UPGRADE.md` "Versioning model" → *"One version
-  per release, not per feature"*: bump for a release event not per feature; keep a single **pending**
-  version while unreleased; magnitude = largest change in the batch; released baseline = `VERSION` at
-  `HEAD`, consolidate working-tree bumps beyond it before committing; per-feature detail lives in session
-  logs + Open Threads, not extra version numbers. Memory handling: **session logs left immutable** (honest
-  dev journal showing the 4.22–4.25 iteration); the four shipped threads kept as distinct facts but
-  **headers relabeled** "Shipped in v4.22.0 (dev-iter 4.2X)"; `status` token → v4.22.0. → serves:
-  vision-agent-memory (a clean, easy upgrade ladder is part of "adoption stays 'point it at a repo'")
-  (`version-consolidation-policy-v4220`).
-  <!-- id: version-consolidation-policy-v4220 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: archive-candidate | origin: 2026-06-27-222424 -->
-
-- [x] **Re-verify invariants (due at the 2026-06-27 review) — CONFIRMED by maintainer 2026-06-27,
-  one by one.** All 5 core invariants (`target-repo-scope-only`, `never-delete-vendor-files`,
-  `never-pick-a-winner`, `no-build-step-agent-run`, `upgrades-additive`) **and** the Vision
-  (`vision-agent-memory`) still hold; none superseded. Recent work *reinforced* them — `never-pick-a-winner`
-  is now the backbone of `MERGE.md` (v4.25.0); `no-build-step-agent-run` was invoked to reject a
-  resolver-*engine* in favor of a markdown protocol; the multi-contributor Vision pillar was materially
-  advanced (v4.24.0 + v4.25.0). **One wording fix** (substance-preserving, maintainer-approved): added
-  `sync-adapters` to the `upgrades-additive` managed-built-ins example list (it became a tool-managed
-  built-in in v4.18.0) — updated in both the invariant text and ADR-0005. The review only prompts;
-  the human confirmed.
-  <!-- id: ot-reverify-invariants-20260627 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 1 | tier: archive-candidate | origin: 2026-06-27-215825 -->
-
-- [x] **Shipped in v4.22.0 (MINOR; dev-iter 4.25) — `MERGE.md` conflict-resolution protocol.** From a **GitHub Copilot
-  review** of the v4.24.0 marker check (relayed by the maintainer): *don't let the LLM directly edit git
-  conflict markers* — instead convert→classify→propose→validate→human-approve. **My assessment (honest,
-  both ways):** Copilot's *principle* is right and maps onto an existing invariant (**`never-pick-a-winner`**)
-  + existing primitives (Contradiction thread, supersession, provenance, `memory-lint` as the deterministic
-  floor); but its framing over-reaches for this project — "never edit the markers" is unachievable (someone
-  deletes them; the real rule is *never silently pick a winner*), most `continuity.md` conflicts are
-  **mechanical** (the v4.24.0 union/take-later rules already handle them, no AI needed), and a
-  convert/classify *engine* would cut against **`no-build-step-agent-run`**. **Chosen (maintainer): tiered
-  markdown protocol**, not the full pipeline. **Done:** new installed root doc **`MERGE.md`** (read on
-  demand, like `DECAY`/`REVIEW`/`SKILLS`): classify hunk → **Tier 1 mechanical** (additive → union/keep-both;
-  scalar → take-later; deterministic) → **Tier 2 semantic clash** (AI **never** decides — preserve both +
-  raise a `Contradiction` or an unambiguous **supersession**; `[ ]`→`[x]` race keeps checked; keep provenance)
-  → **`memory-lint` gate** (reuses the v4.24.0 **check 7**, no linter change) → **human approves the merge
-  commit** (never auto-commit). Wired: ENABLE Step 6 install + Step 8 verify + Notes + report + advisory
-  footprint; `.agent/schema.md` "Concurrency & merge-friendliness" points to it; `UPGRADE.md` source-of-truth
-  map + table row + `4.24.0→4.25.0` rung. `VERSION`→4.25.0. **Dogfood:** bumped this status line's version
-  token only (no changelog prose) — exercising the v4.24.0 rule live. → serves: vision-agent-memory (a shared
-  memory layer must survive concurrent multi-vendor use *without an AI silently losing a teammate's fact*).
-  Builds on `continuity-merge-friendly-v4240` (`merge-conflict-protocol-v4250`).
-  <!-- id: merge-conflict-protocol-v4250 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 2 | tier: archive-candidate | origin: 2026-06-27-215127 -->
-
-- [x] **Shipped in v4.22.0 (MINOR; dev-iter 4.24) — `continuity.md` merge-friendliness.** From a **teammate-concurrency
-  observation** (maintainer): session logs are conflict-free by construction (timestamped filenames),
-  but `continuity.md` is a single shared file every teammate edits — and the **`status` line had become
-  a ~20 KB single-line changelog**, the worst-possible git-merge surface (concurrent bumps ⇒ unresolvable
-  conflict) and a `map-don't-duplicate` violation (it shadowed `UPGRADE.md`). Chosen scope (maintainer):
-  **slim status + conventions + lint guard** (MINOR; *not* the MAJOR file-split — the status anti-pattern
-  was ~90% of the pain). **Done:** (1) **`status` is now spec'd as a SHORT current-state line, not a
-  changelog** — `.agent/schema.md` + both `AGENTS.md` (root + template) say don't accrete per-version
-  history; history lives in session logs / the `UPGRADE.md` ladder. (2) New schema section **"Concurrency
-  & merge-friendliness"**: one fact per line; append-only sections are independent facts; **conflict =
-  keep-both (union)** by default; scalar bumps (`last_session`/`last_review`/version token) **take the
-  later/higher**; only same-thread edits need a human. (3) **`memory-lint` check 7** — a leftover
-  merge-conflict marker (`<<<<<<<`/`>>>>>>>`/diff3 `|||||||`) in any `memory/*.md` is an **ERROR**; a bare
-  `=======` setext heading underline is **not** flagged (false-positive guard); added to both runtimes at
-  parity with **5 mirror tests each** (`.py` + `.mjs` now 20/20). (4) **Dogfooded**: this repo's own status
-  line slimmed **19,828 → 1,105 chars** (read-then-write, never truncate-first — `version-md-stamp-safe-write`).
-  Lockstep: `.agent/schema.md`, `AGENTS.md` (root + template), `memory-lint` (scripts + tests + SKILL.md),
-  `VERSION`→4.24.0, `UPGRADE.md` (table row + rung). **Note:** continuity is still 753 lines (> `continuity_max_lines`
-  300) — that bloat is accumulated `[x] Shipped` Open Threads, the **review ritual's** job to archive (overdue);
-  not hand-archived here. → serves: vision-agent-memory (a shared memory layer must survive real *concurrent*
-  team use; conflict-friendliness is part of faithful multi-vendor collaboration) (`continuity-merge-friendly-v4240`).
-  <!-- id: continuity-merge-friendly-v4240 | created: 2026-06-27 | last_used: 2026-06-27 | uses: 3 | tier: archive-candidate | origin: 2026-06-27-214222 -->
-
 - [x] **Shipped in v4.22.0 (MINOR; dev-iter 4.22) — curious knowledge harvest at enable.** From a **client-team
   enablement complaint** (another team, first run on their repo): discovery "was less curious than
   expected" — a canonical `docs/` folder was **skipped entirely**; when re-asked to recursively analyze
@@ -443,7 +345,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   confirmed with the maintainer before authoring. → serves: vision-agent-memory (a memory layer should
   inherit what the team already knows; curiosity is part of faithful enablement). Complaints = adoption
   signal.
-  <!-- id: knowledge-harvest-curious-v4220 | created: 2026-06-27 | last_used: 2026-06-28 | uses: 3 | tier: active | origin: 2026-06-27-210953 -->
+  <!-- id: knowledge-harvest-curious-v4220 | created: 2026-06-27 | last_used: 2026-06-28 | uses: 3 | tier: archive-candidate | origin: 2026-06-27-210953 -->
 
 - [x] **Shipped v4.20.0 (MINOR) — first-run init for fresh clones.** Dogfooding `~/sandbox/simple-proxy`
   with Copilot (fresh clone) exposed the gap: the **memory bootstrap self-initializes** (Copilot read
