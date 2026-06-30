@@ -63,9 +63,10 @@ deliberate and human-initiated, with a self-identifying `Co-Authored-By:` traile
 !!! tip "Pull requests lead with What & Why"
     Enable installs a `.github/pull_request_template.md` so every PR description opens with two
     short sections — **What** (the change) and **Why** (the intent it serves) — and closes with a
-    self-identifying `Co-Authored-By:` footer, all drawn from the session log(s) in the PR. It's
-    advisory, never a gate; the *why* is a first-class artifact throughout the protocol, so a PR is
-    no exception.
+    self-identifying `Co-Authored-By:` footer naming your **stable agent name** (e.g. `Claude Code`,
+    `Gemini CLI` — the actual AI collaborator, not a model version), all drawn from the session
+    log(s) in the PR. It's advisory, never a gate; the *why* is a first-class artifact throughout the
+    protocol, so a PR is no exception.
 
 A typical session:
 
