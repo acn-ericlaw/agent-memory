@@ -11,6 +11,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.28.2, 7/4/2026
+
+> **Fix `[continuity-bloat]` false positive on mature repos (PATCH).** Field report from
+> `mercury-composable`: the bloat check fired permanently after a correct review because it
+> counted `tier: core` facts and pinned open threads against the cap, even though those entries
+> can never be archived. The fix aligns the count with `decay-policy.md`'s documented intent
+> ("count of **decaying** facts/threads") by excluding non-archivable entries.
+
+### Fixed
+- **`memory-lint` bloat check now counts only decay-eligible facts.** `tier: core` entries
+  (structural invariants) and pinned open `- [ ]` threads are excluded from `nfacts` before
+  comparing against `continuity_max_facts`. A repo with 14 core facts + 11 open threads + 16
+  working facts now correctly reads `16 < 30` (clean) rather than `41 > 30` (chronic WARN) after
+  a fully correct review. The warning message updated to say "decay-eligible facts" so the scope
+  is unambiguous.
+- **Lockstep:** `VERSION` → 4.28.2; `check_continuity_health` gains optional `pinned` param
+  (default `set()` — backward compatible); call site passes the already-computed `pinned` set;
+  new test `test_fact_bloat_excludes_core_and_pinned` covers the mercury scenario directly.
+
+## Version 4.28.1, 7/2/2026
+
+> **Post-commit hook: uncommitted-session-log guard (PATCH).** The auto-stub window check misfired
+> on the recommended two-commit pattern (feature commit → `chore(memory)` commit) when the session
+> log was written more than 30 min before the feature commit — the clock is the wrong proxy when the
+> artifact state is directly observable.
+
+### Fixed
+- **Suppress the auto-stub when a session log already exists uncommitted.** The `.githooks/post-commit`
+  auto-stub gained a **primary guard**: before the filename-timestamp window check, it inspects
+  `git status --porcelain -- memory/sessions/` for any uncommitted `.md`. If one is staged, modified,
+  or untracked, the agent already has a log for this session — the hook emits the enrich-and-commit
+  nudge and skips stubbing. Previously the filename-timestamp threshold treated an in-flight
+  (uncommitted) log written >30 min before the feature commit as "too old" and stubbed a
+  near-duplicate. The window check stays as fallback for already-committed, hours-old logs (e.g. a
+  follow-on commit). Bash 3.2-compatible; hook stays non-blocking.
+- **Lockstep:** `VERSION` → 4.28.1; `UPGRADE.md` row + `4.28.0 → 4.28.1` rung. Re-copy
+  `.githooks/post-commit`. No memory-file shape change; no skill/adapter change.
+
 ## Version 4.28.0, 6/29/2026
 
 > **Co-author convention cleanup — stable agent identity + one trailer (MINOR).** From a real-world

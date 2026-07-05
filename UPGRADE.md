@@ -103,8 +103,9 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.26.0 | **`refresh-metadata` + `memory-lint` `[stale-metadata]` advisory (MINOR):** a **7th** built-in executing REVIEW.md steps 2–3 (apply events + re-tier) deterministically — recomputes every fact's `last_used`/`uses`/`tier` from the session reference log and writes footers back (the "full rebuild" path, runnable; pure arithmetic, never archives, `core`/`superseded` untouched). Python + Node at parity + mirror tests; `--dry-run`; idempotent. `memory-lint` gains check (9) `[stale-metadata]` (stored tier ≠ recomputed tier) to make the skipped-re-tier gap visible. From a cross-vendor field test where Gemini 3.1 Pro ran the overdue review but did the archive and skipped the metadata pass. Install via §5i (now 7 built-ins); re-copy the skill + re-copy memory-lint + re-sync adapters + re-sync `REVIEW.md`/`ENABLE.md` |
 | 4.26.1 | **Pinned-thread tier no longer flagged/rewritten (PATCH):** v4.26.0's `[stale-metadata]` flagged every `working`-tagged pinned `- [ ]` open thread as "should be `active`" — noise (a pinned thread never decays regardless of tier label; pinned-ness protects it). `memory-lint` `expected_tier` + `refresh-metadata` `expected_tier` now return a pinned thread's **stored** tier (no flag, no rewrite; factual `uses`/`last_used` still refresh). Re-copy the `memory-lint` + `refresh-metadata` skill files; `DECAY.md` rule 4 clarified. From a mercury sanity check + comparison with Copilot's `update-metadata.py`. Both runtimes at parity + tests |
 | 4.27.0 | **Standardized PR description: lead with What / Why (MINOR):** every agent-memory-enabled repo now ships a **`.github/pull_request_template.md`** with two sections — **What** (the change) and **Why** (the intent it serves — Blueprint gap / decision / problem, not a restatement of What), each 1–2 short paragraphs drawn from the session log(s) in the PR. Mirrored by an `AGENTS.md` convention (the vendor-neutral backstop for agents composing PR bodies via `gh`, not the web UI) + a checklist line. Advisory, never a gate — consistent with *why-as-first-class-artifact* throughout the protocol. Install the template into the target (`.github/`); re-sync `AGENTS.md` from `templates/AGENTS.md`. No memory-file shape change |
-| 4.28.1 | **Post-commit hook: uncommitted-session-log guard (PATCH):** the auto-stub window check misfired on the recommended two-commit pattern (feature commit → `chore(memory)` commit) when the session log was written more than 30 min before the feature commit — the filename-timestamp threshold treated an in-flight (uncommitted) log as "too old" and stubbed a near-duplicate. Fix: before the time-window check, inspect `git status --porcelain -- memory/sessions/` — if any `.md` is staged, modified, or untracked, the agent already has a log for this session; emit the enrich-and-commit nudge and skip the stub. The existing filename-window check stays as fallback for already-committed, hours-old logs. Bash 3.2-compatible; hook stays non-blocking. Re-copy `.githooks/post-commit` |
 | 4.28.0 | **Co-author convention cleanup — stable agent identity + one trailer (MINOR):** refines the v4.27.0 self-identification. The `Co-Authored-By` trailer should use the **stable agent name** (e.g. `Claude Code`, `Gemini CLI`) — the actual AI collaborator, **not** a model-version string (which churns each release and fragments attribution) — matching session logs. Adds squash-merge guidance: collapse to a **single** trailer (GitHub appends a consolidated one after the `---------` line; trim the redundant inline repeats). Re-sync `AGENTS.md` from `templates/AGENTS.md` + re-copy `.github/pull_request_template.md` (footer comment updated). Doc-only; advisory; no memory-file shape change |
+| 4.28.1 | **Post-commit hook: uncommitted-session-log guard (PATCH):** the auto-stub window check misfired on the recommended two-commit pattern (feature commit → `chore(memory)` commit) when the session log was written more than 30 min before the feature commit — the filename-timestamp threshold treated an in-flight (uncommitted) log as "too old" and stubbed a near-duplicate. Fix: before the time-window check, inspect `git status --porcelain -- memory/sessions/` — if any `.md` is staged, modified, or untracked, the agent already has a log for this session; emit the enrich-and-commit nudge and skip the stub. The existing filename-window check stays as fallback for already-committed, hours-old logs. Bash 3.2-compatible; hook stays non-blocking. Re-copy `.githooks/post-commit` |
+| 4.28.2 | **`memory-lint` `[continuity-bloat]` counts only decay-eligible facts (PATCH):** field report from `mercury-composable` — the fact-count check fired **permanently** even right after a fully correct review, because it counted `tier: core` facts (structural invariants) and pinned `- [ ]` open threads against `continuity_max_facts`, and those can never be archived. That turned the primary lean signal into chronic noise → alarm fatigue (the exact "nobody archives" failure v4.24.0 set out to fix). Fix aligns the count with `decay-policy.md`'s documented intent ("count of **decaying** facts/threads"): `check_continuity_health` now excludes `tier: core` + pinned ids before comparing (both runtimes at parity + mirror regression tests; warning text now reads "decay-eligible facts"). A repo with 14 core + 11 open threads + 16 working facts now reads `16 < 30` (clean) instead of `41 > 30`. Re-copy the `memory-lint` skill files (both runtimes). Skill description unchanged → adapters need no re-sync |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1500,18 +1501,6 @@ Additive convention + one new tracked bootstrap file. No memory-file shape chang
 4. **Report**: PRs opened in this repo now lead with **What** and **Why** (advisory; the template
    seeds it, the `AGENTS.md` convention is the vendor-neutral backstop).
 
-## Rung: 4.28.0 → 4.28.1 — post-commit hook uncommitted-session-log guard (PATCH)
-
-**What changed:** `.githooks/post-commit` auto-stub gained a primary guard — before the filename-timestamp window check, it inspects `git status --porcelain -- memory/sessions/` for any uncommitted `.md`. If one exists, the agent already has a log for this session; the hook emits the enrich-and-commit nudge and skips stubbing. The time-window check becomes the fallback for already-committed logs (e.g. a follow-on commit hours later). Fixes spurious near-duplicate stubs in the two-commit pattern and in long sessions.
-
-**Steps:**
-
-1. Re-copy `.githooks/post-commit` from this repo (or from your agent-memory upstream).
-2. Stamp `.agent/version.md` → `version: 4.28.1`, `last_upgraded: <today>`, preserving all other fields.
-3. Commit: `chore(memory): upgrade agent-memory → v4.28.1`.
-
----
-
 ## Rung: 4.27.0 → 4.28.0 — co-author convention cleanup (stable identity + one trailer) (MINOR)
 
 Doc-only convention refinement. No memory-file shape change.
@@ -1529,3 +1518,40 @@ Doc-only convention refinement. No memory-file shape change.
    truncate-first one-liner.**
 4. **Report**: the co-author trailer now uses a stable agent identity, and squash-merges collapse
    to one trailer.
+
+---
+
+## Rung: 4.28.0 → 4.28.1 — post-commit hook uncommitted-session-log guard (PATCH)
+
+**What changed:** `.githooks/post-commit` auto-stub gained a primary guard — before the filename-timestamp window check, it inspects `git status --porcelain -- memory/sessions/` for any uncommitted `.md`. If one exists, the agent already has a log for this session; the hook emits the enrich-and-commit nudge and skips stubbing. The time-window check becomes the fallback for already-committed logs (e.g. a follow-on commit hours later). Fixes spurious near-duplicate stubs in the two-commit pattern and in long sessions.
+
+**Steps:**
+
+1. Re-copy `.githooks/post-commit` from this repo (or from your agent-memory upstream).
+2. Stamp `.agent/version.md` → `version: 4.28.1`, `last_upgraded: <today>`, preserving all other fields.
+3. Commit: `chore(memory): upgrade agent-memory → v4.28.1`.
+
+---
+
+## Rung: 4.28.1 → 4.28.2 — memory-lint continuity-bloat decay-eligible count (PATCH)
+
+**What changed:** `memory-lint`'s `[continuity-bloat]` fact-count check now compares
+`continuity_max_facts` against **decay-eligible** facts only — excluding `tier: core` invariants and
+pinned `- [ ]` open threads, which can never be archived. Before, a repo carrying a healthy invariant
+set + a few active workstreams tripped the cap **structurally** and stayed red even right after a
+fully correct review (field report: `mercury-composable`, 41 footers / 14 core / 11 open threads →
+chronic WARN). This aligns the code with `decay-policy.md`'s documented intent ("count of *decaying*
+facts/threads"). Both runtimes at parity + mirror regression tests; warning text now reads
+"decay-eligible facts". Tool-managed built-in skill; no memory-file shape change.
+
+**Steps:**
+
+1. **Re-copy the `memory-lint` skill files** (both runtimes) from this repo (or your agent-memory
+   upstream): `agent-skills/memory-lint/scripts/memory-lint.py`, `.../memory-lint.mjs`, and the two
+   mirror test files. Skill description unchanged → **adapters need no re-sync**.
+2. **Stamp** `.agent/version.md` → `version: 4.28.2`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+3. **Run `memory-lint`** — a mature layer whose fact count was inflated only by core facts + pinned
+   threads should now report clean (or a lower, decay-eligible count).
+4. **Report**: `[continuity-bloat]` now counts only what a review can actually act on.
