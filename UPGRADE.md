@@ -106,6 +106,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.28.0 | **Co-author convention cleanup — stable agent identity + one trailer (MINOR):** refines the v4.27.0 self-identification. The `Co-Authored-By` trailer should use the **stable agent name** (e.g. `Claude Code`, `Gemini CLI`) — the actual AI collaborator, **not** a model-version string (which churns each release and fragments attribution) — matching session logs. Adds squash-merge guidance: collapse to a **single** trailer (GitHub appends a consolidated one after the `---------` line; trim the redundant inline repeats). Re-sync `AGENTS.md` from `templates/AGENTS.md` + re-copy `.github/pull_request_template.md` (footer comment updated). Doc-only; advisory; no memory-file shape change |
 | 4.28.1 | **Post-commit hook: uncommitted-session-log guard (PATCH):** the auto-stub window check misfired on the recommended two-commit pattern (feature commit → `chore(memory)` commit) when the session log was written more than 30 min before the feature commit — the filename-timestamp threshold treated an in-flight (uncommitted) log as "too old" and stubbed a near-duplicate. Fix: before the time-window check, inspect `git status --porcelain -- memory/sessions/` — if any `.md` is staged, modified, or untracked, the agent already has a log for this session; emit the enrich-and-commit nudge and skip the stub. The existing filename-window check stays as fallback for already-committed, hours-old logs. Bash 3.2-compatible; hook stays non-blocking. Re-copy `.githooks/post-commit` |
 | 4.28.2 | **`memory-lint` `[continuity-bloat]` counts only decay-eligible facts (PATCH):** field report from `mercury-composable` — the fact-count check fired **permanently** even right after a fully correct review, because it counted `tier: core` facts (structural invariants) and pinned `- [ ]` open threads against `continuity_max_facts`, and those can never be archived. That turned the primary lean signal into chronic noise → alarm fatigue (the exact "nobody archives" failure v4.24.0 set out to fix). Fix aligns the count with `decay-policy.md`'s documented intent ("count of **decaying** facts/threads"): `check_continuity_health` now excludes `tier: core` + pinned ids before comparing (both runtimes at parity + mirror regression tests; warning text now reads "decay-eligible facts"). A repo with 14 core + 11 open threads + 16 working facts now reads `16 < 30` (clean) instead of `41 > 30`. Re-copy the `memory-lint` skill files (both runtimes). Skill description unchanged → adapters need no re-sync |
+| 4.28.3 | **`[continuity-bloat]` line-count message is decay-aware (PATCH):** a second `mercury-composable` report (29-module reactor) — after a clean review the *fact* count is healthy but the `continuity_max_lines` backstop trips on genuinely-active, dense Key Decisions, and the review has **nothing to archive**, so the warning is unclearable *and* its "a review is due to lean it down" wording nudges toward premature archival of active facts (REVIEW.md's costliest error). Same failure class as v4.28.2, on the line axis. `memory-lint` now computes `archivable` (facts overdue for decay + superseded); when lines exceed the cap but `archivable == 0` the message names the real lever — "condense shipped decisions, or raise `continuity_max_lines`" — instead of prescribing a review that can't help; the actionable message still fires when something *is* archivable. `decay-policy.md` comment notes the cap is meant to be raised for a legitimately large repo. Fact-count check untouched; a dedicated "condense" lever deferred until the need recurs. Re-copy the `memory-lint` skill files (both runtimes) + re-sync `memory/decay-policy.md` comment additively. Skill description unchanged → adapters need no re-sync |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1555,3 +1556,35 @@ facts/threads"). Both runtimes at parity + mirror regression tests; warning text
 3. **Run `memory-lint`** — a mature layer whose fact count was inflated only by core facts + pinned
    threads should now report clean (or a lower, decay-eligible count).
 4. **Report**: `[continuity-bloat]` now counts only what a review can actually act on.
+
+---
+
+## Rung: 4.28.2 → 4.28.3 — memory-lint continuity-bloat line message decay-aware (PATCH)
+
+**What changed:** the `continuity_max_lines` half of `[continuity-bloat]` now branches on whether a
+review could actually reduce the file. `memory-lint` computes `archivable` = facts overdue for decay
+(`sslu > archive_window`, excluding core/superseded/pinned) + superseded facts. When lines exceed the
+cap **and** `archivable == 0`, the message stops prescribing "a review is due to lean it down" (which
+a review can't satisfy, and which pressures archiving an *active* fact — REVIEW.md's costliest error)
+and instead names the real lever: *"nothing is archivable yet; the excess is active/dense facts.
+Condense shipped decisions, or raise `continuity_max_lines` in decay-policy.md if this repo is
+legitimately large."* When something *is* archivable the original actionable message stands. Same
+failure class as v4.28.2 (an unclearable warning erodes signal), on the line axis. From a second
+`mercury-composable` field report (29-module reactor, 37 facts / 708 lines / 0 archivable). The
+fact-count check is untouched; a dedicated non-archival "condense" lever was **deferred** until the
+need recurs. Tool-managed built-in skill; no memory-file shape change.
+
+**Steps:**
+
+1. **Re-copy the `memory-lint` skill files** (both runtimes) from this repo (or your agent-memory
+   upstream): `agent-skills/memory-lint/scripts/memory-lint.py`, `.../memory-lint.mjs`, and the two
+   mirror test files. Skill description unchanged → **adapters need no re-sync**.
+2. **Re-sync the `continuity_max_lines` comment** in `memory/decay-policy.md` additively (it now notes
+   the cap is meant to be raised for a legitimately large/complex repo). Preserve any custom-tuned
+   integer values — merge the comment, don't overwrite a raised cap.
+3. **Stamp** `.agent/version.md` → `version: 4.28.3`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+4. **Run `memory-lint`** — a large repo over the line cap with nothing currently archivable should now
+   show the "nothing is archivable yet" message rather than "a review is due to lean it down."
+5. **Report**: the line-count bloat warning now tells the truth about what a review can do.

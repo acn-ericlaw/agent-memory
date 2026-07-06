@@ -11,6 +11,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.28.3, 7/6/2026
+
+> **`[continuity-bloat]` line-count message is now decay-aware (PATCH).** Second field report from
+> `mercury-composable` (a 29-module Maven reactor): after a by-the-book review the *fact* count is
+> healthy but the `continuity_max_lines` backstop trips on genuinely-active, information-dense Key
+> Decisions — and the review has **nothing to archive**, so the warning can't be honestly cleared.
+> Same failure class as v4.28.2 (an unclearable warning erodes the signal), but on the line axis; the
+> generic "a review is due to lean it down" also *nudges toward premature archival of active facts* —
+> REVIEW.md's costliest error.
+
+### Fixed
+- **The line-count `[continuity-bloat]` message branches on whether anything is actually archivable.**
+  `memory-lint` now computes `archivable` = facts overdue for decay (`sslu > archive_window`, excluding
+  core/superseded/pinned) + superseded facts. When lines exceed `continuity_max_lines` **and**
+  `archivable == 0`, the message tells the truth — *"nothing is archivable yet; the excess is
+  active/dense facts. Condense shipped decisions, or raise continuity_max_lines in decay-policy.md if
+  this repo is legitimately large."* — instead of prescribing a review that can't help. When something
+  *is* archivable, the original actionable message stands. Validated on mercury's live memory (37 facts
+  / 708 lines / 0 archivable → the honest message; both runtimes byte-identical).
+- **`decay-policy.md` note.** The `continuity_max_lines` comment now states it is *meant* to be raised
+  for a legitimately large/complex repo (covers the field report's per-repo-acknowledgement ask cheaply;
+  the value was already per-repo tunable).
+- **Scope / deferred.** Only the line-count message changed; the fact-count check (v4.28.2) is untouched.
+  A dedicated non-archival "condense shipped decisions" lever was proposed but **deferred** until the need
+  recurs in the field — the honest message points at that lever without building it yet.
+- **Lockstep:** `VERSION` → 4.28.3; `check_continuity_health` gains an optional `archivable` arg
+  (default unknown → generic message; backward compatible) in both runtimes at parity; `main()` computes
+  and passes it; two new mirror tests (`archivable > 0` → actionable, `archivable == 0` → active-verbosity).
+  `README` row; `UPGRADE.md` row + `4.28.2 → 4.28.3` rung. Skill description unchanged → adapters need no re-sync.
+
 ## Version 4.28.2, 7/4/2026
 
 > **Fix `[continuity-bloat]` false positive on mature repos (PATCH).** Field report from
