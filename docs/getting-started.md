@@ -66,7 +66,9 @@ deliberate and human-initiated, with a self-identifying `Co-Authored-By:` traile
     self-identifying `Co-Authored-By:` footer naming your **stable agent name** (e.g. `Claude Code`,
     `Gemini CLI` — the actual AI collaborator, not a model version), all drawn from the session
     log(s) in the PR. It's advisory, never a gate; the *why* is a first-class artifact throughout the
-    protocol, so a PR is no exception.
+    protocol, so a PR is no exception. Since your harness often injects its *own* `Co-Authored-By`
+    (frequently a model-version name), the rule is **at most one trailer per collaborator, keyed on
+    email** — reconcile to a single line rather than stacking a second for the same address.
 
 A typical session:
 

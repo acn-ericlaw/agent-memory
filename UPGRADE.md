@@ -107,6 +107,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.28.1 | **Post-commit hook: uncommitted-session-log guard (PATCH):** the auto-stub window check misfired on the recommended two-commit pattern (feature commit → `chore(memory)` commit) when the session log was written more than 30 min before the feature commit — the filename-timestamp threshold treated an in-flight (uncommitted) log as "too old" and stubbed a near-duplicate. Fix: before the time-window check, inspect `git status --porcelain -- memory/sessions/` — if any `.md` is staged, modified, or untracked, the agent already has a log for this session; emit the enrich-and-commit nudge and skip the stub. The existing filename-window check stays as fallback for already-committed, hours-old logs. Bash 3.2-compatible; hook stays non-blocking. Re-copy `.githooks/post-commit` |
 | 4.28.2 | **`memory-lint` `[continuity-bloat]` counts only decay-eligible facts (PATCH):** field report from `mercury-composable` — the fact-count check fired **permanently** even right after a fully correct review, because it counted `tier: core` facts (structural invariants) and pinned `- [ ]` open threads against `continuity_max_facts`, and those can never be archived. That turned the primary lean signal into chronic noise → alarm fatigue (the exact "nobody archives" failure v4.24.0 set out to fix). Fix aligns the count with `decay-policy.md`'s documented intent ("count of **decaying** facts/threads"): `check_continuity_health` now excludes `tier: core` + pinned ids before comparing (both runtimes at parity + mirror regression tests; warning text now reads "decay-eligible facts"). A repo with 14 core + 11 open threads + 16 working facts now reads `16 < 30` (clean) instead of `41 > 30`. Re-copy the `memory-lint` skill files (both runtimes). Skill description unchanged → adapters need no re-sync |
 | 4.28.3 | **`[continuity-bloat]` line-count message is decay-aware (PATCH):** a second `mercury-composable` report (29-module reactor) — after a clean review the *fact* count is healthy but the `continuity_max_lines` backstop trips on genuinely-active, dense Key Decisions, and the review has **nothing to archive**, so the warning is unclearable *and* its "a review is due to lean it down" wording nudges toward premature archival of active facts (REVIEW.md's costliest error). Same failure class as v4.28.2, on the line axis. `memory-lint` now computes `archivable` (facts overdue for decay + superseded); when lines exceed the cap but `archivable == 0` the message names the real lever — "condense shipped decisions, or raise `continuity_max_lines`" — instead of prescribing a review that can't help; the actionable message still fires when something *is* archivable. `decay-policy.md` comment notes the cap is meant to be raised for a legitimately large repo. Fact-count check untouched; a dedicated "condense" lever deferred until the need recurs. Re-copy the `memory-lint` skill files (both runtimes) + re-sync `memory/decay-policy.md` comment additively. Skill description unchanged → adapters need no re-sync |
+| 4.28.4 | **`Co-Authored-By` dedup invariant — one trailer per collaborator, keyed on email (PATCH):** a third `mercury-composable` report — the v4.28.0 attribution guidance assumed the agent *fully authors* the message, but it co-authors it **with its harness**, which often injects its own (model-version) `Co-Authored-By`; appending a second stable-name trailer produced duplicate co-authors for one collaborator (squash-merges compounded it — one commit reached 55 trailer lines). `AGENTS.md` (root + `templates/`) reframes the model (*reconcile* the harness's message, don't blindly append) and states the invariant — **at most one `Co-Authored-By` per collaborator, matched on email** (`Claude Code` / `Claude Opus 4.8` / `Gemini CLI` are one collaborator at one `noreply@…` address) — with a 3-branch resolution tree + forge-aware squash guidance. PR-template footer + docs site updated to match. Doc-only; a dedup **hook** and lint advisory were deliberately **deferred** (an auto-dedup `commit-msg` hook would rewrite commits — a departure from the tool's never-mutate-your-commits stance). Re-sync `AGENTS.md` + `.github/pull_request_template.md`. No memory-file shape change; skills/adapters unchanged |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1588,3 +1589,31 @@ need recurs. Tool-managed built-in skill; no memory-file shape change.
 4. **Run `memory-lint`** — a large repo over the line cap with nothing currently archivable should now
    show the "nothing is archivable yet" message rather than "a review is due to lean it down."
 5. **Report**: the line-count bloat warning now tells the truth about what a review can do.
+
+---
+
+## Rung: 4.28.3 → 4.28.4 — Co-Authored-By dedup invariant (one per collaborator, keyed on email) (PATCH)
+
+**What changed:** doc-only refinement of the v4.28.0 commit-attribution convention. The agent
+**co-authors the commit message with its harness**, which often injects its own (model-version)
+`Co-Authored-By`; the old guidance ("identify yourself … accept it if unavoidable") led a
+conscientious agent to *append* a second stable-name trailer → two lines for one collaborator, which
+squash-merges compounded. `AGENTS.md` now reframes the model (treat the harness's message as the base
+and **reconcile**) and states the invariant: **at most one `Co-Authored-By` per collaborator, matched
+on email** (`Claude Code` / `Claude Opus 4.8` / `Gemini CLI` are one collaborator at one address), with
+a deterministic resolution tree and forge-aware squash guidance. No code, no memory-file shape change.
+
+**Steps:**
+
+1. **Re-sync `AGENTS.md`** from **`templates/AGENTS.md`** (the memory hub) — the commit-attribution
+   block now carries the co-author-with-harness reframe, the dedup-by-email invariant, the 3-branch
+   resolution tree, and the forge-aware squash note. Merge into a repo-customized `AGENTS.md` rather
+   than overwrite.
+2. **Re-copy `.github/pull_request_template.md`** from `templates/.github/pull_request_template.md`
+   (its footer comment now states the one-trailer-per-collaborator-by-email rule). If the target
+   customized its template, merge the footer-comment change rather than clobber.
+3. **Stamp** `.agent/version.md` → `version: 4.28.4`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+4. **Report**: commit/PR co-author trailers now reconcile to one line per collaborator (keyed on
+   email); the enforcement hook was deliberately deferred. Adapters need no re-sync (skills unchanged).

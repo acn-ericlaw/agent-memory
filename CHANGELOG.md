@@ -11,6 +11,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.28.4, 7/6/2026
+
+> **`Co-Authored-By` trailer duplication — reframed as a dedup-by-email invariant (PATCH).** Third
+> field report from `mercury-composable`: the v4.28.0 commit-attribution guidance assumed the agent
+> *fully authors* the message, but the agent co-authors it **with its harness**, which often injects
+> its *own* (model-version) `Co-Authored-By`. A conscientious agent then appended a second (stable-name)
+> trailer → duplicate co-authors for one collaborator; squash-merges compounded it (one observed commit
+> had 55 trailer lines). Doc-only refinement of the convention; no code, no shape change.
+
+### Changed
+- **The rule is now a deterministic invariant, keyed on email.** `AGENTS.md` (root + `templates/`)
+  reframes the mental model — *you co-author the commit message **with** your harness; treat the
+  harness's message as the base and **reconcile**, don't blindly append* — and states the invariant:
+  **at most one `Co-Authored-By` per collaborator, matched on email** (`Claude Code`, `Claude Opus 4.8`,
+  `Gemini CLI`, `Gemini 2.5` … are one collaborator at one `noreply@…` address; the name varies, the
+  email doesn't). A three-branch resolution tree replaces the ambiguous "accept it": harness trailer you
+  can't suppress → that's your one; you control the message → emit exactly one stable-name trailer and
+  drop the harness duplicate at the same email; **never both**.
+- **Squash-merge guidance is forge-aware.** The canonical trailer lives **once** (PR-description footer;
+  omitted from per-commit bodies); trim inline repeats so one line per collaborator survives.
+- **PR template + docs.** The `.github/pull_request_template.md` footer comment (root + `templates/`)
+  and `docs/getting-started.md` now carry the one-per-collaborator-by-email rule.
+- **Enforcement deferred (deliberate).** A dedup **hook** and a `memory-lint` advisory were proposed;
+  both deferred — an auto-dedup `commit-msg` hook would *rewrite* commit messages, a departure from the
+  tool's "never mutate your commits" stance. Revisit (an *observational* lint advisory first) if the doc
+  fix doesn't hold in the field.
+- **Lockstep:** `VERSION` → 4.28.4; `README` row; `UPGRADE.md` row + `4.28.3 → 4.28.4` rung; docs site.
+  Re-sync `AGENTS.md` + `.github/pull_request_template.md` on enabled repos. No memory-file shape change;
+  skills/adapters unchanged.
+
 ## Version 4.28.3, 7/6/2026
 
 > **`[continuity-bloat]` line-count message is now decay-aware (PATCH).** Second field report from
