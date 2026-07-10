@@ -60,7 +60,14 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      # Render ```mermaid blocks as diagrams (Material auto-loads mermaid.js).
+      # Without this custom fence they fall back to plain code, exposing the
+      # literal <br/> / <b> markup inside node labels.
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.highlight:
