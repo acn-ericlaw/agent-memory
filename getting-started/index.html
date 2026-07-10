@@ -1712,12 +1712,11 @@ protocol, so a PR is no exception. Since your harness often injects its <em>own<
 email</strong> — reconcile to a single line rather than stacking a second for the same address.</p>
 </div>
 <p>A typical session:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>flowchart LR
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  A[Read continuity.md&lt;br/&gt;+ Vision] --&gt; B[Do the work]
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  B --&gt; C[Write a session log&lt;br/&gt;with Memory References]
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  C --&gt; D[Update continuity.md]
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  D -.-&gt;|periodically| E[Review ritual]
-</code></pre></div>
+<pre class="mermaid"><code>flowchart LR
+  A[Read continuity.md&lt;br/&gt;+ Vision] --&gt; B[Do the work]
+  B --&gt; C[Write a session log&lt;br/&gt;with Memory References]
+  C --&gt; D[Update continuity.md]
+  D -.-&gt;|periodically| E[Review ritual]</code></pre>
 <div class="admonition note">
 <p class="admonition-title">Enterprise IDEs (e.g. Kiro)</p>
 <p>Per-machine vendor dirs (<code>.kiro/</code>, <code>.claude/</code>, …) are gitignored, so a fresh clone won't

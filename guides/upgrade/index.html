@@ -1673,10 +1673,9 @@ local content.</p>
 </blockquote>
 <p>When the repo is already enabled but behind, the agent detects the drift from
 <code>.agent/version.md</code> and walks the ladder. Each rung is <strong>idempotent</strong> — re-running is safe.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>flowchart LR
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  V[&quot;.agent/version.md&lt;br/&gt;e.g. 4.14.1&quot;] --&gt; L[apply rungs&lt;br/&gt;4.14.1 → … → 4.26.1]
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  L --&gt; S[re-sync adapters&lt;br/&gt;+ stamp version.md]
-</code></pre></div>
+<pre class="mermaid"><code>flowchart LR
+  V[".agent/version.md&lt;br/&gt;e.g. 4.14.1"] --&gt; L[apply rungs&lt;br/&gt;4.14.1 → … → 4.26.1]
+  L --&gt; S[re-sync adapters&lt;br/&gt;+ stamp version.md]</code></pre>
 <h2 id="what-a-rung-may-do">What a rung may do<a class="headerlink" href="#what-a-rung-may-do" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Re-sync a protocol file from its canonical source.</li>

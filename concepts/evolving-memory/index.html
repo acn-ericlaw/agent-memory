@@ -1660,11 +1660,10 @@
 frequently-used facts strengthen, unused ones fade, important ones stay permanent — all in
 100% markdown, with the agent doing the work and no code running.</p>
 <h2 id="the-ledger-and-the-projection">The ledger and the projection<a class="headerlink" href="#the-ledger-and-the-projection" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>flowchart LR
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  S[sessions/*.md&lt;br/&gt;&lt;b&gt;WRITE&lt;/b&gt; — the ledger] --&gt; R[review ritual&lt;br/&gt;&lt;b&gt;MANAGE&lt;/b&gt;]
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  R --&gt; C[continuity.md&lt;br/&gt;&lt;b&gt;READ&lt;/b&gt; — live state]
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  C -.-&gt;|replay| S
-</code></pre></div>
+<pre class="mermaid"><code>flowchart LR
+  S[sessions/*.md&lt;br/&gt;&lt;b&gt;WRITE&lt;/b&gt; — the ledger] --&gt; R[review ritual&lt;br/&gt;&lt;b&gt;MANAGE&lt;/b&gt;]
+  R --&gt; C[continuity.md&lt;br/&gt;&lt;b&gt;READ&lt;/b&gt; — live state]
+  C -.-&gt;|replay| S</code></pre>
 <ul>
 <li><strong>The ledger.</strong> Each work segment writes an <strong>immutable</strong> session log containing a
   <code>## Memory References</code> section — the <em>events</em> (which facts were referenced, created,
@@ -1673,14 +1672,14 @@ frequently-used facts strengthen, unused ones fade, important ones stay permanen
   metadata footer. The projection is recomputable from the ledger at any time (full replay).</li>
 </ul>
 <p>Each fact carries an HTML-comment footer — invisible when rendered, maintained by the agent:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">-</span><span class="w"> </span>The proxy must stay protocol-agnostic at the transport layer.
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  &lt;!-- id: inv-transport-agnostic | created: 2026-06-01 | last_used: 2026-06-27 | uses: 9 | tier: active --&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">-</span><span class="w"> </span>The proxy must stay protocol-agnostic at the transport layer.
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  &lt;!-- id: inv-transport-agnostic | created: 2026-06-01 | last_used: 2026-06-27 | uses: 9 | tier: active --&gt;
 </code></pre></div>
 <h2 id="deterministic-decay">Deterministic decay<a class="headerlink" href="#deterministic-decay" title="Permanent link">&para;</a></h2>
 <p>A periodic <strong>review</strong> recomputes usage by <em>counting session files</em> — never a floating-point
 score — so any agent (Claude, Gemini, …) reaches the <strong>same</strong> result. Facts fade through
 tiers:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>working → active → archive-candidate → archived
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>working → active → archive-candidate → archived
 </code></pre></div>
 <p>Nothing is ever deleted; faded facts move to a greppable archive index. See
 <a href="../decay/">Decay &amp; Tiers</a> for the windows and rules.</p>

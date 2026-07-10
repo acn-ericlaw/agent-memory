@@ -1620,14 +1620,13 @@ human-gated, enforcing <code>never-pick-a-winner</code>.</p>
 <p><strong>"Resolve the memory merge conflict."</strong></p>
 </blockquote>
 <h2 id="the-tiers">The tiers<a class="headerlink" href="#the-tiers" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>flowchart TD
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  A[Classify the hunk] --&gt; B{Mechanical or semantic?}
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  B --&gt;|Mechanical| C[Tier 1: deterministic&lt;br/&gt;additive → union / keep-both&lt;br/&gt;scalar → take-later]
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  B --&gt;|Semantic clash| D[Tier 2: AI never decides&lt;br/&gt;preserve both + raise a Contradiction]
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  C --&gt; E[memory-lint gate]
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  D --&gt; E
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  E --&gt; F[Human approves the merge commit]
-</code></pre></div>
+<pre class="mermaid"><code>flowchart TD
+  A[Classify the hunk] --&gt; B{Mechanical or semantic?}
+  B --&gt;|Mechanical| C[Tier 1: deterministic&lt;br/&gt;additive → union / keep-both&lt;br/&gt;scalar → take-later]
+  B --&gt;|Semantic clash| D[Tier 2: AI never decides&lt;br/&gt;preserve both + raise a Contradiction]
+  C --&gt; E[memory-lint gate]
+  D --&gt; E
+  E --&gt; F[Human approves the merge commit]</code></pre>
 <ul>
 <li><strong>Tier 1 — mechanical.</strong> Append-only sections (session logs, archive) → union/keep-both.
   Scalar fields (a counter, a date) → take-later. Fully deterministic.</li>
