@@ -1,4 +1,4 @@
-# Reinforcing the after-session ritual with hooks
+# Reinforcing the session rituals with hooks
 
 > **As of v4.19.0 the vendor-neutral reinforcement is installed by `ENABLE.md` and agent-activated** — a
 > committed **`.githooks/post-commit`** (auto-stubs a session log when a commit does real work without
@@ -7,13 +7,53 @@
 > **no-code** (git/CI run them in the user's env; the tool runs nothing). Rationale + design:
 > `docs/DESIGN-ritual-triggers.md`; activation: `.githooks/README.md`.
 >
-> **This doc covers two *further, optional* layers** you add yourself if you want them — keep them
+> **This doc covers three *further, optional* layers** you add yourself if you want them — keep them
 > advisory (a nudge, never a hard block) so the no-code philosophy holds:
-> (1) **per-vendor end-of-turn hooks** (Claude `Stop`, Copilot `sessionEnd`/`postToolUse`) for real-time
-> nudges where a vendor supports them; (2) a **git pre-commit reminder**.
+> (0) a **before-session `SessionStart` injection** (Claude Code) that complements the v4.29.0
+> bootstrap `@`-imports; (1) **per-vendor end-of-turn hooks** (Claude `Stop`, Copilot
+> `sessionEnd`/`postToolUse`) for real-time nudges where a vendor supports them; (2) a **git
+> pre-commit reminder**.
 
 The schemas below are illustrative — confirm the exact format against your runtime's
 current hook documentation before relying on them.
+
+## Option A0 — Claude Code SessionStart injection (before-session presence)
+
+Since v4.29.0 the `CLAUDE.md` / `GEMINI.md` bootstrap pointers **import** the hub and core
+memory files (`@AGENTS.md`, `@memory/instructions.md`, `@memory/continuity.md`,
+`@memory/vision.md`), so those are already structurally present at session start with no hook
+at all. What imports **cannot** express is a dynamic path — "the newest 2–3 files in
+`memory/sessions/`" stays an explicit read the agent must choose to make. If you want the
+recent session logs injected too, a `SessionStart` hook can emit them as session-start
+context. In your project's or personal `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "for f in $(ls -1r memory/sessions/*.md 2>/dev/null | head -3); do echo \"=== $f ===\"; cat \"$f\"; done"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Why this is opt-in and never installed by `ENABLE.md`:** the installed `.gitignore`
+deliberately ignores **all of `.claude/`** — it is personal, per-machine runtime config, and
+a *committed* `settings.json` tends to accrete personal permission allow-lists into a shared
+file (observed in the field). The hook is also Claude-Code-only — Layer-2 in the
+trigger-design taxonomy (`docs/DESIGN-ritual-triggers.md`), a per-vendor nicety, not the
+vendor-neutral floor. Adopt it per user (personal `settings.json`) or, if your team
+consciously tracks a shared `settings.json`, per repo — either way it is a deliberate choice,
+and the token cost (the injected files, every session) is yours to accept. Note the injection
+guarantees *presence*, not *attendance* — pair it with the protocol, not instead of it.
 
 ## Option A — Claude Code Stop hook (nudge at end of a turn)
 

@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.28.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.29.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-06-30 | agent: Claude Code (2026-06-30-055707)
+- **last_session:** 2026-07-12 | agent: Claude Code (2026-07-12-013817)
 - **last_review:** 2026-06-30 | through 2026-06-30-055707
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -437,6 +437,30 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `docs/DESIGN-vbdi-lifecycle.md` §13): ceremony + scoring live in the target's own space,
   never in `memory/`. → serves: vision-agent-memory
   <!-- id: bp-sdlc-overlay | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-010142 -->
+- [x] **(blueprint — SHIPPED v4.29.0 MINOR, 2026-07-12)** Before-session context *presence* — the read chain (`CLAUDE.md` →
+  `AGENTS.md` → `memory/*`) is advisory prose; the v4.19.0 trigger layer reinforces only the
+  *after*-session rituals (its substrate — git + CI — has no session-start moment), so the
+  before-session read rests on prompt adherence, the same non-determinism v4.20.1 recorded for
+  Copilot self-init. **Field-proven gap** (child-repo report, 2026-07-11: reads skipped under
+  task pressure → skill-unawareness, off-model engagement, rework; patched locally with a
+  SessionStart injection + attestation canary and recommended upstreaming). **Agreed upstream
+  shape:** (a) native `@`-imports in `templates/CLAUDE.md` + `templates/GEMINI.md`
+  (`@AGENTS.md`, `@memory/instructions.md`, `@memory/continuity.md`, `@memory/vision.md`) —
+  markdown-only, presence becomes structural on import-capable runtimes; imports stay in the
+  per-vendor bootstrap files, `AGENTS.md` stays vendor-neutral; (b) an **opt-in** Claude Code
+  `SessionStart` injection recipe in `docs/optional-ritual-hook.md` (tool-only; never installed
+  by default — a committed `.claude/settings.json` conflicts with the installed `.gitignore`
+  and leaks personal allowlists); (c) the attestation canary/oracle stays **downstream**
+  (per-repo, Claude-specific). Honest limits: imports can't cover `memory/sessions/` (dynamic
+  paths); Cursor/Windsurf/Copilot keep prose pointers (Copilot's mitigation is the v4.20.1
+  front-load pattern); imported files enter context every session, so the continuity-bloat
+  controls (v4.24.0/4.28.2/4.28.3) become load-bearing. **Shipped 2026-07-12 as v4.29.0**:
+  root + template `CLAUDE.md`/`GEMINI.md` imports (Gemini in its `@./` form, `.md`-only),
+  optional-hook doc "Option A0" (+ retitle), full lockstep (VERSION/CHANGELOG/README/UPGRADE
+  row + `4.28.4→4.29.0` rung; site changelog auto-includes). Import syntax verified against
+  both vendors' current docs before shipping. → serves: vision-agent-memory
+  (the memory layer is *present* every session, not contingent on the agent choosing to read)
+  <!-- id: bp-before-session-presence | created: 2026-07-12 | last_used: 2026-07-12 | uses: 1 | tier: working | origin: 2026-07-12-013817 -->
 
 ### Backlog — vNext (temporal & supersession) + beyond
 > From the 2026-06-13 industry-alignment assessment:

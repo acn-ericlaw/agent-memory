@@ -108,6 +108,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.28.2 | **`memory-lint` `[continuity-bloat]` counts only decay-eligible facts (PATCH):** field report from `mercury-composable` — the fact-count check fired **permanently** even right after a fully correct review, because it counted `tier: core` facts (structural invariants) and pinned `- [ ]` open threads against `continuity_max_facts`, and those can never be archived. That turned the primary lean signal into chronic noise → alarm fatigue (the exact "nobody archives" failure v4.24.0 set out to fix). Fix aligns the count with `decay-policy.md`'s documented intent ("count of **decaying** facts/threads"): `check_continuity_health` now excludes `tier: core` + pinned ids before comparing (both runtimes at parity + mirror regression tests; warning text now reads "decay-eligible facts"). A repo with 14 core + 11 open threads + 16 working facts now reads `16 < 30` (clean) instead of `41 > 30`. Re-copy the `memory-lint` skill files (both runtimes). Skill description unchanged → adapters need no re-sync |
 | 4.28.3 | **`[continuity-bloat]` line-count message is decay-aware (PATCH):** a second `mercury-composable` report (29-module reactor) — after a clean review the *fact* count is healthy but the `continuity_max_lines` backstop trips on genuinely-active, dense Key Decisions, and the review has **nothing to archive**, so the warning is unclearable *and* its "a review is due to lean it down" wording nudges toward premature archival of active facts (REVIEW.md's costliest error). Same failure class as v4.28.2, on the line axis. `memory-lint` now computes `archivable` (facts overdue for decay + superseded); when lines exceed the cap but `archivable == 0` the message names the real lever — "condense shipped decisions, or raise `continuity_max_lines`" — instead of prescribing a review that can't help; the actionable message still fires when something *is* archivable. `decay-policy.md` comment notes the cap is meant to be raised for a legitimately large repo. Fact-count check untouched; a dedicated "condense" lever deferred until the need recurs. Re-copy the `memory-lint` skill files (both runtimes) + re-sync `memory/decay-policy.md` comment additively. Skill description unchanged → adapters need no re-sync |
 | 4.28.4 | **`Co-Authored-By` dedup invariant — one trailer per collaborator, keyed on email (PATCH):** a third `mercury-composable` report — the v4.28.0 attribution guidance assumed the agent *fully authors* the message, but it co-authors it **with its harness**, which often injects its own (model-version) `Co-Authored-By`; appending a second stable-name trailer produced duplicate co-authors for one collaborator (squash-merges compounded it — one commit reached 55 trailer lines). `AGENTS.md` (root + `templates/`) reframes the model (*reconcile* the harness's message, don't blindly append) and states the invariant — **at most one `Co-Authored-By` per collaborator, matched on email** (`Claude Code` / `Claude Opus 4.8` / `Gemini CLI` are one collaborator at one `noreply@…` address) — with a 3-branch resolution tree + forge-aware squash guidance. PR-template footer + docs site updated to match. Doc-only; a dedup **hook** and lint advisory were deliberately **deferred** (an auto-dedup `commit-msg` hook would rewrite commits — a departure from the tool's never-mutate-your-commits stance). Re-sync `AGENTS.md` + `.github/pull_request_template.md`. No memory-file shape change; skills/adapters unchanged |
+| 4.29.0 | **Before-session context presence (MINOR):** closes the before-session half of the ritual-trigger asymmetry — v4.19.0 made the *after*-session rituals fire vendor-neutrally, but git/CI has no session-start moment, so "read `AGENTS.md`/`memory/*` first" stayed advisory prose (empirically skipped under task pressure; child-repo field report 2026-07-11). `templates/CLAUDE.md` + `templates/GEMINI.md` now carry native **`@`-imports** (`@AGENTS.md`, `@memory/instructions.md`, `@memory/continuity.md`, `@memory/vision.md`; Gemini uses the `@./` form, `.md`-only) so the hub + core memory files are structurally present every session on import-capable runtimes — same fix-shape as v4.20.1's copilot-instructions front-load; imports live only in per-vendor bootstrap files, `AGENTS.md` stays vendor-neutral. `docs/optional-ritual-hook.md` (tool-only) gains an **opt-in** Claude Code `SessionStart` injection recipe — never installed by default (a committed `.claude/settings.json` conflicts with the installed `.gitignore` and risks leaking personal allowlists). Attestation canaries remain a downstream per-repo pattern. Honest limits: imports can't express dynamic paths (`memory/sessions/`); Cursor/Windsurf/Copilot keep the prose pointer; imported files enter context every session, so the continuity-bloat controls (v4.24.0/4.28.2/4.28.3) are now load-bearing. No memory-file shape change; skills/adapters unchanged |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1617,3 +1618,48 @@ a deterministic resolution tree and forge-aware squash guidance. No code, no mem
    truncate-first one-liner.**
 4. **Report**: commit/PR co-author trailers now reconcile to one line per collaborator (keyed on
    email); the enforcement hook was deliberately deferred. Adapters need no re-sync (skills unchanged).
+
+---
+
+## Rung: 4.28.4 → 4.29.0 — before-session context presence: bootstrap `@`-imports + opt-in SessionStart recipe (MINOR)
+
+**What changed:** closes the before-session half of the ritual-trigger asymmetry. v4.19.0 made the
+*after*-session rituals fire vendor-neutrally (git hook + CI), but that substrate has no
+session-start moment, so the "read `AGENTS.md` / `memory/*` first" instruction remained advisory
+prose — prompt adherence, empirically skipped under task pressure (child-repo field report,
+2026-07-11: skill-unawareness, off-model engagement, rework). Fix, in philosophy order: **(a)** the
+`templates/CLAUDE.md` and `templates/GEMINI.md` bootstrap pointers now carry native **`@`-imports**
+(`@AGENTS.md`, `@memory/instructions.md`, `@memory/continuity.md`, `@memory/vision.md` — Gemini CLI
+uses the `@./path.md` form and imports `.md` files only) so the hub and core memory files are
+**structurally present** in every Claude Code / Gemini CLI session — markdown-only, no hooks, the
+same fix-shape as v4.20.1's copilot-instructions front-load. Imports live only in the per-vendor
+bootstrap files; `AGENTS.md` stays vendor-neutral. **(b)** `docs/optional-ritual-hook.md`
+(tool-only, not installed) gains an **opt-in** Claude Code `SessionStart` injection recipe for
+teams that also want `memory/sessions/` recency injected — never installed by default (a committed
+`.claude/settings.json` conflicts with the installed `.gitignore`, and risks leaking personal
+allowlist entries into a shared file). Attestation canaries remain a downstream per-repo pattern,
+not part of the tool. Honest limits: imports can't express dynamic paths (`memory/sessions/`
+newest-N); Cursor/Windsurf/Copilot have no import mechanism and keep the prose pointer; the
+imported files enter context every session, so the continuity-bloat controls
+(v4.24.0/4.28.2/4.28.3) are now load-bearing, not cosmetic. Presence is guaranteed; *attendance*
+remains agent judgment. No memory-file shape change; skills/adapters unchanged.
+
+**Steps:**
+
+1. **Re-sync the bootstrap pointers additively.** Only for bootstrap files that are *ours*
+   (content check: they reference the agent-memory system / `memory/instructions.md`): merge the
+   import block from `templates/CLAUDE.md` into the target's `CLAUDE.md`, and from
+   `templates/GEMINI.md` into `GEMINI.md`, **preserving** the project name/one-liner and any
+   repo-specific lines — merge, never overwrite. Skip a vendor's file the target doesn't have.
+2. **Offer (don't install) the SessionStart recipe.** Point the user at
+   `docs/optional-ritual-hook.md` → "Option A0" (tool-side doc); adopting it is a conscious
+   per-user/per-repo choice.
+3. **Stamp** `.agent/version.md` → `version: 4.29.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+4. **Verify:** in a fresh Claude Code session the memory files are present without an explicit
+   read (the agent can state the current `last_session` / top open thread before opening any
+   file); `memory-lint` clean.
+5. **Report**: before-session context presence is now structural on import-capable runtimes and
+   documented as an opt-in hook elsewhere; the after/before trigger asymmetry is closed at the
+   presence level.
