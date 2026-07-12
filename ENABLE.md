@@ -564,8 +564,32 @@ Copy from `templates/` into target repo root:
 
 `CLAUDE.md` and `GEMINI.md` contain `{{PROJECT_NAME}}` and `{{PROJECT_ONELINE}}`
 placeholders — fill them from your Step 4 analysis (project name + a one-line
-description) so eagerly-loaded runtimes get context without an extra hop. The
-remaining bootstrap files install verbatim.
+description) so eagerly-loaded runtimes get context without an extra hop. They also
+contain a `{{BOOTSTRAP_IMPORTS}}` placeholder — expand it to that vendor's **native
+import block** (the v4.29.0 before-session presence feature; it is held as a
+placeholder in `templates/` so the tool repo itself carries no live imports under
+`templates/` — with live imports there, runtimes that auto-load directory-scoped
+instruction files pulled the placeholder template stubs into context, v4.29.1):
+
+For `CLAUDE.md` (Claude Code `@path` idiom):
+
+```text
+@AGENTS.md
+@memory/instructions.md
+@memory/continuity.md
+@memory/vision.md
+```
+
+For `GEMINI.md` (Gemini CLI `@./path.md` idiom — it imports `.md` files only):
+
+```text
+@./AGENTS.md
+@./memory/instructions.md
+@./memory/continuity.md
+@./memory/vision.md
+```
+
+The remaining bootstrap files install verbatim.
 
 Also install the evolving-memory protocol docs at the target root, **copied
 verbatim from this tool's root** (they are generic — no placeholders):
