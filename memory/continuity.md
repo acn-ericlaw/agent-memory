@@ -127,7 +127,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   template) + PR-template footer comment, `VERSION`→4.28.0, `CHANGELOG`, `README` (row + 10-cap trim),
   `UPGRADE` (row + rung), docs site. No memory-shape/skill/adapter change. → serves: vision-agent-memory
   (authorship stays a faithful, stable representation of the AI collaborator over time)
-  <!-- id: coauthor-stable-identity-v4280 | created: 2026-06-30 | last_used: 2026-06-30 | uses: 1 | tier: working | origin: 2026-06-30-054342 -->
+  <!-- id: coauthor-stable-identity-v4280 | created: 2026-06-30 | last_used: 2026-06-30 | uses: 1 | tier: active | origin: 2026-06-30-054342 -->
 
 - [x] **Shipped v4.27.0 (MINOR) — standardized PR descriptions: lead with What / Why.** From a **maintainer
   suggestion** to standardize the look-and-feel of pull-request descriptions and **propagate it to every
@@ -160,7 +160,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   **correct archival**. Lockstep: memory-lint + refresh-metadata scripts + tests (memory-lint 34), `DECAY.md`
   rule 4, both SKILL.md notes, `VERSION`→4.26.1, `CHANGELOG`, `README`, `UPGRADE` (row + rung). Descriptions
   unchanged → adapters untouched. → serves: vision-agent-memory (the advisory stays signal, not noise)
-  <!-- id: pinned-tier-refinement-v4261 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: active | origin: 2026-06-28-181738 -->
+  <!-- id: pinned-tier-refinement-v4261 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-181738 -->
 
 - [x] **Shipped v4.26.0 (MINOR) — `refresh-metadata` (7th built-in) + a `memory-lint` `[stale-metadata]`
   advisory.** From a **cross-vendor field test**: Copilot / Gemini 3.1 Pro committed the v4.25.0 upgrade to
@@ -180,7 +180,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (steps 2–3), `ENABLE.md` §5i (7 built-ins), `README`/`ADR`/continuity lists, adapters (8 skills → 48),
   `VERSION`→4.26.0, `CHANGELOG`, `UPGRADE` (row + rung). → serves: vision-agent-memory (the review's
   deterministic half is now mechanized; only judgment is left to the agent — across vendors)
-  <!-- id: refresh-metadata-builtin-v4260 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 2 | tier: active | origin: 2026-06-28-175909 -->
+  <!-- id: refresh-metadata-builtin-v4260 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 2 | tier: archive-candidate | origin: 2026-06-28-175909 -->
 
 - [x] **Shipped v4.25.0 (MINOR) — `archive-fact`, a deterministic safe archive-move helper (6th built-in).**
   From a **cross-vendor critique** (Copilot / Gemini 3.1 Pro, `review-scratch/critique.md`): "agent behaviors
@@ -198,7 +198,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   §5i (6 built-ins), `README`/`ADR`/continuity built-in lists, adapters synced (7 skills → 42),
   `VERSION`→4.25.0, `CHANGELOG`, `UPGRADE` (row + rung). → serves: vision-agent-memory (faithful enablement —
   the riskiest state-mutation is now deterministic, not left to per-vendor agent diligence)
-  <!-- id: archive-fact-builtin-v4250 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: active | origin: 2026-06-28-172159 -->
+  <!-- id: archive-fact-builtin-v4250 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-172159 -->
 
 - [ ] **(backlog) Mode B upgrade automation — scope the mechanical steps only.** From the same Gemini critique
   (point 1): as the user base grows, the high-touch Mode B upgrade (re-sync specific files, run tools, stamp
@@ -475,7 +475,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   row + `4.28.4→4.29.0` rung; site changelog auto-includes). Import syntax verified against
   both vendors' current docs before shipping. → serves: vision-agent-memory
   (the memory layer is *present* every session, not contingent on the agent choosing to read)
-  <!-- id: bp-before-session-presence | created: 2026-07-12 | last_used: 2026-07-12 | uses: 1 | tier: working | origin: 2026-07-12-013817 -->
+  <!-- id: bp-before-session-presence | created: 2026-07-12 | last_used: 2026-07-12 | uses: 2 | tier: active | origin: 2026-07-12-013817 -->
 
 ### Backlog — vNext (temporal & supersession) + beyond
 > From the 2026-06-13 industry-alignment assessment:
