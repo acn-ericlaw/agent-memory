@@ -11,6 +11,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.29.0, 7/12/2026
+
+> **Before-session context presence — bootstrap `@`-imports + an opt-in SessionStart recipe (MINOR).**
+> A child-repo field report (2026-07-11) showed agents skipping the before-session read chain
+> (`CLAUDE.md → AGENTS.md → memory/*`) under task pressure — skill-unawareness, off-model engagement,
+> rework, apparent "memory loss." The root cause is structural, not a one-off lapse: the v4.19.0
+> trigger layer reinforces only the *after*-session rituals, because its vendor-neutral substrate
+> (git + CI) has no session-start moment — so the before-session read rested on prompt adherence,
+> the same non-determinism v4.20.1 recorded for Copilot self-init. This closes the *presence* half
+> of that asymmetry; *attendance* remains agent judgment.
+
+### Added
+- **Native `@`-imports in the bootstrap pointers.** `templates/CLAUDE.md` and `templates/GEMINI.md`
+  (and this repo's own root pointers — dogfooded) now import `@AGENTS.md`,
+  `@memory/instructions.md`, `@memory/continuity.md`, `@memory/vision.md`, so the hub + core
+  memory files are **structurally present** at session start on import-capable runtimes
+  (Claude Code: `@path`, relative to the containing file, max 4 hops, code blocks skipped;
+  Gemini CLI: the `@./path.md` form, `.md` files only, max depth 5). Markdown-only, no hooks —
+  the same fix-shape as v4.20.1's copilot-instructions front-load. Imports live **only in the
+  per-vendor bootstrap files**; `AGENTS.md` stays vendor-neutral.
+- **Opt-in `SessionStart` injection recipe** in `docs/optional-ritual-hook.md` (tool-only, never
+  installed) — "Option A0," for teams that also want `memory/sessions/` recency injected (imports
+  can't express dynamic paths). Deliberately **not** installed by `ENABLE.md`: the installed
+  `.gitignore` ignores all of `.claude/` (personal runtime config; a committed `settings.json`
+  accretes personal allow-lists — observed in the field), and the hook is Claude-Code-only —
+  Layer-2 in the trigger-design taxonomy, a per-vendor nicety, not the vendor-neutral floor.
+
+### Changed
+- **Honest limits, stated where they bite:** the bootstrap note tells the agent imports can't
+  express dynamic paths — the newest 2–3 `memory/sessions/` logs stay an explicit read;
+  Cursor/Windsurf/Copilot have no import mechanism and keep the prose pointer (Copilot's
+  mitigation remains the v4.20.1 front-load pattern). The imported files enter context every
+  session, so the continuity-bloat controls (v4.24.0/4.28.2/4.28.3) are now load-bearing, not
+  cosmetic. Attestation canaries (a child repo's local hardening) remain a downstream per-repo
+  pattern, not part of the tool.
+- **Lockstep:** `VERSION` → 4.29.0; `CHANGELOG`; `README` row; `UPGRADE.md` row +
+  `4.28.4 → 4.29.0` rung; root + template `CLAUDE.md`/`GEMINI.md`; `docs/optional-ritual-hook.md`
+  (retitled "Reinforcing the session rituals with hooks" — it now covers a before-session layer).
+  No memory-file shape change; skills/adapters unchanged.
+
 ## Version 4.28.4, 7/6/2026
 
 > **`Co-Authored-By` trailer duplication — reframed as a dedup-by-email invariant (PATCH).** Third
