@@ -11,6 +11,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.29.1, 7/12/2026
+
+> **Template import blocks become a `{{BOOTSTRAP_IMPORTS}}` placeholder (PATCH).** Cross-vendor
+> dogfooding of v4.29.0 (a GitHub Copilot assessment, independently corroborated live on Claude Code)
+> found a tool-repo instruction bleed-through the release amplified: runtimes that auto-load
+> **directory-scoped instruction files** picked up `templates/CLAUDE.md`, and because `@`-imports
+> resolve *relative to the containing file*, its live import block pulled the **placeholder template
+> stubs** (`templates/AGENTS.md`, `templates/memory/*` — `{{PROJECT_NAME}}` junk, "last_session:
+> (none yet)", conflicting "Identify yourself as…" lines) into context as if they were real
+> instructions. Tool-repo-only: installed targets have no `templates/` directory.
+
+### Fixed
+- **`templates/CLAUDE.md` + `templates/GEMINI.md` no longer carry live import lines.** The block is
+  now a `{{BOOTSTRAP_IMPORTS}}` placeholder (the established `{{UPPER_SNAKE_CASE}}` mechanism);
+  `ENABLE.md` Step 6 defines each vendor's literal block (Claude `@path` idiom / Gemini `@./path.md`)
+  and expands it at install. **Installed output is byte-identical to v4.29.0's** — enabled repos need
+  nothing beyond a version stamp (see the `4.29.0 → 4.29.1` rung).
+- **The `4.28.4 → 4.29.0` rung no longer points at the templates for the block** — it references the
+  literal blocks in `ENABLE.md` Step 6, so a ladder run can't copy the placeholder verbatim.
+
+### Changed
+- **Honest residual, documented:** a runtime that auto-loads a nested `AGENTS.md` directly may still
+  surface `templates/AGENTS.md` itself — behavior that predates v4.29.0 and belongs to the runtime;
+  this patch removes the amplification (the memory-stub pull-in via imports), which is the part the
+  tool controls. Root `CLAUDE.md`/`GEMINI.md` keep their live imports — that's the feature, dogfooded.
+- **Lockstep:** `VERSION` → 4.29.1; `CHANGELOG`; `README` row; `UPGRADE.md` row + rung (+ the 4.29.0
+  rung amendment); `templates/CLAUDE.md`/`GEMINI.md`; `ENABLE.md` Step 6. No memory-file shape change;
+  skills/adapters unchanged.
+
 ## Version 4.29.0, 7/12/2026
 
 > **Before-session context presence — bootstrap `@`-imports + an opt-in SessionStart recipe (MINOR).**

@@ -10,9 +10,6 @@ session start (presence is guaranteed; *attending* to them is still the protocol
 can't express dynamic paths — still scan the newest 2–3 logs in `memory/sessions/` per the
 protocol.
 
-@AGENTS.md
-@memory/instructions.md
-@memory/continuity.md
-@memory/vision.md
+{{BOOTSTRAP_IMPORTS}}
 
 Identify yourself as **Claude Code** in all session logs.

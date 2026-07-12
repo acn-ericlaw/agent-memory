@@ -109,6 +109,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.28.3 | **`[continuity-bloat]` line-count message is decay-aware (PATCH):** a second `mercury-composable` report (29-module reactor) — after a clean review the *fact* count is healthy but the `continuity_max_lines` backstop trips on genuinely-active, dense Key Decisions, and the review has **nothing to archive**, so the warning is unclearable *and* its "a review is due to lean it down" wording nudges toward premature archival of active facts (REVIEW.md's costliest error). Same failure class as v4.28.2, on the line axis. `memory-lint` now computes `archivable` (facts overdue for decay + superseded); when lines exceed the cap but `archivable == 0` the message names the real lever — "condense shipped decisions, or raise `continuity_max_lines`" — instead of prescribing a review that can't help; the actionable message still fires when something *is* archivable. `decay-policy.md` comment notes the cap is meant to be raised for a legitimately large repo. Fact-count check untouched; a dedicated "condense" lever deferred until the need recurs. Re-copy the `memory-lint` skill files (both runtimes) + re-sync `memory/decay-policy.md` comment additively. Skill description unchanged → adapters need no re-sync |
 | 4.28.4 | **`Co-Authored-By` dedup invariant — one trailer per collaborator, keyed on email (PATCH):** a third `mercury-composable` report — the v4.28.0 attribution guidance assumed the agent *fully authors* the message, but it co-authors it **with its harness**, which often injects its own (model-version) `Co-Authored-By`; appending a second stable-name trailer produced duplicate co-authors for one collaborator (squash-merges compounded it — one commit reached 55 trailer lines). `AGENTS.md` (root + `templates/`) reframes the model (*reconcile* the harness's message, don't blindly append) and states the invariant — **at most one `Co-Authored-By` per collaborator, matched on email** (`Claude Code` / `Claude Opus 4.8` / `Gemini CLI` are one collaborator at one `noreply@…` address) — with a 3-branch resolution tree + forge-aware squash guidance. PR-template footer + docs site updated to match. Doc-only; a dedup **hook** and lint advisory were deliberately **deferred** (an auto-dedup `commit-msg` hook would rewrite commits — a departure from the tool's never-mutate-your-commits stance). Re-sync `AGENTS.md` + `.github/pull_request_template.md`. No memory-file shape change; skills/adapters unchanged |
 | 4.29.0 | **Before-session context presence (MINOR):** closes the before-session half of the ritual-trigger asymmetry — v4.19.0 made the *after*-session rituals fire vendor-neutrally, but git/CI has no session-start moment, so "read `AGENTS.md`/`memory/*` first" stayed advisory prose (empirically skipped under task pressure; child-repo field report 2026-07-11). `templates/CLAUDE.md` + `templates/GEMINI.md` now carry native **`@`-imports** (`@AGENTS.md`, `@memory/instructions.md`, `@memory/continuity.md`, `@memory/vision.md`; Gemini uses the `@./` form, `.md`-only) so the hub + core memory files are structurally present every session on import-capable runtimes — same fix-shape as v4.20.1's copilot-instructions front-load; imports live only in per-vendor bootstrap files, `AGENTS.md` stays vendor-neutral. `docs/optional-ritual-hook.md` (tool-only) gains an **opt-in** Claude Code `SessionStart` injection recipe — never installed by default (a committed `.claude/settings.json` conflicts with the installed `.gitignore` and risks leaking personal allowlists). Attestation canaries remain a downstream per-repo pattern. Honest limits: imports can't express dynamic paths (`memory/sessions/`); Cursor/Windsurf/Copilot keep the prose pointer; imported files enter context every session, so the continuity-bloat controls (v4.24.0/4.28.2/4.28.3) are now load-bearing. No memory-file shape change; skills/adapters unchanged |
+| 4.29.1 | **Template import blocks → `{{BOOTSTRAP_IMPORTS}}` placeholder (PATCH):** tool-repo containment of instruction bleed-through that v4.29.0 amplified. Runtimes that auto-load directory-scoped instruction files picked up `templates/CLAUDE.md` in the tool repo, and its live `@`-imports (relative to the containing file) pulled the **placeholder template stubs** (`templates/AGENTS.md`, `templates/memory/*`) into context as instructions — found by a GitHub Copilot assessment, corroborated live on Claude Code. `templates/CLAUDE.md` + `templates/GEMINI.md` now hold a `{{BOOTSTRAP_IMPORTS}}` placeholder; `ENABLE.md` Step 6 defines the per-vendor literal blocks and expands at install — **installed output byte-identical to v4.29.0**. Targets: version-stamp only |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1648,9 +1649,11 @@ remains agent judgment. No memory-file shape change; skills/adapters unchanged.
 
 1. **Re-sync the bootstrap pointers additively.** Only for bootstrap files that are *ours*
    (content check: they reference the agent-memory system / `memory/instructions.md`): merge the
-   import block from `templates/CLAUDE.md` into the target's `CLAUDE.md`, and from
-   `templates/GEMINI.md` into `GEMINI.md`, **preserving** the project name/one-liner and any
-   repo-specific lines — merge, never overwrite. Skip a vendor's file the target doesn't have.
+   presence note plus that vendor's **literal import block from `ENABLE.md` Step 6** (in
+   `templates/` the block appears as the `{{BOOTSTRAP_IMPORTS}}` placeholder since v4.29.1 —
+   never copy the placeholder itself) into the target's `CLAUDE.md` / `GEMINI.md`,
+   **preserving** the project name/one-liner and any repo-specific lines — merge, never
+   overwrite. Skip a vendor's file the target doesn't have.
 2. **Offer (don't install) the SessionStart recipe.** Point the user at
    `docs/optional-ritual-hook.md` → "Option A0" (tool-side doc); adopting it is a conscious
    per-user/per-repo choice.
@@ -1663,3 +1666,30 @@ remains agent judgment. No memory-file shape change; skills/adapters unchanged.
 5. **Report**: before-session context presence is now structural on import-capable runtimes and
    documented as an opt-in hook elsewhere; the after/before trigger asymmetry is closed at the
    presence level.
+
+---
+
+## Rung: 4.29.0 → 4.29.1 — template import blocks become a `{{BOOTSTRAP_IMPORTS}}` placeholder (PATCH)
+
+**What changed:** tool-repo containment of an instruction bleed-through that v4.29.0 amplified —
+**no installed file changes shape or content**, so this rung is a version-stamp for targets.
+Cross-vendor dogfooding (a GitHub Copilot assessment, corroborated live on Claude Code) showed that
+runtimes which auto-load **directory-scoped instruction files** picked up `templates/CLAUDE.md`
+inside the tool repo — and because `@`-imports resolve *relative to the containing file*, its
+v4.29.0 import block pulled the **placeholder template stubs** (`templates/AGENTS.md`,
+`templates/memory/*` — `{{PROJECT_NAME}}`, "last_session: (none yet)", conflicting identity lines)
+into live context as instructions. Fix: `templates/CLAUDE.md` + `templates/GEMINI.md` now carry a
+`{{BOOTSTRAP_IMPORTS}}` placeholder instead of live import lines; `ENABLE.md` Step 6 defines the
+per-vendor literal blocks and expands the placeholder at install, so **installed output is
+byte-identical to v4.29.0's**. Honest residual: a runtime that auto-loads a nested `AGENTS.md`
+directly may still surface `templates/AGENTS.md` itself — that behavior predates v4.29.0 and is the
+runtime's, not the tool's; this patch removes the amplification (the memory-stub pull-in).
+
+**Steps:**
+
+1. **Nothing to re-sync in the target** — enabled repos have no `templates/` directory, and their
+   installed `CLAUDE.md`/`GEMINI.md` import blocks are already the expanded (correct) form.
+2. **Stamp** `.agent/version.md` → `version: 4.29.1`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+3. **Report**: operator-side containment only; target files unchanged.

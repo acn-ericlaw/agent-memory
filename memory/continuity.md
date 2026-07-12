@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.29.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-07-12 | agent: Claude Code (2026-07-12-022432)
+- **last_session:** 2026-07-12 | agent: Claude Code (2026-07-12-030710)
 - **last_review:** 2026-06-30 | through 2026-06-30-055707
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -97,6 +97,25 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.29.1 (PATCH) — template import blocks → `{{BOOTSTRAP_IMPORTS}}` placeholder.** From a
+  **GitHub Copilot assessment of v4.29.0** (its "Dogfood Finding"), **corroborated live on Claude Code**
+  the same day: runtimes that auto-load directory-scoped instruction files picked up
+  `templates/CLAUDE.md` inside the tool repo, and since `@`-imports resolve *relative to the containing
+  file*, its v4.29.0 import block pulled the **placeholder template stubs** (`templates/AGENTS.md`,
+  `templates/memory/*` — `{{PROJECT_NAME}}` junk, "(none yet)" state, conflicting identity lines) into
+  live context as instructions. Tool-repo-only (targets have no `templates/`), but a real dogfood
+  hazard v4.29.0 amplified. **Fix:** the two templates now hold a `{{BOOTSTRAP_IMPORTS}}` placeholder;
+  `ENABLE.md` Step 6 defines the per-vendor literal blocks (fenced — never import-parsed) and expands at
+  install, so **installed output stays byte-identical to v4.29.0's**; the `4.28.4→4.29.0` rung was
+  amended to reference the Step 6 blocks (not the templates) so a ladder run can't copy the placeholder
+  verbatim. Honest residual: direct nested-`AGENTS.md` auto-load (pre-4.29.0 runtime behavior) may still
+  surface `templates/AGENTS.md`; the amplification is what the patch removes. Root bootstraps keep live
+  imports (the feature, dogfooded). Lockstep: templates ×2, `ENABLE.md` Step 6, `UPGRADE` (row + rung +
+  4.29.0-rung amendment), `VERSION`→4.29.1, `CHANGELOG`, `README` (row + 10-cap trim). Targets:
+  version-stamp only. → serves: vision-agent-memory (the tool's own repo must stay a faithful memory
+  environment while it dogfoods the features it ships)
+  <!-- id: template-import-bleed-v4291 | created: 2026-07-12 | last_used: 2026-07-12 | uses: 1 | tier: working | origin: 2026-07-12-030710 -->
 
 - [ ] **(backlog) Before-session presence for Cursor/Kiro — path-scoped steering imports.** From a
   maintainer question after v4.29.0 shipped ("what about other vendors' entry points?"). v4.29.0
