@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.29.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-07-12 | agent: Claude Code (2026-07-12-013817)
+- **last_session:** 2026-07-12 | agent: Claude Code (2026-07-12-022432)
 - **last_review:** 2026-06-30 | through 2026-06-30-055707
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -97,6 +97,21 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [ ] **(backlog) Before-session presence for Cursor/Kiro — path-scoped steering imports.** From a
+  maintainer question after v4.29.0 shipped ("what about other vendors' entry points?"). v4.29.0
+  covered the only two entry files with native import syntax (`CLAUDE.md` `@path`, `GEMINI.md`
+  `@./path.md`); AGENTS.md-native runtimes (Codex, Kiro, Antigravity) already auto-load the hub —
+  only the `AGENTS.md → memory/*` hop stays voluntary; Copilot/`.cursorrules`/`.windsurfrules` have
+  no import mechanism (the v4.20.1 front-load pattern is the one inline lever — small stable
+  snippets only, never protocol copies). **Two real levers exist, blocked by our own `.gitignore`
+  stance, not the vendors:** Cursor modern rules (`.cursor/rules/*.mdc`) attach files via
+  `@`-references; Kiro steering (`.kiro/steering/*.md`) supports `#[[file:…]]` inclusion. Both dirs
+  are gitignored-personal wholesale today; adopting needs a **path-scoped carve-out** (the
+  `.github/skills/`-inside-tracked-`.github/` pattern) + a committed steering file per vendor.
+  **Don't build speculatively** — trigger is a Cursor or Kiro team reporting the context-read
+  failure class (complaints = adoption signal). → serves: vision-agent-memory
+  <!-- id: ot-before-session-cursor-kiro-backlog | created: 2026-07-12 | last_used: 2026-07-12 | uses: 1 | tier: working | origin: 2026-07-12-022432 -->
 
 - [x] **Shipped v4.28.0 (MINOR) — co-author convention cleanup: stable agent identity + one trailer.** From a
   real-world finding dogfooding v4.27.0 on **mercury-composable**: a squash-merged PR (#126) showed the
