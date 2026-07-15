@@ -110,6 +110,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.28.4 | **`Co-Authored-By` dedup invariant — one trailer per collaborator, keyed on email (PATCH):** a third `mercury-composable` report — the v4.28.0 attribution guidance assumed the agent *fully authors* the message, but it co-authors it **with its harness**, which often injects its own (model-version) `Co-Authored-By`; appending a second stable-name trailer produced duplicate co-authors for one collaborator (squash-merges compounded it — one commit reached 55 trailer lines). `AGENTS.md` (root + `templates/`) reframes the model (*reconcile* the harness's message, don't blindly append) and states the invariant — **at most one `Co-Authored-By` per collaborator, matched on email** (`Claude Code` / `Claude Opus 4.8` / `Gemini CLI` are one collaborator at one `noreply@…` address) — with a 3-branch resolution tree + forge-aware squash guidance. PR-template footer + docs site updated to match. Doc-only; a dedup **hook** and lint advisory were deliberately **deferred** (an auto-dedup `commit-msg` hook would rewrite commits — a departure from the tool's never-mutate-your-commits stance). Re-sync `AGENTS.md` + `.github/pull_request_template.md`. No memory-file shape change; skills/adapters unchanged |
 | 4.29.0 | **Before-session context presence (MINOR):** closes the before-session half of the ritual-trigger asymmetry — v4.19.0 made the *after*-session rituals fire vendor-neutrally, but git/CI has no session-start moment, so "read `AGENTS.md`/`memory/*` first" stayed advisory prose (empirically skipped under task pressure; child-repo field report 2026-07-11). `templates/CLAUDE.md` + `templates/GEMINI.md` now carry native **`@`-imports** (`@AGENTS.md`, `@memory/instructions.md`, `@memory/continuity.md`, `@memory/vision.md`; Gemini uses the `@./` form, `.md`-only) so the hub + core memory files are structurally present every session on import-capable runtimes — same fix-shape as v4.20.1's copilot-instructions front-load; imports live only in per-vendor bootstrap files, `AGENTS.md` stays vendor-neutral. `docs/optional-ritual-hook.md` (tool-only) gains an **opt-in** Claude Code `SessionStart` injection recipe — never installed by default (a committed `.claude/settings.json` conflicts with the installed `.gitignore` and risks leaking personal allowlists). Attestation canaries remain a downstream per-repo pattern. Honest limits: imports can't express dynamic paths (`memory/sessions/`); Cursor/Windsurf/Copilot keep the prose pointer; imported files enter context every session, so the continuity-bloat controls (v4.24.0/4.28.2/4.28.3) are now load-bearing. No memory-file shape change; skills/adapters unchanged |
 | 4.29.1 | **Template import blocks → `{{BOOTSTRAP_IMPORTS}}` placeholder (PATCH):** tool-repo containment of instruction bleed-through that v4.29.0 amplified. Runtimes that auto-load directory-scoped instruction files picked up `templates/CLAUDE.md` in the tool repo, and its live `@`-imports (relative to the containing file) pulled the **placeholder template stubs** (`templates/AGENTS.md`, `templates/memory/*`) into context as instructions — found by a GitHub Copilot assessment, corroborated live on Claude Code. `templates/CLAUDE.md` + `templates/GEMINI.md` now hold a `{{BOOTSTRAP_IMPORTS}}` placeholder; `ENABLE.md` Step 6 defines the per-vendor literal blocks and expands at install — **installed output byte-identical to v4.29.0**. Targets: version-stamp only |
+| 4.30.0 | **Stack-aware `.gitignore` build-output seed (MINOR):** from a greenfield field case (`mercury` — the installed AI-infra-scoped `.gitignore` left the later-arriving Rust toolchain's `target/` unignored; the first build polluted `git status`). `ENABLE.md` Step 7 gains a minimal, separately-sentineled **build-output seed** applied when Step 4 detects a stack (Rust `target/`; Node `node_modules/`, `dist/`; Python venvs; Java/Kotlin `target/`, `build/`, `*.class`; .NET `bin/`, `obj/`) — add-only, de-duplicating; Step 5b seeds a **greenfield Open Thread** carrying the "seed when the stack lands" action (at enable there is no stack to detect); Step 8/9 verify + report it. Explicit non-goal: minimal seed, never a gitignore manager. Operator-side only — no template/shape change |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1693,3 +1694,32 @@ runtime's, not the tool's; this patch removes the amplification (the memory-stub
    `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
    truncate-first one-liner.**
 3. **Report**: operator-side containment only; target files unchanged.
+
+---
+
+## Rung: 4.29.1 → 4.30.0 — stack-aware `.gitignore` build-output seed (MINOR)
+
+**What changed:** `ENABLE.md` gains a minimal, bounded build-output `.gitignore` seed — Step 7
+appends the detected stack's canonical build-output entries under a second, separately-scoped
+sentinel (`# === agent-memory: build output (stack-aware seed …) ===`), add-only and
+de-duplicating; Step 5b seeds a greenfield Open Thread carrying the "seed when the stack lands"
+action; Step 8/9 verify and report it. From a greenfield field case (`mercury`): the installed
+`.gitignore` is deliberately AI-infrastructure-scoped, so a stack arriving *after* enable had no
+build-output ignore and the first build polluted `git status`. Explicit non-goal: a minimal seed,
+never a gitignore manager.
+
+**Steps:**
+
+1. **Optionally apply the seed to the target** (additive): if the target's `.gitignore` does not
+   ignore its detected stack's build output, append the missing entries from the `ENABLE.md`
+   Step 7 table under the build-output sentinel — **add-only, de-duplicated against the whole
+   file; never remove or reorder existing entries**. If the entries already exist anywhere
+   (the common case — e.g. the user added them by hand), add nothing.
+2. **Greenfield targets** (no stack yet): if the target's `continuity.md` lacks a greenfield
+   Open Thread carrying the "seed build-output ignores when the stack lands" action, offer to
+   add one (additive; skip if the stack has since landed and the entries exist).
+3. **Stamp** `.agent/version.md` → `version: 4.30.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+4. **Report**: operator-side protocol change; the only possible target edits are additive
+   `.gitignore` entries and an optional Open Thread.

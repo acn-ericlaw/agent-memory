@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.29.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.30.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-07-12 | agent: Claude Code (2026-07-12-030710)
+- **last_session:** 2026-07-15 | agent: Claude Code (2026-07-15-232735)
 - **last_review:** 2026-06-30 | through 2026-06-30-055707
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -98,6 +98,25 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
+- [x] **Shipped v4.30.0 (MINOR) — stack-aware `.gitignore` build-output seed.** From a **greenfield
+  field case** (`mercury` — a Rust port of mercury-composable started from an empty repo, enabled
+  2026-07-15 at v4.29.1): the installed `.gitignore` is deliberately **AI-infrastructure-scoped**, so
+  when the stack landed *after* enable, the first `cargo build` polluted `git status` until the user
+  hand-added `target/`. The gap splits by **when the stack is knowable**: (a) brownfield — `ENABLE.md`
+  **Step 7** now appends the detected stack's canonical build-output entries under a second,
+  separately-scoped sentinel (`# === agent-memory: build output (stack-aware seed …) ===`; table: Rust
+  `target/`; Node `node_modules/`, `dist/`; Python venvs; Java/Kotlin `target/`, `build/`, `*.class`;
+  .NET `bin/`, `obj/`; Go none) — add-only, de-duplicating (a no-op where entries already exist);
+  (b) greenfield — nothing to seed at enable, so **Step 5b** seeds a `Greenfield — no code yet` Open
+  Thread carrying the "seed when the stack lands" action for the working agent to apply (also fixes
+  that the greenfield thread was previously improvised, not protocol); Step 8 verifies, Step 9 reports.
+  **Explicit non-goal:** minimal seed, never a gitignore manager (no IDE/OS/coverage entries).
+  Operator-side only — templates unchanged (AI-infra scoping is by design), no shape/skill/adapter
+  change. Lockstep: `ENABLE.md` (5b + 7 + 8 + 9), `VERSION`→4.30.0, `CHANGELOG`, `README` (row +
+  10-cap trim), `UPGRADE` (row + `4.29.1→4.30.0` rung with optional additive target steps). → serves:
+  vision-agent-memory (faithful enablement — the first build after enable must not dirty the repo)
+  <!-- id: gitignore-stack-seed-v4300 | created: 2026-07-15 | last_used: 2026-07-15 | uses: 1 | tier: working | origin: 2026-07-15-232735.md -->
+
 - [x] **Shipped v4.29.1 (PATCH) — template import blocks → `{{BOOTSTRAP_IMPORTS}}` placeholder.** From a
   **GitHub Copilot assessment of v4.29.0** (its "Dogfood Finding"), **corroborated live on Claude Code**
   the same day: runtimes that auto-load directory-scoped instruction files picked up
@@ -146,7 +165,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   template) + PR-template footer comment, `VERSION`→4.28.0, `CHANGELOG`, `README` (row + 10-cap trim),
   `UPGRADE` (row + rung), docs site. No memory-shape/skill/adapter change. → serves: vision-agent-memory
   (authorship stays a faithful, stable representation of the AI collaborator over time)
-  <!-- id: coauthor-stable-identity-v4280 | created: 2026-06-30 | last_used: 2026-06-30 | uses: 1 | tier: active | origin: 2026-06-30-054342 -->
+  <!-- id: coauthor-stable-identity-v4280 | created: 2026-06-30 | last_used: 2026-06-30 | uses: 1 | tier: archive-candidate | origin: 2026-06-30-054342 -->
 
 - [x] **Shipped v4.27.0 (MINOR) — standardized PR descriptions: lead with What / Why.** From a **maintainer
   suggestion** to standardize the look-and-feel of pull-request descriptions and **propagate it to every
@@ -164,7 +183,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `ENABLE.md` Step 6 (install template), `VERSION`→4.27.0, `CHANGELOG`, `README` (row + file tree), `UPGRADE`
   (row + rung), docs site (`getting-started`). No memory-file shape change. → serves: vision-agent-memory
   (faithful, traceable delivery — intent is carried at the PR altitude too, across vendors)
-  <!-- id: pr-what-why-convention-v4270 | created: 2026-06-29 | last_used: 2026-06-30 | uses: 2 | tier: active | origin: 2026-06-29-175644 -->
+  <!-- id: pr-what-why-convention-v4270 | created: 2026-06-29 | last_used: 2026-06-30 | uses: 2 | tier: archive-candidate | origin: 2026-06-29-175644 -->
 
 - [x] **Shipped v4.26.1 (PATCH) — `[stale-metadata]` / `refresh-metadata` no longer opine on a pinned
   thread's tier.** From a **mercury sanity check** (post-Copilot review): v4.26.0 flagged every
@@ -494,7 +513,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   row + `4.28.4→4.29.0` rung; site changelog auto-includes). Import syntax verified against
   both vendors' current docs before shipping. → serves: vision-agent-memory
   (the memory layer is *present* every session, not contingent on the agent choosing to read)
-  <!-- id: bp-before-session-presence | created: 2026-07-12 | last_used: 2026-07-12 | uses: 2 | tier: active | origin: 2026-07-12-013817 -->
+  <!-- id: bp-before-session-presence | created: 2026-07-12 | last_used: 2026-07-12 | uses: 3 | tier: active | origin: 2026-07-12-013817 -->
 
 ### Backlog — vNext (temporal & supersession) + beyond
 > From the 2026-06-13 industry-alignment assessment:
@@ -506,7 +525,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   enable surfaced v3.1.0 (`.gitignore`), and the simple-proxy Node→Rust refactor's
   field report drove v3.2.0 (protocol clarifications). Keep feeding real-work insights
   back into this backlog. (Stated 2026-06-13.)
-  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-06-24 | uses: 11 | tier: active -->
+  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-07-12 | uses: 12 | tier: active -->
 
 - [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**
   (2026-06-13) in favor of the markdown-native evolving-memory layer above. Not

@@ -11,6 +11,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.30.0, 7/15/2026
+
+> **Stack-aware `.gitignore` build-output seed (MINOR).** A greenfield field case (`mercury`, a Rust
+> port started from an empty repo, enabled at v4.29.1): the installed `.gitignore` is deliberately
+> scoped to **AI infrastructure**, so when the stack landed *after* enable, the first `cargo build`
+> polluted `git status` until the user hand-added `target/`. The gap splits by *when the stack is
+> knowable*: brownfield enables can seed at Step 7; greenfield enables can only carry the action
+> forward to the moment the stack lands — and the agent working in the repo then is the runtime that
+> applies it.
+>
+> **Why:** the enable advisory already promises "add-only edits to `.gitignore`"; a repo whose first
+> build dirties `git status` undercuts the faithful-enablement goal for the price of a six-row table.
+> Deliberately bounded — an explicit non-goal note keeps it a *minimal seed*, never a gitignore
+> manager.
+
+### Added
+
+- `ENABLE.md` Step 7 → **"Stack-aware build-output seed"**: when Step 4 detected a primary
+  language/stack, append only the missing canonical build-output entries under a second,
+  separately-scoped sentinel (`# === agent-memory: build output (stack-aware seed …) ===`) —
+  add-only, de-duplicating against the whole file (a no-op for repos that already ignore them).
+  Seed table: Rust `target/`; Node/JS/TS `node_modules/`, `dist/`; Python `.venv/`, `venv/`;
+  Java/Kotlin `target/`, `build/`, `*.class`; .NET `bin/`, `obj/`; Go none (builds out of tree).
+- `ENABLE.md` Step 5b: **greenfield enables seed a `- [ ] Greenfield — no code yet` Open Thread**
+  listing what to record when the first code lands — stack, conventions, invariants, **and the
+  stack's build-output ignores** (the Step 7 table, applied at that moment).
+- `ENABLE.md` Step 8 (verify) checks the detected stack's build output is ignored (pre-existing or
+  seeded); Step 9 report gains a greenfield next-steps line.
+
+### Notes
+
+- Operator-side only (`ENABLE.md`): no template, memory-file, skill, or adapter change —
+  `templates/.gitignore` stays AI-infrastructure-scoped by design.
+- Already-enabled repos: nothing required; a future Mode B upgrade may apply the Step 7 seed
+  additively (see the `4.29.1 → 4.30.0` rung).
+
 ## Version 4.29.1, 7/12/2026
 
 > **Template import blocks become a `{{BOOTSTRAP_IMPORTS}}` placeholder (PATCH).** Cross-vendor
