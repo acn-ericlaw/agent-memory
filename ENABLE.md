@@ -364,6 +364,10 @@ Fill in:
   README / `instructions.md` (things that must never change — e.g. "POST-only API",
   "no runtime deps"). If none are obvious, remove the section. Facts here never decay.
 - Open Threads: include any TODOs surfaced during analysis or migration
+- **Greenfield only:** seed a `- [ ] Greenfield — no code yet` Open Thread listing what to
+  record as the first code lands: the stack in `## Stack & Tools`, coding conventions,
+  Architectural Invariants, **and the stack's build-output `.gitignore` entries** (apply the
+  Step 7 stack-aware seed table then — at enable there is no stack to seed)
 - **Metadata footers:** give every fact you write a kebab `id` and the footer
   `<!-- id: … | created: <today> | last_used: <today> | uses: 1 | tier: working -->`.
   Ordinary facts are born `tier: working`; **Architectural Invariants get `tier: core`**;
@@ -660,6 +664,42 @@ add. Adding a path to `.gitignore` does not untrack files already committed, so 
 is safe even if a vendor dir was previously committed (e.g. before a Mode C migration
 moved it to `legacy/`).
 
+### Stack-aware build-output seed (v4.30.0)
+
+The managed block above is deliberately scoped to **AI infrastructure** — it never covers
+language build output. But an enabled repo whose `.gitignore` misses its stack's build
+directory has its first build pollute `git status` (field case: a greenfield enable later
+gained a Rust toolchain, and `target/` had to be hand-added). So, after the managed block:
+
+- **If Step 4 detected a primary language/stack**, check whether its canonical build-output
+  paths (table below) are already ignored **anywhere** in the file. Append only the missing
+  ones under a second, separately-scoped sentinel:
+
+  ```
+  # === agent-memory: build output (stack-aware seed — extend as your stack grows) ===
+  ```
+
+  | Stack | Seed entries |
+  |---|---|
+  | Rust | `target/` |
+  | Node / JS / TS | `node_modules/`, `dist/` |
+  | Python | `.venv/`, `venv/` (bytecode is already in the managed block) |
+  | Java / Kotlin (Maven / Gradle) | `target/`, `build/`, `*.class` |
+  | .NET | `bin/`, `obj/` |
+  | Go | *(none — builds out of tree; skip)* |
+
+  Same discipline as the managed block: **add-only, de-duplicating, never remove or
+  reorder**. If every entry already exists, add nothing (most brownfield repos — this seed
+  is a no-op for them by design).
+- **Greenfield (no stack yet):** there is nothing to seed at enable — the fix is *timing*.
+  Ensure the greenfield Open Thread (Step 5b) carries the "seed the stack's build-output
+  ignores when the stack lands" action, and mention it in the Step 9 next steps. The agent
+  working in the repo when the first build manifest appears applies this table then.
+
+**Non-goal:** this is a minimal seed to keep the first build from polluting `git status`,
+not gitignore management — the team owns their `.gitignore`; never expand the table into
+IDE/OS/coverage/etc. entries.
+
 ### Step 7b — Install / merge `.gitattributes` (Windows line-ending hardening, v4.20.2)
 
 The executable scripts (`*.sh`) and git hooks (`.githooks/*`) **must stay LF**, or Git for Windows
@@ -692,7 +732,9 @@ describe what was intended.
    - `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`,
      `.github/copilot-instructions.md`
    - `.gitignore` exists and contains the agent-memory sentinel line plus the
-     AI-infrastructure entries (Step 7).
+     AI-infrastructure entries (Step 7) — and, when Step 4 detected a stack, its
+     build-output paths are ignored (pre-existing or via the stack-aware seed;
+     greenfield instead carries the action in its Open Thread).
    - `.agent/version.md` records the version from this tool's root `VERSION`.
 
 2. **No unfilled placeholders.** Grep for `{{` in every file you created.
@@ -791,6 +833,8 @@ Print a clear summary including migration details if Mode C ran:
   2. Verify migrated sessions look correct (memory/sessions/)
   3. cd /path/to/target-repo
   4. git add . && git commit -m "chore: AI-enable repo (migrated from <vendor>)"
+  5. (greenfield only) When your stack lands, seed its build-output .gitignore
+     entries — the greenfield Open Thread carries this action (Step 7 table)
 ```
 
 ---
