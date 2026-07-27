@@ -1,0 +1,18 @@
+# agent-memory — root GitLab CI config (v4.31.0).
+# Installed ONLY when the repo had no .gitlab-ci.yml (a pre-existing file is never rewritten —
+# agent-memory adds just the include line there, add-only). The workflow:rules below are the
+# canonical duplicate-pipeline guard AND the root-file switch GitLab requires for merge-request
+# pipelines (MR-matching rules must live in this file — an included file alone can't enable them).
+# If this repo later grows its own CI, keep the include line and fold your jobs in around it.
+# These rules create branch and MR pipelines only — if you add tag-driven jobs (releases), extend
+# workflow:rules with `- if: $CI_COMMIT_TAG`.
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+
+include:
+  - local: '.gitlab/agent-memory-ci.yml'

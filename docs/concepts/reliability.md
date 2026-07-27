@@ -15,14 +15,15 @@ Enable installs two things, agent-activated, with **no manual user step**:
   auto-stubs a session log when the commit did real work but carried none, and re-syncs
   adapters when a skill changed.
 - A **CI floor** — `memory-lint` plus a session-log presence check — with zero per-user
-  setup.
+  setup: GitHub Actions on GitHub, GitLab CI on GitLab (v4.31.0).
 
 `no-build-step-agent-run` still holds: git and CI invoke these in *your* environment; the
 tool itself runs nothing.
 
 !!! warning "Honest limit"
     Git cannot auto-run a committed hook on a fresh clone (a security boundary). So local
-    hooks are **agent-activated** at enable, and **CI is the always-on, zero-config backstop**.
+    hooks are **agent-activated** at enable, and **CI is the always-on, zero-config backstop**
+    (on GitHub and GitLab.com; a self-managed GitLab needs an admin-registered runner first).
 
 ### One log per session, not per commit
 

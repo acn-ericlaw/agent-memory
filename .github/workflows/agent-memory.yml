@@ -1,4 +1,6 @@
 name: agent-memory
+# GitHub half of the forge-aware ritual floor (v4.19.0; forge-aware v4.31.0) — the GitLab twin is
+# .gitlab/agent-memory-ci.yml (installed from the tool's templates/ on GitLab-hosted targets).
 # Vendor-neutral ritual floor (v4.19.0). Runs server-side on every push/PR with ZERO per-user setup —
 # the untrained-user-proof layer (a git hook needs per-clone activation; CI does not). Advisory by
 # default (annotates, never fails the build). Set repo/Actions variable AGENT_MEMORY_STRICT=1 to gate.

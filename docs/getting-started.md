@@ -41,12 +41,14 @@ anything is written. Then it:
 2. **Analyses** the repo (language, stack, type) and **harvests** durable facts from your
    existing docs (ADRs, decision logs, design specs).
 3. **Generates** tailored `memory/` files, installs bootstrap pointers for all major agents,
-   the six skill adapters, and the git-hook + CI triggers.
+   the six skill adapters, and the git-hook + CI triggers (forge-aware since v4.31.0:
+   GitHub Actions on GitHub, GitLab CI on GitLab).
 4. **Preserves** any originals under `legacy/` — never deleted — and reports exactly what
    happened.
 
 There is **no manual setup step**: the agent activates the local git hook itself, and CI is
-the zero-config backstop.
+the zero-config backstop (on GitHub and GitLab.com; a self-managed GitLab needs an
+admin-registered runner).
 
 ## 3 · Work in your AI-enabled repo
 
@@ -60,8 +62,9 @@ From now on, **open the target repo with any AI agent and just work**. It reads 
 automatically, orients without re-explaining, and records decisions as it goes. Commits stay
 deliberate and human-initiated, with a self-identifying `Co-Authored-By:` trailer.
 
-!!! tip "Pull requests lead with What & Why"
-    Enable installs a `.github/pull_request_template.md` so every PR description opens with two
+!!! tip "Pull/merge requests lead with What & Why"
+    Enable installs a description template — `.github/pull_request_template.md` on GitHub,
+    `.gitlab/merge_request_templates/Default.md` on GitLab (v4.31.0) — so every PR/MR description opens with two
     short sections — **What** (the change) and **Why** (the intent it serves) — and closes with a
     self-identifying `Co-Authored-By:` footer naming your **stable agent name** (e.g. `Claude Code`,
     `Gemini CLI` — the actual AI collaborator, not a model version), all drawn from the session
@@ -69,6 +72,10 @@ deliberate and human-initiated, with a self-identifying `Co-Authored-By:` traile
     protocol, so a PR is no exception. Since your harness often injects its *own* `Co-Authored-By`
     (frequently a model-version name), the rule is **at most one trailer per collaborator, keyed on
     email** — reconcile to a single line rather than stacking a second for the same address.
+    (That's GitHub squash behavior. GitLab is the opposite: its default squash message is the MR
+    title only, so body trailers are *dropped* — re-add the trailer when editing the squash message
+    at merge, or use `%{all_commits}` in the project's squash template, which carries body trailers.
+    `%{co_authored_by}` does not — it credits commit authors only.)
 
 A typical session:
 
@@ -96,7 +103,7 @@ flowchart LR
 | `memory/archive/` | Faded facts + a greppable `INDEX.md` (nothing is deleted) |
 | `AGENTS.md` | The hub every vendor's agent reads first |
 | `agent-skills/` | Portable, vendor-neutral skills (with seven built-ins) |
-| `.github/pull_request_template.md` | Seeds the **What / Why** PR-description convention |
+| `.github/pull_request_template.md` / `.gitlab/merge_request_templates/Default.md` | Seeds the **What / Why** description convention (per forge) |
 | `.agent/version.md` | The install manifest (gates in-place upgrades) |
 
 ## Next steps
