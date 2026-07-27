@@ -1942,7 +1942,8 @@ ritual (re-tiering, the archive move, adapter regeneration, integrity checks) ar
 resolve a contradiction, what the Vision is) stays with the agent and the human (§5, §6).</p>
 <p>A second line of maturation hardened <strong>operational reliability</strong> (§5b): the after-session
 ritual no longer depends on an agent reliably self-triggering. Enable now installs a
-vendor-neutral <strong>git post-commit hook + a CI floor</strong> (agent-activated, <strong>zero manual user
+vendor-neutral <strong>git post-commit hook + a CI floor</strong> (forge-aware: GitHub Actions or GitLab
+CI; agent-activated, <strong>zero manual user
 step</strong>), a one-command <strong>first-run init</strong> for fresh clones, Windows line-ending hardening, a
 <strong><code>MERGE.md</code></strong> conflict protocol, and a <strong>safe-write</strong> discipline — all from the adoption
 constraint that <em>any manual step is a barrier once the protocol lands with untrained users</em>.</p>
@@ -2200,7 +2201,7 @@ its documentation:</p>
 <ul>
 <li><strong>Vendor-neutral triggers, agent-activated.</strong> Enable installs a committed <strong><code>post-commit</code>
   git hook</strong> (advisory; auto-stubs a session log when a commit did real work but carried none,
-  and re-syncs adapters when a skill changed) and a <strong>CI floor</strong> (<code>memory-lint</code> + a session-log
+  and re-syncs adapters when a skill changed) and a <strong>CI floor</strong> (GitHub Actions or GitLab CI, v4.31.0: <code>memory-lint</code> + a session-log
   presence check, zero per-user setup). The agent activates the local hook at enable — <strong>no
   manual user step</strong> in the common path. <code>no-build-step-agent-run</code> still holds: git and CI
   invoke them in the user's environment; the tool itself runs nothing. <em>Honest limit:</em> git
@@ -2248,7 +2249,7 @@ its documentation:</p>
   agent and the human. The boundary is <em>judgment vs. arithmetic</em>, never <em>automate the decision</em>.</li>
 <li><strong>No manual user step.</strong> Once the protocol lands with untrained users, any manual op is an
   adoption barrier — so triggers, init, and adapter sync are agent-activated, with CI as the
-  zero-config backstop.</li>
+  zero-config backstop (matched to the hosting forge).</li>
 <li><strong>Additive, non-destructive upgrades.</strong> Versioned (<code>VERSION</code> + per-repo stamp); a repo on
   an older version upgrades in place via an idempotent ladder.</li>
 </ul>
@@ -2260,7 +2261,7 @@ its documentation:</p>
   <strong>Fresh</strong> (generate from analysis), <strong>Already-Ours</strong> (idempotent; upgrade in place if on an
   older version), or <strong>Migrate</strong> (fold vendor files in, preserving originals). It generates
   <code>memory/</code>, <strong>harvests durable facts from the repo's docs</strong>, installs the bootstrap pointers,
-  the six skill adapters, the <strong>git hook + CI triggers</strong>, and a DRAFT Vision + gate — <strong>no
+  the six skill adapters, the <strong>git hook + forge-aware CI triggers</strong>, and a DRAFT Vision + gate — <strong>no
   manual user step</strong>.</li>
 <li><strong>A session.</strong> The agent reads Current State (<code>continuity.md</code>) + the Vision, does the
   work tying it to a Blueprint gap and the Design it realizes, writes a session log with
@@ -2382,7 +2383,7 @@ loop with human gates.</strong></p>
 <tr>
 <td>Ritual execution</td>
 <td>relies on the agent self-triggering</td>
-<td>agent-activated git hook + CI floor + runnable helpers; deterministic arithmetic mechanized, judgment left to the agent; no manual user step</td>
+<td>agent-activated git hook + forge-aware CI floor (GitHub Actions / GitLab CI) + runnable helpers; deterministic arithmetic mechanized, judgment left to the agent; no manual user step</td>
 </tr>
 <tr>
 <td>Second opinion / review</td>

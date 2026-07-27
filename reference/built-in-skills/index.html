@@ -1762,7 +1762,8 @@ Node</strong> at output parity, so it runs on a node-only box too. Nine checks:<
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>agent-skills/memory-lint/scripts/memory-lint.py<span class="w">      </span><span class="c1"># or</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>node<span class="w">   </span>agent-skills/memory-lint/scripts/memory-lint.mjs
 </code></pre></div>
-<p>Read-only — it <strong>verifies</strong>, it never mutates. Errors fail CI; advisories warn.</p>
+<p>Read-only — it <strong>verifies</strong>, it never mutates. Errors surface on the CI floor (GitHub Actions
+or GitLab CI; they fail it under <code>AGENT_MEMORY_STRICT=1</code>); advisories warn.</p>
 <h2 id="refresh-metadata">refresh-metadata<a class="headerlink" href="#refresh-metadata" title="Permanent link">&para;</a></h2>
 <p>Executes the review's deterministic re-tier (REVIEW.md steps 2–3): recomputes every fact's
 <code>last_used</code> / <code>uses</code> / <code>tier</code> from the <code>## Memory References</code> across <code>memory/sessions/</code> and

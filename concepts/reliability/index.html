@@ -1703,14 +1703,15 @@ an untrained team or a less-agentic vendor. The governing adoption constraint be
   auto-stubs a session log when the commit did real work but carried none, and re-syncs
   adapters when a skill changed.</li>
 <li>A <strong>CI floor</strong> — <code>memory-lint</code> plus a session-log presence check — with zero per-user
-  setup.</li>
+  setup: GitHub Actions on GitHub, GitLab CI on GitLab (v4.31.0).</li>
 </ul>
 <p><code>no-build-step-agent-run</code> still holds: git and CI invoke these in <em>your</em> environment; the
 tool itself runs nothing.</p>
 <div class="admonition warning">
 <p class="admonition-title">Honest limit</p>
 <p>Git cannot auto-run a committed hook on a fresh clone (a security boundary). So local
-hooks are <strong>agent-activated</strong> at enable, and <strong>CI is the always-on, zero-config backstop</strong>.</p>
+hooks are <strong>agent-activated</strong> at enable, and <strong>CI is the always-on, zero-config backstop</strong>
+(on GitHub and GitLab.com; a self-managed GitLab needs an admin-registered runner first).</p>
 </div>
 <h3 id="one-log-per-session-not-per-commit">One log per session, not per commit<a class="headerlink" href="#one-log-per-session-not-per-commit" title="Permanent link">&para;</a></h3>
 <p>The hook windows by session. Because the decay model counts session <em>files</em>, per-commit logs
