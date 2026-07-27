@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.31.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions or GitLab CI, v4.31.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-07-27 | agent: Claude Code (2026-07-27-203400)
+- **last_session:** 2026-07-27 | agent: Claude Code (2026-07-27-210655)
 - **last_review:** 2026-07-27 | through 2026-07-27-203400
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -126,6 +126,29 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   forges (the forge seam is where they'd slot in). → serves: vision-agent-memory (adoption stays
   "point it at a repo" — on whichever forge the repo lives)
   <!-- id: gitlab-forge-support-v4310 | created: 2026-07-27 | last_used: 2026-07-27 | uses: 1 | tier: working | origin: 2026-07-27-203400 -->
+
+- [ ] **(next-release candidate) Azure DevOps forge support — field installation exists; mechanics
+  verified (2026-07-27); awaiting maintainer go.** A real installation runs on Azure DevOps, so the
+  complaints-=-adoption trigger is satisfied (unlike Bitbucket, below). Verified against
+  learn.microsoft.com: **clean wins** — `.azuredevops/pull_request_template.md` auto-applies
+  (default-branch-read, `.azuredevops/`→`.vsts/`→`docs/`→root precedence, 4000-char cap); best
+  advisory semantics of any forge (`continueOnError: true` → "partially succeeded" tri-state +
+  `##vso[task.logissue type=warning]`; Build Validation policy has a notify-only Optional mode); two
+  additive seams (multiple pipelines per repo each bound to its own YAML — an own-file job touches
+  nothing of theirs; `- template:` local includes, triggers must stay in the main file); needs
+  `fetchDepth: 0` (shallow=1 default since sprint 209); `System.PullRequest.*` base vars.
+  **The honest asymmetry — activation is not file-driven, twice:** (1) a pipeline is a RESOURCE —
+  committing YAML is inert until `az pipelines create --yml-path … --skip-first-run` binds it
+  (one-time, scriptable, default permission Contributors; implied CI trigger then runs on pushes);
+  (2) Azure Repos ignores the YAML `pr:` trigger — PR-time validation needs the Build Validation
+  branch policy (admin settings change; document as optional human step, never made by the tool).
+  Microsoft-hosted parallelism needs an Azure-subscription link (self-hosted automatic). Attribution:
+  squash drops trailers, no template mechanism, editable at merge — PR-description footer is the
+  durable record. **Proposed shape (v4.32.0):** own-pipeline model (`templates/.azuredevops/
+  agent-memory-ci.yml` + PR template), ENABLE forge detection (dev.azure.com/visualstudio.com), Step 6
+  installs files + REPORTS the one-time activation command (run only at explicit user direction),
+  third squash branch, rung. → serves: vision-agent-memory
+  <!-- id: ot-azure-devops-forge-next | created: 2026-07-27 | last_used: 2026-07-27 | uses: 1 | tier: working | origin: 2026-07-27-210655 -->
 
 - [ ] **(backlog) Bitbucket forge support — trigger-gated; mechanics pre-verified (2026-07-27).** From a
   maintainer question during the v4.31.0 GitLab release ("investigate viability to include Bitbucket").
