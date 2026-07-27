@@ -7,10 +7,10 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.30.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral ritual triggers (committed git hook + CI floor) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.31.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions or GitLab CI, v4.31.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-07-15 | agent: Claude Code (2026-07-15-232735)
-- **last_review:** 2026-06-30 | through 2026-06-30-055707
+- **last_session:** 2026-07-27 | agent: Claude Code (2026-07-27-203400)
+- **last_review:** 2026-07-27 | through 2026-07-27-203400
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
 
@@ -98,6 +98,57 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
+- [x] **Shipped v4.31.0 (MINOR) — GitLab forge support: forge-aware ritual floor + MR template.** From a
+  **GitLab-hosted field report** (2026-07-26): GitLab ignores `.github/` entirely (verified — no shim in
+  templates/CODEOWNERS/importer docs). A 5-agent workflow gap-analysis found exactly **two** dead
+  artifacts — the **CI floor** (fresh clones had NO ritual backstop; the v4.19.0 guarantee silently
+  collapsed) and the **What/Why PR template** — while `.github/` files read by *local* tooling
+  (copilot-instructions, skills adapters) were never broken and stay put on every forge. Root cause
+  named: "vendor-neutral" had conflated *AI vendor* with *hosting forge*. **Shipped:** `ENABLE.md` forge
+  detection (Step 4: remote URL + `.gitlab-ci.yml`/`.gitlab/`; unknown → both sets, additive-safe) +
+  forge-matched install (Step 6/8/9 + write-scope); `templates/.gitlab/agent-memory-ci.yml` (same two
+  checks; advisory via `allow_failure: exit_codes: [42]`, `AGENT_MEMORY_STRICT=1` gates; `image:
+  python:3`, `GIT_DEPTH: 0`); root wiring additive-safe (`templates/.gitlab-ci.yml` verbatim when
+  absent — carries the canonical `workflow:rules` guard GitLab requires in the ROOT file for MR
+  pipelines; pre-existing file → **add-only `include:` entry, never `workflow:rules`** — that would
+  change when the repo's own jobs run; job then rides branch-push pipelines, a sufficient floor);
+  `templates/.gitlab/merge_request_templates/Default.md` (auto-applies, all tiers). **Squash guidance
+  inverts per forge** (AGENTS.md root + template): GitHub piles trailers (dedup, v4.28.x) — GitLab
+  DROPS them (default squash message = MR title only; survive via re-add-at-merge or `%{all_commits}`
+  in the project squash template — NOT `%{co_authored_by}`, which credits commit authors only; the
+  pre-ship adversarial review caught that misprescription against GitLab's own source, plus a
+  missing-`stage:` hazard that could invalidate a target's whole pipeline — both fixed pre-commit).
+  Honest limit: GitLab.com runners zero-config; self-managed needs an
+  admin-registered runner. Lockstep: ENABLE (detection/install/verify/report/consent/write-scope),
+  AGENTS ×2, `.githooks/README` + `init.sh`, `REVIEW.md`,
+  DESIGN-ritual-triggers amendment, 6 docs-site pages, `VERSION`→4.31.0, `CHANGELOG`, `README` (row +
+  10-cap trim + file tree), `UPGRADE` (row + `4.30.0→4.31.0` rung). Non-goals: CODEOWNERS, issue templates, other
+  forges (the forge seam is where they'd slot in). → serves: vision-agent-memory (adoption stays
+  "point it at a repo" — on whichever forge the repo lives)
+  <!-- id: gitlab-forge-support-v4310 | created: 2026-07-27 | last_used: 2026-07-27 | uses: 1 | tier: working | origin: 2026-07-27-203400 -->
+
+- [ ] **(backlog) Bitbucket forge support — trigger-gated; mechanics pre-verified (2026-07-27).** From a
+  maintainer question during the v4.31.0 GitLab release ("investigate viability to include Bitbucket").
+  Verified against Atlassian docs (July 2026) so a future field report can act immediately: **(1) the
+  clean win** — Bitbucket CLOUD supports a committed `.bitbucket/pull_request_template.md` (KB Apr
+  2026; read from the PR's SOURCE branch; overrides the settings field) — the What/Why template is
+  seedable file-based. **(2) The CI floor cannot keep its promise there** — committing
+  `bitbucket-pipelines.yml` runs nothing until a repo ADMIN enables Pipelines (`repository:admin`, a
+  forge setting the agent must never touch); free tier = 50 build-min/month; and there is NO additive
+  include seam (the `import` mechanism is Premium **and** whole-pipeline replacement — adding to an
+  existing file means inserting a step into their sequential list, against add-only). Advisory
+  semantics do exist (`on-fail: strategy: ignore`); PR pipelines carry base-SHA vars
+  (`BITBUCKET_PR_DESTINATION_COMMIT`); clone needs `depth: full`. **(3) Cloud-only** — Data Center has
+  NO native Pipelines and NO committed template file (settings-UI only): enterprise Bitbucket gets
+  nothing. **(4) Attribution** — squash message not templatable on Cloud, trailers mangle into bullet
+  lists, UI ignores Co-authored-by (BSERV-10529 closed won't-fix) — the PR-description footer is the
+  only durable record. **Decision (maintainer, 2026-07-27): defer — don't build speculatively.** The
+  pre-scoped viable shape when a Bitbucket team reports the failure class:
+  `.bitbucket/pull_request_template.md` (clean) + an optional fresh-file-only pipelines floor carrying
+  the admin-toggle honest limit + never editing an existing pipelines file (report a recommendation
+  instead). → serves: vision-agent-memory
+  <!-- id: ot-bitbucket-forge-backlog | created: 2026-07-27 | last_used: 2026-07-27 | uses: 1 | tier: working | origin: 2026-07-27-203400 -->
+
 - [x] **Shipped v4.30.0 (MINOR) — stack-aware `.gitignore` build-output seed.** From a **greenfield
   field case** (`mercury` — a Rust port of mercury-composable started from an empty repo, enabled
   2026-07-15 at v4.29.1): the installed `.gitignore` is deliberately **AI-infrastructure-scoped**, so
@@ -165,7 +216,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   template) + PR-template footer comment, `VERSION`→4.28.0, `CHANGELOG`, `README` (row + 10-cap trim),
   `UPGRADE` (row + rung), docs site. No memory-shape/skill/adapter change. → serves: vision-agent-memory
   (authorship stays a faithful, stable representation of the AI collaborator over time)
-  <!-- id: coauthor-stable-identity-v4280 | created: 2026-06-30 | last_used: 2026-06-30 | uses: 1 | tier: archive-candidate | origin: 2026-06-30-054342 -->
+  <!-- id: coauthor-stable-identity-v4280 | created: 2026-06-30 | last_used: 2026-07-27 | uses: 2 | tier: active | origin: 2026-06-30-054342 -->
 
 - [x] **Shipped v4.27.0 (MINOR) — standardized PR descriptions: lead with What / Why.** From a **maintainer
   suggestion** to standardize the look-and-feel of pull-request descriptions and **propagate it to every
@@ -269,165 +320,6 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   deterministic check, not left to agent diligence; the lesson came from a real product repo's drift)
   <!-- id: decay-policy-retune-v4240 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-165455 -->
 
-- [x] **Shipped v4.23.1 (PATCH) — `last_harvest` marker for incremental harvests.** From a **cross-vendor
-  test drive**: mercury-composable's own agent ran `harvest-knowledge` correctly (clean no-op — memory was
-  already current; full protocol followed, good map-don't-mirror judgment) but had to **infer the harvest
-  window** ("since enable") because nothing recorded *when the last harvest ran*. **Fix:** an optional
-  `last_harvest: YYYY-MM-DD | through <session>` field in `continuity.md` Project State (with `last_review`
-  / `last_invariant_check` — same family: "when did this periodic memory ritual last run"). **Decided
-  against `.agent/version.md`** (the install manifest, version-gating — a different concern; like-with-like
-  + separation-of-concerns favored Project State; maintainer agreed). `harvest-knowledge` now **reads** it
-  to scope the next run and **stamps** it on completion (even a no-op — "docs checked through here"); the
-  check-existing-first guard still prevents duplicates so a re-scan stays safe (`last_harvest` only
-  *scopes*). Wired: `templates/.agent/schema.md` (field), `harvest-knowledge/SKILL.md` (read step 2 + stamp
-  step 7), `VERSION`→4.23.1, `CHANGELOG`, `README` (table), `UPGRADE` (row + `4.23.0→4.23.1` rung). Skill
-  *description* unchanged → adapters unchanged. → serves: vision-agent-memory (recurring harvest scopes
-  incrementally; the marker mirrors the review's `last_review`) (`last-harvest-marker-v4231`).
-  <!-- id: last-harvest-marker-v4231 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-041540 -->
-
-- [x] **Shipped v4.23.0 (MINOR) — `harvest-knowledge` built-in skill (on-demand doc→memory harvest).**
-  Surfaced when test-driving the mercury-composable upgrade: the curious harvest (v4.22.0, `ENABLE.md`
-  Step 4b) seeds memory **once** at enable, but a *living* repo's docs keep evolving with no recurring way
-  to fold new ADRs/design-specs/decision-log entries into memory. Maintainer's call: **leave the
-  enable-time (re-)harvest a fresh-enable event (Mode A), and make the recurring need a skill.** Added a
-  **5th built-in** `agent-skills/harvest-knowledge/` (`provenance: agent-memory-builtin`, no-code/agent-run):
-  re-scan human-authored docs (same net as Step 4b) → distill durable facts into **neutral, shared**
-  `memory/` **additively** (map-don't-mirror; check-existing-first so a re-run doesn't duplicate; conflicts
-  → `Contradiction`; supersede a genuine replacement; budget-with-disclosure). **Explicitly not a vendor
-  `/init`** (which does *code*-analysis → a *vendor* steering file, overwriting): this does
-  knowledge-distillation → neutral memory, additive + repeatable — borrow /init's muscle, output stays
-  neutral. Removed the inline Mode B re-harvest from the `4.21.0→4.22.0` upgrade rung (it's the skill's job
-  now). Wired: `ENABLE.md` §5i (5 built-ins) + Step 8 list, `upgrades-additive` invariant + ADR-0005 (5
-  built-ins), README (tree + version table), `CHANGELOG`, `UPGRADE` (row + `4.22.4→4.23.0` rung),
-  `VERSION`→4.23.0; adapters synced (6 skills → 36; harvest-knowledge 6/6). `memory-lint` OK. → serves:
-  vision-agent-memory (curiosity becomes a recurring capability for living repos, not a one-shot)
-  (`harvest-knowledge-skill-v4230`).
-  <!-- id: harvest-knowledge-skill-v4230 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 2 | tier: archive-candidate | origin: 2026-06-28-032539 -->
-
-- [x] **Shipped v4.22.4 (PATCH) — safe-write safeguard moved into the SHARED layer (`REVIEW.md`).**
-  Maintainer correction: the safe-write lesson from the 2026-06-28 archive-truncation incident
-  (`open(f,"w").write(open(f).read()+…)` wiped the archive 50→6) had only been recorded in my **personal**
-  `~/.claude/` memory — per-machine, useless to teammates/other vendors. A safeguard protecting the review
-  ritual belongs in the **committed shared layer** (the tool's own two-layer principle: personal prefs in
-  `~/`, shared project knowledge in the repo). **Fix:** added two rules to `REVIEW.md` → **Safety** —
-  (1) never truncate a memory file when scripting the move (append-mode `>>` / read-into-var for the
-  archive/`INDEX.md`/`continuity.md`; never the truncate-before-read one-liner); (2) **run `memory-lint`
-  after any scripted memory mutation** (it catches truncation — count drops, links dangle — and git-tracked
-  files recover via `git checkout HEAD`). `REVIEW.md` is installed verbatim into every enabled repo, so all
-  contributors + vendors now inherit it. (Kept the personal memory too — broadened it — but `REVIEW.md` is
-  the authoritative team-facing safeguard.) Lockstep: `REVIEW.md`, `VERSION`→4.22.4, `CHANGELOG`, `README`
-  (table +1/−1, drops 4.19.0), `UPGRADE` (row + `4.22.3→4.22.4` rung). → serves: vision-agent-memory
-  (operational safety for the shared memory layer must itself be shared, not per-machine)
-  (`safe-write-review-safety-v4224`).
-  <!-- id: safe-write-review-safety-v4224 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-025906 -->
-
-- [x] **Shipped v4.22.3 (PATCH) — tightened the post-commit session window 2h → 30 min.** Maintainer
-  observed the v4.22.1 window (2h) was too long: the real problem was follow-up stubs **minutes** apart,
-  and 2h is long enough to wrongly conflate a *genuinely new* session that starts within 2h of the prior
-  session's log (the hook would nudge "enrich the old log" for new work). **Fix:** default window → **30
-  min** (spans a session's commit cadence incl. a short test/think gap; a new session after a >30-min pause
-  still gets its own stub). The override env var changed unit to **minutes** —
-  `AGENT_MEMORY_SESSION_WINDOW_MINUTES` (was `_HOURS`) — because BSD `date -v` rejects a fractional hour
-  (`-v-0.5H`), so a sub-hour default needs integer minutes; both runtimes still supported (`date -v-30M` /
-  `date -d "30 minutes ago"`). Re-validated (2m/25m → suppress; 45m/none → stub; custom override honored).
-  Lockstep: `.githooks/post-commit`, `.githooks/README.md`, `docs/DESIGN-ritual-triggers.md`,
-  `VERSION`→4.22.3, `CHANGELOG`, `README` (table +1/−1, drops 4.18.0), `UPGRADE` (row + `4.22.2→4.22.3` rung).
-  → serves: vision-agent-memory (the backstop should distinguish a session from a new one, not over-suppress)
-  (`session-window-30min-v4223`).
-  <!-- id: session-window-30min-v4223 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-024518 -->
-
-- [x] **Shipped v4.22.2 (PATCH) — lightweight mode: one log per *session*, not per *commit* (agent-side
-  mirror of v4.22.1).** Maintainer accepted the recommendation flagged at v4.22.1: the same per-commit
-  granularity the hook fix addressed also lived on the **agent-behavior** side — the lightweight-mode rule
-  wrote a lite session log for *every* memory-neutral tracked-file change, so an agent making several small
-  commits in one sitting produced a near-duplicate lite log per commit (clutter + decay session-count
-  inflation). **Fix:** `AGENTS.md` (root + template) lightweight "lite log" tier now says — if a session log
-  already exists for *this* working session, a later **memory-neutral** commit **enriches** that log (a
-  one-line "also: …" note) rather than spawning another. The agent needs **no time-window** (unlike the
-  hook): it *knows* it's the same working session. Explicitly preserves the existing model for
-  **memory-relevant** work — distinct events each get their own full log (a multi-task conversation may
-  still yield several), so this only coalesces *trivial* follow-ons. **Dogfooded immediately:** this very
-  v4.22.2 work is memory-relevant → it got its **own** full log (this session), while the prior trivial doc
-  commits would now coalesce. Wording-only — no shape/skill/hook change. Lockstep: `AGENTS.md` (root +
-  template), `VERSION`→4.22.2, `CHANGELOG`, `README` (table +1/−1, drops 4.17.0), `UPGRADE` (row +
-  `4.22.1→4.22.2` rung). → serves: vision-agent-memory (the decay model's integrity needs the session-file
-  count to track *sessions*, not commits — closed on both the hook and agent sides) (`lite-log-per-session-v4222`).
-  <!-- id: lite-log-per-session-v4222 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-023654 -->
-
-- [x] **Shipped v4.22.1 (PATCH) — post-commit auto-stub is per *session*, not per *commit*.** From
-  **downstream `mercury-composable` feedback** (`review-scratch/feedback-2026-06-27-post-commit-session-stub.md`):
-  the `.githooks/post-commit` auto-stub fired on **every** work commit because its only de-dup guard checked
-  for an *untracked* stub — once the agent committed the session log, the next work commit found no waiting
-  stub and wrote a fresh one (~6 near-identical lite logs/session, each with an extra `memory:` commit, and
-  — since the decay model counts session files — `sessions_since_last_used` inflated so facts decayed ~N×
-  fast; ironic given `memory-lint` exists to catch decay miscounts). **Fix:** the auto-stub now suppresses a
-  new stub when a session log exists **within an active-session window** (default 2h; override
-  `AGENT_MEMORY_SESSION_WINDOW_HOURS`), nudging the agent to **enrich that log** instead. Detected by the
-  newest session **filename** timestamp — **immutable + clone-safe** (deliberately *not* `mtime`, which
-  `git clone`/checkout resets to now → would wrongly suppress stubs for hours after a clone) — compared
-  lexicographically to a window-ago stamp (`YYYY-MM-DD-HHMMSS` sorts chronologically). Subsumes the old
-  untracked guard (a fresh stub has a recent filename) and covers the just-committed case; a genuinely new
-  session (no log in window) still stubs (no silent gap). **Tested end-to-end** in a temp repo (S1 work →
-  stub; S2 commit log; S3 work → *suppress*, not a 2nd stub) + the threshold/comparison in isolation (5m/90m
-  → suppress; 3h/none → stub); BSD `date -v` with GNU `date -d` fallback. Lockstep: `.githooks/post-commit`,
-  `.githooks/README.md`, `docs/DESIGN-ritual-triggers.md`, `VERSION`→4.22.1, `CHANGELOG`, `README` (table +1/−1),
-  `UPGRADE` (row + `4.22.0→4.22.1` rung). First post-release patch under the *one version per release*
-  policy (4.22.0 was pushed). → serves: vision-agent-memory (the decay model's integrity depends on a
-  session-file count that tracks *sessions*, not commits) (`post-commit-per-session-v4221`).
-  <!-- id: post-commit-per-session-v4221 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 3 | tier: archive-candidate | origin: 2026-06-28-022903 -->
-
-- [x] **Shipped in v4.22.0 (MINOR; dev-iter 4.22) — curious knowledge harvest at enable.** From a **client-team
-  enablement complaint** (another team, first run on their repo): discovery "was less curious than
-  expected" — a canonical `docs/` folder was **skipped entirely**; when re-asked to recursively analyze
-  it, the agent grabbed only the folder's **top-level** files (not subfolders); and a root-level markdown
-  **kanban board + decision log** were missed. Root cause: `ENABLE.md` **Step 4** was a *classifier*
-  (read a fixed manifest list; "Structure signals" looked only at **top-level** folder names) with **no
-  knowledge-harvest** of the team's own docs. **Fix:** added **Step 4b — Harvest existing project
-  knowledge (be curious)**: recursively descend every doc tree (`docs/`/`doc/`/`wiki/`/`rfcs/`/`adr/`/…,
-  *all* subfolders) + sweep repo/module roots for human-authored knowledge markdown (decision logs, ADRs,
-  kanban/roadmap/TODO, architecture/design, CONTRIBUTING, RFCs) by location and name; **read within a
-  budget (~40 files/~400 KB, prioritized root→docs→recent) and disclose overflow as a
-  `(knowledge-harvest)` Open Thread** so nothing vanishes silently; **distill, don't transcribe**
-  (map-don't-mirror into instructions/Invariants/Open Threads/smoke-test/vision; conflicts → a
-  `Contradiction:` thread). Wired into seeding 5a/5f/5g and a Step 8 verify check. **Operator-side only**
-  (`ENABLE.md`) — **no installed-file shape change, no template re-sync, no adapter sync**; the
-  `4.21.0→4.22.0` rung is a human-gated **optional re-harvest** to backfill a repo enabled by the older
-  shallow scan (additive, never overwrites curated facts). Lockstep: `ENABLE.md` (Step 4 + 4b + 5a/5f/5g
-  + Step 8), `VERSION`→4.22.0, `UPGRADE.md` (table rows for 4.21.0 *and* 4.22.0 — the 4.21.0 row was
-  missing — plus the new rung). `memory-lint` OK (0 errors). Scoping (harvest breadth + bounding)
-  confirmed with the maintainer before authoring. → serves: vision-agent-memory (a memory layer should
-  inherit what the team already knows; curiosity is part of faithful enablement). Complaints = adoption
-  signal.
-  <!-- id: knowledge-harvest-curious-v4220 | created: 2026-06-27 | last_used: 2026-06-28 | uses: 3 | tier: archive-candidate | origin: 2026-06-27-210953 -->
-
-- [x] **Shipped v4.20.0 (MINOR) — first-run init for fresh clones.** Dogfooding `~/sandbox/simple-proxy`
-  with Copilot (fresh clone) exposed the gap: the **memory bootstrap self-initializes** (Copilot read
-  AGENTS.md/memory on `start` — "start from AGENTS.md" was unnecessary), but a clone has the **gitignored
-  skill adapters absent** and the **git hook unactivated** (`core.hooksPath` is local config; git can't
-  auto-run committed hooks on clone). So the user had to run `sync skill adapters` **and** (easily missed)
-  activate the hook — two manual steps, contra the zero-manual/untrained-user constraint. **Fix:**
-  `.githooks/init.sh` (one idempotent command — regenerate adapters + `git config core.hooksPath .githooks`;
-  not a git-hook name so never auto-run) + an `AGENTS.md` **self-init** note (the agent runs it on its first
-  session, since Copilot already reads AGENTS.md on `start`). One agent step (or one human command) instead
-  of two; CI stays the zero-config floor. Lockstep: `.githooks/init.sh` + `README.md`, `AGENTS.md` (root +
-  template), `docs/DESIGN-ritual-triggers.md`, `UPGRADE.md` (rung + table), `README`, `CHANGELOG`,
-  `VERSION`→4.20.0. Dogfooded: init.sh on the tool; pushed to both repos. **Strong validation in the same
-  dogfood:** Copilot praised the separation of concerns, idempotent sync, "executable documentation", and
-  resiliency — "highly robust, deterministic, and easy to reason about." → serves: vision-agent-memory
-  (untrained-user adoption — a fresh clone self-initializes with no manual ritual)
-  **v4.20.1 follow-up (fresh-clone re-test, 2026-06-24):** self-init worked for **Claude Code** (it
-  checked `core.hooksPath`, ran `init.sh` proactively → hook active + adapters synced) but **NOT Copilot
-  CLI** (its `start` front-loads `copilot-instructions.md` + summarizes; skipped the AGENTS.md self-init →
-  hook inactive + adapters absent). The v4.20.0 "Copilot reads AGENTS.md on start" assumption was
-  optimistic. **Fix (4.20.1):** folded the first-run init into the **top of `copilot-instructions.md`**
-  (the file Copilot reliably front-loads). Honest: still prompt-adherence (non-deterministic) —
-  `bash .githooks/init.sh` is the one-command fallback, CI the floor.
-  **VALIDATED 2026-06-24 (fresh re-clone, Copilot CLI / Gemini):** the 4.20.1 fix works — Copilot
-  **self-inited**, running `.githooks/init.sh` as its first step ("explicit and straightforward") before
-  summarizing. So a fresh clone now self-initializes with **zero manual steps on both Claude and Copilot**
-  — the untrained-user / fresh-clone goal is met cross-vendor. Closes the Copilot arc (v4.17.0 → 4.20.1).
-  <!-- id: ritual-init-v4200 | created: 2026-06-24 | last_used: 2026-06-28 | uses: 7 | tier: archive-candidate | origin: 2026-06-24-193329 -->
-
 ### Evolving long-term memory layer (v3.0.0) — BUILT 2026-06-13
 - [ ] **Dogfood backfill (optional):** this repo adopted the layer — added
   Architectural Invariants (core), `memory/decay-policy.md`, `memory/archive/INDEX.md`,
@@ -525,7 +417,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   enable surfaced v3.1.0 (`.gitignore`), and the simple-proxy Node→Rust refactor's
   field report drove v3.2.0 (protocol clarifications). Keep feeding real-work insights
   back into this backlog. (Stated 2026-06-13.)
-  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-07-12 | uses: 12 | tier: active -->
+  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-07-27 | uses: 13 | tier: active -->
 
 - [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**
   (2026-06-13) in favor of the markdown-native evolving-memory layer above. Not
