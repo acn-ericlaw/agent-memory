@@ -25,6 +25,16 @@
 > creates). Same advisory semantics (`allow_failure: exit_codes: [42]`;
 > `AGENT_MEMORY_STRICT=1` gates). Honest limit: GitLab.com runners are zero-config, a self-managed
 > GitLab needs an admin-registered runner.
+> **+ Azure DevOps (v4.32.0):** third forge, from a field installation. Own-pipeline model
+> (`.azuredevops/agent-memory-ci.yml` — a complete pipeline; an existing `azure-pipelines.yml` is
+> never edited) with the best advisory semantics of the set (`##vso` warnings +
+> `task.complete result=SucceededWithIssues` → a native "partially succeeded" tri-state;
+> `AGENT_MEMORY_STRICT=1` fails the run). Its honest limit is **activation**: a pipeline is a
+> *resource*, so the committed file is inert until a one-time `az pipelines create` binding
+> (Contributors-level; enable reports the command, never runs it silently), and Azure Repos ignores
+> the YAML `pr:` key — PR-time validation is an optional Build Validation branch policy (admin).
+> Push builds check the tip commit only (no pushed-range variable) — the log-in-tip-push
+> convention covers it.
 > Sibling to `DESIGN-evolving-memory.md`, `DESIGN-vbdi-lifecycle.md`, `DESIGN-skills-layer.md`, and
 > `DESIGN-fresh-context-review.md`. Realizes the `(blueprint)` gap **`bp-ritual-triggers`** →
 > serves `vision-agent-memory`.

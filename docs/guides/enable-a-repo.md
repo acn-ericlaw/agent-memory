@@ -16,8 +16,8 @@ existing AI footprint and chooses one of three modes.
 
     No prior AI footprint. The agent analyses the repo (language, stack, type), harvests
     durable facts from your docs, and **generates** a tailored `memory/` layer, bootstrap
-    pointers, skill adapters, and the git-hook + CI triggers (forge-aware: GitHub Actions or
-    GitLab CI) — plus a DRAFT Vision and its
+    pointers, skill adapters, and the git-hook + CI triggers (forge-aware: GitHub Actions,
+    GitLab CI, or Azure Pipelines) — plus a DRAFT Vision and its
     confirmation gate.
 
     You may choose a **discovery depth**: a standard scan (default) or an `/init`-depth deep
@@ -43,7 +43,7 @@ existing AI footprint and chooses one of three modes.
 | `memory/` | continuity, vision, sessions, archive, decay-policy |
 | `AGENTS.md` | the hub every vendor's agent reads first |
 | `agent-skills/` | seven built-ins + any promoted skills |
-| `.githooks/` + the forge CI config (`.github/workflows/` or `.gitlab-ci.yml` + `.gitlab/`) | the ritual triggers (agent-activated, forge-aware) |
+| `.githooks/` + the forge CI config (`.github/workflows/`, `.gitlab-ci.yml` + `.gitlab/`, or `.azuredevops/`) | the ritual triggers (agent-activated, forge-aware) |
 | `.agent/version.md` | install manifest (gates upgrades) |
 | `legacy/` | preserved originals (migration only) |
 

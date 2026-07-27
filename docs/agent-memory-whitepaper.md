@@ -50,8 +50,8 @@ resolve a contradiction, what the Vision is) stays with the agent and the human 
 
 A second line of maturation hardened **operational reliability** (§5b): the after-session
 ritual no longer depends on an agent reliably self-triggering. Enable now installs a
-vendor-neutral **git post-commit hook + a CI floor** (forge-aware: GitHub Actions or GitLab
-CI; agent-activated, **zero manual user
+vendor-neutral **git post-commit hook + a CI floor** (forge-aware: GitHub Actions, GitLab
+CI, or Azure Pipelines; agent-activated, **zero manual user
 step**), a one-command **first-run init** for fresh clones, Windows line-ending hardening, a
 **`MERGE.md`** conflict protocol, and a **safe-write** discipline — all from the adoption
 constraint that *any manual step is a barrier once the protocol lands with untrained users*.
@@ -276,11 +276,13 @@ its documentation:
 
 - **Vendor-neutral triggers, agent-activated.** Enable installs a committed **`post-commit`
   git hook** (advisory; auto-stubs a session log when a commit did real work but carried none,
-  and re-syncs adapters when a skill changed) and a **CI floor** (GitHub Actions or GitLab CI, v4.31.0: `memory-lint` + a session-log
-  presence check, zero per-user setup). The agent activates the local hook at enable — **no
+  and re-syncs adapters when a skill changed) and a **CI floor** (GitHub Actions, GitLab CI, or Azure Pipelines: `memory-lint` + a session-log
+  presence check; zero per-user setup on GitHub/GitLab.com — a self-managed GitLab needs an
+  admin-registered runner, and an Azure DevOps pipeline needs a one-time activation). The agent activates the local hook at enable — **no
   manual user step** in the common path. `no-build-step-agent-run` still holds: git and CI
   invoke them in the user's environment; the tool itself runs nothing. *Honest limit:* git
-  cannot auto-run a committed hook on a fresh clone, so CI is the always-on backstop.
+  cannot auto-run a committed hook on a fresh clone, so CI is the backstop wherever it runs
+  server-side (always-on on GitHub/GitLab.com; Azure DevOps once its pipeline is activated).
 - **One log per session, not per commit.** The hook windows by session (the decay model counts
   session *files*, so per-commit logs would inflate the count and decay facts too fast) — a
   downstream report where one session minted ~6 near-identical logs drove this fix.
@@ -325,7 +327,7 @@ its documentation:
   agent and the human. The boundary is *judgment vs. arithmetic*, never *automate the decision*.
 - **No manual user step.** Once the protocol lands with untrained users, any manual op is an
   adoption barrier — so triggers, init, and adapter sync are agent-activated, with CI as the
-  zero-config backstop (matched to the hosting forge).
+  zero-config backstop (matched to the hosting forge; Azure DevOps needs a one-time activation).
 - **Additive, non-destructive upgrades.** Versioned (`VERSION` + per-repo stamp); a repo on
   an older version upgrades in place via an idempotent ladder.
 
@@ -424,7 +426,7 @@ loop with human gates.**
 | Governance | opaque | git history + markdown + human gates |
 | Vendor coupling | locked to one tool | neutral; thin pointers to one hub |
 | Capabilities / skills | per-vendor skill files, not shared | neutral `agent-skills/` + 7 built-ins, regenerated across 6 vendor adapters; authored once, any agent |
-| Ritual execution | relies on the agent self-triggering | agent-activated git hook + forge-aware CI floor (GitHub Actions / GitLab CI) + runnable helpers; deterministic arithmetic mechanized, judgment left to the agent; no manual user step |
+| Ritual execution | relies on the agent self-triggering | agent-activated git hook + forge-aware CI floor (GitHub Actions / GitLab CI / Azure Pipelines) + runnable helpers; deterministic arithmetic mechanized, judgment left to the agent; no manual user step |
 | Second opinion / review | self-review in the same (polluted) context | fresh-context reviewer (any vendor) + bounded, deterministically-gated apply |
 | Process weight | often heavy | lightweight default; SDLC is the target's opt-in |
 

@@ -83,7 +83,8 @@ git-committed `memory/` directory. The files **are** the product; the agent is t
   ritual (re-tiering, the archive move, adapter sync, integrity checks) are runnable
   helpers; every act of judgment stays with the agent and the human.
 - **No manual user step.** Triggers, init, and adapter sync are agent-activated, with CI as
-  the zero-config backstop (GitHub Actions or GitLab CI, matched to the hosting forge).
+  the zero-config backstop (GitHub Actions, GitLab CI, or Azure Pipelines — matched to the hosting
+  forge; Azure DevOps needs a one-time pipeline activation).
 - **Additive, non-destructive upgrades.** Versioned; an older repo upgrades in place via an
   idempotent ladder. Nothing is ever deleted — faded facts archive to a greppable index.
 

@@ -146,6 +146,9 @@ expected (the decay math counts log files — `DECAY.md` §4).
      (GitHub-like compounding, so the dedup rule above then applies). `%{co_authored_by}` does
      **not** carry body trailers — it credits other commit *authors* only, so it does nothing for
      a trailer-only AI collaborator.
+   - **Azure DevOps drops them too** — no auto-append, and no merge-message template mechanism at
+     all. The durable record is the PR-description footer; to carry the trailer into the squash
+     commit, re-add it via "Customize merge commit message" at completion.
    Stable identity keeps attribution as one collaborator across releases, vendors, and forges.
    - **Opening a pull/merge request?** Lead the description with two short sections — **What** (the
      change) and **Why** (the intent it serves — the Blueprint gap, decision, or problem behind
@@ -154,8 +157,8 @@ expected (the decay math counts log files — `DECAY.md` §4).
      footer** you use on commits and session logs, so PR/MR authorship is traceable across vendors
      too. A seeded description template (`.github/pull_request_template.md` on GitHub;
      `.gitlab/merge_request_templates/Default.md` on GitLab) carries all of this; keep it advisory,
-     never a gate. (The *why* is a first-class artifact throughout this protocol, so a PR/MR is no
-     exception.)
+     never a gate — on Azure DevOps, `.azuredevops/pull_request_template.md`. (The *why* is a
+     first-class artifact throughout this protocol, so a PR/MR is no exception.)
 
 **After-session checklist** (the ritual is convention — run it each time):
 - [ ] session log written — ran `date -u +%Y-%m-%d-%H%M%S` for the filename (not `currentDate`); includes `## Memory References`
@@ -192,8 +195,9 @@ expected (the decay math counts log files — `DECAY.md` §4).
 > **`.githooks/post-commit`** (auto-stubs a session log when a commit does real work without one;
 > activated via `git config core.hooksPath .githooks`) + a **CI floor**
 > (`.github/workflows/agent-memory.yml` on GitHub; `.gitlab-ci.yml` + `.gitlab/agent-memory-ci.yml`
-> on GitLab, v4.31.0 — zero per-user setup on GitHub/GitLab.com; a self-managed GitLab needs an
-> admin-registered runner). Treat the session log as part of **done** —
+> on GitLab; `.azuredevops/agent-memory-ci.yml` on Azure DevOps — zero per-user setup on
+> GitHub/GitLab.com; a self-managed GitLab needs an admin-registered runner; an Azure DevOps
+> pipeline needs its one-time activation). Treat the session log as part of **done** —
 > *a task that changed tracked files isn't finished until its log exists.* The triggers are **advisory**
 > (never block) and **no-code** (git/CI run them in your env; the tool runs nothing). See
 > **`.githooks/README.md`** for activation + per-vendor end-of-turn hook extras.
@@ -203,7 +207,7 @@ expected (the decay math counts log files — `DECAY.md` §4).
 > empty vendor adapter dirs or `git config core.hooksPath` is unset, run **`bash .githooks/init.sh`**
 > once (regenerates adapters + activates the post-commit hook) — do this proactively, before other
 > work. (On GitHub / GitLab.com, CI runs server-side regardless; a self-managed GitLab needs an
-> admin-registered runner.)
+> admin-registered runner; an Azure DevOps pipeline runs once its one-time activation is done.)
 
 > **Long session? Keep state externalized so compaction is safe (v4.23.2).** Compaction (your tool's
 > `/compact`, an auto-compact at a context-usage threshold, or a fresh session) summarizes the

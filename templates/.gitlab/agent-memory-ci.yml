@@ -44,7 +44,7 @@ agent-memory:
       fi
       base="$CI_MERGE_REQUEST_DIFF_BASE_SHA"
       [ -n "$base" ] || base="$CI_COMMIT_BEFORE_SHA"
-      case "$base" in ''|0000000000000000000000000000000000000000) base="$(git rev-parse HEAD~1 2>/dev/null || echo '')";; esac
+      case "$base" in ''|0000000000000000000000000000000000000000) base="$(git rev-parse --verify --quiet HEAD~1 2>/dev/null || echo '')";; esac
       if [ -n "$base" ]; then
         changed="$(git diff --name-only "$base" HEAD 2>/dev/null || true)"
         work="$(printf '%s\n' "$changed" | grep -vE '^(memory/|\.agent/)' | grep -v '^$' || true)"

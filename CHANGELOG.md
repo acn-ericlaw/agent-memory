@@ -11,6 +11,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.32.0, 7/27/2026
+
+> **Azure DevOps forge support — own-pipeline ritual floor + PR template (MINOR).** The third
+> forge, and unlike Bitbucket (investigated and deferred the same week) this one has a **real field
+> installation** behind it. Azure DevOps verified as structurally different from both shipped
+> forges: the committed artifacts map cleanly, but **activation is not file-driven** — a pipeline
+> is a *resource* that must be bound to the YAML once, and Azure Repos ignores the YAML `pr:` key
+> entirely (PR validation lives in branch policies). The design leans into what the forge does
+> well and is honest about what the tool cannot do for you.
+
+### Added
+- **Own-pipeline CI floor**: `templates/.azuredevops/agent-memory-ci.yml` — a complete,
+  self-contained pipeline, so an existing `azure-pipelines.yml` is **never touched** (no include
+  splicing, no stage hazards; one repo can carry many pipelines). Same two checks as the other
+  forges; the best advisory semantics of the set — `##vso[task.logissue type=warning]` annotations
+  + `task.complete result=SucceededWithIssues` give a native "partially succeeded" (orange)
+  tri-state; `AGENT_MEMORY_STRICT=1` fails the run; `fetchDepth: 0` (new ADO pipelines default to
+  shallow=1); PR-validation builds diff against `HEAD^1` (the merge commit's target parent).
+- **PR template**: `templates/.azuredevops/pull_request_template.md` — auto-applies to new PRs
+  (default-branch-read; `.azuredevops/` is first in ADO's search order; 4000-char description
+  cap noted in the footer).
+- **Forge detection extended** (`ENABLE.md`): `dev.azure.com` / `*.visualstudio.com` remotes +
+  `azure-pipelines.yml` / `.azuredevops/` signals; Step 6/8/9 + write-scope gained the third
+  branch. Unknown forge now installs the **GitHub + GitLab sets only** — the ADO set requires
+  positive detection, since its pipeline needs activation and a blind install is pure noise.
+- **The honest limit, stated everywhere it matters:** enable **reports** the one-time
+  `az pipelines create … --skip-first-run` command (Contributors-level) and runs it **only at the
+  user's explicit direction**; PR-time validation is documented as the optional Build Validation
+  branch policy (admin; "Optional" mode = notify-only); Microsoft-hosted agents need parallelism —
+  the free grant (Microsoft's request form) or paid parallel jobs via a linked Azure
+  subscription — or a self-hosted agent.
+
+### Changed
+- **Squash-merge guidance gains the third branch** (`AGENTS.md` root + template): Azure DevOps
+  drops trailers like GitLab, but has **no** message-template mechanism at all — the durable
+  record is the PR-description footer; re-add the trailer via "Customize merge commit message" at
+  completion.
+- **Forge-qualified claims updated** across `.githooks/README.md`, `.githooks/init.sh`,
+  `AGENTS.md` ×2, `docs/DESIGN-ritual-triggers.md` (a v4.32.0 status-header amendment),
+  `docs/optional-ritual-hook.md`, and the six docs-site pages.
+- **Lockstep:** `VERSION` → 4.32.0; `CHANGELOG`; `README` (row + 10-cap + file tree);
+  `UPGRADE.md` (row + `4.31.0 → 4.32.0` rung). No memory-file shape change; skills/adapters
+  unchanged. Bitbucket remains a trigger-gated backlog thread.
+
 ## Version 4.31.0, 7/27/2026
 
 > **GitLab forge support — forge-aware ritual floor + MR template (MINOR).** A GitLab-hosted
