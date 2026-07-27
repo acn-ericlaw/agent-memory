@@ -4,7 +4,8 @@
 # ABSENT and the git hook UNACTIVATED (git can't auto-run committed hooks on clone — security).
 # This single command sets both up. The agent runs it itself on a first session (see AGENTS.md);
 # this is the human one-command fallback. On GitHub / GitLab.com, CI runs server-side regardless,
-# with or without this (a self-managed GitLab needs an admin-registered runner).
+# with or without this (a self-managed GitLab needs an admin-registered runner; an Azure DevOps
+# pipeline runs once its one-time activation is done).
 set -e
 cd "$(git rev-parse --show-toplevel 2>/dev/null || echo .)"
 

@@ -226,11 +226,15 @@ reads the team's own docs — don't stop at top-level names)
   a `docs/` (or `doc/`, `documentation/`, `wiki/`) tree is a structure signal *and* a
   knowledge source; recurse it in the harvest below, don't just note that it exists.
 - Presence of `Dockerfile`, `docker-compose.yml`, and CI config — `.github/workflows/`
-  (GitHub Actions) **or `.gitlab-ci.yml` (GitLab CI)** — note which (v4.31.0)
-- **Hosting forge (v4.31.0):** read `git remote get-url origin` — `github.com` → GitHub;
-  `gitlab.com` or a self-managed GitLab host → GitLab (corroborate with `.gitlab-ci.yml` /
-  `.gitlab/` presence). No remote or ambiguous → **unknown** (Step 6 then installs both
-  forge sets — each forge ignores the other's files, so that is additive-safe)
+  (GitHub Actions), **`.gitlab-ci.yml` (GitLab CI)**, or **`azure-pipelines.yml` /
+  `.azuredevops/` (Azure Pipelines, v4.32.0)** — note which (v4.31.0)
+- **Hosting forge (v4.31.0; +Azure DevOps v4.32.0):** read `git remote get-url origin` —
+  `github.com` → GitHub; `gitlab.com` or a self-managed GitLab host → GitLab (corroborate with
+  `.gitlab-ci.yml` / `.gitlab/` presence); `dev.azure.com` or `*.visualstudio.com` → Azure DevOps
+  (corroborate with `azure-pipelines.yml` / `.azuredevops/`). No remote or ambiguous →
+  **unknown** (Step 6 then installs the GitHub + GitLab sets — each forge ignores the other's
+  files, so that is additive-safe; the Azure DevOps set installs only on positive detection,
+  since its pipeline needs a one-time activation and blind installs would just add noise)
 - Presence of `Makefile`, `justfile`, `Taskfile.yml`
 - Presence of test directories (`tests/`, `spec/`, `__tests__/`, `test/`)
 
@@ -258,8 +262,8 @@ From this analysis, determine:
    `memory/continuity.md`:
    `- [ ] Version drift: build manifest is X.Y.Z but <file(s)> reference a different version — verify and align`
    Resolving drift is the user's responsibility, not the enablement step.
-8. **Hosting forge** — GitHub | GitLab | unknown (from the Structure-signals check above;
-   drives the Step 6 forge-matched install — determined even on a Mode C run)
+8. **Hosting forge** — GitHub | GitLab | Azure DevOps | unknown (from the Structure-signals
+   check above; drives the Step 6 forge-matched install — determined even on a Mode C run)
 
 **Monorepo handling:** If project type is monorepo, additionally enumerate each
 top-level module or package: its path, language (if the repo is mixed), and a
@@ -579,7 +583,10 @@ Copy from `templates/` into target repo root:
     `.gitlab/merge_request_templates/Default.md` (auto-applies to new MRs on all tiers; a
     Premium settings-based default template overrides it — mention in the report if the team
     uses one)
-  - Forge unknown → install both.
+  - Azure-DevOps-hosted: `templates/.azuredevops/pull_request_template.md` →
+    `.azuredevops/pull_request_template.md` (auto-applies to new PRs; read from the **default**
+    branch; keep content lean — Azure Repos caps PR descriptions at 4000 characters)
+  - Forge unknown → install the GitHub + GitLab templates.
   Installs verbatim, **tracked** (it travels). If the target already has one, ask per-file
   (overwrite / skip / rename) like any other bootstrap file.
 
@@ -625,13 +632,14 @@ These must travel into the target because the review ritual, skill sync/adopt, a
 tool-operator-only — do **not** install it.)
 
 **Ritual triggers (v4.19.0; forge-aware v4.31.0) — install + activate (no manual user step).** Also
-install these — the GitHub set copies verbatim from this tool's root, the GitLab set from
-`templates/` — so the after-session ritual fires reliably for *any* vendor (see `docs/DESIGN-ritual-triggers.md`):
+install these — the GitHub set copies verbatim from this tool's root, the GitLab and Azure
+DevOps sets from `templates/` — so the after-session ritual fires reliably for *any* vendor (see `docs/DESIGN-ritual-triggers.md`):
 
 - **`.githooks/`** — the committed, vendor-neutral git hooks (`post-commit` + its `README.md`): auto-stub
   a session log when a commit does real work without one; re-sync adapters when a skill changed.
 - The **CI floor** — runs `memory-lint` + an advisory session-log check on every push and
-  pull/merge request. **Forge-aware (v4.31.0):**
+  pull/merge request (on Azure DevOps: pushes only, until an admin adds the optional Build
+  Validation policy). **Forge-aware (v4.31.0; +Azure DevOps v4.32.0):**
   - **GitHub-hosted:** copy **`.github/workflows/agent-memory.yml`** verbatim from this tool's root.
   - **GitLab-hosted:** copy `templates/.gitlab/agent-memory-ci.yml` → `.gitlab/agent-memory-ci.yml`,
     then wire the root config:
@@ -650,18 +658,38 @@ install these — the GitHub set copies verbatim from this tool's root, the GitL
       existing root config creates (branch pipelines where they fire; MR pipelines if the root
       already carries MR-matching rules; a restrictive root workflow restricts the floor too) —
       read the file and state the actual coverage in the report.
-  - **Forge unknown** → install both sets (each forge ignores the other's files).
+  - **Azure-DevOps-hosted:** copy `templates/.azuredevops/agent-memory-ci.yml` →
+    `.azuredevops/agent-memory-ci.yml` — the **own-pipeline model**: a complete, self-contained
+    pipeline, so an existing `azure-pipelines.yml` is **never touched** (one repo can carry many
+    pipelines, each bound to its own YAML). **Activation is not file-driven on this forge:** the
+    committed file is inert until a pipeline resource is bound to it — put the one-time command in
+    the Step 9 report and run it **only at the user's explicit direction** (their credentials;
+    default permission is Contributors), **after the enable commit is pushed** (`az pipelines
+    create --yml-path` binds to the YAML as it exists on the remote — run early, it falls into the
+    CLI's interactive flow):
+    `az pipelines create --name agent-memory --repository <repo> --repository-type tfsgit --branch <default> --yml-path .azuredevops/agent-memory-ci.yml --skip-first-run`
+    **Seed the pending state into memory** so it can't be silently forgotten: add a
+    `- [ ] (forge) Azure DevOps CI floor awaiting one-time activation: <the command>` Open Thread
+    to the target's `continuity.md` (checked off once the first `agent-memory` run appears).
+    Once bound, the file's trigger runs it on every push. PR-time validation on Azure Repos is a
+    **Build Validation branch policy** (admin settings; its "Optional" mode is notify-only) —
+    document it, never configure it. Honest limit: Microsoft-hosted agents need parallelism — the
+    free grant (Microsoft's request form) or paid parallel jobs via a linked Azure subscription —
+    or a self-hosted agent.
+  - **Forge unknown** → install the GitHub + GitLab sets (each forge ignores the other's files).
 
 **Ensure `.githooks/post-commit` is executable** (`chmod +x`; it must be committed with mode `100755`) —
 git **silently ignores** a non-executable hook. Then **the agent activates the local hook**: run
 `git config core.hooksPath .githooks` in the target — **do this yourself; never ask the user** (the
 adoption constraint: any manual step is a barrier). CI needs
 no activation on GitHub or GitLab.com (a committed config runs server-side, zero per-user config);
-a **self-managed GitLab** needs an admin-registered runner or the job queues unrun — say so in the
-report (v4.31.0). *Honest limit:* git can't
+a **self-managed GitLab** needs an admin-registered runner or the job queues unrun, and an
+**Azure DevOps** pipeline is inert until its one-time `az pipelines create` binding — say so in the
+report (v4.31.0/v4.32.0). *Honest limit:* git can't
 auto-run committed hooks on a fresh clone (security), so where no agent has run, **CI is the backstop**.
 Both `.githooks/` and the CI config (`.github/workflows/` on GitHub; `.gitlab-ci.yml` +
-`.gitlab/agent-memory-ci.yml` on GitLab) are **tracked** (they travel); only `.github/skills/` is
+`.gitlab/agent-memory-ci.yml` on GitLab; `.azuredevops/agent-memory-ci.yml` on Azure DevOps) are
+**tracked** (they travel); only `.github/skills/` is
 gitignored. The hooks/CI are **advisory** (never block); the tool runs nothing itself
 (`no-build-step-agent-run` — git/CI invoke them in the user's env).
 
@@ -673,7 +701,8 @@ gitignored. The hooks/CI are **advisory** (never block); the tool runs nothing i
 
 Create `.github/` in the target if it does not exist — Copilot's bootstrap lives there on every
 forge (it is read by local tooling, not by the forge). On a GitLab-hosted target, also create
-`.gitlab/` (the CI job + MR template live there).
+`.gitlab/` (the CI job + MR template live there); on an Azure-DevOps-hosted target, `.azuredevops/`
+(the pipeline + PR template live there).
 
 ---
 
@@ -773,10 +802,12 @@ describe what was intended.
    - `DECAY.md`, `REVIEW.md`, `SKILLS.md`, `MERGE.md`
    - `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`,
      `.github/copilot-instructions.md`
-   - The forge set (v4.31.0), per Step 4 detection — GitHub:
+   - The forge set (v4.31.0/v4.32.0), per Step 4 detection — GitHub:
      `.github/workflows/agent-memory.yml` + `.github/pull_request_template.md`; GitLab:
      `.gitlab/agent-memory-ci.yml` + `.gitlab/merge_request_templates/Default.md` + the
-     `include: local:` entry present in `.gitlab-ci.yml`; unknown forge: both sets
+     `include: local:` entry present in `.gitlab-ci.yml`; Azure DevOps:
+     `.azuredevops/agent-memory-ci.yml` + `.azuredevops/pull_request_template.md` (+ the
+     activation command present in the Step 9 report); unknown forge: the GitHub + GitLab sets
    - `.gitignore` exists and contains the agent-memory sentinel line plus the
      AI-infrastructure entries (Step 7) — and, when Step 4 detected a stack, its
      build-output paths are ignored (pre-existing or via the stack-aware seed;
@@ -846,7 +877,7 @@ Print a clear summary including migration details if Mode C ran:
   • Language:   <language>
   • Stack:      <stack>
   • Type:       <type>
-  • Forge:      <GitHub | GitLab | unknown → both forge sets installed>  (v4.31.0; self-managed GitLab: note the runner prerequisite)
+  • Forge:      <GitHub | GitLab | Azure DevOps | unknown → GitHub+GitLab sets installed>  (self-managed GitLab: note the runner prerequisite; Azure DevOps: one-time pipeline activation in Next steps)
   • Discovery:  <standard scan | deep analysis>  (Fresh Enable — user's choice, recorded in the first session log)
 
   Migrated (Mode C only):
@@ -868,8 +899,8 @@ Print a clear summary including migration details if Mode C ran:
   • agent-skills/  (built-in skills: memory-lint, second-opinion, apply-critique — + regenerated adapters)
   • AGENTS.md, CLAUDE.md, GEMINI.md, .cursorrules,
     .windsurfrules, .github/copilot-instructions.md
-  • .githooks/ + CI floor  (<.github/workflows/agent-memory.yml | .gitlab-ci.yml (created | include appended) + .gitlab/agent-memory-ci.yml | both sets (forge unknown)>; GitLab add-only: state the actual pipeline coverage)
-  • <.github/pull_request_template.md | .gitlab/merge_request_templates/Default.md | both (forge unknown)>  (What/Why description template)
+  • .githooks/ + CI floor  (<.github/workflows/agent-memory.yml | .gitlab-ci.yml (created | include appended) + .gitlab/agent-memory-ci.yml | .azuredevops/agent-memory-ci.yml (inert until activated) | GitHub+GitLab sets (forge unknown)>; GitLab add-only: state the actual pipeline coverage)
+  • <.github/pull_request_template.md | .gitlab/merge_request_templates/Default.md | .azuredevops/pull_request_template.md | GitHub+GitLab (forge unknown)>  (What/Why description template)
   • .gitignore  (created | updated — AI-infrastructure entries; + review-scratch/ for the review pair)
 
   Preserved (Mode C only):
@@ -884,6 +915,9 @@ Print a clear summary including migration details if Mode C ran:
   4. git add . && git commit -m "chore: AI-enable repo (migrated from <vendor>)"
   5. (greenfield only) When your stack lands, seed its build-output .gitignore
      entries — the greenfield Open Thread carries this action (Step 7 table)
+  6. (Azure DevOps only) AFTER pushing the enable commit, activate the ritual floor —
+     one-time, your credentials (also carried by the (forge) Open Thread until done):
+     az pipelines create --name agent-memory --repository <repo> --repository-type tfsgit --branch <default> --yml-path .azuredevops/agent-memory-ci.yml --skip-first-run
 ```
 
 ---
@@ -914,7 +948,9 @@ Respond accordingly.
   `.github/copilot-instructions.md`, `.githooks/` + the forge CI floor —
   `.github/workflows/agent-memory.yml` (GitHub) / `.gitlab/agent-memory-ci.yml` +
   `.gitlab/merge_request_templates/` + `.gitlab-ci.yml` (GitLab; **add-only** when the file
-  pre-exists — only the `include:` entry, never `workflow:rules`) — the v4.19.0/v4.31.0
+  pre-exists — only the `include:` entry, never `workflow:rules`) /
+  `.azuredevops/agent-memory-ci.yml` + `.azuredevops/pull_request_template.md` (Azure DevOps;
+  never touch an existing `azure-pipelines.yml`) — the v4.19.0/v4.31.0/v4.32.0
   ritual triggers, and the bootstrap files listed in Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a
   target.)
 - **Activating the local git hook** (`git config core.hooksPath .githooks`) is the one allowed git-*config*

@@ -112,6 +112,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.29.1 | **Template import blocks → `{{BOOTSTRAP_IMPORTS}}` placeholder (PATCH):** tool-repo containment of instruction bleed-through that v4.29.0 amplified. Runtimes that auto-load directory-scoped instruction files picked up `templates/CLAUDE.md` in the tool repo, and its live `@`-imports (relative to the containing file) pulled the **placeholder template stubs** (`templates/AGENTS.md`, `templates/memory/*`) into context as instructions — found by a GitHub Copilot assessment, corroborated live on Claude Code. `templates/CLAUDE.md` + `templates/GEMINI.md` now hold a `{{BOOTSTRAP_IMPORTS}}` placeholder; `ENABLE.md` Step 6 defines the per-vendor literal blocks and expands at install — **installed output byte-identical to v4.29.0**. Targets: version-stamp only |
 | 4.30.0 | **Stack-aware `.gitignore` build-output seed (MINOR):** from a greenfield field case (`mercury` — the installed AI-infra-scoped `.gitignore` left the later-arriving Rust toolchain's `target/` unignored; the first build polluted `git status`). `ENABLE.md` Step 7 gains a minimal, separately-sentineled **build-output seed** applied when Step 4 detects a stack (Rust `target/`; Node `node_modules/`, `dist/`; Python venvs; Java/Kotlin `target/`, `build/`, `*.class`; .NET `bin/`, `obj/`) — add-only, de-duplicating; Step 5b seeds a **greenfield Open Thread** carrying the "seed when the stack lands" action (at enable there is no stack to detect); Step 8/9 verify + report it. Explicit non-goal: minimal seed, never a gitignore manager. Operator-side only — no template/shape change |
 | 4.31.0 | **GitLab forge support — forge-aware ritual floor + MR template (MINOR):** a GitLab-hosted field report (`.github/` is ignored entirely by GitLab) showed exactly two installed artifacts die there: the **CI floor** (`.github/workflows/agent-memory.yml` never runs → a fresh clone has NO ritual backstop — the v4.19.0 guarantee's silent collapse) and the **What/Why PR template**. "Vendor-neutral" had conflated *AI vendor* with *hosting forge*. Now: `ENABLE.md` Step 4 detects the forge (remote URL + `.gitlab-ci.yml`/`.gitlab/` signals; unknown → install both sets, additive-safe) and Step 6 installs a forge-matched set — GitLab gets `.gitlab/agent-memory-ci.yml` (same two checks; advisory via `allow_failure: exit_codes: [42]`, `AGENT_MEMORY_STRICT=1` gates) wired from `.gitlab-ci.yml` (copied verbatim when absent — carries the canonical `workflow:rules` guard; **add-only `include:` entry when pre-existing — never `workflow:rules`**, which would change when the repo's own jobs run) + `.gitlab/merge_request_templates/Default.md` (auto-applies, all tiers). `AGENTS.md` squash guidance is now forge-aware — the failure mode **inverts**: GitHub piles trailers up (dedup), GitLab's default squash message is the MR title only so trailers are **dropped** (make them survive: re-add at merge, or `%{all_commits}` in the squash template — `%{co_authored_by}` credits commit authors only, never body trailers). Local-tooling `.github/` files (copilot-instructions, skills adapters) correctly stay on every forge. Honest limit: GitLab.com runners are zero-config; self-managed needs an admin-registered runner. Docs/design claims forge-qualified throughout. No memory-file shape change; skills/adapters unchanged |
+| 4.32.0 | **Azure DevOps forge support — own-pipeline ritual floor + PR template (MINOR):** third forge, from a real field installation. Enable detects `dev.azure.com`/`*.visualstudio.com` remotes (+ `azure-pipelines.yml`/`.azuredevops/` signals) and installs `.azuredevops/agent-memory-ci.yml` — a complete, self-contained pipeline (an existing `azure-pipelines.yml` is **never touched**; one repo carries many pipelines) with the best advisory semantics of the set (`##vso` warnings + `task.complete result=SucceededWithIssues` → native "partially succeeded"; `AGENT_MEMORY_STRICT=1` fails the run; `fetchDepth: 0`) — plus `.azuredevops/pull_request_template.md` (auto-applies; default-branch-read; 4000-char cap). **Honest limit — activation is not file-driven:** a pipeline is a *resource*; the committed file is inert until a one-time `az pipelines create … --skip-first-run` binding (Contributors-level; enable REPORTS the command, runs it only at explicit user direction), and Azure Repos ignores the YAML `pr:` key — PR-time validation is an optional Build Validation branch policy (admin; "Optional" mode = notify-only). Squash guidance gains the third branch (ADO drops trailers; no template mechanism; re-add via "Customize merge commit message"). Unknown forge installs GitHub+GitLab sets only (ADO needs positive detection). No memory-file shape change; skills/adapters unchanged |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1778,3 +1779,56 @@ No memory-file shape change; skills/adapters unchanged.
 6. **Report**: the ritual floor + description template now match the hosting forge; on GitLab,
    state the actual pipeline coverage read from the root file's rules (fresh root file → branch +
    MR; add-only include → whatever pipelines the existing config creates).
+
+---
+
+## Rung: 4.31.0 → 4.32.0 — Azure DevOps forge support: own-pipeline ritual floor + PR template (MINOR)
+
+**What changed:** the forge seam gains its third member, from a real field installation. Azure
+DevOps differs from both shipped forges in one structural way — **activation is not file-driven**:
+a pipeline is a *resource*, so a committed YAML is inert until a one-time
+`az pipelines create --yml-path … --skip-first-run` binding (default permission: Contributors),
+and Azure Repos ignores the YAML `pr:` key (PR-time validation is a Build Validation branch
+policy — an admin settings change the tool never makes). The install is therefore the
+**own-pipeline model**: `.azuredevops/agent-memory-ci.yml` is a complete pipeline (an existing
+`azure-pipelines.yml` is never touched), advisory via `##vso[task.logissue type=warning]` +
+`task.complete result=SucceededWithIssues` (native "partially succeeded"; `AGENT_MEMORY_STRICT=1`
+fails the run), `fetchDepth: 0` for the diff-based check. Plus
+`.azuredevops/pull_request_template.md` (auto-applies to new PRs; read from the default branch —
+it takes effect once merged there; 4000-char description cap) and a third squash-guidance branch (ADO drops trailers, no template
+mechanism — re-add via "Customize merge commit message"; the PR-description footer is the durable
+record). No memory-file shape change; skills/adapters unchanged.
+
+**Steps:**
+
+1. **Detect the target's forge**: `git remote get-url origin` — `dev.azure.com` or
+   `*.visualstudio.com` → Azure DevOps (corroborate with `azure-pipelines.yml` / `.azuredevops/`).
+   Not Azure DevOps → skip to step 3.
+2. **Azure-DevOps-hosted: install the set.** Copy `templates/.azuredevops/agent-memory-ci.yml` →
+   `.azuredevops/agent-memory-ci.yml` and `templates/.azuredevops/pull_request_template.md` →
+   `.azuredevops/pull_request_template.md` (ask per-file if one already exists). Do **not** touch
+   any existing `azure-pipelines.yml`. **Report the one-time activation command** (run it only at
+   the user's explicit direction, with their credentials):
+   `az pipelines create --name agent-memory --repository <repo> --repository-type tfsgit --branch <default> --yml-path .azuredevops/agent-memory-ci.yml --skip-first-run`
+   Run it **only after the install commit is pushed** (`--yml-path` binds to the server-side
+   YAML). **Seed a `- [ ] (forge) Azure DevOps CI floor awaiting one-time activation: <command>`
+   Open Thread** in the target's `continuity.md` so the pending state survives the session.
+   Mention the optional Build Validation branch policy (admin; "Optional" = notify-only) and the
+   Microsoft-hosted parallelism prerequisite (free grant via Microsoft's request form, or paid
+   parallel jobs via a linked Azure subscription — or a self-hosted agent).
+3. **Re-sync the forge-aware docs**: `AGENTS.md` from `templates/AGENTS.md` (third squash branch +
+   forge-qualified CI-floor notes) — merge into a customized `AGENTS.md`, never overwrite;
+   re-copy `.githooks/README.md`, `.githooks/init.sh`, and `REVIEW.md` verbatim from the tool root.
+   Also re-copy the existing forge CI job file (`.github/workflows/agent-memory.yml` or
+   `.gitlab/agent-memory-ci.yml`) — v4.32.0 hardens their base-ref fallback
+   (`git rev-parse --verify --quiet`).
+4. **Stamp** `.agent/version.md` → `version: 4.32.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+5. **Verify:** all targets — `memory-lint` clean; `.agent/version.md` reads 4.32.0. Azure DevOps
+   targets additionally: after the user pushes and runs the activation command, the next push
+   shows the `agent-memory` run (findings → "partially succeeded", orange); a new PR auto-fills
+   the What/Why template; the `(forge)` Open Thread is checked off.
+6. **Report**: the ritual floor + description template now cover GitHub, GitLab, and Azure DevOps;
+   on Azure DevOps state plainly whether the pipeline has been activated or is awaiting the
+   one-time command.

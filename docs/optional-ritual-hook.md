@@ -4,7 +4,8 @@
 > committed **`.githooks/post-commit`** (auto-stubs a session log when a commit does real work without
 > one; activated via `git config core.hooksPath .githooks`) and a **CI floor**
 > (`.github/workflows/agent-memory.yml` on GitHub; `.gitlab-ci.yml` + `.gitlab/agent-memory-ci.yml`
-> on GitLab, v4.31.0 — zero per-user setup). Both are **advisory** (never block) and
+> on GitLab; `.azuredevops/agent-memory-ci.yml` on Azure DevOps — zero per-user setup on
+> GitHub/GitLab.com; Azure DevOps needs a one-time pipeline activation). Both are **advisory** (never block) and
 > **no-code** (git/CI run them in the user's env; the tool runs nothing). Rationale + design:
 > `docs/DESIGN-ritual-triggers.md`; activation: `.githooks/README.md`.
 >
