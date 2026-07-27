@@ -1648,8 +1648,8 @@ existing AI footprint and chooses one of three modes.</p>
 <div class="tabbed-block">
 <p>No prior AI footprint. The agent analyses the repo (language, stack, type), harvests
 durable facts from your docs, and <strong>generates</strong> a tailored <code>memory/</code> layer, bootstrap
-pointers, skill adapters, and the git-hook + CI triggers (forge-aware: GitHub Actions or
-GitLab CI) — plus a DRAFT Vision and its
+pointers, skill adapters, and the git-hook + CI triggers (forge-aware: GitHub Actions,
+GitLab CI, or Azure Pipelines) — plus a DRAFT Vision and its
 confirmation gate.</p>
 <p>You may choose a <strong>discovery depth</strong>: a standard scan (default) or an <code>/init</code>-depth deep
 analysis (which writes findings into the <em>neutral</em> memory layer, never a vendor steering
@@ -1689,7 +1689,7 @@ version, it <a href="../upgrade/">upgrades in place</a> via the version ladder.<
 <td>seven built-ins + any promoted skills</td>
 </tr>
 <tr>
-<td><code>.githooks/</code> + the forge CI config (<code>.github/workflows/</code> or <code>.gitlab-ci.yml</code> + <code>.gitlab/</code>)</td>
+<td><code>.githooks/</code> + the forge CI config (<code>.github/workflows/</code>, <code>.gitlab-ci.yml</code> + <code>.gitlab/</code>, or <code>.azuredevops/</code>)</td>
 <td>the ritual triggers (agent-activated, forge-aware)</td>
 </tr>
 <tr>

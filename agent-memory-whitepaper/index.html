@@ -1942,8 +1942,8 @@ ritual (re-tiering, the archive move, adapter regeneration, integrity checks) ar
 resolve a contradiction, what the Vision is) stays with the agent and the human (§5, §6).</p>
 <p>A second line of maturation hardened <strong>operational reliability</strong> (§5b): the after-session
 ritual no longer depends on an agent reliably self-triggering. Enable now installs a
-vendor-neutral <strong>git post-commit hook + a CI floor</strong> (forge-aware: GitHub Actions or GitLab
-CI; agent-activated, <strong>zero manual user
+vendor-neutral <strong>git post-commit hook + a CI floor</strong> (forge-aware: GitHub Actions, GitLab
+CI, or Azure Pipelines; agent-activated, <strong>zero manual user
 step</strong>), a one-command <strong>first-run init</strong> for fresh clones, Windows line-ending hardening, a
 <strong><code>MERGE.md</code></strong> conflict protocol, and a <strong>safe-write</strong> discipline — all from the adoption
 constraint that <em>any manual step is a barrier once the protocol lands with untrained users</em>.</p>
@@ -2201,11 +2201,13 @@ its documentation:</p>
 <ul>
 <li><strong>Vendor-neutral triggers, agent-activated.</strong> Enable installs a committed <strong><code>post-commit</code>
   git hook</strong> (advisory; auto-stubs a session log when a commit did real work but carried none,
-  and re-syncs adapters when a skill changed) and a <strong>CI floor</strong> (GitHub Actions or GitLab CI, v4.31.0: <code>memory-lint</code> + a session-log
-  presence check, zero per-user setup). The agent activates the local hook at enable — <strong>no
+  and re-syncs adapters when a skill changed) and a <strong>CI floor</strong> (GitHub Actions, GitLab CI, or Azure Pipelines: <code>memory-lint</code> + a session-log
+  presence check; zero per-user setup on GitHub/GitLab.com — a self-managed GitLab needs an
+  admin-registered runner, and an Azure DevOps pipeline needs a one-time activation). The agent activates the local hook at enable — <strong>no
   manual user step</strong> in the common path. <code>no-build-step-agent-run</code> still holds: git and CI
   invoke them in the user's environment; the tool itself runs nothing. <em>Honest limit:</em> git
-  cannot auto-run a committed hook on a fresh clone, so CI is the always-on backstop.</li>
+  cannot auto-run a committed hook on a fresh clone, so CI is the backstop wherever it runs
+  server-side (always-on on GitHub/GitLab.com; Azure DevOps once its pipeline is activated).</li>
 <li><strong>One log per session, not per commit.</strong> The hook windows by session (the decay model counts
   session <em>files</em>, so per-commit logs would inflate the count and decay facts too fast) — a
   downstream report where one session minted ~6 near-identical logs drove this fix.</li>
@@ -2249,7 +2251,7 @@ its documentation:</p>
   agent and the human. The boundary is <em>judgment vs. arithmetic</em>, never <em>automate the decision</em>.</li>
 <li><strong>No manual user step.</strong> Once the protocol lands with untrained users, any manual op is an
   adoption barrier — so triggers, init, and adapter sync are agent-activated, with CI as the
-  zero-config backstop (matched to the hosting forge).</li>
+  zero-config backstop (matched to the hosting forge; Azure DevOps needs a one-time activation).</li>
 <li><strong>Additive, non-destructive upgrades.</strong> Versioned (<code>VERSION</code> + per-repo stamp); a repo on
   an older version upgrades in place via an idempotent ladder.</li>
 </ul>
@@ -2383,7 +2385,7 @@ loop with human gates.</strong></p>
 <tr>
 <td>Ritual execution</td>
 <td>relies on the agent self-triggering</td>
-<td>agent-activated git hook + forge-aware CI floor (GitHub Actions / GitLab CI) + runnable helpers; deterministic arithmetic mechanized, judgment left to the agent; no manual user step</td>
+<td>agent-activated git hook + forge-aware CI floor (GitHub Actions / GitLab CI / Azure Pipelines) + runnable helpers; deterministic arithmetic mechanized, judgment left to the agent; no manual user step</td>
 </tr>
 <tr>
 <td>Second opinion / review</td>

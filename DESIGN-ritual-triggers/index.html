@@ -1748,6 +1748,16 @@ when the repo's <em>own</em> jobs run; the job then rides whatever pipelines the
 creates). Same advisory semantics (<code>allow_failure: exit_codes: [42]</code>;
 <code>AGENT_MEMORY_STRICT=1</code> gates). Honest limit: GitLab.com runners are zero-config, a self-managed
 GitLab needs an admin-registered runner.
+<strong>+ Azure DevOps (v4.32.0):</strong> third forge, from a field installation. Own-pipeline model
+(<code>.azuredevops/agent-memory-ci.yml</code> — a complete pipeline; an existing <code>azure-pipelines.yml</code> is
+never edited) with the best advisory semantics of the set (<code>##vso</code> warnings +
+<code>task.complete result=SucceededWithIssues</code> → a native "partially succeeded" tri-state;
+<code>AGENT_MEMORY_STRICT=1</code> fails the run). Its honest limit is <strong>activation</strong>: a pipeline is a
+<em>resource</em>, so the committed file is inert until a one-time <code>az pipelines create</code> binding
+(Contributors-level; enable reports the command, never runs it silently), and Azure Repos ignores
+the YAML <code>pr:</code> key — PR-time validation is an optional Build Validation branch policy (admin).
+Push builds check the tip commit only (no pushed-range variable) — the log-in-tip-push
+convention covers it.
 Sibling to <code>DESIGN-evolving-memory.md</code>, <code>DESIGN-vbdi-lifecycle.md</code>, <code>DESIGN-skills-layer.md</code>, and
 <code>DESIGN-fresh-context-review.md</code>. Realizes the <code>(blueprint)</code> gap <strong><code>bp-ritual-triggers</code></strong> →
 serves <code>vision-agent-memory</code>.

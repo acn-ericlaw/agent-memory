@@ -1686,14 +1686,14 @@ anything is written. Then it:</p>
 <li><strong>Analyses</strong> the repo (language, stack, type) and <strong>harvests</strong> durable facts from your
    existing docs (ADRs, decision logs, design specs).</li>
 <li><strong>Generates</strong> tailored <code>memory/</code> files, installs bootstrap pointers for all major agents,
-   the six skill adapters, and the git-hook + CI triggers (forge-aware since v4.31.0:
-   GitHub Actions on GitHub, GitLab CI on GitLab).</li>
+   the six skill adapters, and the git-hook + CI triggers (forge-aware: GitHub Actions,
+   GitLab CI, or Azure Pipelines — matched to the hosting forge).</li>
 <li><strong>Preserves</strong> any originals under <code>legacy/</code> — never deleted — and reports exactly what
    happened.</li>
 </ol>
 <p>There is <strong>no manual setup step</strong>: the agent activates the local git hook itself, and CI is
 the zero-config backstop (on GitHub and GitLab.com; a self-managed GitLab needs an
-admin-registered runner).</p>
+admin-registered runner, and an Azure DevOps pipeline needs a one-time activation).</p>
 <h2 id="3-work-in-your-ai-enabled-repo">3 · Work in your AI-enabled repo<a class="headerlink" href="#3-work-in-your-ai-enabled-repo" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Commit the freshly enabled repo</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">cd</span><span class="w"> </span>/path/to/your-project
@@ -1705,7 +1705,8 @@ deliberate and human-initiated, with a self-identifying <code>Co-Authored-By:</c
 <div class="admonition tip">
 <p class="admonition-title">Pull/merge requests lead with What &amp; Why</p>
 <p>Enable installs a description template — <code>.github/pull_request_template.md</code> on GitHub,
-<code>.gitlab/merge_request_templates/Default.md</code> on GitLab (v4.31.0) — so every PR/MR description opens with two
+<code>.gitlab/merge_request_templates/Default.md</code> on GitLab, <code>.azuredevops/pull_request_template.md</code>
+on Azure DevOps — so every PR/MR description opens with two
 short sections — <strong>What</strong> (the change) and <strong>Why</strong> (the intent it serves) — and closes with a
 self-identifying <code>Co-Authored-By:</code> footer naming your <strong>stable agent name</strong> (e.g. <code>Claude Code</code>,
 <code>Gemini CLI</code> — the actual AI collaborator, not a model version), all drawn from the session
@@ -1716,7 +1717,8 @@ email</strong> — reconcile to a single line rather than stacking a second for 
 (That's GitHub squash behavior. GitLab is the opposite: its default squash message is the MR
 title only, so body trailers are <em>dropped</em> — re-add the trailer when editing the squash message
 at merge, or use <code>%{all_commits}</code> in the project's squash template, which carries body trailers.
-<code>%{co_authored_by}</code> does not — it credits commit authors only.)</p>
+<code>%{co_authored_by}</code> does not — it credits commit authors only. Azure DevOps also drops
+trailers — re-add via "Customize merge commit message" at completion.)</p>
 </div>
 <p>A typical session:</p>
 <pre class="mermaid"><code>flowchart LR
@@ -1765,7 +1767,7 @@ gitignored and per-machine — it never touches the shared <code>memory/</code> 
 <td>Portable, vendor-neutral skills (with seven built-ins)</td>
 </tr>
 <tr>
-<td><code>.github/pull_request_template.md</code> / <code>.gitlab/merge_request_templates/Default.md</code></td>
+<td><code>.github/pull_request_template.md</code> / <code>.gitlab/merge_request_templates/Default.md</code> / <code>.azuredevops/pull_request_template.md</code></td>
 <td>Seeds the <strong>What / Why</strong> description convention (per forge)</td>
 </tr>
 <tr>
