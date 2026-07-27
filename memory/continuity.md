@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.31.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions or GitLab CI, v4.31.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.32.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-07-27 | agent: Claude Code (2026-07-27-210655)
+- **last_session:** 2026-07-27 | agent: Claude Code (2026-07-27-211935)
 - **last_review:** 2026-07-27 | through 2026-07-27-203400
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -127,8 +127,13 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   "point it at a repo" — on whichever forge the repo lives)
   <!-- id: gitlab-forge-support-v4310 | created: 2026-07-27 | last_used: 2026-07-27 | uses: 1 | tier: working | origin: 2026-07-27-203400 -->
 
-- [ ] **(next-release candidate) Azure DevOps forge support — field installation exists; mechanics
-  verified (2026-07-27); awaiting maintainer go.** A real installation runs on Azure DevOps, so the
+- [x] **(SHIPPED v4.32.0 MINOR, 2026-07-27) Azure DevOps forge support — field installation exists; mechanics
+  verified (2026-07-27); maintainer approved and shipped same day.** Delivered exactly per the proposed
+  shape below: own-pipeline model (`templates/.azuredevops/agent-memory-ci.yml` — existing
+  `azure-pipelines.yml` never touched; script-owned result so STRICT stays a true red), PR template,
+  forge detection, activation command REPORTED never silently run, unknown-forge = GitHub+GitLab sets
+  only, third squash branch. Ship record: session `2026-07-27-211935` + the `4.31.0→4.32.0` rung.
+  Original verified fact sheet kept below for the record: A real installation runs on Azure DevOps, so the
   complaints-=-adoption trigger is satisfied (unlike Bitbucket, below). Verified against
   learn.microsoft.com: **clean wins** — `.azuredevops/pull_request_template.md` auto-applies
   (default-branch-read, `.azuredevops/`→`.vsts/`→`docs/`→root precedence, 4000-char cap); best
