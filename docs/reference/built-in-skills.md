@@ -40,7 +40,8 @@ python agent-skills/memory-lint/scripts/memory-lint.py      # or
 node   agent-skills/memory-lint/scripts/memory-lint.mjs
 ```
 
-Read-only — it **verifies**, it never mutates. Errors fail CI; advisories warn.
+Read-only — it **verifies**, it never mutates. Errors surface on the CI floor (GitHub Actions
+or GitLab CI; they fail it under `AGENT_MEMORY_STRICT=1`); advisories warn.
 
 ## refresh-metadata
 

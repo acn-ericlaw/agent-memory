@@ -173,6 +173,7 @@ it in place** — additively, never destructively.
 
 | Version | Capability |
 |---|---|
+| 4.31.0 | **GitLab forge support — forge-aware ritual floor + MR template:** a GitLab-hosted field report showed `.github/` is ignored entirely there, killing exactly two installed artifacts — the **CI floor** (fresh clones were left with *no* ritual backstop, the gap v4.19.0 exists to close) and the **What/Why PR template**. Enable now detects the hosting forge and installs a matched set: GitLab gets `.gitlab/agent-memory-ci.yml` (same checks, advisory via `allow_failure: exit_codes`, `AGENT_MEMORY_STRICT` gates) wired from `.gitlab-ci.yml` (verbatim when absent; **add-only include** when pre-existing — never touches the repo's `workflow:rules`) + `.gitlab/merge_request_templates/Default.md`. Squash guidance now covers the forge **inversion**: GitHub piles trailers up, GitLab drops them (`%{co_authored_by}` makes them survive). Local-tooling `.github/` files (Copilot) stay on every forge |
 | 4.30.0 | **Stack-aware `.gitignore` build-output seed:** a greenfield field case (`mercury`, a Rust port started from an empty repo) — the installed `.gitignore` is deliberately AI-infrastructure-scoped, so when the stack landed later, the first `cargo build` polluted `git status` until `target/` was hand-added. `ENABLE.md` Step 7 now appends a **minimal, separately-sentineled build-output seed** when Step 4 detects a stack (Rust `target/`; Node `node_modules/`, `dist/`; Python venvs; Java/Kotlin `target/`, `build/`; .NET `bin/`, `obj/`) — add-only, de-duplicating (a no-op for repos that already ignore them). Greenfield enables instead carry the action in their seeded Open Thread, applied by the working agent when the stack lands. Explicit non-goal: a minimal seed, not gitignore management |
 | 4.29.1 | **Template import blocks → `{{BOOTSTRAP_IMPORTS}}` placeholder:** cross-vendor dogfooding of v4.29.0 (Copilot assessment, corroborated on Claude Code) found tool-repo instruction bleed-through — runtimes that auto-load directory-scoped instruction files picked up `templates/CLAUDE.md`, whose live `@`-imports (relative to the containing file) pulled the placeholder template stubs into context as instructions. The templates now hold a `{{BOOTSTRAP_IMPORTS}}` placeholder; `ENABLE.md` Step 6 expands the per-vendor literal block at install — installed output byte-identical to v4.29.0. Tool-repo containment only; targets just stamp the version |
 | 4.29.0 | **Before-session context presence — bootstrap `@`-imports + an opt-in SessionStart recipe:** a child-repo field report showed agents skipping the before-session read chain (`CLAUDE.md → AGENTS.md → memory/*`) under task pressure — the v4.19.0 trigger layer reinforces only the *after*-session rituals (git/CI has no session-start moment), so the read rested on prompt adherence. The `CLAUDE.md`/`GEMINI.md` bootstrap pointers now **import** the hub + core memory files (`@AGENTS.md`, `@memory/instructions.md`, `@memory/continuity.md`, `@memory/vision.md`), making them structurally present at session start on import-capable runtimes — markdown-only, no hooks; `AGENTS.md` stays vendor-neutral. An opt-in Claude Code `SessionStart` injection recipe (for `memory/sessions/` recency — imports can't express dynamic paths) lands in the tool-side hook doc, never installed by default. Presence is guaranteed; *attendance* remains agent judgment |
@@ -182,7 +183,6 @@ it in place** — additively, never destructively.
 | 4.28.1 | **Post-commit hook — uncommitted-session-log guard:** the auto-stub window check misfired on the recommended two-commit pattern (feature commit → `chore(memory)` commit) when the log was written >30 min before the feature commit — the filename-timestamp threshold treated an in-flight (uncommitted) log as "too old" and stubbed a near-duplicate. Fix: before the time-window check, inspect `git status --porcelain -- memory/sessions/`; if any `.md` is staged/modified/untracked, emit the enrich-and-commit nudge and skip the stub. Filename-window check stays as fallback for already-committed logs. Non-blocking |
 | 4.28.0 | **Co-author convention cleanup — stable agent identity + one trailer:** the `Co-Authored-By` self-identification now specifies the **stable agent name** (e.g. `Claude Code`, `Gemini CLI`) — the actual AI collaborator, **not** a model-version string that churns each release — matching session logs. Plus squash-merge guidance: collapse to a **single** trailer (GitHub appends a consolidated one after `---------`; trim the inline repeats). Refines the v4.27.0 PR convention; advisory, doc-only |
 | 4.27.0 | **Standardized PR descriptions — lead with What / Why:** every AI-enabled repo now ships a `.github/pull_request_template.md` with two short sections — **What** (the change) and **Why** (the intent it serves — Blueprint gap / decision / problem, not a restatement of What), 1–2 paragraphs each, drawn from the session log(s) in the PR. Mirrored by an `AGENTS.md` convention (the vendor-neutral backstop) + a checklist line. Advisory, never a gate — *why* is a first-class artifact throughout the protocol, so a PR is no exception |
-| 4.26.1 | **Refinement — the tooling no longer opines on a pinned thread's tier:** a sanity check of mercury found v4.26.0 flagged every `working`-tagged pinned `- [ ]` open thread as "should be `active`" — noise, since a pinned thread never decays regardless of its tier label (its pinned-ness protects it, not the label). `memory-lint` `[stale-metadata]` no longer flags pinned threads and `refresh-metadata` no longer rewrites their tier (it still refreshes their factual `uses`/`last_used`). Found comparing `refresh-metadata` to Copilot's own `update-metadata.py` |
 
 
 When you "AI enable" a repo that's already on an older version, Mode B detects the
@@ -282,8 +282,8 @@ agent-memory/
   CLAUDE.md / GEMINI.md              ← vendor bootstraps for this repo
   .cursorrules / .windsurfrules      ← Cursor / Windsurf bootstraps
   .github/copilot-instructions.md    ← GitHub Copilot bootstrap
-  .github/pull_request_template.md   ← PR description convention: What / Why (installed)
-  .github/workflows/agent-memory.yml ← CI floor: memory-lint + session-log check (installed)
+  .github/pull_request_template.md   ← PR description convention: What / Why (installed on GitHub-hosted targets)
+  .github/workflows/agent-memory.yml ← CI floor: memory-lint + session-log check (GitHub half; GitLab twin under templates/.gitlab/)
   .githooks/                         ← vendor-neutral ritual triggers (committed; agent-activated)
     post-commit · init.sh · README.md
   .gitignore / .gitattributes        ← AI-infra ignores + LF pinning (merged into targets)
@@ -291,6 +291,9 @@ agent-memory/
 
   templates/                         ← installed into target repos
     AGENTS.md, CLAUDE.md, GEMINI.md, ...
+    .gitlab-ci.yml                   ← GitLab CI floor root wiring (v4.31.0; installed when target has none)
+    .gitlab/agent-memory-ci.yml      ← GitLab CI floor job (advisory; forge twin of the GitHub workflow)
+    .gitlab/merge_request_templates/Default.md  ← MR What / Why template (GitLab)
     memory/
       instructions.md                ← with {{placeholders}}
       continuity.md                  ← with {{placeholders}}

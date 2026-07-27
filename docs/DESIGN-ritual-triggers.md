@@ -16,6 +16,15 @@
 > (Git Bash / WSL) regardless of `core.autocrlf` — Windows-hardening from a Copilot feasibility check
 > (otherwise a Windows clone rewrites them to CRLF and bash fails). **Validated cross-platform on the
 > happy path; Windows now robust, not luck-of-the-default.**
+> **+ forge-neutral CI floor (v4.31.0):** a GitLab-hosted field report showed the CI half never ran
+> there — GitLab ignores `.github/` entirely — so "vendor-neutral" had quietly conflated *AI vendor*
+> with *hosting forge*: the git-hook half was forge-neutral, the CI half GitHub-only. Enable now
+> installs a forge-matched floor: `.gitlab/agent-memory-ci.yml` + a root `.gitlab-ci.yml` (or an
+> **add-only** `include:` entry into a pre-existing one — never `workflow:rules`, which would change
+> when the repo's *own* jobs run; the job then rides whatever pipelines the existing root config
+> creates). Same advisory semantics (`allow_failure: exit_codes: [42]`;
+> `AGENT_MEMORY_STRICT=1` gates). Honest limit: GitLab.com runners are zero-config, a self-managed
+> GitLab needs an admin-registered runner.
 > Sibling to `DESIGN-evolving-memory.md`, `DESIGN-vbdi-lifecycle.md`, `DESIGN-skills-layer.md`, and
 > `DESIGN-fresh-context-review.md`. Realizes the `(blueprint)` gap **`bp-ritual-triggers`** →
 > serves `vision-agent-memory`.

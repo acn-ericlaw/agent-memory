@@ -11,6 +11,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.31.0, 7/27/2026
+
+> **GitLab forge support — forge-aware ritual floor + MR template (MINOR).** A GitLab-hosted
+> installation reported that GitLab ignores `.github/` entirely (verified: no compatibility shim —
+> templates, CODEOWNERS, and the importer all skip it). A 5-agent gap analysis found exactly **two**
+> installed artifacts die there — but one is load-bearing: the **CI floor** never runs, so a fresh
+> clone where no agent activated the git hook has **no ritual backstop at all** (the precise gap
+> v4.19.0 existed to close), and the **What/Why PR template** never seeds. Root cause:
+> "vendor-neutral" had quietly conflated *AI vendor* with *hosting forge*. Everything else under
+> `.github/` (copilot-instructions, skills adapters) is read by **local** tooling and was never
+> broken — the fix deliberately leaves those untouched on every forge.
+
+### Added
+- **Forge detection** (`ENABLE.md` Step 4): remote URL + `.gitlab-ci.yml`/`.gitlab/` signals;
+  `.gitlab-ci.yml` is now a recognized CI structure signal. Unknown forge → install both sets
+  (each forge ignores the other's files — additive-safe).
+- **GitLab CI floor**: `templates/.gitlab/agent-memory-ci.yml` — the same two checks as the GitHub
+  workflow (memory-lint + advisory session-log presence), advisory via
+  `allow_failure: exit_codes: [42]` (orange warning, never blocks; `AGENT_MEMORY_STRICT=1` exits 1
+  and gates), `image: python:3` (git needed in-container), `GIT_DEPTH: 0` for the diff-based check.
+  Root wiring is additive-safe: no `.gitlab-ci.yml` → install `templates/.gitlab-ci.yml` verbatim
+  (include + the canonical `workflow:rules` duplicate-pipeline guard, which GitLab requires in the
+  *root* file for MR pipelines); pre-existing `.gitlab-ci.yml` → **add-only `include:` entry, never
+  `workflow:rules`** (that would change when the repo's own jobs run; the job then rides
+  branch-push pipelines — still a real floor).
+- **GitLab MR template**: `templates/.gitlab/merge_request_templates/Default.md` (auto-applies to
+  new MRs, all tiers) — same What/Why + Co-Authored-By footer, plus the GitLab squash note.
+- Step 6/8/9 + the write-scope notes gained forge-conditional branches; the enable report now
+  names the detected forge and, for self-managed GitLab, the runner prerequisite.
+
+### Changed
+- **Squash-merge co-author guidance is forge-aware** (`AGENTS.md` root + template): the failure
+  mode **inverts** across forges — GitHub compounds trailers (keep one, trim repeats; the v4.28.x
+  rule), GitLab **drops** them (default squash message is the MR title only) — so on GitLab the
+  guidance is to make the trailer *survive*: re-add it when editing the squash message at merge,
+  or set `%{all_commits}` in the project squash template (it embeds full commit messages incl.
+  body trailers; GitHub-like compounding, so the dedup rule applies). `%{co_authored_by}` does
+  **not** carry body trailers — it credits commit *authors* only (verified against GitLab's
+  message generator; the adversarial pre-ship review caught the earlier misprescription). "Pull request" wording is now "pull/merge request" where installed.
+- **Every "CI is the zero-config backstop" claim is forge-qualified** — `.githooks/README.md`,
+  `REVIEW.md`, `AGENTS.md` (root + template), `docs/DESIGN-ritual-triggers.md` (a status-header
+  amendment: the vendor-neutrality argument now names the forge dimension explicitly),
+  `docs/optional-ritual-hook.md`, and six docs-site pages (getting-started, index, reliability,
+  enable-a-repo, built-in-skills, whitepaper). Honest limit stated where it bites: GitLab.com
+  runners are zero-config; a self-managed GitLab needs an admin-registered runner.
+- **Lockstep:** `VERSION` → 4.31.0; `CHANGELOG`; `README` row; `UPGRADE.md` row + `4.30.0 → 4.31.0`
+  rung. No memory-file shape change; skills/adapters unchanged. Non-goals kept lean: no CODEOWNERS,
+  no issue templates, no further forges yet — but the forge seam is where they'd slot in.
+
 ## Version 4.30.0, 7/15/2026
 
 > **Stack-aware `.gitignore` build-output seed (MINOR).** A greenfield field case (`mercury`, a Rust

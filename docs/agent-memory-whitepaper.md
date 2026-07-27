@@ -50,7 +50,8 @@ resolve a contradiction, what the Vision is) stays with the agent and the human 
 
 A second line of maturation hardened **operational reliability** (§5b): the after-session
 ritual no longer depends on an agent reliably self-triggering. Enable now installs a
-vendor-neutral **git post-commit hook + a CI floor** (agent-activated, **zero manual user
+vendor-neutral **git post-commit hook + a CI floor** (forge-aware: GitHub Actions or GitLab
+CI; agent-activated, **zero manual user
 step**), a one-command **first-run init** for fresh clones, Windows line-ending hardening, a
 **`MERGE.md`** conflict protocol, and a **safe-write** discipline — all from the adoption
 constraint that *any manual step is a barrier once the protocol lands with untrained users*.
@@ -275,7 +276,7 @@ its documentation:
 
 - **Vendor-neutral triggers, agent-activated.** Enable installs a committed **`post-commit`
   git hook** (advisory; auto-stubs a session log when a commit did real work but carried none,
-  and re-syncs adapters when a skill changed) and a **CI floor** (`memory-lint` + a session-log
+  and re-syncs adapters when a skill changed) and a **CI floor** (GitHub Actions or GitLab CI, v4.31.0: `memory-lint` + a session-log
   presence check, zero per-user setup). The agent activates the local hook at enable — **no
   manual user step** in the common path. `no-build-step-agent-run` still holds: git and CI
   invoke them in the user's environment; the tool itself runs nothing. *Honest limit:* git
@@ -324,7 +325,7 @@ its documentation:
   agent and the human. The boundary is *judgment vs. arithmetic*, never *automate the decision*.
 - **No manual user step.** Once the protocol lands with untrained users, any manual op is an
   adoption barrier — so triggers, init, and adapter sync are agent-activated, with CI as the
-  zero-config backstop.
+  zero-config backstop (matched to the hosting forge).
 - **Additive, non-destructive upgrades.** Versioned (`VERSION` + per-repo stamp); a repo on
   an older version upgrades in place via an idempotent ladder.
 
@@ -337,7 +338,7 @@ its documentation:
   **Fresh** (generate from analysis), **Already-Ours** (idempotent; upgrade in place if on an
   older version), or **Migrate** (fold vendor files in, preserving originals). It generates
   `memory/`, **harvests durable facts from the repo's docs**, installs the bootstrap pointers,
-  the six skill adapters, the **git hook + CI triggers**, and a DRAFT Vision + gate — **no
+  the six skill adapters, the **git hook + forge-aware CI triggers**, and a DRAFT Vision + gate — **no
   manual user step**.
 - **A session.** The agent reads Current State (`continuity.md`) + the Vision, does the
   work tying it to a Blueprint gap and the Design it realizes, writes a session log with
@@ -423,7 +424,7 @@ loop with human gates.**
 | Governance | opaque | git history + markdown + human gates |
 | Vendor coupling | locked to one tool | neutral; thin pointers to one hub |
 | Capabilities / skills | per-vendor skill files, not shared | neutral `agent-skills/` + 7 built-ins, regenerated across 6 vendor adapters; authored once, any agent |
-| Ritual execution | relies on the agent self-triggering | agent-activated git hook + CI floor + runnable helpers; deterministic arithmetic mechanized, judgment left to the agent; no manual user step |
+| Ritual execution | relies on the agent self-triggering | agent-activated git hook + forge-aware CI floor (GitHub Actions / GitLab CI) + runnable helpers; deterministic arithmetic mechanized, judgment left to the agent; no manual user step |
 | Second opinion / review | self-review in the same (polluted) context | fresh-context reviewer (any vendor) + bounded, deterministically-gated apply |
 | Process weight | often heavy | lightweight default; SDLC is the target's opt-in |
 

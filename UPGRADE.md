@@ -111,6 +111,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.29.0 | **Before-session context presence (MINOR):** closes the before-session half of the ritual-trigger asymmetry — v4.19.0 made the *after*-session rituals fire vendor-neutrally, but git/CI has no session-start moment, so "read `AGENTS.md`/`memory/*` first" stayed advisory prose (empirically skipped under task pressure; child-repo field report 2026-07-11). `templates/CLAUDE.md` + `templates/GEMINI.md` now carry native **`@`-imports** (`@AGENTS.md`, `@memory/instructions.md`, `@memory/continuity.md`, `@memory/vision.md`; Gemini uses the `@./` form, `.md`-only) so the hub + core memory files are structurally present every session on import-capable runtimes — same fix-shape as v4.20.1's copilot-instructions front-load; imports live only in per-vendor bootstrap files, `AGENTS.md` stays vendor-neutral. `docs/optional-ritual-hook.md` (tool-only) gains an **opt-in** Claude Code `SessionStart` injection recipe — never installed by default (a committed `.claude/settings.json` conflicts with the installed `.gitignore` and risks leaking personal allowlists). Attestation canaries remain a downstream per-repo pattern. Honest limits: imports can't express dynamic paths (`memory/sessions/`); Cursor/Windsurf/Copilot keep the prose pointer; imported files enter context every session, so the continuity-bloat controls (v4.24.0/4.28.2/4.28.3) are now load-bearing. No memory-file shape change; skills/adapters unchanged |
 | 4.29.1 | **Template import blocks → `{{BOOTSTRAP_IMPORTS}}` placeholder (PATCH):** tool-repo containment of instruction bleed-through that v4.29.0 amplified. Runtimes that auto-load directory-scoped instruction files picked up `templates/CLAUDE.md` in the tool repo, and its live `@`-imports (relative to the containing file) pulled the **placeholder template stubs** (`templates/AGENTS.md`, `templates/memory/*`) into context as instructions — found by a GitHub Copilot assessment, corroborated live on Claude Code. `templates/CLAUDE.md` + `templates/GEMINI.md` now hold a `{{BOOTSTRAP_IMPORTS}}` placeholder; `ENABLE.md` Step 6 defines the per-vendor literal blocks and expands at install — **installed output byte-identical to v4.29.0**. Targets: version-stamp only |
 | 4.30.0 | **Stack-aware `.gitignore` build-output seed (MINOR):** from a greenfield field case (`mercury` — the installed AI-infra-scoped `.gitignore` left the later-arriving Rust toolchain's `target/` unignored; the first build polluted `git status`). `ENABLE.md` Step 7 gains a minimal, separately-sentineled **build-output seed** applied when Step 4 detects a stack (Rust `target/`; Node `node_modules/`, `dist/`; Python venvs; Java/Kotlin `target/`, `build/`, `*.class`; .NET `bin/`, `obj/`) — add-only, de-duplicating; Step 5b seeds a **greenfield Open Thread** carrying the "seed when the stack lands" action (at enable there is no stack to detect); Step 8/9 verify + report it. Explicit non-goal: minimal seed, never a gitignore manager. Operator-side only — no template/shape change |
+| 4.31.0 | **GitLab forge support — forge-aware ritual floor + MR template (MINOR):** a GitLab-hosted field report (`.github/` is ignored entirely by GitLab) showed exactly two installed artifacts die there: the **CI floor** (`.github/workflows/agent-memory.yml` never runs → a fresh clone has NO ritual backstop — the v4.19.0 guarantee's silent collapse) and the **What/Why PR template**. "Vendor-neutral" had conflated *AI vendor* with *hosting forge*. Now: `ENABLE.md` Step 4 detects the forge (remote URL + `.gitlab-ci.yml`/`.gitlab/` signals; unknown → install both sets, additive-safe) and Step 6 installs a forge-matched set — GitLab gets `.gitlab/agent-memory-ci.yml` (same two checks; advisory via `allow_failure: exit_codes: [42]`, `AGENT_MEMORY_STRICT=1` gates) wired from `.gitlab-ci.yml` (copied verbatim when absent — carries the canonical `workflow:rules` guard; **add-only `include:` entry when pre-existing — never `workflow:rules`**, which would change when the repo's own jobs run) + `.gitlab/merge_request_templates/Default.md` (auto-applies, all tiers). `AGENTS.md` squash guidance is now forge-aware — the failure mode **inverts**: GitHub piles trailers up (dedup), GitLab's default squash message is the MR title only so trailers are **dropped** (make them survive: re-add at merge, or `%{all_commits}` in the squash template — `%{co_authored_by}` credits commit authors only, never body trailers). Local-tooling `.github/` files (copilot-instructions, skills adapters) correctly stay on every forge. Honest limit: GitLab.com runners are zero-config; self-managed needs an admin-registered runner. Docs/design claims forge-qualified throughout. No memory-file shape change; skills/adapters unchanged |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1723,3 +1724,57 @@ never a gitignore manager.
    truncate-first one-liner.**
 4. **Report**: operator-side protocol change; the only possible target edits are additive
    `.gitignore` entries and an optional Open Thread.
+
+---
+
+## Rung: 4.30.0 → 4.31.0 — GitLab forge support: forge-aware ritual floor + MR template (MINOR)
+
+**What changed:** the ritual floor and description template are now **forge-aware**. A GitLab-hosted
+field report showed GitLab ignores `.github/` entirely, so two installed artifacts were dead there:
+the CI floor (`.github/workflows/agent-memory.yml`) — leaving fresh clones with **no** ritual
+backstop, the exact gap v4.19.0 existed to close — and the What/Why PR template. `ENABLE.md` now
+detects the hosting forge (Step 4) and installs a matched set (Step 6): on GitLab,
+`.gitlab/agent-memory-ci.yml` (memory-lint + session-log check; advisory via
+`allow_failure: exit_codes: [42]`; `AGENT_MEMORY_STRICT=1` gates) wired from the root
+`.gitlab-ci.yml`, plus `.gitlab/merge_request_templates/Default.md`. `AGENTS.md` squash-merge
+guidance is forge-aware (GitHub compounds trailers → dedup; GitLab drops them → make the trailer
+survive: re-add at merge, or `%{all_commits}` in the project squash template — `%{co_authored_by}`
+credits commit authors only, never body trailers). Local-tooling `.github/` files
+(copilot-instructions, `.github/skills/` adapters) are forge-independent and stay put everywhere.
+No memory-file shape change; skills/adapters unchanged.
+
+**Steps:**
+
+1. **Detect the target's forge**: `git remote get-url origin` (`github.com` → GitHub; `gitlab.com`
+   or a self-managed GitLab host → GitLab; corroborate with `.gitlab-ci.yml` / `.gitlab/`).
+   GitHub-hosted → skip to step 3. Unknown → treat as both (install the GitLab set too).
+2. **GitLab-hosted: install the GitLab set.**
+   - Copy `templates/.gitlab/agent-memory-ci.yml` → `.gitlab/agent-memory-ci.yml`.
+   - Root wiring: target has **no `.gitlab-ci.yml`** → copy `templates/.gitlab-ci.yml` verbatim.
+     Target **has one** → **add-only**: append the `include:` entry
+     (`- local: '.gitlab/agent-memory-ci.yml'`) — skip if an entry for that path already exists
+     (de-duplicate). **Stage check (mandatory):** the job uses the default `test` stage; if the
+     file defines a custom `stages:` list without `test`, append `test` to it (add-only — omitting
+     it invalidates the whole pipeline config and stops ALL the repo's CI). **Never add or edit
+     `workflow:rules` in a pre-existing file** (it changes when the repo's own jobs run). The job
+     then rides whatever pipelines the existing config creates — read the file and note the actual
+     coverage in the report.
+   - Copy `templates/.gitlab/merge_request_templates/Default.md` →
+     `.gitlab/merge_request_templates/Default.md` (ask per-file if one already exists).
+   - The now-inert `.github/workflows/agent-memory.yml` + `.github/pull_request_template.md` may
+     be **left in place** (harmless; the default — upgrades are additive) or removed at the
+     user's explicit direction — a user-directed cleanup *outside* the upgrade's own scope
+     (upgrades themselves never delete; the files are tool-installed, not vendor originals). Keep
+     `.github/copilot-instructions.md` regardless — local Copilot tooling reads it on any forge.
+3. **Re-sync the forge-aware docs**: `AGENTS.md` from `templates/AGENTS.md` (squash-inversion
+   guidance, PR/MR wording, forge-qualified CI-floor notes) — merge into a customized `AGENTS.md`,
+   never overwrite; re-copy `.githooks/README.md` and `REVIEW.md` verbatim from the tool root.
+4. **Stamp** `.agent/version.md` → `version: 4.31.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+5. **Verify:** GitLab targets — next pipeline shows the `agent-memory` job (advisory; orange on
+   findings), a new MR auto-fills the What/Why template; `memory-lint` clean. Self-managed GitLab:
+   confirm a runner is registered, or report the prerequisite to the user.
+6. **Report**: the ritual floor + description template now match the hosting forge; on GitLab,
+   state the actual pipeline coverage read from the root file's rules (fresh root file → branch +
+   MR; add-only include → whatever pipelines the existing config creates).

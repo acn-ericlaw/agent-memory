@@ -74,3 +74,11 @@
 - ot-reverify-invariants-20260627 — Re-verify invariants (due at the 2026-06-27 review) — CONFIRMED by maintainer 2026-06-27, — review 2026-06-30: completed/shipped, content lives in CHANGELOG/UPGRADE/MERGE/code — 2026-Q2.md
 - merge-conflict-protocol-v4250 — Shipped in v4.22.0 (MINOR; dev-iter 4.25) — `MERGE.md` conflict-resolution protocol. From… — review 2026-06-30: completed/shipped, content lives in CHANGELOG/UPGRADE/MERGE/code — 2026-Q2.md
 - continuity-merge-friendly-v4240 — Shipped in v4.22.0 (MINOR; dev-iter 4.24) — `continuity.md` merge-friendliness. From a tea… — review 2026-06-30: completed/shipped, content lives in CHANGELOG/UPGRADE/MERGE/code — 2026-Q2.md
+- last-harvest-marker-v4231 — Shipped v4.23.1 (PATCH) — `last_harvest` marker for incremental harvests. From a cross-ven… — faded — 2026-Q3.md
+- harvest-knowledge-skill-v4230 — Shipped v4.23.0 (MINOR) — `harvest-knowledge` built-in skill (on-demand doc→memory harvest… — faded — 2026-Q3.md
+- safe-write-review-safety-v4224 — Shipped v4.22.4 (PATCH) — safe-write safeguard moved into the SHARED layer (`REVIEW.md`). — faded — 2026-Q3.md
+- session-window-30min-v4223 — Shipped v4.22.3 (PATCH) — tightened the post-commit session window 2h → 30 min. Maintainer — faded — 2026-Q3.md
+- lite-log-per-session-v4222 — Shipped v4.22.2 (PATCH) — lightweight mode: one log per *session*, not per *commit* (agent… — faded — 2026-Q3.md
+- post-commit-per-session-v4221 — Shipped v4.22.1 (PATCH) — post-commit auto-stub is per *session*, not per *commit*. From — faded — 2026-Q3.md
+- knowledge-harvest-curious-v4220 — Shipped in v4.22.0 (MINOR; dev-iter 4.22) — curious knowledge harvest at enable. From a cl… — faded — 2026-Q3.md
+- ritual-init-v4200 — Shipped v4.20.0 (MINOR) — first-run init for fresh clones. Dogfooding `~/sandbox/simple-pr… — faded — 2026-Q3.md

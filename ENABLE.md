@@ -128,7 +128,9 @@ writes, what it leaves alone, and that it's committed and shared. Then let them 
 > - Steering/bootstrap files at the root for each vendor — `AGENTS.md`, `CLAUDE.md`,
 >   `GEMINI.md`, `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md`.
 > - `agent-skills/` (portable capabilities) + protocol docs (`DECAY.md`, `REVIEW.md`, `SKILLS.md`, `MERGE.md`).
-> - Add-only edits to `.gitignore`/`.gitattributes`, and a committed git hook I activate locally.
+> - Add-only edits to `.gitignore`/`.gitattributes` (on GitLab, also an add-only `include:` line in
+>   a pre-existing `.gitlab-ci.yml` — never your rules), a committed git hook I activate locally,
+>   and an advisory CI job + PR/MR description template matched to your hosting forge.
 >
 > **What I will NOT touch.** Your **source code**, build manifests, and anything **outside
 > this repo** (your home dir, global AI config, other projects) — never read or modified.
@@ -203,8 +205,8 @@ If `no`, ask whether to proceed with fresh enable instead, or abort.
 
 ## Step 4 — Analyse the Target Repo
 
-(Skip this step if Mode C populated everything already — go to Step 5.
-Otherwise, proceed.)
+(Skip this step if Mode C populated everything already — go to Step 5. **Exception: the
+Hosting-forge determination below always runs** — Mode C never populates it. Otherwise, proceed.)
 
 Read the following files if they exist:
 
@@ -223,7 +225,12 @@ reads the team's own docs — don't stop at top-level names)
 - Folder names (src/, app/, lib/, api/, frontend/, backend/, etc.) — and **descend**:
   a `docs/` (or `doc/`, `documentation/`, `wiki/`) tree is a structure signal *and* a
   knowledge source; recurse it in the harvest below, don't just note that it exists.
-- Presence of `Dockerfile`, `docker-compose.yml`, `.github/workflows/`
+- Presence of `Dockerfile`, `docker-compose.yml`, and CI config — `.github/workflows/`
+  (GitHub Actions) **or `.gitlab-ci.yml` (GitLab CI)** — note which (v4.31.0)
+- **Hosting forge (v4.31.0):** read `git remote get-url origin` — `github.com` → GitHub;
+  `gitlab.com` or a self-managed GitLab host → GitLab (corroborate with `.gitlab-ci.yml` /
+  `.gitlab/` presence). No remote or ambiguous → **unknown** (Step 6 then installs both
+  forge sets — each forge ignores the other's files, so that is additive-safe)
 - Presence of `Makefile`, `justfile`, `Taskfile.yml`
 - Presence of test directories (`tests/`, `spec/`, `__tests__/`, `test/`)
 
@@ -251,6 +258,8 @@ From this analysis, determine:
    `memory/continuity.md`:
    `- [ ] Version drift: build manifest is X.Y.Z but <file(s)> reference a different version — verify and align`
    Resolving drift is the user's responsibility, not the enablement step.
+8. **Hosting forge** — GitHub | GitLab | unknown (from the Structure-signals check above;
+   drives the Step 6 forge-matched install — determined even on a Mode C run)
 
 **Monorepo handling:** If project type is monorepo, additionally enumerate each
 top-level module or package: its path, language (if the repo is mixed), and a
@@ -561,9 +570,17 @@ Copy from `templates/` into target repo root:
 - `GEMINI.md`
 - `.cursorrules`
 - `.windsurfrules`
-- `.github/copilot-instructions.md`
-- `.github/pull_request_template.md` — seeds the **What / Why** PR-description convention (v4.27.0);
-  installs verbatim, **tracked** (it travels). If the target already has one, ask per-file
+- `.github/copilot-instructions.md` — read by **local** Copilot tooling from the working tree,
+  so install it on **every** forge (it is not a forge artifact; GitLab-hosted repos keep it).
+- A **What / Why description template** (v4.27.0) — **forge-aware (v4.31.0)**, per the Step 4
+  forge detection:
+  - GitHub-hosted: `templates/.github/pull_request_template.md` → `.github/pull_request_template.md`
+  - GitLab-hosted: `templates/.gitlab/merge_request_templates/Default.md` →
+    `.gitlab/merge_request_templates/Default.md` (auto-applies to new MRs on all tiers; a
+    Premium settings-based default template overrides it — mention in the report if the team
+    uses one)
+  - Forge unknown → install both.
+  Installs verbatim, **tracked** (it travels). If the target already has one, ask per-file
   (overwrite / skip / rename) like any other bootstrap file.
 
 `CLAUDE.md` and `GEMINI.md` contain `{{PROJECT_NAME}}` and `{{PROJECT_ONELINE}}`
@@ -607,21 +624,44 @@ These must travel into the target because the review ritual, skill sync/adopt, a
 **conflict resolution** (`MERGE.md`) all run *inside* the enabled repo. (`UPGRADE.md` is
 tool-operator-only — do **not** install it.)
 
-**Ritual triggers (v4.19.0) — install + activate (no manual user step).** Also copy verbatim from this
-tool's root, so the after-session ritual fires reliably for *any* vendor (see `docs/DESIGN-ritual-triggers.md`):
+**Ritual triggers (v4.19.0; forge-aware v4.31.0) — install + activate (no manual user step).** Also
+install these — the GitHub set copies verbatim from this tool's root, the GitLab set from
+`templates/` — so the after-session ritual fires reliably for *any* vendor (see `docs/DESIGN-ritual-triggers.md`):
 
 - **`.githooks/`** — the committed, vendor-neutral git hooks (`post-commit` + its `README.md`): auto-stub
   a session log when a commit does real work without one; re-sync adapters when a skill changed.
-- **`.github/workflows/agent-memory.yml`** — the **CI floor**: runs `memory-lint` + an advisory
-  session-log check on push/PR.
+- The **CI floor** — runs `memory-lint` + an advisory session-log check on every push and
+  pull/merge request. **Forge-aware (v4.31.0):**
+  - **GitHub-hosted:** copy **`.github/workflows/agent-memory.yml`** verbatim from this tool's root.
+  - **GitLab-hosted:** copy `templates/.gitlab/agent-memory-ci.yml` → `.gitlab/agent-memory-ci.yml`,
+    then wire the root config:
+    - target has **no `.gitlab-ci.yml`** → copy `templates/.gitlab-ci.yml` verbatim (it carries the
+      include line **and** the canonical `workflow:rules` duplicate-pipeline guard, which GitLab
+      requires in the *root* file for merge-request pipelines to fire).
+    - target **already has `.gitlab-ci.yml`** → **add-only**: append the include entry
+      (`include:` → `- local: '.gitlab/agent-memory-ci.yml'`, or add that entry to an existing
+      `include:` list) — **skip if an include entry for that path is already present anywhere in
+      the file** (de-duplicate, like Step 7's `.gitignore` edit). **Stage check (mandatory):** the
+      job runs in the default `test` stage — if the file defines a custom `stages:` list without
+      `test`, **append `test` to that list** (add-only; an extra stage name changes nothing about
+      when existing jobs run, while omitting it makes the whole pipeline config invalid and stops
+      ALL the repo's CI). **Never add or edit `workflow:rules` in a pre-existing file** — that
+      changes when the repo's *own* jobs run. Coverage: the job rides whatever pipelines the
+      existing root config creates (branch pipelines where they fire; MR pipelines if the root
+      already carries MR-matching rules; a restrictive root workflow restricts the floor too) —
+      read the file and state the actual coverage in the report.
+  - **Forge unknown** → install both sets (each forge ignores the other's files).
 
 **Ensure `.githooks/post-commit` is executable** (`chmod +x`; it must be committed with mode `100755`) —
 git **silently ignores** a non-executable hook. Then **the agent activates the local hook**: run
 `git config core.hooksPath .githooks` in the target — **do this yourself; never ask the user** (the
 adoption constraint: any manual step is a barrier). CI needs
-no activation (a committed workflow runs server-side, zero per-user config). *Honest limit:* git can't
+no activation on GitHub or GitLab.com (a committed config runs server-side, zero per-user config);
+a **self-managed GitLab** needs an admin-registered runner or the job queues unrun — say so in the
+report (v4.31.0). *Honest limit:* git can't
 auto-run committed hooks on a fresh clone (security), so where no agent has run, **CI is the backstop**.
-Both `.githooks/` and `.github/workflows/` are **tracked** (they travel); only `.github/skills/` is
+Both `.githooks/` and the CI config (`.github/workflows/` on GitHub; `.gitlab-ci.yml` +
+`.gitlab/agent-memory-ci.yml` on GitLab) are **tracked** (they travel); only `.github/skills/` is
 gitignored. The hooks/CI are **advisory** (never block); the tool runs nothing itself
 (`no-build-step-agent-run` — git/CI invoke them in the user's env).
 
@@ -631,7 +671,9 @@ gitignored. The hooks/CI are **advisory** (never block); the tool runs nothing i
 - If the file exists but is identical to our template, skip silently.
 - Otherwise ask the user per-file: overwrite / skip / rename existing to `.bak`.
 
-Create `.github/` in the target if it does not exist.
+Create `.github/` in the target if it does not exist — Copilot's bootstrap lives there on every
+forge (it is read by local tooling, not by the forge). On a GitLab-hosted target, also create
+`.gitlab/` (the CI job + MR template live there).
 
 ---
 
@@ -731,6 +773,10 @@ describe what was intended.
    - `DECAY.md`, `REVIEW.md`, `SKILLS.md`, `MERGE.md`
    - `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`,
      `.github/copilot-instructions.md`
+   - The forge set (v4.31.0), per Step 4 detection — GitHub:
+     `.github/workflows/agent-memory.yml` + `.github/pull_request_template.md`; GitLab:
+     `.gitlab/agent-memory-ci.yml` + `.gitlab/merge_request_templates/Default.md` + the
+     `include: local:` entry present in `.gitlab-ci.yml`; unknown forge: both sets
    - `.gitignore` exists and contains the agent-memory sentinel line plus the
      AI-infrastructure entries (Step 7) — and, when Step 4 detected a stack, its
      build-output paths are ignored (pre-existing or via the stack-aware seed;
@@ -800,6 +846,7 @@ Print a clear summary including migration details if Mode C ran:
   • Language:   <language>
   • Stack:      <stack>
   • Type:       <type>
+  • Forge:      <GitHub | GitLab | unknown → both forge sets installed>  (v4.31.0; self-managed GitLab: note the runner prerequisite)
   • Discovery:  <standard scan | deep analysis>  (Fresh Enable — user's choice, recorded in the first session log)
 
   Migrated (Mode C only):
@@ -821,6 +868,8 @@ Print a clear summary including migration details if Mode C ran:
   • agent-skills/  (built-in skills: memory-lint, second-opinion, apply-critique — + regenerated adapters)
   • AGENTS.md, CLAUDE.md, GEMINI.md, .cursorrules,
     .windsurfrules, .github/copilot-instructions.md
+  • .githooks/ + CI floor  (<.github/workflows/agent-memory.yml | .gitlab-ci.yml (created | include appended) + .gitlab/agent-memory-ci.yml | both sets (forge unknown)>; GitLab add-only: state the actual pipeline coverage)
+  • <.github/pull_request_template.md | .gitlab/merge_request_templates/Default.md | both (forge unknown)>  (What/Why description template)
   • .gitignore  (created | updated — AI-infrastructure entries; + review-scratch/ for the review pair)
 
   Preserved (Mode C only):
@@ -862,8 +911,11 @@ Respond accordingly.
   `.gemini/commands/`, `.cursor/rules/`, `.kiro/skills/`, `.github/skills/`, `.agents/skills/`), `review-scratch/` (gitignored
   fresh-context review scratch, if the review pair is accepted), `DECAY.md`, `REVIEW.md`,
   `SKILLS.md`, `MERGE.md`, `.gitignore` (add-only, never remove existing entries),
-  `.github/copilot-instructions.md`, `.githooks/` + `.github/workflows/agent-memory.yml` (the v4.19.0
-  ritual triggers), and the bootstrap files listed in Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a
+  `.github/copilot-instructions.md`, `.githooks/` + the forge CI floor —
+  `.github/workflows/agent-memory.yml` (GitHub) / `.gitlab/agent-memory-ci.yml` +
+  `.gitlab/merge_request_templates/` + `.gitlab-ci.yml` (GitLab; **add-only** when the file
+  pre-exists — only the `include:` entry, never `workflow:rules`) — the v4.19.0/v4.31.0
+  ritual triggers, and the bootstrap files listed in Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a
   target.)
 - **Activating the local git hook** (`git config core.hooksPath .githooks`) is the one allowed git-*config*
   change in the target — it points git at the committed `.githooks/`; it writes no source and is reversible

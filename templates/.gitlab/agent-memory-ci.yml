@@ -1,0 +1,64 @@
+# agent-memory — vendor-neutral ritual floor, GitLab twin of .github/workflows/agent-memory.yml (v4.31.0).
+# Runs server-side with ZERO per-user setup on GitLab.com (instance runners are enabled by default;
+# a self-managed instance needs an admin-registered runner or this job queues unrun — honest limit).
+# Advisory by default: findings exit 42, which allow_failure permits — an orange warning on the
+# pipeline, never a block. Set the project CI/CD variable AGENT_MEMORY_STRICT to "1" to gate:
+# findings then exit 1, which is NOT allowed, so the pipeline fails.
+#
+# Installed by agent-memory (ENABLE.md Step 6) and referenced from the root .gitlab-ci.yml via:
+#   include:
+#     - local: '.gitlab/agent-memory-ci.yml'
+#
+# GitLab constraint worth knowing: rules matching merge_request_event only take effect when
+# MR-matching rules also exist in the ROOT .gitlab-ci.yml (job rules or workflow:rules) — an included file
+# alone cannot switch MR pipelines on. Where agent-memory only added the include line to your
+# pre-existing .gitlab-ci.yml (add-only, so your pipeline semantics were not touched), this job
+# rides whatever pipelines that root config creates (branch pipelines where they fire; MR pipelines
+# if the root already carries MR-matching rules; a root workflow that restricts pipelines restricts
+# the floor too).
+#
+# Stage note: this job runs in GitLab's default `test` stage. If your root .gitlab-ci.yml defines a
+# custom `stages:` list, that list must include `test` (the installer appends it additively when
+# missing) — otherwise the whole pipeline config is invalid and NO jobs run.
+
+agent-memory:
+  image: python:3          # full image, not -slim: the ritual check needs git inside the container
+  variables:
+    GIT_DEPTH: "0"         # full history for the diff-based session-log check
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH'
+  allow_failure:
+    exit_codes:
+      - 42                 # 42 = advisory finding (orange, never blocks); 1 = strict gate (blocks)
+  script:
+    - |
+      status=0
+      if [ -f agent-skills/memory-lint/scripts/memory-lint.py ]; then
+        python3 agent-skills/memory-lint/scripts/memory-lint.py || {
+          echo "agent-memory: memory-lint reported issues (see log above)"
+          status=42
+        }
+      else
+        echo "memory-lint not installed; skipping."
+      fi
+      base="$CI_MERGE_REQUEST_DIFF_BASE_SHA"
+      [ -n "$base" ] || base="$CI_COMMIT_BEFORE_SHA"
+      case "$base" in ''|0000000000000000000000000000000000000000) base="$(git rev-parse HEAD~1 2>/dev/null || echo '')";; esac
+      if [ -n "$base" ]; then
+        changed="$(git diff --name-only "$base" HEAD 2>/dev/null || true)"
+        work="$(printf '%s\n' "$changed" | grep -vE '^(memory/|\.agent/)' | grep -v '^$' || true)"
+        logged="$(printf '%s\n' "$changed" | grep -E '^memory/sessions/.*\.md$' || true)"
+        if [ -n "$work" ] && [ -z "$logged" ]; then
+          echo "agent-memory ritual: changes touched tracked files but added no memory/sessions/ log — write or enrich a session log per AGENTS.md 'After Every Session'."
+          status=42
+        else
+          echo "ritual check: ok"
+        fi
+      else
+        echo "no base ref; skipping ritual check"
+      fi
+      if [ "$status" -ne 0 ]; then
+        if [ "${AGENT_MEMORY_STRICT:-0}" = "1" ]; then exit 1; fi
+        exit 42
+      fi
