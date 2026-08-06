@@ -15,7 +15,7 @@
 - **project:** {{PROJECT_NAME}}
 - **status:** {{PROJECT_STATUS}}
 - **last_enabled:** {{TODAY}}
-- **last_session:** (none yet)
+- **last_session:** {{LAST_SESSION}}
 - **last_review:** (none yet)
 - **last_invariant_check:** (none yet)
 - **repo:** {{REPO_PATH}}

@@ -7,6 +7,11 @@ a small Rust async event-bus demo — captured when running:
 
 The `memory/` files beside this README are the real, unedited result.
 
+> **Grandfathered detail:** this fixture predates `ENABLE.md` Step 5c (the first enable
+> session log, added later) — hence `memory/sessions/ (empty, ready)` below and
+> `last_session: (none yet)` in its `continuity.md`. A fresh Mode A enable today writes the
+> enable log and points `last_session` at it (v4.32.1). The fixture stays unedited by design.
+
 ---
 
 ```

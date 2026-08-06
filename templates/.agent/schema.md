@@ -42,7 +42,7 @@ Live project state. Update every session.
 - project:        string
 - status:         string
 - last_enabled:   YYYY-MM-DD
-- last_session:   YYYY-MM-DD | agent: string          (or "none yet")
+- last_session:   YYYY-MM-DD | agent: string          (or "none yet" — legacy: pre-4.32.1 enables only; a fresh enable points this at its first enable session log)
 - last_review:    YYYY-MM-DD | through <session-file>  (or "none yet")
 - last_invariant_check: YYYY-MM-DD | through <session-file>  (or "none yet") — see REVIEW.md step 6
 - last_harvest:   YYYY-MM-DD | through <session-file>  (optional; omit until first run) — when the `harvest-knowledge` skill last folded docs into memory; it reads this to scope the next harvest and stamps it on completion
