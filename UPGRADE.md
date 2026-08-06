@@ -113,6 +113,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.30.0 | **Stack-aware `.gitignore` build-output seed (MINOR):** from a greenfield field case (`mercury` — the installed AI-infra-scoped `.gitignore` left the later-arriving Rust toolchain's `target/` unignored; the first build polluted `git status`). `ENABLE.md` Step 7 gains a minimal, separately-sentineled **build-output seed** applied when Step 4 detects a stack (Rust `target/`; Node `node_modules/`, `dist/`; Python venvs; Java/Kotlin `target/`, `build/`, `*.class`; .NET `bin/`, `obj/`) — add-only, de-duplicating; Step 5b seeds a **greenfield Open Thread** carrying the "seed when the stack lands" action (at enable there is no stack to detect); Step 8/9 verify + report it. Explicit non-goal: minimal seed, never a gitignore manager. Operator-side only — no template/shape change |
 | 4.31.0 | **GitLab forge support — forge-aware ritual floor + MR template (MINOR):** a GitLab-hosted field report (`.github/` is ignored entirely by GitLab) showed exactly two installed artifacts die there: the **CI floor** (`.github/workflows/agent-memory.yml` never runs → a fresh clone has NO ritual backstop — the v4.19.0 guarantee's silent collapse) and the **What/Why PR template**. "Vendor-neutral" had conflated *AI vendor* with *hosting forge*. Now: `ENABLE.md` Step 4 detects the forge (remote URL + `.gitlab-ci.yml`/`.gitlab/` signals; unknown → install both sets, additive-safe) and Step 6 installs a forge-matched set — GitLab gets `.gitlab/agent-memory-ci.yml` (same two checks; advisory via `allow_failure: exit_codes: [42]`, `AGENT_MEMORY_STRICT=1` gates) wired from `.gitlab-ci.yml` (copied verbatim when absent — carries the canonical `workflow:rules` guard; **add-only `include:` entry when pre-existing — never `workflow:rules`**, which would change when the repo's own jobs run) + `.gitlab/merge_request_templates/Default.md` (auto-applies, all tiers). `AGENTS.md` squash guidance is now forge-aware — the failure mode **inverts**: GitHub piles trailers up (dedup), GitLab's default squash message is the MR title only so trailers are **dropped** (make them survive: re-add at merge, or `%{all_commits}` in the squash template — `%{co_authored_by}` credits commit authors only, never body trailers). Local-tooling `.github/` files (copilot-instructions, skills adapters) correctly stay on every forge. Honest limit: GitLab.com runners are zero-config; self-managed needs an admin-registered runner. Docs/design claims forge-qualified throughout. No memory-file shape change; skills/adapters unchanged |
 | 4.32.0 | **Azure DevOps forge support — own-pipeline ritual floor + PR template (MINOR):** third forge, from a real field installation. Enable detects `dev.azure.com`/`*.visualstudio.com` remotes (+ `azure-pipelines.yml`/`.azuredevops/` signals) and installs `.azuredevops/agent-memory-ci.yml` — a complete, self-contained pipeline (an existing `azure-pipelines.yml` is **never touched**; one repo carries many pipelines) with the best advisory semantics of the set (`##vso` warnings + `task.complete result=SucceededWithIssues` → native "partially succeeded"; `AGENT_MEMORY_STRICT=1` fails the run; `fetchDepth: 0`) — plus `.azuredevops/pull_request_template.md` (auto-applies; default-branch-read; 4000-char cap). **Honest limit — activation is not file-driven:** a pipeline is a *resource*; the committed file is inert until a one-time `az pipelines create … --skip-first-run` binding (Contributors-level; enable REPORTS the command, runs it only at explicit user direction), and Azure Repos ignores the YAML `pr:` key — PR-time validation is an optional Build Validation branch policy (admin; "Optional" mode = notify-only). Squash guidance gains the third branch (ADO drops trailers; no template mechanism; re-add via "Customize merge commit message"). Unknown forge installs GitHub+GitLab sets only (ADO needs positive detection). No memory-file shape change; skills/adapters unchanged |
+| 4.32.1 | **Mode A `last_session` contradiction fix (PATCH):** `ENABLE.md` Step 5b still said a non-migrated enable leaves `last_session: (none yet)` — but Step 5c (added later) writes a **first enable session log** for every fresh enable, so "(none yet)" was false the moment the enable completed and it blinded the multi-agent continuity check that reads the field (5b's own footer bullet already pointed the seeded facts' `origin` at the 5c log). Step 5b now points `last_session` at the 5c log (`<today> | agent: <name> (<log filename stem>)`, filled when the log is written; Mode C branch unchanged); the template seed became a `{{LAST_SESSION}}` placeholder; the schema marks `(none yet)` as legacy (pre-4.32.1 enables only); the `rust-event-bus` fixture stays unedited (it truthfully predates Step 5c) behind a header note. Enable-time only — targets re-copy the schema + stamp, with an optional truth fix for a never-worked enable still showing `(none yet)` |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1832,3 +1833,35 @@ record). No memory-file shape change; skills/adapters unchanged.
 6. **Report**: the ritual floor + description template now cover GitHub, GitLab, and Azure DevOps;
    on Azure DevOps state plainly whether the pipeline has been activated or is awaiting the
    one-time command.
+
+---
+
+## Rung: 4.32.0 → 4.32.1 — Mode A `last_session` contradiction fix (PATCH)
+
+**What changed:** a real Mode A enable (2026-08-06) plus an adversarial protocol audit caught
+`ENABLE.md` disagreeing with itself: Step 5b still said a non-migrated enable leaves
+`last_session: (none yet)`, while Step 5c (added later) mandates a **first enable session log**
+for every fresh enable — so "(none yet)" was false the moment the enable completed, and it
+blinded the multi-agent continuity check that reads the field. Step 5b now points
+`last_session` at the 5c log (`<today> | agent: <your agent name> (<the 5c log's filename
+stem>)`, filled when that log is written — the same moment its stem becomes the seeded facts'
+`origin`); the template seed became a `{{LAST_SESSION}}` placeholder; the schema marks
+`(none yet)` as legacy; the `rust-event-bus` example stays unedited (it truthfully predates
+Step 5c) behind a header note. Enable-time behavior only — no memory-file shape change;
+skills/adapters unchanged.
+
+**Steps:**
+
+1. **Re-copy** `.agent/schema.md` verbatim from `templates/.agent/schema.md` (the
+   `last_session` line now marks `(none yet)` as legacy).
+2. **Optional truth fix:** if the target's `continuity.md` still reads
+   `last_session: (none yet)` but `memory/sessions/` is non-empty, point the field at the
+   newest session file (`<date> | agent: <name> (<filename stem>)`). Only an
+   enabled-but-never-worked repo legitimately still carries `(none yet)`; any real session
+   overwrites it in the normal ritual anyway.
+3. **Stamp** `.agent/version.md` → `version: 4.32.1`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+4. **Verify:** `memory-lint` clean; `.agent/version.md` reads 4.32.1; `last_session` in
+   `memory/continuity.md` shows a real value, or a justified legacy `(none yet)` (empty
+   `memory/sessions/`).

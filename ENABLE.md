@@ -367,7 +367,12 @@ Fill in:
 - Today's date as `last_enabled`
 - `last_session`:
   - If migrated from vendor history, use the most recent session date from those logs
-  - Otherwise `(none yet)`
+  - Otherwise point it at the **first enable session log** (Step 5c) — the enable *is* the
+    first session: `<today> | agent: <your agent name> (<the 5c log's filename stem>)`, e.g.
+    `2026-08-06 | agent: Claude Code (2026-08-06-142530)`. Fill it when you write that log —
+    the same moment its stem becomes the seeded facts' `origin`. Never leave `(none yet)`:
+    it is false the instant the enable completes, and it defeats the multi-agent continuity
+    check that reads this field (`AGENTS.md` → Multi-Agent Continuity).
 - `last_review`: `(none yet)`
 - **repo:** write the path `~`-relative (e.g. `~/projects/foo`) — never an absolute
   `/Users/<name>/…` (or `/home/<name>/…`) path. `memory/` is committed to git and
@@ -406,9 +411,10 @@ with the standard title line and a short summary that captures:
   examined). This is the decision the Step 3 advisory asked the user to make.
 - a `## Memory References` section listing the fact ids you seeded at enable.
 
-This makes the enable traceable and lets the facts you seed in 5b set a real `origin`. (A
-`.gitkeep` is then unnecessary — the directory is non-empty; only add one if for some reason
-no first log is written.)
+This makes the enable traceable, lets the facts you seed in 5b set a real `origin`, and
+supplies the value 5b's `last_session` points at (the enable *is* the first session — never
+leave `(none yet)`). (A `.gitkeep` is then unnecessary — the directory is non-empty; only add
+one if for some reason no first log is written.)
 
 ### 5d. `.agent/schema.md`
 

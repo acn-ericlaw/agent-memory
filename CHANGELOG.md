@@ -11,6 +11,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.32.1, 8/6/2026
+
+> **Mode A `last_session` contradiction fix (PATCH).** A real Mode A enable (2026-08-06),
+> confirmed by an adversarial protocol audit, surfaced a tension `ENABLE.md` had carried since
+> Step 5c was added: Step 5b still said a non-migrated enable leaves `last_session: (none yet)`,
+> while Step 5c mandates writing a **first enable session log** for every fresh enable — so
+> "(none yet)" was false the moment the enable completed, and it blinded the multi-agent
+> continuity check (`AGENTS.md` reads `last_session` to decide whether another agent family
+> worked last). Step 5b's own footer bullet already pointed the seeded facts' `origin` at the
+> 5c log; `last_session` now points there too.
+
+### Fixed
+- **`ENABLE.md` Step 5b**: a non-migrated enable now points `last_session` at the Step 5c
+  enable log — `<today> | agent: <your agent name> (<the 5c log's filename stem>)` — filled
+  when that log is written (the same moment its stem becomes the seeded facts' `origin`). The
+  migrated-history branch (Mode C) is unchanged. Step 5c states the back-reference.
+- **`templates/memory/continuity.md`**: the literal `(none yet)` seed became a
+  `{{LAST_SESSION}}` placeholder — the value is mode-dependent and always filled (the
+  `{{BOOTSTRAP_IMPORTS}}` pattern, v4.29.1).
+- **`templates/.agent/schema.md`**: the `last_session` line now marks `(none yet)` as legacy
+  (pre-4.32.1 enables only).
+- **`examples/rust-event-bus/`**: the fixture stays unedited by design — it truthfully predates
+  Step 5c; its `ENABLE_OUTPUT.md` header now says so, so its `(none yet)` isn't read as current
+  behavior.
+
+No memory-file shape change (the schema touch is a value-domain note, not a field change);
+skills/adapters unchanged. Existing targets: re-copy the schema + stamp; optionally point a
+still-`(none yet)` `last_session` at the newest session log if one exists.
+
 ## Version 4.32.0, 7/27/2026
 
 > **Azure DevOps forge support — own-pipeline ritual floor + PR template (MINOR).** The third
