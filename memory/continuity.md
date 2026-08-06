@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.32.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.32.1 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-07-27 | agent: Claude Code (2026-07-27-211935)
+- **last_session:** 2026-08-06 | agent: Claude Code (2026-08-06-153509)
 - **last_review:** 2026-07-27 | through 2026-07-27-203400
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -98,6 +98,27 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
+- [x] **Shipped v4.32.1 (PATCH) — Mode A `last_session` contradiction fix.** From a **real Mode A
+  enable** (2026-08-06, target `~/sandbox/demo`), confirmed by an adversarial protocol audit:
+  `ENABLE.md` Step 5b still said a non-migrated enable leaves `last_session: (none yet)`, but Step 5c
+  (added later) mandates a **first enable session log** for every fresh enable — so "(none yet)" was
+  false the moment the enable completed, and it blinded the multi-agent continuity check (`AGENTS.md`
+  reads `last_session` to decide whether another agent family worked last). The contradiction was
+  internal to 5b — its own footer bullet already pointed the seeded facts' `origin` at the 5c log.
+  **Shipped:** 5b's non-migrated branch now points `last_session` at the 5c log (`<today> | agent:
+  <your agent name> (<the 5c log's filename stem>)`, filled when the log is written; Mode C branch
+  unchanged; 5c carries the back-reference); template seed `(none yet)` → `{{LAST_SESSION}}`
+  placeholder (the `{{BOOTSTRAP_IMPORTS}}` pattern); schema marks `(none yet)` as legacy — a
+  value-domain note, not a format change (date+agent-only live values stay valid); `rust-event-bus`
+  fixture kept unedited by design behind an `ENABLE_OUTPUT.md` grandfathered-detail note. No code
+  surface reads `last_session` (lint/hooks/CI untouched); no docs-site page carries the 5b detail.
+  Lockstep: `ENABLE.md` (5b + 5c), templates ×2, example header, `VERSION`→4.32.1, `CHANGELOG`,
+  `README` (row + 10-cap trim, drops 4.28.0), `UPGRADE` (row + `4.32.0→4.32.1` rung — re-copy schema;
+  optional truth fix for a never-worked enable still showing `(none yet)`). → serves:
+  vision-agent-memory (a fresh enable must leave a *true* memory state — the continuity check has to
+  work from session one)
+  <!-- id: last-session-enable-log-v4321 | created: 2026-08-06 | last_used: 2026-08-06 | uses: 1 | tier: working | origin: 2026-08-06-153509 -->
+
 - [x] **Shipped v4.31.0 (MINOR) — GitLab forge support: forge-aware ritual floor + MR template.** From a
   **GitLab-hosted field report** (2026-07-26): GitLab ignores `.github/` entirely (verified — no shim in
   templates/CODEOWNERS/importer docs). A 5-agent workflow gap-analysis found exactly **two** dead
@@ -125,7 +146,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   10-cap trim + file tree), `UPGRADE` (row + `4.30.0→4.31.0` rung). Non-goals: CODEOWNERS, issue templates, other
   forges (the forge seam is where they'd slot in). → serves: vision-agent-memory (adoption stays
   "point it at a repo" — on whichever forge the repo lives)
-  <!-- id: gitlab-forge-support-v4310 | created: 2026-07-27 | last_used: 2026-07-27 | uses: 1 | tier: working | origin: 2026-07-27-203400 -->
+  <!-- id: gitlab-forge-support-v4310 | created: 2026-07-27 | last_used: 2026-07-27 | uses: 3 | tier: active | origin: 2026-07-27-203400 -->
 
 - [x] **(SHIPPED v4.32.0 MINOR, 2026-07-27) Azure DevOps forge support — field installation exists; mechanics
   verified (2026-07-27); maintainer approved and shipped same day.** Delivered exactly per the proposed
@@ -153,7 +174,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   agent-memory-ci.yml` + PR template), ENABLE forge detection (dev.azure.com/visualstudio.com), Step 6
   installs files + REPORTS the one-time activation command (run only at explicit user direction),
   third squash branch, rung. → serves: vision-agent-memory
-  <!-- id: ot-azure-devops-forge-next | created: 2026-07-27 | last_used: 2026-07-27 | uses: 1 | tier: working | origin: 2026-07-27-210655 -->
+  <!-- id: ot-azure-devops-forge-next | created: 2026-07-27 | last_used: 2026-07-27 | uses: 2 | tier: active | origin: 2026-07-27-210655 -->
 
 - [ ] **(backlog) Bitbucket forge support — trigger-gated; mechanics pre-verified (2026-07-27).** From a
   maintainer question during the v4.31.0 GitLab release ("investigate viability to include Bitbucket").
@@ -175,7 +196,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `.bitbucket/pull_request_template.md` (clean) + an optional fresh-file-only pipelines floor carrying
   the admin-toggle honest limit + never editing an existing pipelines file (report a recommendation
   instead). → serves: vision-agent-memory
-  <!-- id: ot-bitbucket-forge-backlog | created: 2026-07-27 | last_used: 2026-07-27 | uses: 1 | tier: working | origin: 2026-07-27-203400 -->
+  <!-- id: ot-bitbucket-forge-backlog | created: 2026-07-27 | last_used: 2026-07-27 | uses: 2 | tier: working | origin: 2026-07-27-203400 -->
 
 - [x] **Shipped v4.30.0 (MINOR) — stack-aware `.gitignore` build-output seed.** From a **greenfield
   field case** (`mercury` — a Rust port of mercury-composable started from an empty repo, enabled
@@ -194,7 +215,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   change. Lockstep: `ENABLE.md` (5b + 7 + 8 + 9), `VERSION`→4.30.0, `CHANGELOG`, `README` (row +
   10-cap trim), `UPGRADE` (row + `4.29.1→4.30.0` rung with optional additive target steps). → serves:
   vision-agent-memory (faithful enablement — the first build after enable must not dirty the repo)
-  <!-- id: gitignore-stack-seed-v4300 | created: 2026-07-15 | last_used: 2026-07-15 | uses: 1 | tier: working | origin: 2026-07-15-232735.md -->
+  <!-- id: gitignore-stack-seed-v4300 | created: 2026-07-15 | last_used: 2026-07-15 | uses: 1 | tier: active | origin: 2026-07-15-232735.md -->
 
 - [x] **Shipped v4.29.1 (PATCH) — template import blocks → `{{BOOTSTRAP_IMPORTS}}` placeholder.** From a
   **GitHub Copilot assessment of v4.29.0** (its "Dogfood Finding"), **corroborated live on Claude Code**
@@ -213,7 +234,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   4.29.0-rung amendment), `VERSION`→4.29.1, `CHANGELOG`, `README` (row + 10-cap trim). Targets:
   version-stamp only. → serves: vision-agent-memory (the tool's own repo must stay a faithful memory
   environment while it dogfoods the features it ships)
-  <!-- id: template-import-bleed-v4291 | created: 2026-07-12 | last_used: 2026-07-12 | uses: 1 | tier: working | origin: 2026-07-12-030710 -->
+  <!-- id: template-import-bleed-v4291 | created: 2026-07-12 | last_used: 2026-08-06 | uses: 2 | tier: active | origin: 2026-07-12-030710 -->
 
 - [ ] **(backlog) Before-session presence for Cursor/Kiro — path-scoped steering imports.** From a
   maintainer question after v4.29.0 shipped ("what about other vendors' entry points?"). v4.29.0
@@ -402,7 +423,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - [ ] **(blueprint)** Multi-user concurrent contribution — mostly supported (shared
   committed `memory/`, multi-agent continuity, collision-safe session filenames); validate
   and harden for *simultaneous* contributors. → serves: vision-agent-memory
-  <!-- id: bp-multi-user | created: 2026-06-15 | last_used: 2026-06-17 | uses: 4 | tier: active | origin: 2026-06-15-000531 -->
+  <!-- id: bp-multi-user | created: 2026-06-15 | last_used: 2026-08-06 | uses: 5 | tier: active | origin: 2026-06-15-000531 -->
 - [ ] **(blueprint)** *(optional)* SDLC overlay for targets — a scrum-inspired profile a
   target *owner* can opt into: a `(sprint)` tag over Blueprint gaps + a sprint-boundary
   review, **no points/velocity/ceremony**. Not core; only if a real target wants it. The
@@ -445,7 +466,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   enable surfaced v3.1.0 (`.gitignore`), and the simple-proxy Node→Rust refactor's
   field report drove v3.2.0 (protocol clarifications). Keep feeding real-work insights
   back into this backlog. (Stated 2026-06-13.)
-  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-07-27 | uses: 13 | tier: active -->
+  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-08-06 | uses: 15 | tier: active -->
 
 - [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**
   (2026-06-13) in favor of the markdown-native evolving-memory layer above. Not
