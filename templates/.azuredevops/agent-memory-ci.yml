@@ -39,7 +39,9 @@ jobs:
       - bash: |
           status=0
           if [ -f agent-skills/memory-lint/scripts/memory-lint.py ]; then
-            python3 agent-skills/memory-lint/scripts/memory-lint.py || {
+            # --strict makes warnings observable to this wrapper; the wrapper then preserves
+            # advisory-by-default behavior or fails when AGENT_MEMORY_STRICT=1.
+            python3 agent-skills/memory-lint/scripts/memory-lint.py --strict || {
               echo "##vso[task.logissue type=warning]memory-lint reported issues (see log above)"
               status=1
             }

@@ -53,6 +53,11 @@ selects Mode C (Migrate from Vendor).
    `.claude/skills/`) are *promoted* into the neutral, committed `agent-skills/` layer
    (Section B2) with per-vendor adapters regenerated — never folded into
    `memory/instructions.md`.
+7. **Redact before promotion.** Vendor history can contain rendered credentials, Authorization
+   headers, personal data, or absolute home paths. Before writing any converted session into
+   committed `memory/sessions/`, redact secret/PII material to `(REDACTED)`. After conversion,
+   run `memory-lint` and triage every `[secret-material]` finding before the enable commit; if a
+   live credential was already committed upstream, treat it as exposed and rotate it.
 
 ---
 
@@ -210,6 +215,10 @@ Standard format for a migrated session:
 ## Original excerpt
 <first ~200 chars of the conversation if useful>
 ```
+
+Apply the redaction rule while extracting both the summary and excerpt: never copy credentials,
+Authorization headers, PII, or absolute home paths verbatim into the converted log. Use
+`(REDACTED)`; preserving the original under `legacy/` does not make a second committed copy safe.
 
 Vendor-specific extraction rules are in the sections below.
 

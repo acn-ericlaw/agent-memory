@@ -11,6 +11,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.33.3, 8/13/2026
+
+> **`[secret-material]` security-review hardening (PATCH).** A fresh-context security review
+> found that the detector was useful but not a reliable enforcement control: forge wrappers
+> never passed `--strict`, the v4.33.1 ALL-CAPS exemption trusted uppercase secrets globally,
+> common quoted/Authorization forms could bypass assignment detection, and Mode C did not
+> require migrated-history triage. This patch closes all four findings while preserving the
+> advisory-by-default doctrine.
+
+### Security
+- **Forge CI enforcement fixed:** GitHub, GitLab, and Azure wrappers now invoke
+  `memory-lint --strict`, making warnings observable to the wrapper. The wrapper still converts
+  findings to its native advisory result by default; `AGENT_MEMORY_STRICT=1` now genuinely
+  blocks.
+- **Uppercase-secret bypass closed:** ALL-CAPS enum values are exempt only when the key names an
+  enum dimension (`source`, `type`, `mode`, `mechanism`, or `strategy`). Uppercase passwords,
+  client secrets, and opaque tokens on secret-bearing keys flag.
+- **Pasted-output coverage expanded:** quoted JSON/YAML credential keys and
+  `Authorization`/`Proxy-Authorization` headers flag without echoing their values. Placeholder
+  recognition is full-value anchored, so embedding `dummy`, `sample`, or similar text no longer
+  launders a credential; template/redaction forms remain safe.
+- **Mode C migration hardened:** `MIGRATE.md` requires redaction during conversion, and
+  `ENABLE.md` verification requires `[secret-material]` triage before the enable commit.
+
+Both runtimes remain at output parity; mirror suites now pass 46 tests each. No memory-file
+shape change; SKILL.md description unchanged, so adapters are untouched. Targets re-copy the
+built-in and their forge CI file, merge the Mode C redaction rule if they use migration, then
+stamp.
+
 ## Version 4.33.2, 8/13/2026
 
 > **`[secret-material]` — backtick is a value delimiter (PATCH).** The v4.33.1 enum-constant

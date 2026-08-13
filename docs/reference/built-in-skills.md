@@ -35,9 +35,9 @@ Node** at output parity, so it runs on a node-only box too. Ten checks:
 8. review cadence + size (`[review-overdue]` / `[continuity-bloat]`)
 9. stale metadata — stored tier ≠ recomputed tier (`[stale-metadata]`)
 10. leaked secrets / PII in committed memory files (`[secret-material]`) — token shapes,
-    credential-key assignments, emails, SSN/payment-card (Luhn), absolute home paths; scans
-    `sessions/` and `archive/` too, never echoes the matched value, waivable per-line with
-    `lint:allow-secret-material`
+    credential-key assignments (including quoted JSON/YAML), Authorization headers, emails,
+    SSN/payment-card (Luhn), absolute home paths; scans `sessions/` and `archive/` too, never
+    echoes the matched value, waivable per-line with `lint:allow-secret-material`
 
 ```bash
 python agent-skills/memory-lint/scripts/memory-lint.py      # or
