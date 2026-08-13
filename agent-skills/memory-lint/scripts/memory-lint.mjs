@@ -430,7 +430,10 @@ const SECRET_VALUE_PATTERNS = [
 const ASSIGNMENT_RE = new RegExp(
   String.raw`\b([A-Za-z0-9_.\-]*(?:secret|password|passwd|credential|api[_.\-]?key|apikey` +
     String.raw`|access[_.\-]?token|auth[_.\-]?token|bearer[_.\-]?token)[A-Za-z0-9_.\-]*)` +
-    String.raw`\s*[=:]\s*(['"]?)([^\s'"]{8,})\2`,
+    // Backtick is a value delimiter alongside quotes: every scanned surface is markdown, where
+    // assignments are typically quoted as inline code (`key=VALUE`) — without this, the closing
+    // backtick rides into the captured value and defeats the enum-constant exclusion (v4.33.2).
+    String.raw`\s*[=:]\s*(['"\`]?)([^\s'"\`]{8,})\2`,
   "gi"
 );
 const PLACEHOLDER_VALUE_RE = /redacted|changeme|change-me|placeholder|example|sample|dummy|your[-_]|xxxx|\btodo\b/i;

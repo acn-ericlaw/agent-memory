@@ -15,4 +15,7 @@
 ---
 Co-Authored-By: <!-- the AI collaborator's stable agent name (e.g. "Claude Code", "Gemini CLI") — not a model version; same identity as your session logs. At most ONE per collaborator, keyed on email. GitLab squash note: the default squash commit message is the MR title ONLY, so commit-body trailers are silently dropped on squash — this footer in the MR description is the durable record; to carry co-authors into the squash commit itself, re-add the trailer when editing the squash message at merge, or set %{all_commits} in the project's squash commit template (it embeds full commit messages incl. body trailers); %{co_authored_by} does NOT carry body trailers — it credits commit authors only. -->
 
-<sub>agent-memory convention: merge requests lead with **What** and **Why** (the *why* is a first-class artifact here — see the session log), and self-identify the authoring agent (above), same as commit trailers & session logs. Advisory, not a gate.</sub>
+<!-- agent-memory convention: merge requests lead with What and Why (the why is a first-class
+artifact here — see the session log), and self-identify the authoring agent (above), same as
+commit trailers & session logs. Advisory, not a gate. This note is guidance for you, the
+author — it never renders in the created MR, so it is safe to leave in. -->
