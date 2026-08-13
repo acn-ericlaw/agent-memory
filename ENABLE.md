@@ -411,6 +411,9 @@ with the standard title line and a short summary that captures:
   examined). This is the decision the Step 3 advisory asked the user to make.
 - a `## Memory References` section listing the fact ids you seeded at enable.
 
+Apply the **redaction rule** (`AGENTS.md` → After Every Session): never write secrets or PII
+into the log — redact any pasted command output to `(REDACTED)` before persisting.
+
 This makes the enable traceable, lets the facts you seed in 5b set a real `origin`, and
 supplies the value 5b's `last_session` points at (the enable *is* the first session — never
 leave `(none yet)`). (A `.gitkeep` is then unnecessary — the directory is non-empty; only add

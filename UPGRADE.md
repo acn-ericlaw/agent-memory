@@ -114,6 +114,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.31.0 | **GitLab forge support — forge-aware ritual floor + MR template (MINOR):** a GitLab-hosted field report (`.github/` is ignored entirely by GitLab) showed exactly two installed artifacts die there: the **CI floor** (`.github/workflows/agent-memory.yml` never runs → a fresh clone has NO ritual backstop — the v4.19.0 guarantee's silent collapse) and the **What/Why PR template**. "Vendor-neutral" had conflated *AI vendor* with *hosting forge*. Now: `ENABLE.md` Step 4 detects the forge (remote URL + `.gitlab-ci.yml`/`.gitlab/` signals; unknown → install both sets, additive-safe) and Step 6 installs a forge-matched set — GitLab gets `.gitlab/agent-memory-ci.yml` (same two checks; advisory via `allow_failure: exit_codes: [42]`, `AGENT_MEMORY_STRICT=1` gates) wired from `.gitlab-ci.yml` (copied verbatim when absent — carries the canonical `workflow:rules` guard; **add-only `include:` entry when pre-existing — never `workflow:rules`**, which would change when the repo's own jobs run) + `.gitlab/merge_request_templates/Default.md` (auto-applies, all tiers). `AGENTS.md` squash guidance is now forge-aware — the failure mode **inverts**: GitHub piles trailers up (dedup), GitLab's default squash message is the MR title only so trailers are **dropped** (make them survive: re-add at merge, or `%{all_commits}` in the squash template — `%{co_authored_by}` credits commit authors only, never body trailers). Local-tooling `.github/` files (copilot-instructions, skills adapters) correctly stay on every forge. Honest limit: GitLab.com runners are zero-config; self-managed needs an admin-registered runner. Docs/design claims forge-qualified throughout. No memory-file shape change; skills/adapters unchanged |
 | 4.32.0 | **Azure DevOps forge support — own-pipeline ritual floor + PR template (MINOR):** third forge, from a real field installation. Enable detects `dev.azure.com`/`*.visualstudio.com` remotes (+ `azure-pipelines.yml`/`.azuredevops/` signals) and installs `.azuredevops/agent-memory-ci.yml` — a complete, self-contained pipeline (an existing `azure-pipelines.yml` is **never touched**; one repo carries many pipelines) with the best advisory semantics of the set (`##vso` warnings + `task.complete result=SucceededWithIssues` → native "partially succeeded"; `AGENT_MEMORY_STRICT=1` fails the run; `fetchDepth: 0`) — plus `.azuredevops/pull_request_template.md` (auto-applies; default-branch-read; 4000-char cap). **Honest limit — activation is not file-driven:** a pipeline is a *resource*; the committed file is inert until a one-time `az pipelines create … --skip-first-run` binding (Contributors-level; enable REPORTS the command, runs it only at explicit user direction), and Azure Repos ignores the YAML `pr:` key — PR-time validation is an optional Build Validation branch policy (admin; "Optional" mode = notify-only). Squash guidance gains the third branch (ADO drops trailers; no template mechanism; re-add via "Customize merge commit message"). Unknown forge installs GitHub+GitLab sets only (ADO needs positive detection). No memory-file shape change; skills/adapters unchanged |
 | 4.32.1 | **Mode A `last_session` contradiction fix (PATCH):** `ENABLE.md` Step 5b still said a non-migrated enable leaves `last_session: (none yet)` — but Step 5c (added later) writes a **first enable session log** for every fresh enable, so "(none yet)" was false the moment the enable completed and it blinded the multi-agent continuity check that reads the field (5b's own footer bullet already pointed the seeded facts' `origin` at the 5c log). Step 5b now points `last_session` at the 5c log (`<today> | agent: <name> (<log filename stem>)`, filled when the log is written; Mode C branch unchanged); the template seed became a `{{LAST_SESSION}}` placeholder; the schema marks `(none yet)` as legacy (pre-4.32.1 enables only); the `rust-event-bus` fixture stays unedited (it truthfully predates Step 5c) behind a header note. Enable-time only — targets re-copy the schema + stamp, with an optional truth fix for a never-worked enable still showing `(none yet)` |
+| 4.33.0 | **Session-log secret redaction — ritual rule + `memory-lint` `[secret-material]` advisory (MINOR):** a client-side DLP scanner caught a live OAuth client secret in a committed session log (pasted smoke-test output — nothing in the protocol stood between a rendered credential and `git push`). The after-session ritual (AGENTS.md root + template, ENABLE.md Step 5c, schema session-file section) now carries an explicit redaction rule — never write secrets or PII into `memory/`; redact pasted output to `(REDACTED)`; a committed secret is **exposed**: rotate it, redaction is not un-leaking, history cleanup is separate and human-led. `memory-lint` gains check 10 `[secret-material]` (both runtimes + mirror tests, 44 each): known token shapes (AWS/GitHub/GitLab/Slack/Google, private keys, JWTs), credential-key assignments with literal values (rendered-JAAS class; placeholders/`(REDACTED)`/number-shapes safe), emails (`noreply`/`git@`/example excluded), SSN + Luhn-verified cards, absolute home paths; scans `sessions/` + `archive/` (unlike check 7); **never echoes the matched value**; `lint:allow-secret-material` waives a quoted example line. Advisory (STRICT gates red). Redaction is the one sanctioned edit to an otherwise-immutable session log |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1865,3 +1866,40 @@ skills/adapters unchanged.
 4. **Verify:** `memory-lint` clean; `.agent/version.md` reads 4.32.1; `last_session` in
    `memory/continuity.md` shows a real value, or a justified legacy `(none yet)` (empty
    `memory/sessions/`).
+
+---
+
+## Rung: 4.32.1 → 4.33.0 — session-log secret redaction: ritual rule + `[secret-material]` advisory (MINOR)
+
+**What changed:** a client-side DLP scanner caught a live OAuth client secret in a committed
+session log — an agent had pasted smoke-test output verbatim, and nothing in the protocol or
+tooling stood between a rendered credential and `git push`. The after-session ritual now carries
+an explicit **redaction rule** (never write secrets or PII into `memory/`; redact pasted output
+to `(REDACTED)`; a committed secret is *exposed* — rotate it; history cleanup is separate and
+human-led; redaction is the one sanctioned edit to an otherwise-immutable session log), and
+`memory-lint` gains check 10 **`[secret-material]`** — token shapes, credential-key assignments
+with literal values, emails, SSN / Luhn-verified card shapes, absolute home paths — scanning
+`memory/*.md`, `sessions/`, **and** `archive/`, never echoing the matched value, waivable
+per-line with `lint:allow-secret-material`. Advisory (WARN; `--strict` / `AGENT_MEMORY_STRICT=1`
+gate it red). No memory-file shape change.
+
+**Steps:**
+
+1. **Re-copy the tool-managed built-in** `agent-skills/memory-lint/` (scripts, tests, SKILL.md)
+   verbatim from the tool repo — built-ins are re-copied on upgrade (`upgrades-additive`
+   carve-out) — then run `sync skill adapters` (the SKILL.md description changed).
+2. **Merge the redaction rule into the target's `AGENTS.md`** from `templates/AGENTS.md`
+   (After Every Session → step 1) — merge into a customized hub, never overwrite. **Re-copy**
+   `.agent/schema.md` verbatim (its session-file section gained the rule).
+3. **Run `memory-lint` and triage any `[secret-material]` findings now:** redact each hit to
+   `(REDACTED)`; if it was a live credential, **rotate it** and treat git history as exposed
+   (escalate per the org's process — rotation first; a history rewrite is a separate, human-led
+   decision); tag deliberately-quoted examples with `lint:allow-secret-material` instead of
+   deleting the narrative.
+4. **Stamp** `.agent/version.md` → `version: 4.33.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+5. **Verify:** both mirror test suites pass (44 each: `python3 -m unittest
+   agent-skills/memory-lint/scripts/test_memory_lint.py`, `node --test
+   agent-skills/memory-lint/scripts/test_memory_lint.mjs`); `memory-lint` reports clean or only
+   consciously-triaged advisories.

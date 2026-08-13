@@ -11,6 +11,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.33.0, 8/13/2026
+
+> **Session-log secret redaction — ritual rule + `memory-lint` `[secret-material]` advisory
+> (MINOR).** A client-side DLP scanner caught a live OAuth client secret in a committed session
+> log: the agent had pasted smoke-test output verbatim, and nothing in the protocol or tooling
+> stood between a rendered credential and `git push`. Session logs and continuity are committed
+> and shared **by design** — so the ritual now carries an explicit redaction rule, and
+> `memory-lint` gains a deterministic backstop for the detectable shapes. Doc rule first,
+> observational lint second, no mutation — the tool warns; the human redacts and rotates.
+
+### Added
+- **Redaction rule in the after-session ritual** (`AGENTS.md` root + template; echoed in
+  `ENABLE.md` Step 5c and the schema's session-file section): never write secrets or PII into
+  `memory/` — redact pasted command/smoke-test output to `(REDACTED)` before persisting
+  (template placeholders like `${VAR}` are already safe); a secret that was committed anyway is
+  **exposed** — redaction is not un-leaking; rotate it, and git history cleanup is a separate,
+  human-led step. Redaction is the one sanctioned edit to an otherwise-immutable session log.
+- **`memory-lint` check (10) `[secret-material]`** (both runtimes at parity + mirror tests, 44
+  each): scans every committed memory surface — `memory/*.md`, `memory/sessions/`, **and**
+  `memory/archive/` (where pasted output lives; the conflict-marker check's session exclusion
+  deliberately does NOT apply here) — for known token shapes (AWS / GitHub / GitLab / Slack /
+  Google, private-key blocks, JWTs), credential-key assignments with literal values (the
+  rendered-JAAS class; placeholders and `(REDACTED)` recognized as safe, number/date shapes
+  excluded), emails (`noreply` / `git@` / example forms excluded), SSN and Luhn-verified
+  payment-card shapes, and absolute home paths (write `~`). Advisory WARN (`--strict` / CI
+  `AGENT_MEMORY_STRICT=1` gate it red); the report **never echoes the matched value** — a lint
+  line quoting the secret would amplify the leak into terminals and CI logs;
+  `lint:allow-secret-material` on a line waives a deliberately-quoted example.
+- **Dogfooded on this repo** (145 session logs + full archive): two real pre-existing
+  `home-path` hits surfaced (mock-path quotes in old cleanup logs — waived in place with the
+  new marker); zero credential/PII noise across all technical content.
+
+### Changed
+- `memory-lint` SKILL.md (check list + description — description change → adapters re-synced).
+- **Lockstep:** `VERSION` → 4.33.0; `CHANGELOG`; `README` (row + 10-cap trim); `UPGRADE.md`
+  (row + `4.32.1 → 4.33.0` rung); docs site (`reference/built-in-skills.md` — ten checks). No
+  memory-file shape change.
+
 ## Version 4.32.1, 8/6/2026
 
 > **Mode A `last_session` contradiction fix (PATCH).** A real Mode A enable (2026-08-06),

@@ -23,7 +23,7 @@ targets.
 ## memory-lint
 
 The deterministic integrity verifier the review ritual relies on. Ships in **both Python and
-Node** at output parity, so it runs on a node-only box too. Nine checks:
+Node** at output parity, so it runs on a node-only box too. Ten checks:
 
 1. duplicate facts (`[both]`)
 2. over-archived (`[over-archived]`)
@@ -34,6 +34,10 @@ Node** at output parity, so it runs on a node-only box too. Nine checks:
 7. leftover VCS merge-conflict markers (`[conflict-marker]`)
 8. review cadence + size (`[review-overdue]` / `[continuity-bloat]`)
 9. stale metadata — stored tier ≠ recomputed tier (`[stale-metadata]`)
+10. leaked secrets / PII in committed memory files (`[secret-material]`) — token shapes,
+    credential-key assignments, emails, SSN/payment-card (Luhn), absolute home paths; scans
+    `sessions/` and `archive/` too, never echoes the matched value, waivable per-line with
+    `lint:allow-secret-material`
 
 ```bash
 python agent-skills/memory-lint/scripts/memory-lint.py      # or
