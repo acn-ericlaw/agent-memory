@@ -15,4 +15,8 @@
 ---
 Co-Authored-By: <!-- the AI collaborator's stable agent name (e.g. "Claude Code", "Gemini CLI") — not a model version; same identity as your session logs. At most ONE per collaborator, keyed on email. Azure DevOps squash note: squash drops commit-body trailers and there is no merge-message template mechanism — this footer in the PR description is the durable record; to carry co-authors into the squash commit, re-add the trailer via "Customize merge commit message" at completion. Keep descriptions lean: Azure Repos caps them at 4000 characters. -->
 
-<sub>agent-memory convention: pull requests lead with **What** and **Why** (the *why* is a first-class artifact here — see the session log), and self-identify the authoring agent (above), same as commit trailers & session logs. Advisory, not a gate.</sub>
+<!-- agent-memory convention: pull requests lead with What and Why (the why is a first-class
+artifact here — see the session log), and self-identify the authoring agent (above), same as
+commit trailers & session logs. Advisory, not a gate. This note is guidance for you, the
+author — it never renders in the created PR, so it is safe to leave in (it does still count
+toward Azure Repos' 4000-character description cap). -->

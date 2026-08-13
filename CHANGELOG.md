@@ -26,9 +26,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   enum test now uses the exact field line form plus a backticked real-secret negative control
   (45 each). Verified against the live target: zero `[secret-material]` hits with no waiver.
 
+### Changed
+- **PR/MR description templates (this repo's own + all three forge variants):** the rendered
+  `<sub>` convention-explainer footer became an **HTML comment** — it still guides authors in
+  the pre-filled body, but never renders in a created PR/MR. From maintainer feedback on this
+  release's own PR: the explanation is template guidance, not PR content.
+
 No memory-file shape change; SKILL.md description unchanged → adapters untouched. Targets:
 re-copy the built-in + stamp — the mercury-composable waiver becomes genuinely droppable here
-(4.33.1's rung said it; 4.33.2 makes it true).
+(4.33.1's rung said it; 4.33.2 makes it true) — and optionally re-copy the forge description
+template if uncustomized.
 
 ## Version 4.33.1, 8/13/2026
 
