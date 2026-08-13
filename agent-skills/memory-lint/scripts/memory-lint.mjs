@@ -445,6 +445,11 @@ function is_placeholder_value(v) {
   // Values that are templates, redactions, or number/date/version shapes — not secrets.
   if ("${<%(*".includes(v[0])) return true; // ${VAR} / $(cmd) / {{tpl}} / <angle> / %fmt / (REDACTED) / ***
   if (/^[\d.\-:/T]+$/.test(v)) return true; // timestamps, dates, versions, counts (max_tokens: 128000, …)
+  // An ALL-CAPS identifier is a config enum constant (OAUTHBEARER, SASL_SSL, STATIC_TOKEN, …),
+  // not a secret: real credentials carry mixed case/symbols, and the famous uppercase-only
+  // shapes (e.g. AWS access-key ids) are caught by the value-shape patterns independently of
+  // the assignment check. (First field false positive: mercury-composable, 2026-08-13.)
+  if (/^[A-Z][A-Z0-9_]{2,}$/.test(v)) return true;
   return PLACEHOLDER_VALUE_RE.test(v);
 }
 

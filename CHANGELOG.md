@@ -11,6 +11,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.33.1, 8/13/2026
+
+> **`[secret-material]` — ALL-CAPS enum constants are not credentials (PATCH).** Check 10's
+> first field contact (the 2026-08-13 Mode B upgrades) produced exactly one finding across two
+> production repos — and it was a false positive: a session log documenting Confluent's
+> `bearer.auth.credentials.source` property, whose value there is the enum constant
+> `OAUTHBEARER` — a source *type*, not a credential. The credential-assignment pattern now
+> recognizes ALL-CAPS identifiers (`OAUTHBEARER`, `SASL_SSL`, `STATIC_TOKEN`, …) as config
+> constants: real credentials carry mixed case/symbols, and the famous uppercase-only shapes
+> (e.g. AWS access-key ids) stay covered by the value-shape patterns independently. The
+> advisory stays signal, not noise — fix the detector, don't sprinkle waivers through client
+> repos.
+
+### Fixed
+- `memory-lint` `_is_placeholder_value` / `is_placeholder_value`: values matching
+  `^[A-Z][A-Z0-9_]{2,}$` are treated as config enum constants, not secrets — both runtimes at
+  parity, mirror test added (45 each).
+- Targets that waived this exact FP class (mercury-composable, session `2026-07-09-212417.md`)
+  may drop the waiver tag after upgrading — noted in the rung.
+
+No memory-file shape change; SKILL.md description unchanged → adapters untouched.
+
 ## Version 4.33.0, 8/13/2026
 
 > **Session-log secret redaction — ritual rule + `memory-lint` `[secret-material]` advisory

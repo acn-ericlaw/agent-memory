@@ -434,6 +434,12 @@ def _is_placeholder_value(v):
         return True  # ${VAR} / $(cmd) / {{tpl}} / <angle> / %fmt / (REDACTED) / ***
     if re.fullmatch(r"[\d.\-:/T]+", v):
         return True  # timestamps, dates, versions, counts (max_tokens: 128000, …)
+    # An ALL-CAPS identifier is a config enum constant (OAUTHBEARER, SASL_SSL, STATIC_TOKEN, …),
+    # not a secret: real credentials carry mixed case/symbols, and the famous uppercase-only
+    # shapes (e.g. AWS access-key ids) are caught by the value-shape patterns independently of
+    # the assignment check. (First field false positive: mercury-composable, 2026-08-13.)
+    if re.fullmatch(r"[A-Z][A-Z0-9_]{2,}", v):
+        return True
     return bool(PLACEHOLDER_VALUE_RE.search(v))
 
 

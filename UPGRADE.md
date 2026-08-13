@@ -115,6 +115,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.32.0 | **Azure DevOps forge support — own-pipeline ritual floor + PR template (MINOR):** third forge, from a real field installation. Enable detects `dev.azure.com`/`*.visualstudio.com` remotes (+ `azure-pipelines.yml`/`.azuredevops/` signals) and installs `.azuredevops/agent-memory-ci.yml` — a complete, self-contained pipeline (an existing `azure-pipelines.yml` is **never touched**; one repo carries many pipelines) with the best advisory semantics of the set (`##vso` warnings + `task.complete result=SucceededWithIssues` → native "partially succeeded"; `AGENT_MEMORY_STRICT=1` fails the run; `fetchDepth: 0`) — plus `.azuredevops/pull_request_template.md` (auto-applies; default-branch-read; 4000-char cap). **Honest limit — activation is not file-driven:** a pipeline is a *resource*; the committed file is inert until a one-time `az pipelines create … --skip-first-run` binding (Contributors-level; enable REPORTS the command, runs it only at explicit user direction), and Azure Repos ignores the YAML `pr:` key — PR-time validation is an optional Build Validation branch policy (admin; "Optional" mode = notify-only). Squash guidance gains the third branch (ADO drops trailers; no template mechanism; re-add via "Customize merge commit message"). Unknown forge installs GitHub+GitLab sets only (ADO needs positive detection). No memory-file shape change; skills/adapters unchanged |
 | 4.32.1 | **Mode A `last_session` contradiction fix (PATCH):** `ENABLE.md` Step 5b still said a non-migrated enable leaves `last_session: (none yet)` — but Step 5c (added later) writes a **first enable session log** for every fresh enable, so "(none yet)" was false the moment the enable completed and it blinded the multi-agent continuity check that reads the field (5b's own footer bullet already pointed the seeded facts' `origin` at the 5c log). Step 5b now points `last_session` at the 5c log (`<today> | agent: <name> (<log filename stem>)`, filled when the log is written; Mode C branch unchanged); the template seed became a `{{LAST_SESSION}}` placeholder; the schema marks `(none yet)` as legacy (pre-4.32.1 enables only); the `rust-event-bus` fixture stays unedited (it truthfully predates Step 5c) behind a header note. Enable-time only — targets re-copy the schema + stamp, with an optional truth fix for a never-worked enable still showing `(none yet)` |
 | 4.33.0 | **Session-log secret redaction — ritual rule + `memory-lint` `[secret-material]` advisory (MINOR):** a client-side DLP scanner caught a live OAuth client secret in a committed session log (pasted smoke-test output — nothing in the protocol stood between a rendered credential and `git push`). The after-session ritual (AGENTS.md root + template, ENABLE.md Step 5c, schema session-file section) now carries an explicit redaction rule — never write secrets or PII into `memory/`; redact pasted output to `(REDACTED)`; a committed secret is **exposed**: rotate it, redaction is not un-leaking, history cleanup is separate and human-led. `memory-lint` gains check 10 `[secret-material]` (both runtimes + mirror tests, 44 each): known token shapes (AWS/GitHub/GitLab/Slack/Google, private keys, JWTs), credential-key assignments with literal values (rendered-JAAS class; placeholders/`(REDACTED)`/number-shapes safe), emails (`noreply`/`git@`/example excluded), SSN + Luhn-verified cards, absolute home paths; scans `sessions/` + `archive/` (unlike check 7); **never echoes the matched value**; `lint:allow-secret-material` waives a quoted example line. Advisory (STRICT gates red). Redaction is the one sanctioned edit to an otherwise-immutable session log |
+| 4.33.1 | **`[secret-material]`: ALL-CAPS enum constants are not credentials (PATCH):** check 10's first field contact (the 2026-08-13 Mode B upgrades of two production repos) produced exactly one finding — a **false positive**: a session log documenting Confluent's `bearer.auth.credentials.source` property with its enum value `OAUTHBEARER` (a source *type*, not a credential). The credential-assignment pattern now treats ALL-CAPS identifiers (`^[A-Z][A-Z0-9_]{2,}$` — `OAUTHBEARER`, `SASL_SSL`, `STATIC_TOKEN`, …) as config constants: real credentials carry mixed case/symbols, and uppercase-only token shapes (AWS key ids) stay covered by the value-shape patterns independently. Both runtimes at parity + mirror test (45 each). Detector-only — targets re-copy the built-in + stamp; a waiver added solely for this FP class can be dropped |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1903,3 +1904,29 @@ gate it red). No memory-file shape change.
    agent-skills/memory-lint/scripts/test_memory_lint.py`, `node --test
    agent-skills/memory-lint/scripts/test_memory_lint.mjs`); `memory-lint` reports clean or only
    consciously-triaged advisories.
+
+---
+
+## Rung: 4.33.0 → 4.33.1 — `[secret-material]`: ALL-CAPS enum constants are not credentials (PATCH)
+
+**What changed:** check 10's first field contact (the 2026-08-13 Mode B upgrades) produced one
+finding across two production repos — a false positive: a session log documenting Confluent's
+`bearer.auth.credentials.source` property with its ALL-CAPS enum value (`OAUTHBEARER` — a source
+*type*, not a credential). The credential-assignment pattern now recognizes ALL-CAPS identifiers
+(`^[A-Z][A-Z0-9_]{2,}$`) as config constants; real credentials carry mixed case/symbols, and
+uppercase-only token shapes (e.g. AWS access-key ids) stay covered by the value-shape patterns
+independently. Detector-only — no memory-file shape change; SKILL.md description unchanged
+(adapters untouched).
+
+**Steps:**
+
+1. **Re-copy the tool-managed built-in** `agent-skills/memory-lint/` (scripts + tests) verbatim
+   from the tool repo.
+2. **Optional cleanup:** a `lint:allow-secret-material` waiver added solely for this FP class —
+   an ALL-CAPS enum value on a credential-keyed property (e.g. mercury-composable's
+   `memory/sessions/2026-07-09-212417.md`) — can now be dropped; re-run `memory-lint` to confirm
+   it stays clean.
+3. **Stamp** `.agent/version.md` → `version: 4.33.1`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
+   truncate-first one-liner.**
+4. **Verify:** both mirror suites pass (45 each); `memory-lint` clean or consciously triaged.

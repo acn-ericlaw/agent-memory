@@ -612,3 +612,25 @@ test("check_secret_material: waiver line and placeholder home paths are not flag
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("check_secret_material: all-caps enum constants are not flagged", () => {
+  // First field FP (mercury-composable, 2026-08-13): config docs quoted in a session log —
+  // a credential-keyed property set to an ALL-CAPS enum constant is a source TYPE, not a
+  // credential. A mixed-case value on the same key class must still flag (negative control).
+  const root = secretSetup({
+    "sessions/2026-08-13-120000.md": [
+      "# Session",
+      "bearer.auth.credentials.source: OAUTHBEARER",
+      "sasl.password.mode=STATIC_TOKEN",
+      "still real: client_secret=Zq1pw88LmNo44Xy",
+    ].join("\n") + "\n",
+  });
+  try {
+    const w = check_secret_material(root);
+    assert.equal(w.length, 1);
+    assert.ok(w[0].includes("key 'client_secret'"));
+    assert.ok(w[0].includes("(1 hit(s)"));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
