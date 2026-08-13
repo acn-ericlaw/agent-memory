@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.33.1 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.33.2 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-13 | agent: Claude Code (2026-08-13-225859)
+- **last_session:** 2026-08-13 | agent: Claude Code (2026-08-13-231459)
 - **last_review:** 2026-07-27 | through 2026-07-27-203400
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -98,6 +98,23 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
+- [x] **Shipped v4.33.2 (PATCH) — `[secret-material]`: backtick is a value delimiter.** The
+  `4.33.0→4.33.1` rung's own verify step on the live target caught, minutes after v4.33.1
+  released, that the enum-constant exclusion missed the form the motivating field line actually
+  used — **markdown inline code**: in a backticked `key=VALUE` span the closing backtick rode
+  into the captured value, so the ALL-CAPS fullmatch never applied and the FP survived. Fix:
+  backtick joins the quote/value delimiter set in the credential-assignment pattern (both
+  runtimes; a backticked mixed-case literal still flags — negative control added); the mirror
+  enum test now quotes the **exact field line verbatim** (45 each). Verified three ways: suites,
+  dogfood (0 errors, byte-parity), and live target — zero `[secret-material]` on
+  mercury-composable with no waiver. **Lesson: a field-motivated fix's fixture must quote the
+  field line verbatim** — the paraphrased bare form validated a fix the real markdown form
+  defeated. Lockstep: `VERSION`→4.33.2, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.3),
+  `UPGRADE` (row + `4.33.1→4.33.2` rung — the waiver drop 4.33.1 promised becomes true here).
+  SKILL.md description unchanged → adapters untouched. → serves: vision-agent-memory (the
+  advisory stays signal — and the trigger layer's verify steps are what keep it honest)
+  <!-- id: secret-fp-backtick-v4332 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 1 | tier: working | origin: 2026-08-13-231459 -->
+
 - [x] **Shipped v4.33.1 (PATCH) — `[secret-material]`: ALL-CAPS enum constants are not credentials.**
   Check 10's first field contact (the 2026-08-13 Mode B upgrades of mercury + mercury-composable,
   both public) produced exactly one finding — a **false positive**: a session log documenting
@@ -112,7 +129,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.33.1, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.2), `UPGRADE` (row +
   `4.33.0→4.33.1` rung). SKILL.md description unchanged → adapters untouched. → serves:
   vision-agent-memory (the advisory stays signal, not noise)
-  <!-- id: secret-fp-enum-constants-v4331 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 1 | tier: working | origin: 2026-08-13-225859 -->
+  <!-- id: secret-fp-enum-constants-v4331 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 2 | tier: active | origin: 2026-08-13-225859 -->
 
 - [x] **Shipped v4.33.0 (MINOR) — session-log secret redaction: ritual rule + `[secret-material]`
   lint advisory.** From a **client-side field incident** (reported 2026-08-13): a DLP scanner caught
@@ -135,7 +152,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.33.0, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.1), `UPGRADE` (row +
   `4.32.1→4.33.0` rung with a triage-now step). → serves: vision-agent-memory (shared memory must
   be *safe to share* — a faithful record that leaks credentials is a liability, not memory)
-  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 2 | tier: active | origin: 2026-08-13-222439 -->
+  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 3 | tier: active | origin: 2026-08-13-222439 -->
 
 - [x] **Shipped v4.32.1 (PATCH) — Mode A `last_session` contradiction fix.** From a **real Mode A
   enable** (2026-08-06, target `~/sandbox/demo`), confirmed by an adversarial protocol audit:
