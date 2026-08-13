@@ -143,6 +143,12 @@ directly. Colons omitted for cross-platform filename compatibility. Filenames so
 most recent log is always the last file — unambiguous even with multiple
 contributors on the same day.
 
+**Never write secrets or PII into a session log** — logs are committed and shared. Redact
+pasted output (credentials, tokens, emails, home paths — write `~`) to `(REDACTED)` before
+persisting; if a secret was committed anyway, rotate it — git history keeps the original.
+Redaction is the one sanctioned edit to an otherwise-immutable log; `memory-lint` flags
+detectable shapes (`[secret-material]`, waivable per-line with `lint:allow-secret-material`).
+
 ```
 # Session (YYYY-MM-DDThh:mm:ss.mmmZ)
 
