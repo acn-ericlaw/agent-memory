@@ -415,7 +415,10 @@ SECRET_VALUE_PATTERNS = [
 ASSIGNMENT_RE = re.compile(
     r"(?i)\b([A-Za-z0-9_.\-]*(?:secret|password|passwd|credential|api[_.\-]?key|apikey"
     r"|access[_.\-]?token|auth[_.\-]?token|bearer[_.\-]?token)[A-Za-z0-9_.\-]*)"
-    r"\s*[=:]\s*(['\"]?)([^\s'\"]{8,})\2"
+    # Backtick is a value delimiter alongside quotes: every scanned surface is markdown, where
+    # assignments are typically quoted as inline code (`key=VALUE`) — without this, the closing
+    # backtick rides into the captured value and defeats the enum-constant exclusion (v4.33.2).
+    r"\s*[=:]\s*(['\"`]?)([^\s'\"`]{8,})\2"
 )
 PLACEHOLDER_VALUE_RE = re.compile(
     r"(?i)(redacted|changeme|change-me|placeholder|example|sample|dummy|your[-_]|xxxx|\btodo\b)"

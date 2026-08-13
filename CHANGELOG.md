@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.33.2, 8/13/2026
+
+> **`[secret-material]` — backtick is a value delimiter (PATCH).** The v4.33.1 enum-constant
+> exclusion missed the form the motivating field line actually used: markdown inline code. In
+> `` `key=VALUE` `` the closing backtick rode into the captured value (``OAUTHBEARER` ``), so
+> the ALL-CAPS rule didn't match and the false positive survived. Caught minutes after release
+> by the 4.33.1 rung's own verify step against the live target. Every scanned memory surface
+> is markdown — the assignment pattern now treats backticks like quotes.
+
+### Fixed
+- `memory-lint` credential-assignment pattern: backtick joins the quote/value delimiter set
+  (`` `key=VALUE` `` captures `VALUE`, not ``VALUE` ``) — both runtimes at parity; the mirror
+  enum test now uses the exact field line form plus a backticked real-secret negative control
+  (45 each). Verified against the live target: zero `[secret-material]` hits with no waiver.
+
+No memory-file shape change; SKILL.md description unchanged → adapters untouched. Targets:
+re-copy the built-in + stamp — the mercury-composable waiver becomes genuinely droppable here
+(4.33.1's rung said it; 4.33.2 makes it true).
+
 ## Version 4.33.1, 8/13/2026
 
 > **`[secret-material]` — ALL-CAPS enum constants are not credentials (PATCH).** Check 10's
