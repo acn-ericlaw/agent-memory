@@ -111,8 +111,12 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   field line verbatim** — the paraphrased bare form validated a fix the real markdown form
   defeated. Lockstep: `VERSION`→4.33.2, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.3),
   `UPGRADE` (row + `4.33.1→4.33.2` rung — the waiver drop 4.33.1 promised becomes true here).
-  SKILL.md description unchanged → adapters untouched. → serves: vision-agent-memory (the
-  advisory stays signal — and the trigger layer's verify steps are what keep it honest)
+  SKILL.md description unchanged → adapters untouched. **Also folded in** (maintainer feedback
+  on this release's own PR): the PR/MR description templates' rendered `<sub>` convention
+  footer (own + 3 forge variants) became an **HTML comment** — guides authors, never renders
+  in a created PR/MR; rung gains an optional template re-copy step. → serves:
+  vision-agent-memory (the advisory stays signal — and the trigger layer's verify steps are
+  what keep it honest)
   <!-- id: secret-fp-backtick-v4332 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 1 | tier: working | origin: 2026-08-13-231459 -->
 
 - [x] **Shipped v4.33.1 (PATCH) — `[secret-material]`: ALL-CAPS enum constants are not credentials.**
