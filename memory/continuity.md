@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.33.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.33.1 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-13 | agent: Claude Code (2026-08-13-222439)
+- **last_session:** 2026-08-13 | agent: Claude Code (2026-08-13-225859)
 - **last_review:** 2026-07-27 | through 2026-07-27-203400
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -98,6 +98,22 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
+- [x] **Shipped v4.33.1 (PATCH) — `[secret-material]`: ALL-CAPS enum constants are not credentials.**
+  Check 10's first field contact (the 2026-08-13 Mode B upgrades of mercury + mercury-composable,
+  both public) produced exactly one finding — a **false positive**: a session log documenting
+  Confluent's `bearer.auth.credentials.source` property with its enum value `OAUTHBEARER` (a source
+  *type*, not a credential). Fix the detector, don't sprinkle waivers through client repos (the
+  honest-signal doctrine — same class as v4.26.1/v4.28.2): the credential-assignment pattern now
+  treats ALL-CAPS identifiers (`^[A-Z][A-Z0-9_]{2,}$` — `OAUTHBEARER`, `SASL_SSL`, `STATIC_TOKEN`,
+  …) as config constants; real credentials carry mixed case/symbols, and uppercase-only token
+  shapes (AWS key ids) stay covered by the value-shape patterns independently. Both runtimes at
+  parity, mirror test added (45 each); dogfood lint clean. The rung lets a target drop a waiver
+  added solely for this FP class (mercury-composable's `2026-07-09-212417.md`). Lockstep:
+  `VERSION`→4.33.1, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.2), `UPGRADE` (row +
+  `4.33.0→4.33.1` rung). SKILL.md description unchanged → adapters untouched. → serves:
+  vision-agent-memory (the advisory stays signal, not noise)
+  <!-- id: secret-fp-enum-constants-v4331 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 1 | tier: working | origin: 2026-08-13-225859 -->
+
 - [x] **Shipped v4.33.0 (MINOR) — session-log secret redaction: ritual rule + `[secret-material]`
   lint advisory.** From a **client-side field incident** (reported 2026-08-13): a DLP scanner caught
   a live OAuth client secret in a committed session log (dated 2026-07-13) — pasted smoke-test
@@ -119,7 +135,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.33.0, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.1), `UPGRADE` (row +
   `4.32.1→4.33.0` rung with a triage-now step). → serves: vision-agent-memory (shared memory must
   be *safe to share* — a faithful record that leaks credentials is a liability, not memory)
-  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 1 | tier: working | origin: 2026-08-13-222439 -->
+  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 2 | tier: active | origin: 2026-08-13-222439 -->
 
 - [x] **Shipped v4.32.1 (PATCH) — Mode A `last_session` contradiction fix.** From a **real Mode A
   enable** (2026-08-06, target `~/sandbox/demo`), confirmed by an adversarial protocol audit:
