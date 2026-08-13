@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.32.1 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.33.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-06 | agent: Claude Code (2026-08-06-153509)
+- **last_session:** 2026-08-13 | agent: Claude Code (2026-08-13-222439)
 - **last_review:** 2026-07-27 | through 2026-07-27-203400
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -98,6 +98,29 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
+- [x] **Shipped v4.33.0 (MINOR) — session-log secret redaction: ritual rule + `[secret-material]`
+  lint advisory.** From a **client-side field incident** (reported 2026-08-13): a DLP scanner caught
+  a live OAuth client secret in a committed session log (dated 2026-07-13) — pasted smoke-test
+  output, verbatim; nothing in the protocol or tooling stood between a rendered credential and
+  `git push`. Maintainer directive: any secrets (PII and credentials) must be redacted from session
+  memory. Incident repo is client-side (no direct access; their team rotated + cleaned history) —
+  this closes the loose end forward. **Shipped:** (a) redaction rule in the after-session ritual
+  (`AGENTS.md` ×2, `ENABLE.md` 5c, schema session-file section): never write secrets/PII into
+  `memory/`; redact pasted output to `(REDACTED)`; a committed secret is exposed — rotate it,
+  redaction ≠ un-leaking; the one sanctioned edit to an immutable log. (b) `memory-lint` check 10
+  `[secret-material]` (py + mjs parity, mirror tests 44 each): token shapes, credential-key
+  assignments with literal values (rendered-JAAS class; placeholders / redaction markers /
+  number-shapes safe), emails (public forms excluded), SSN + Luhn-verified cards, absolute home
+  paths; scans `sessions/` + `archive/` (unlike check 7); **never echoes the matched value**;
+  `lint:allow-secret-material` waives a quoted-example line. Advisory (STRICT gates red); CI floor
+  picks it up with no forge-file changes. Dogfood: 2 real pre-existing home-path hits (mock quotes
+  in old cleanup logs — waived in place), zero credential/PII noise across 145 logs + archive.
+  Lockstep: `SKILL.md` (description → adapters 8→48), docs-site built-in-skills (ten checks),
+  `VERSION`→4.33.0, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.1), `UPGRADE` (row +
+  `4.32.1→4.33.0` rung with a triage-now step). → serves: vision-agent-memory (shared memory must
+  be *safe to share* — a faithful record that leaks credentials is a liability, not memory)
+  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 1 | tier: working | origin: 2026-08-13-222439 -->
+
 - [x] **Shipped v4.32.1 (PATCH) — Mode A `last_session` contradiction fix.** From a **real Mode A
   enable** (2026-08-06, target `~/sandbox/demo`), confirmed by an adversarial protocol audit:
   `ENABLE.md` Step 5b still said a non-migrated enable leaves `last_session: (none yet)`, but Step 5c
@@ -117,7 +140,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   optional truth fix for a never-worked enable still showing `(none yet)`). → serves:
   vision-agent-memory (a fresh enable must leave a *true* memory state — the continuity check has to
   work from session one)
-  <!-- id: last-session-enable-log-v4321 | created: 2026-08-06 | last_used: 2026-08-06 | uses: 1 | tier: working | origin: 2026-08-06-153509 -->
+  <!-- id: last-session-enable-log-v4321 | created: 2026-08-06 | last_used: 2026-08-13 | uses: 2 | tier: active | origin: 2026-08-06-153509 -->
 
 - [x] **Shipped v4.31.0 (MINOR) — GitLab forge support: forge-aware ritual floor + MR template.** From a
   **GitLab-hosted field report** (2026-07-26): GitLab ignores `.github/` entirely (verified — no shim in
@@ -466,7 +489,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   enable surfaced v3.1.0 (`.gitignore`), and the simple-proxy Node→Rust refactor's
   field report drove v3.2.0 (protocol clarifications). Keep feeding real-work insights
   back into this backlog. (Stated 2026-06-13.)
-  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-08-06 | uses: 15 | tier: active -->
+  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-08-13 | uses: 16 | tier: active -->
 
 - [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**
   (2026-06-13) in favor of the markdown-native evolving-memory layer above. Not
@@ -498,4 +521,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 - Never expose the user's absolute home path (`/Users/<name>/…`) in file content —
   use `~`-relative paths. (Stated 2026-06-12; now enforced in ENABLE.md Step 5b +
-  schema `repo:` guidance.)
+  schema `repo:` guidance, and flagged by `memory-lint` `[secret-material]` since v4.33.0.)
+- Any secrets — PII and credentials — must be redacted from session memory, never
+  committed. (Stated 2026-08-13, after a client-side DLP catch; enforced via the
+  AGENTS.md redaction rule + `memory-lint` `[secret-material]`, v4.33.0.)
