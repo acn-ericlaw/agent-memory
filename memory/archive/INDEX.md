@@ -82,3 +82,8 @@
 - post-commit-per-session-v4221 — Shipped v4.22.1 (PATCH) — post-commit auto-stub is per *session*, not per *commit*. From — faded — 2026-Q3.md
 - knowledge-harvest-curious-v4220 — Shipped in v4.22.0 (MINOR; dev-iter 4.22) — curious knowledge harvest at enable. From a cl… — faded — 2026-Q3.md
 - ritual-init-v4200 — Shipped v4.20.0 (MINOR) — first-run init for fresh clones. Dogfooding `~/sandbox/simple-pr… — faded — 2026-Q3.md
+- pr-what-why-convention-v4270 — Shipped v4.27.0 (MINOR) — standardized PR descriptions: lead with What / Why. From a maint… — faded — 2026-Q3.md
+- pinned-tier-refinement-v4261 — Shipped v4.26.1 (PATCH) — `[stale-metadata]` / `refresh-metadata` no longer opine on a pin… — faded — 2026-Q3.md
+- refresh-metadata-builtin-v4260 — Shipped v4.26.0 (MINOR) — `refresh-metadata` (7th built-in) + a `memory-lint` `[stale-meta… — faded — 2026-Q3.md
+- archive-fact-builtin-v4250 — Shipped v4.25.0 (MINOR) — `archive-fact`, a deterministic safe archive-move helper (6th bu… — faded — 2026-Q3.md
+- decay-policy-retune-v4240 — Shipped v4.24.0 (MINOR) — decay-policy retune + a review-cadence/size advisory in `memory-… — faded — 2026-Q3.md

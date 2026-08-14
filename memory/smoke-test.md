@@ -40,3 +40,4 @@ review. Don't edit the questions to make them pass.
 | Date | Through session | Score (✅/total) | Gaps found → action |
 |---|---|---|---|
 | 2026-06-14 | (P4 enable) | — | baseline — run the test to populate |
+| 2026-08-14 | 2026-08-14-011037 | 12/12 | none |

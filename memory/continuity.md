@@ -9,9 +9,9 @@
 - **project:** agent-memory
 - **status:** v4.33.4 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-14 | agent: GitHub Copilot (2026-08-14-003952)
-- **last_review:** 2026-07-27 | through 2026-07-27-203400
-- **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
+- **last_session:** 2026-08-14 | agent: GitHub Copilot (2026-08-14-011037)
+- **last_review:** 2026-08-14 | through 2026-08-14-011037
+- **last_invariant_check:** 2026-08-14 | through 2026-08-14-011037
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
 
 ## What's Been Built
@@ -98,13 +98,30 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
+- [ ] **Re-verify invariants (due):** confirm `target-repo-scope-only`,
+  `never-delete-vendor-files`, `never-pick-a-winner`, `no-build-step-agent-run`,
+  `upgrades-additive`, and the `vision-agent-memory` Vision still hold, or supersede any
+  that do not (`DECAY.md` §9).
+  <!-- id: ot-reverify-invariants-20260814 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 1 | tier: working | origin: 2026-08-14-011037 -->
+
+- [x] **Hardened `memory-lint` test fixtures against repository secret-scanner false
+  positives without a release bump.** The Python and Node mirror suites no longer commit
+  complete secret/PII signatures: tests deterministically construct shape-constrained dummy
+  values at runtime, store them in test-scoped environment variables, and remove them after
+  each case. Provider shapes, generic credential assignments, template fallbacks, private-key
+  markers, PII, waiver behavior, non-echo guarantees, and negative controls remain covered
+  (46/46 in each runtime). This changes tests only, so `VERSION` remains 4.33.4. → serves:
+  vision-agent-memory (security tooling should not make the repository itself noisy to
+  enterprise scanners)
+  <!-- id: secret-test-fixtures-env | created: 2026-08-14 | last_used: 2026-08-14 | uses: 1 | tier: working | origin: 2026-08-14-011037 -->
+
 - [x] **Shipped v4.33.4 (PATCH) — reject non-empty `${…}` defaults in `[secret-material]`.**
   Post-release review caught that v4.33.3's broad brace-delimited placeholder exemption fixed
   empty-default and dotted-reference false positives but also trusted literal fallbacks.
   `${NAME}`, `${NAME:}`, and dotted references remain safe; a value such as
   `client_secret=${CLIENT_SECRET:-RealSecret123}` now flags without echoing the value. Python <!-- lint:allow-secret-material -->
   and Node remain byte-identical, 46 mirror tests each. → serves: vision-agent-memory
-  <!-- id: secret-template-default-v4334 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 1 | tier: working | origin: 2026-08-14-003952 -->
+  <!-- id: secret-template-default-v4334 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 2 | tier: active | origin: 2026-08-14-003952 -->
 
 - [x] **Shipped v4.33.3 (PATCH) — security-review hardening for `[secret-material]`.** A
   fresh-context security review judged v4.33.x useful defense-in-depth but found four concrete
@@ -122,7 +139,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (still fullmatch-anchored), verbatim fixture added, both live targets re-probe zero findings.
   → serves: vision-agent-memory (shared memory is safe to share, and the
   advertised strict gate is real)
-  <!-- id: secret-review-hardening-v4333 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 3 | tier: active | origin: 2026-08-13-235301 -->
+  <!-- id: secret-review-hardening-v4333 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 4 | tier: active | origin: 2026-08-13-235301 -->
 
 - [x] **Shipped v4.33.2 (PATCH) — `[secret-material]`: backtick is a value delimiter.** The
   `4.33.0→4.33.1` rung's own verify step on the live target caught, minutes after v4.33.1
@@ -182,7 +199,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.33.0, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.1), `UPGRADE` (row +
   `4.32.1→4.33.0` rung with a triage-now step). → serves: vision-agent-memory (shared memory must
   be *safe to share* — a faithful record that leaks credentials is a liability, not memory)
-  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 6 | tier: active | origin: 2026-08-13-222439 -->
+  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 7 | tier: active | origin: 2026-08-13-222439 -->
 
 - [x] **Shipped v4.32.1 (PATCH) — Mode A `last_session` contradiction fix.** From a **real Mode A
   enable** (2026-08-06, target `~/sandbox/demo`), confirmed by an adversarial protocol audit:
@@ -353,77 +370,6 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (authorship stays a faithful, stable representation of the AI collaborator over time)
   <!-- id: coauthor-stable-identity-v4280 | created: 2026-06-30 | last_used: 2026-07-27 | uses: 2 | tier: archive-candidate | origin: 2026-06-30-054342 -->
 
-- [x] **Shipped v4.27.0 (MINOR) — standardized PR descriptions: lead with What / Why.** From a **maintainer
-  suggestion** to standardize the look-and-feel of pull-request descriptions and **propagate it to every
-  AI-enabled repo**. A natural fit — *why* is already a first-class artifact throughout the protocol (VBDI
-  intent trace, ADR rationale, supersession reasons, the changelog's own `> summary + Why` shape), and the
-  content projects from the session log(s) in the PR (What from the change, Why from the Blueprint gap /
-  decision). Confirmed **no prior PR guidance existed** (only the commit `Co-Authored-By` trailer) — a real
-  gap. **Shape:** two sections, **What** + **Why** (substantive intent, not a restatement of What), each 1–2
-  short paragraphs (flexible, not rigidly two), closing with a self-identifying `Co-Authored-By:` footer
-  (extends the commit/session-log authorship convention to the PR altitude); **advisory, never a gate**
-  (`guide-don't-prescribe`). **Built**
-  `.github/pull_request_template.md` (this repo + `templates/`, so enabled repos inherit it) + an `AGENTS.md`
-  convention (root + template) as the **vendor-neutral backstop** (the template only covers GitHub web UI /
-  `gh pr create`; the steering line covers agents composing a PR body) + a checklist line. Lockstep:
-  `ENABLE.md` Step 6 (install template), `VERSION`→4.27.0, `CHANGELOG`, `README` (row + file tree), `UPGRADE`
-  (row + rung), docs site (`getting-started`). No memory-file shape change. → serves: vision-agent-memory
-  (faithful, traceable delivery — intent is carried at the PR altitude too, across vendors)
-  <!-- id: pr-what-why-convention-v4270 | created: 2026-06-29 | last_used: 2026-06-30 | uses: 2 | tier: archive-candidate | origin: 2026-06-29-175644 -->
-
-- [x] **Shipped v4.26.1 (PATCH) — `[stale-metadata]` / `refresh-metadata` no longer opine on a pinned
-  thread's tier.** From a **mercury sanity check** (post-Copilot review): v4.26.0 flagged every
-  `working`-tagged pinned `- [ ]` open thread as "should be `active`" — noise, since a pinned thread never
-  decays *regardless* of its tier label (its **pinned-ness** protects it, not the label). Refinement: both
-  `expected_tier`s (memory-lint check 9 + refresh-metadata) now return a pinned thread's **stored** tier — no
-  flag, no rewrite — while still refreshing its factual `uses`/`last_used`. Surfaced by the comparison of
-  `refresh-metadata` vs Copilot's `update-metadata.py` (which *skipped* pinned threads; this lands on the same
-  outcome by a cleaner rule, and `refresh-metadata` is otherwise a strict, safer superset — preserves all
-  footer fields, reads `decay-policy.md`, clamps at archive-candidate). The same sanity check confirmed
-  **no data loss** on mercury (it never used `supersedes`/`superseded-by`/`formalizes` footer fields) and a
-  **correct archival**. Lockstep: memory-lint + refresh-metadata scripts + tests (memory-lint 34), `DECAY.md`
-  rule 4, both SKILL.md notes, `VERSION`→4.26.1, `CHANGELOG`, `README`, `UPGRADE` (row + rung). Descriptions
-  unchanged → adapters untouched. → serves: vision-agent-memory (the advisory stays signal, not noise)
-  <!-- id: pinned-tier-refinement-v4261 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-181738 -->
-
-- [x] **Shipped v4.26.0 (MINOR) — `refresh-metadata` (7th built-in) + a `memory-lint` `[stale-metadata]`
-  advisory.** From a **cross-vendor field test**: Copilot / Gemini 3.1 Pro committed the v4.25.0 upgrade to
-  mercury and, seeing `[review-overdue]`, **ran the review unprompted** — correctly using `archive-fact`
-  (the over-archival guard even caught a premature archive of `adr-pattern-adopted` → it reverted). But it did
-  Step 4 (archive) + Step 5 (sweep) and **skipped Step 2 (apply events) + Step 3 (re-tier)**, leaving stale
-  `last_used`/`uses`/`tier` footers. **Third instance of one failure class** (truncation → `archive-fact`;
-  never-fired review → `[review-overdue]`; now half-done ritual): multi-step agent rituals get partially
-  executed. **The fix refines the judgment-vs-arithmetic boundary** — deciding *what to archive* is judgment
-  (stays with the agent); recomputing metadata is **arithmetic** (REVIEW.md's "full rebuild," deterministic),
-  safe to mechanize. **Built** `agent-skills/refresh-metadata/` (recompute footers from the reference log,
-  read-into-memory-write-once; `core`/`superseded`/never-referenced untouched; clamps at `archive-candidate`,
-  never archives) + `memory-lint` check (9) `[stale-metadata]` (stored tier ≠ recomputed). Both Python+Node at
-  parity + mirror tests (memory-lint 33, refresh-metadata 5). **Dogfooded:** the new advisory flagged 11 stale
-  footers on THIS repo (my own earlier reviews skipped re-tiering too — universal, not vendor-specific);
-  `refresh-metadata` cleared all 11 → lint 0/0. Lockstep: skill + tests, memory-lint + tests, `REVIEW.md`
-  (steps 2–3), `ENABLE.md` §5i (7 built-ins), `README`/`ADR`/continuity lists, adapters (8 skills → 48),
-  `VERSION`→4.26.0, `CHANGELOG`, `UPGRADE` (row + rung). → serves: vision-agent-memory (the review's
-  deterministic half is now mechanized; only judgment is left to the agent — across vendors)
-  <!-- id: refresh-metadata-builtin-v4260 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 2 | tier: archive-candidate | origin: 2026-06-28-175909 -->
-
-- [x] **Shipped v4.25.0 (MINOR) — `archive-fact`, a deterministic safe archive-move helper (6th built-in).**
-  From a **cross-vendor critique** (Copilot / Gemini 3.1 Pro, `review-scratch/critique.md`): "agent behaviors
-  vary by vendor; relying on agent interpretation of `REVIEW.md` to safely mutate state is vulnerable to LLM
-  regressions / file-editing precision — harden the memory-writing mechanism itself (a small CLI helper for
-  safe writes)." Spot-on, and it names our **most-repeated bug**: the `open(f,"w").write(open(f).read()+…)`
-  truncate-before-read trap (wiped a `version.md` stamp, then this repo's archive 50→6, once each;
-  [[version-md-stamp-safe-write]]). v4.22.4 moved the safeguard personal-note → shared doc; this is doc →
-  **tool**. **Built** `agent-skills/archive-fact/` (`provenance: agent-memory-builtin`): executes `REVIEW.md`
-  step 4's move (extract block by footer id → append to quarter archive + INDEX → rewrite continuity
-  *read-into-memory-then-write-once*). Python + Node at output parity + mirror tests; guards refuse a missing/
-  already-archived id or a would-empty move (all-or-nothing); `--dry-run`. **Keeps the meaning/mechanics
-  split** (same as `memory-lint`): the agent decides *what* to archive, the helper does the *move* — it never
-  decides (`never-pick-a-winner`). Lockstep: skill + tests, `REVIEW.md` step 4 (preferred path), `ENABLE.md`
-  §5i (6 built-ins), `README`/`ADR`/continuity built-in lists, adapters synced (7 skills → 42),
-  `VERSION`→4.25.0, `CHANGELOG`, `UPGRADE` (row + rung). → serves: vision-agent-memory (faithful enablement —
-  the riskiest state-mutation is now deterministic, not left to per-vendor agent diligence)
-  <!-- id: archive-fact-builtin-v4250 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-172159 -->
-
 - [ ] **(backlog) Mode B upgrade automation — scope the mechanical steps only.** From the same Gemini critique
   (point 1): as the user base grows, the high-touch Mode B upgrade (re-sync specific files, run tools, stamp
   version) could be a source of drift/user error; "consider automating more of `ENABLE.md` Mode B via a
@@ -433,27 +379,6 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   revisited, script only the **mechanical** parts (file copies, version stamp — like `sync-adapters` did in
   v4.18.0) and leave the merges to the agent. Lower priority; logged so the critique isn't lost.
   <!-- id: ot-mode-b-automation-backlog | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: active | origin: 2026-06-28-172159 -->
-
-- [x] **Shipped v4.24.0 (MINOR) — decay-policy retune + a review-cadence/size advisory in `memory-lint`.**
-  From a maintainer question (after the v4.23.2 review flagged continuity at 490 lines, still over the old
-  300 cap): "recommend new parameters based on the mercury-composable learning." **Measured both enabled
-  repos:** this tool (121 sessions, continuity 490 lines / 24 facts *right after a clean review*) and
-  `mercury-composable` (61 sessions, **585 lines / 41 facts, 0 archived** — the cadence review had never
-  fired in the field). **Four findings:** (1) `continuity_max_lines: 300` was permanently-red on both
-  (alert fatigue) + conflates non-decaying structural sections with the decaying region; (2) no
-  count-based trigger, though fact-count is the verbosity/velocity-independent signal; (3) **nothing
-  enforced the review cadence** (mercury's smoking gun); (4) `verify_invariants_every: 20` = near-daily
-  human re-confirms at burst velocity. **Shipped:** `memory-lint` advisory check (8) — `[review-overdue]`
-  (reads the `last_review` stamp) + `[continuity-bloat]` (facts/lines), **both runtimes at parity + mirror
-  tests (29 each)**; the keystone, since parameters alone can't fix a review that never runs. Retuned
-  defaults: `continuity_max_facts: 30` (NEW, primary), `continuity_max_lines: 300→600`,
-  `verify_invariants_every: 20→40`; `working/active/archive_window` + `review_every` unchanged (they work —
-  bloat came from reviews not running). Lockstep: lint scripts+tests, `decay-policy.md` (template + this
-  repo), `REVIEW.md`, `SKILL.md`, `AGENTS.md` (root+template), `.agent/schema.md`, `VERSION`→4.24.0,
-  `CHANGELOG`, `README` (table), `UPGRADE` (row + rung). Skill description unchanged → adapters untouched.
-  → serves: vision-agent-memory (faithful, verifiable enablement — the layer's own health is enforced by a
-  deterministic check, not left to agent diligence; the lesson came from a real product repo's drift)
-  <!-- id: decay-policy-retune-v4240 | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: archive-candidate | origin: 2026-06-28-165455 -->
 
 ### Evolving long-term memory layer (v3.0.0) — BUILT 2026-06-13
 - [ ] **Dogfood backfill (optional):** this repo adopted the layer — added
