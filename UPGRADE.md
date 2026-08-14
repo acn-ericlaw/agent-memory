@@ -117,6 +117,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.33.0 | **Session-log secret redaction — ritual rule + `memory-lint` `[secret-material]` advisory (MINOR):** a client-side DLP scanner caught a live OAuth client secret in a committed session log (pasted smoke-test output — nothing in the protocol stood between a rendered credential and `git push`). The after-session ritual (AGENTS.md root + template, ENABLE.md Step 5c, schema session-file section) now carries an explicit redaction rule — never write secrets or PII into `memory/`; redact pasted output to `(REDACTED)`; a committed secret is **exposed**: rotate it, redaction is not un-leaking, history cleanup is separate and human-led. `memory-lint` gains check 10 `[secret-material]` (both runtimes + mirror tests, 44 each): known token shapes (AWS/GitHub/GitLab/Slack/Google, private keys, JWTs), credential-key assignments with literal values (rendered-JAAS class; placeholders/`(REDACTED)`/number-shapes safe), emails (`noreply`/`git@`/example excluded), SSN + Luhn-verified cards, absolute home paths; scans `sessions/` + `archive/` (unlike check 7); **never echoes the matched value**; `lint:allow-secret-material` waives a quoted example line. Advisory (STRICT gates red). Redaction is the one sanctioned edit to an otherwise-immutable session log |
 | 4.33.1 | **`[secret-material]`: ALL-CAPS enum constants are not credentials (PATCH):** check 10's first field contact (the 2026-08-13 Mode B upgrades of two production repos) produced exactly one finding — a **false positive**: a session log documenting Confluent's `bearer.auth.credentials.source` property with its enum value `OAUTHBEARER` (a source *type*, not a credential). The credential-assignment pattern now treats ALL-CAPS identifiers (`^[A-Z][A-Z0-9_]{2,}$` — `OAUTHBEARER`, `SASL_SSL`, `STATIC_TOKEN`, …) as config constants: real credentials carry mixed case/symbols, and uppercase-only token shapes (AWS key ids) stay covered by the value-shape patterns independently. Both runtimes at parity + mirror test (45 each). Detector-only — targets re-copy the built-in + stamp; a waiver added solely for this FP class can be dropped |
 | 4.33.2 | **`[secret-material]`: backtick is a value delimiter (PATCH):** the v4.33.1 enum-constant exclusion missed the form the motivating field line actually used — markdown inline code: in `` `key=VALUE` `` the closing backtick rode into the captured value, so the ALL-CAPS rule didn't match and the FP survived (caught minutes after release by the 4.33.1 rung's own verify step against the live target). Every scanned memory surface is markdown — the assignment pattern now treats backticks like quotes; mirror enum test uses the exact field form + a backticked real-secret negative control (45 each). Also: the PR/MR description templates' rendered `<sub>` convention footer became an HTML comment (guides authors, never renders in a created PR/MR — maintainer feedback). Targets re-copy the built-in + stamp; the waiver drop 4.33.1 promised becomes genuinely possible here; optionally re-copy the forge description template if uncustomized |
+| 4.33.3 | **`[secret-material]` security-review hardening (PATCH):** closes four fresh-context findings: all forge wrappers invoke `memory-lint --strict` so warnings reach their advisory/blocking branch and `AGENT_MEMORY_STRICT=1` genuinely gates; ALL-CAPS enums are exempt only on enum-dimension keys, closing uppercase-secret bypasses; quoted JSON/YAML assignments, Authorization headers, and embedded-placeholder values now flag without echoing secrets; Mode C redacts migrated history and triages lint before commit. Both runtimes byte-identical, 46 mirror tests each. Targets re-copy the built-in + forge CI file, merge migration guidance if applicable, then stamp |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1960,3 +1961,37 @@ memory-file shape change; SKILL.md description unchanged (adapters untouched).
    `enabled_with` and `mode`. **Use the Edit tool (or read-into-a-variable then write) — never a
    truncate-first one-liner.**
 5. **Verify:** both mirror suites pass (45 each); `memory-lint` clean or consciously triaged.
+
+---
+
+## Rung: 4.33.2 → 4.33.3 — `[secret-material]` security-review hardening (PATCH)
+
+**What changed:** a fresh-context security review found four gaps in the v4.33.x defense:
+forge wrappers did not pass `--strict`, so warnings never reached the branch that applies
+`AGENT_MEMORY_STRICT`; the global ALL-CAPS exemption also trusted uppercase secrets; quoted
+JSON/YAML keys and Authorization headers escaped assignment detection; and Mode C migration did
+not require redaction/lint triage. All four are fixed. The linter remains non-echoing and
+advisory by default; the forge wrapper decides whether a finding warns or blocks.
+
+**Steps:**
+
+1. **Re-copy the tool-managed built-in** `agent-skills/memory-lint/` (scripts, tests, SKILL.md)
+   verbatim from the tool repo. Its body changed but its frontmatter description did not, so
+   adapters do not need regeneration.
+2. **Re-copy the forge CI floor** from the tool repo: GitHub
+   `.github/workflows/agent-memory.yml`, GitLab `.gitlab/agent-memory-ci.yml`, or Azure DevOps
+   `.azuredevops/agent-memory-ci.yml`. Preserve any target customization by merging only the
+   `memory-lint.py --strict` invocation when a verbatim copy is unsafe. This fixes both
+   advisory annotations and the opt-in strict gate.
+3. **If the target uses Mode C migration, merge the migrated-history redaction rule** from
+   `MIGRATE.md` / `ENABLE.md`: redact during conversion and triage every `[secret-material]`
+   finding before committing generated sessions.
+4. **Run `memory-lint` and triage newly detected forms:** uppercase literals on secret-bearing
+   keys, quoted JSON/YAML credential assignments, Authorization headers, and values that only
+   *contain* placeholder words. Redact real material; rotate any live credential; waive only a
+   deliberately quoted, non-live example.
+5. **Stamp** `.agent/version.md` → `version: 4.33.3`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
+6. **Verify:** both mirror suites pass (46 each); Python/Node linter output is byte-identical;
+   the target's forge CI invocation includes `memory-lint.py --strict`; lint is clean or only
+   consciously triaged.

@@ -835,13 +835,20 @@ describe what was intended.
    `memory/sessions/` has a title line matching
    `# Session (YYYY-MM-DDThh:mm:ss.mmmZ - YYYY-MM-DDThh:mm:ss.mmmZ)`.
 
-5. **Vision bootstrapped (not fabricated).** `memory/vision.md` exists with the
+5. **Mode C — migrated history is safe to commit.** Run `memory-lint` after all converted
+   sessions are written and triage every `[secret-material]` finding before reporting success:
+   redact credentials, Authorization headers, PII, and absolute home paths to `(REDACTED)`;
+   rotate any live credential already committed upstream; use `lint:allow-secret-material` only
+   for a deliberately quoted, non-live example. This is mandatory even though originals remain
+   preserved under `legacy/` — migration must not create a second committed leak.
+
+6. **Vision bootstrapped (not fabricated).** `memory/vision.md` exists with the
    Current-state context filled and the target / success criteria / non-goals left as
    prompts. The ⚠️ DRAFT banner and the `(…)` prompts are **intentional** — not unfilled
    placeholders. A `- [ ] (vision-bootstrap)` Open Thread is present in `continuity.md`,
    and no Blueprint gaps were derived yet (they await the confirmed Vision).
 
-6. **Skills installed + promoted + adapters complete.** Confirm the **built-in skills**
+7. **Skills installed + promoted + adapters complete.** Confirm the **built-in skills**
    (`memory-lint`, `second-opinion`, `apply-critique`, `sync-adapters`, `harvest-knowledge`) were
    installed into `agent-skills/` (Step 5i) and `review-scratch/` is gitignored. Additionally (Mode C), if the source repo had
    vendor skills (e.g. `.claude/skills/`), confirm each was promoted to
@@ -853,7 +860,7 @@ describe what was intended.
    `agent-skills/<name>/`). Any miss or orphan ⇒ re-run sync. (Enforcement is now *checked*, not
    convention — the loose end that a recommend-only check left open.)
 
-7. **Knowledge harvest ran (curious discovery).** Confirm Step 4b actually descended
+8. **Knowledge harvest ran (curious discovery).** Confirm Step 4b actually descended
    into any documentation tree (recursively, not depth-1) and swept the repo root for
    knowledge markdown (decision logs, ADRs, kanban/roadmap, architecture notes). If a
    `docs/` tree or root-level knowledge doc exists, its durable facts should be reflected
@@ -861,7 +868,7 @@ describe what was intended.
    read budget, captured in a `- [ ] (knowledge-harvest)` Open Thread. A docs folder that
    exists but left **no trace anywhere** means the harvest was skipped — re-run Step 4b.
 
-8. **First enable session log written (Mode A).** Confirm a session log exists under
+9. **First enable session log written (Mode A).** Confirm a session log exists under
    `memory/sessions/` (title line `# Session (…Z)`, persist-time UTC filename) recording
    the enable **and the discovery depth the user chose** (`standard scan` / `deep analysis`).
    If the user chose `deep`, confirm the deep findings landed in the **neutral** memory layer
@@ -892,6 +899,7 @@ Print a clear summary including migration details if Mode C ran:
   Migrated (Mode C only):
   • <vendor>:  <files>  →  <where>
   • Sessions converted: N (from <oldest>  to  <newest>)
+  • Secret triage: memory-lint clean; migrated history redacted before commit
   • Skills promoted: N → agent-skills/  (+ Claude / Gemini / Cursor / Kiro / Copilot / Antigravity adapters regenerated)
 
   Created:
