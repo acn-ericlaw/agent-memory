@@ -119,6 +119,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.33.2 | **`[secret-material]`: backtick is a value delimiter (PATCH):** the v4.33.1 enum-constant exclusion missed the form the motivating field line actually used — markdown inline code: in `` `key=VALUE` `` the closing backtick rode into the captured value, so the ALL-CAPS rule didn't match and the FP survived (caught minutes after release by the 4.33.1 rung's own verify step against the live target). Every scanned memory surface is markdown — the assignment pattern now treats backticks like quotes; mirror enum test uses the exact field form + a backticked real-secret negative control (45 each). Also: the PR/MR description templates' rendered `<sub>` convention footer became an HTML comment (guides authors, never renders in a created PR/MR — maintainer feedback). Targets re-copy the built-in + stamp; the waiver drop 4.33.1 promised becomes genuinely possible here; optionally re-copy the forge description template if uncustomized |
 | 4.33.3 | **`[secret-material]` security-review hardening (PATCH):** closes four fresh-context findings: all forge wrappers invoke `memory-lint --strict` so warnings reach their advisory/blocking branch and `AGENT_MEMORY_STRICT=1` genuinely gates; ALL-CAPS enums are exempt only on enum-dimension keys, closing uppercase-secret bypasses; quoted JSON/YAML assignments, Authorization headers, and embedded-placeholder values now flag without echoing secrets; Mode C redacts migrated history and triages lint before commit. Both runtimes byte-identical, 46 mirror tests each. Targets re-copy the built-in + forge CI file, merge migration guidance if applicable, then stamp |
 | 4.33.4 | **`[secret-material]`: reject non-empty template defaults (PATCH):** v4.33.3's broad `${…}` placeholder exemption also trusted literal fallbacks, so `client_secret=${CLIENT_SECRET:-RealSecret123}` bypassed assignment detection. `${NAME}`, `${NAME:}`, and dotted references remain safe; non-empty defaults flag without echoing values. Both runtimes at parity, 46 mirror tests each. Targets re-copy the built-in + stamp |
+| 4.34.0 | **Pre-commit secret guard, memory + config surfaces (MINOR):** the v4.33.x arc's missing timing layer — and the field incident's true *origin*: credentials entered the repo inside a Postman JSON and an OpenShift YAML before a dry-run contaminated a session log. The committed `.githooks/pre-commit` scans the **staged** content (index; only what THIS commit stages) of `memory/**.md` (full profile) and of config files (`.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*` — credential-class) **before the commit exists**; all three forge CI wrappers run the matching changed-config scan on push via the new `memory-lint --scan-files` mode. The guard **enforces by default** — findings block the commit, the deliberate exception to the advisory doctrine (secrets carry irreversible after-the-fact cost); `AGENT_MEMORY_SECRET_GUARD=advisory` opts down to warn-only, `--no-verify` bypasses once; JSON/properties exemptions in the committed, human-audited `.agent/secret-scan-ignore` (config only, never memory/); the CI floor stays advisory (`AGENT_MEMORY_STRICT=1` gates). Detector tuned on a 661-file live-corpus probe to zero FPs (single-brace + GH-Actions template forms, `demo`/`test` placeholder words, placeholder-fallback defaults, dotted route refs exempt from Authorization, `;` value delimiter, Postman split-pair pattern); 49 mirror tests per runtime, parity held. Rides existing `core.hooksPath` activation; never-initialized clones fall through to the CI floor |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -2019,3 +2020,57 @@ echoing its value. Detector-only — no memory-file shape change; SKILL.md descr
 2. **Stamp** `.agent/version.md` → `version: 4.33.4`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
 3. **Verify:** both mirror suites pass (46 each); lint is clean or consciously triaged.
+
+---
+
+## Rung: 4.33.4 → 4.34.0 — pre-commit secret guard, memory + config surfaces (MINOR)
+
+**What changed:** the v4.33.x DLP arc covered agents at write time (ritual redaction rule) and
+pushes (CI floor), but a human teammate committing directly met no automated check until the
+remote already had the secret — and the incident's *origin* was never a memory file: the
+credentials entered the repo inside a Postman JSON and an OpenShift YAML, then contaminated a
+session log when a dry-run rendered them. The new committed `.githooks/pre-commit` scans the
+**staged content** (the index — exactly what the commit would publish; only what THIS commit
+stages) of `memory/**.md` (full profile) **and of config files**
+(`.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*` — credential-class checks)
+**before the commit exists**; the three forge CI wrappers run the matching changed-config scan
+on push via the new `memory-lint --scan-files` mode. The guard **enforces by default** —
+findings block the commit (the deliberate, maintainer-decided exception to the advisory
+doctrine: secrets carry irreversible after-the-fact cost); opt down to warn-only with
+`AGENT_MEMORY_SECRET_GUARD=advisory` (env or `git config agent-memory.secretguard advisory`);
+one-off bypass `git commit --no-verify`; merge commits skipped. The CI floor stays
+advisory-by-default (`AGENT_MEMORY_STRICT=1` gates). JSON/properties exemptions live in the
+committed, human-audited `.agent/secret-scan-ignore` (config files only, never `memory/`).
+Detector refinements were tuned on a 661-file live-corpus probe to zero false positives; the
+mirror suites grow to 49 tests per runtime. SKILL.md frontmatter description unchanged →
+adapters untouched.
+
+**Steps:**
+
+1. **Re-copy the tool-managed built-in** `agent-skills/memory-lint/` (scripts, tests, SKILL.md)
+   verbatim from the tool repo — the runtimes gained `--scan-files` and the probe-tuned
+   placeholder refinements.
+2. **Copy the new hook** `.githooks/pre-commit` verbatim from the tool repo, and **re-copy**
+   `.githooks/README.md` + `.githooks/init.sh` (both updated for the two-hook layout).
+   **`chmod +x .githooks/pre-commit`** — git silently ignores a non-executable hook (commit
+   mode `100755`).
+3. **Copy the exemptions stub** `templates/.agent/secret-scan-ignore` →
+   `.agent/secret-scan-ignore` (verbatim; skip if the target already carries one — additive).
+4. **Re-copy the forge CI file** (`.github/workflows/agent-memory.yml`,
+   `.gitlab/agent-memory-ci.yml`, or `.azuredevops/agent-memory-ci.yml`) — all three gained the
+   changed-config secret scan. Preserve target customization by merging only the new scan block
+   when a verbatim copy is unsafe.
+5. **Merge the trigger-layer note into the target's `AGENTS.md`** from `templates/AGENTS.md`
+   (the v4.19.0 blockquote now describes both surfaces and the "advisory by default; the
+   pre-commit secret guard alone enforces" doctrine) — merge, never overwrite a customized
+   hub. **Tell the team the default changed**: a staged-secret finding now blocks the commit;
+   the opt-down (`AGENT_MEMORY_SECRET_GUARD=advisory`) and `--no-verify` are the escape
+   hatches.
+6. **No activation step** — the hook rides the target's existing `core.hooksPath .githooks`.
+   If `git config core.hooksPath` is unset (never-initialized clone), run
+   `bash .githooks/init.sh` once.
+7. **Stamp** `.agent/version.md` → `version: 4.34.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
+8. **Verify:** mirror suites pass (49 each); `.githooks/pre-commit` is present and executable
+   and runs clean with nothing staged; `memory-lint --scan-files <a-known-config-file>` exits 0
+   on clean content; `memory-lint` clean or consciously triaged.

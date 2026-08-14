@@ -39,6 +39,11 @@ Node** at output parity, so it runs on a node-only box too. Ten checks:
     SSN/payment-card (Luhn), absolute home paths; scans `sessions/` and `archive/` too, never
     echoes the matched value, waivable per-line with `lint:allow-secret-material`
 
+Plus a standalone mode (v4.34.0): `--scan-files FILE...` runs the **credential-class** subset of
+check 10 over arbitrary config files (`.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*`) —
+the engine behind the `pre-commit` secret guard and the CI floor's changed-config scan. JSON and
+`.properties` exemptions live in the committed `.agent/secret-scan-ignore`.
+
 ```bash
 python agent-skills/memory-lint/scripts/memory-lint.py      # or
 node   agent-skills/memory-lint/scripts/memory-lint.mjs

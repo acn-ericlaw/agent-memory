@@ -11,6 +11,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.34.0, 8/14/2026
+
+> **Pre-commit secret guard — the layer that prevents instead of detects (MINOR).** The
+> v4.33.x arc left one timing gap: agents get the redaction rule at write time and every push
+> meets the CI floor — but a human teammate committing directly meets no automated check until
+> the remote already has the secret, where redaction is no longer un-leaking and rotation
+> begins. And the field incident's *origin* was never a memory file: the credentials entered
+> the repo inside a Postman JSON and an OpenShift YAML, then contaminated a session log when a
+> dry-run rendered them. The new committed `.githooks/pre-commit` closes the gap at the only
+> placement that can — before the commit exists — and covers **both surfaces**.
+
+### Added
+- **`.githooks/pre-commit`** — scans the **staged content** (the index via `git show :path`,
+  not the worktree: exactly what this commit would publish; only what THIS commit stages, so a
+  pre-existing finding elsewhere never gates an unrelated commit) of:
+  1. `memory/**.md` — the full `[secret-material]` profile (credentials + PII);
+  2. **config files** — `.json` / `.yml` / `.yaml` / `.properties` / `.toml` / `.ini` /
+     `.env` and `.env.*` anywhere in the repo — **credential-class checks only** (token
+     shapes, key assignments, Authorization headers, private keys): config files legitimately
+     carry contact emails and paths; credential material never is.
+  Findings print the linter's non-echoing report plus redaction / waiver / rotation guidance.
+  **Enforcing by default** (maintainer decision): findings **block the commit** — the
+  deliberate, scoped exception to the trigger layer's advisory doctrine, because secrets carry
+  irreversible after-the-fact cost and an advisory default lets an inattentive commit ride to
+  the remote. Opt down to warn-only with `AGENT_MEMORY_SECRET_GUARD=advisory` (env or
+  `git config agent-memory.secretguard advisory`); one-off bypass `git commit --no-verify`;
+  merge commits skipped; python3→node fallback (with neither, it skips with a note). Rides the
+  existing `core.hooksPath` activation — zero new setup on initialized clones; a
+  never-initialized clone falls through to the CI floor.
+- **`memory-lint --scan-files FILE...`** (both runtimes): the standalone credential-class scan
+  powering the hook and the CI wrappers — paths reported as given, exit 1 on findings, values
+  never echoed.
+- **Changed-config secret scan on the CI floor** (all three forge wrappers): the push-time
+  sibling of the hook, scanning the push/PR's changed config files with the same advisory /
+  STRICT semantics — catches `--no-verify` bypasses and never-initialized clones.
+- **`.agent/secret-scan-ignore`** (committed, human-audited; installed as a commented stub):
+  shell-glob-per-line exemptions for formats that can't carry the inline waiver tag (JSON has
+  no comments; a `.properties` same-line comment corrupts the value). Config files only —
+  `memory/` is never exempt. Honored by the hook and all three CI wrappers.
+- **Detector refinements from a 661-file live-corpus probe** (every committed
+  json/yml/yaml/properties file across two production repos — 6 findings, all false positives,
+  → 0 after): single-brace `{PLACEHOLDER}` and GitHub-Actions `${{ … }}` template forms;
+  `demo`/`test` join the placeholder words; a template default that is itself provably a
+  placeholder is safe (`${DEMO_PEER_TOKEN:demo}`) while credential-shaped fallbacks keep
+  flagging (the v4.33.4 rule); dotted lowercase route references (`v1.basic.auth`) are exempt
+  from the Authorization check; `;` joins the value delimiters (JAAS terminators); and a
+  **Postman split-pair pattern** (`"key": "client_secret", "value": "…"`) covers the literal
+  incident artifact class. Mirror suites grow 46 → **49 tests per runtime**, byte parity held.
+
+### Changed
+- Trigger-layer docs enumerate both hooks, both surfaces, and the refined doctrine —
+  **advisory by default; the pre-commit secret guard alone enforces**: `AGENTS.md` root
+  + template, `ENABLE.md` (Step 5e ignore-stub install, Step 6 hooks + CI floor descriptions,
+  both-hooks chmod line), `.githooks/README.md` + `init.sh`, `SKILL.md` body (`--scan-files`),
+  `docs/DESIGN-ritual-triggers.md` (v4.34.0 amendment — its §7.3 fork had recommended an
+  opt-in pre-commit half back at v4.19.0), the whitepaper ×2, and the docs-site reliability +
+  built-in-skills pages.
+
+No memory-file shape change; SKILL.md frontmatter description unchanged → adapters untouched.
+Verified end to end: 49/49 both runtimes; hook exercised across fourteen scratch-repo paths
+(default-block / advisory-opt-down via env and git-config / waiver / ignore-file /
+clean-config / index-vs-worktree / fast-path / node-only / `--no-verify` / `.env` /
+Postman-JSON / memory-regression); live corpus scans clean through the real CLI in both
+runtimes. Targets: copy the new hook + ignore stub, re-copy the built-in + hook docs + forge
+CI file, `chmod +x`, stamp.
+
 ## Version 4.33.4, 8/13/2026
 
 > **`[secret-material]` — reject non-empty template defaults (PATCH).** Post-release review

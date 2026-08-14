@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.33.4 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.34.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hooks — pre-commit secret guard (v4.34.0) + post-commit ritual capture — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-14 | agent: GitHub Copilot (2026-08-14-011037)
+- **last_session:** 2026-08-14 | agent: Claude Code (2026-08-14-021712)
 - **last_review:** 2026-08-14 | through 2026-08-14-011037
 - **last_invariant_check:** 2026-08-14 | through 2026-08-14-011037
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -98,6 +98,43 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
+- [x] **Shipped v4.34.0 (MINOR) — pre-commit secret guard: prevention on both surfaces (memory +
+  config).** From the maintainer's confirmation question after the v4.33.x DLP arc ("do we need a
+  pre-commit hook?") plus the decisive incident detail: the leak's *origin* was a **Postman JSON
+  and an OpenShift YAML with live credentials** (root + `src/`) — the session-log leak was
+  downstream contamination from a dry-run rendering them. Gap analysis: ritual rule covers agents
+  at write time, CI floor covers pushes (post-exposure); a human committing directly met nothing
+  at the only placement that *prevents* — before the commit exists. **Investigated first**
+  (maintainer-directed): a 661-file live-corpus probe (all committed json/yml/yaml/properties in
+  both mercury repos) → 6 findings, 0 real, 4 FP classes → detector tuned to **0/661**. Maintainer
+  scoped via decisions: fold into v4.34.0, CI symmetry, ignore file, widest extensions. **Shipped:**
+  `.githooks/pre-commit` scans **staged** (index) `memory/**.md` (full profile) + config files
+  (`.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*`, **credential-class only**);
+  `memory-lint --scan-files` mode (both runtimes) powers it + the **changed-config scan added to
+  all three forge CI wrappers**; committed `.agent/secret-scan-ignore` (human-audited shell-globs)
+  handles JSON/properties waivers (config only, never memory/); probe-tuned refinements
+  (single-brace + GH-Actions templates, `demo`/`test` words, placeholder-fallback defaults with
+  the v4.33.4 rule preserved, dotted route refs exempt from Authorization, `;` delimiter, Postman
+  split-pair pattern — the incident artifact class). **The guard ENFORCES by default**
+  (maintainer decision mid-release): findings block the commit — the deliberate, scoped exception
+  to the advisory doctrine, since secrets carry irreversible after-the-fact cost and an advisory
+  default lets an inattentive commit ride to the remote; the `AGENT_MEMORY_SECRET_GUARD` env
+  knob opts the guard down to advisory, `--no-verify` bypasses once, the CI floor stays
+  advisory (`AGENT_MEMORY_STRICT` gates). Rides existing `core.hooksPath`; never-initialized clones fall through to CI.
+  Verified: 49/49 mirror tests ×2 runtimes (byte parity), 14 scratch-repo hook paths incl.
+  default-block + both opt-downs, 3 CI YAMLs validated + GH block simulated live, both live
+  corpora re-scanned clean via the real CLI. Doctrine refined: "advisory by default; the
+  pre-commit secret guard alone enforces" (DESIGN §7.3 had recommended the pre-commit half at
+  v4.19.0). Lockstep:
+  hook + hooks README/init, ignore-stub template, built-in (runtimes/tests/SKILL body; frontmatter
+  unchanged → adapters untouched), 3 forge CI files, `AGENTS.md` ×2, `ENABLE.md` (5e + Step 6 +
+  chmod), DESIGN amendment, whitepaper ×2, docs-site ×2, presentation deck, `VERSION`→4.34.0,
+  `CHANGELOG`, `README` (row + 10-cap trim, drops 4.29.1), `UPGRADE` (row + `4.33.4→4.34.0`
+  rung). → serves:
+  vision-agent-memory (shared memory must be safe to share — guarded at write, commit, AND push
+  time, wherever the secret lands)
+  <!-- id: pre-commit-secret-guard-v4340 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 1 | tier: working | origin: 2026-08-14-021712 -->
+
 - [ ] **Re-verify invariants (due):** confirm `target-repo-scope-only`,
   `never-delete-vendor-files`, `never-pick-a-winner`, `no-build-step-agent-run`,
   `upgrades-additive`, and the `vision-agent-memory` Vision still hold, or supersede any
@@ -121,7 +158,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `${NAME}`, `${NAME:}`, and dotted references remain safe; a value such as
   `client_secret=${CLIENT_SECRET:-RealSecret123}` now flags without echoing the value. Python <!-- lint:allow-secret-material -->
   and Node remain byte-identical, 46 mirror tests each. → serves: vision-agent-memory
-  <!-- id: secret-template-default-v4334 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 2 | tier: active | origin: 2026-08-14-003952 -->
+  <!-- id: secret-template-default-v4334 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 3 | tier: active | origin: 2026-08-14-003952 -->
 
 - [x] **Shipped v4.33.3 (PATCH) — security-review hardening for `[secret-material]`.** A
   fresh-context security review judged v4.33.x useful defense-in-depth but found four concrete
@@ -139,7 +176,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (still fullmatch-anchored), verbatim fixture added, both live targets re-probe zero findings.
   → serves: vision-agent-memory (shared memory is safe to share, and the
   advertised strict gate is real)
-  <!-- id: secret-review-hardening-v4333 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 4 | tier: active | origin: 2026-08-13-235301 -->
+  <!-- id: secret-review-hardening-v4333 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 5 | tier: active | origin: 2026-08-13-235301 -->
 
 - [x] **Shipped v4.33.2 (PATCH) — `[secret-material]`: backtick is a value delimiter.** The
   `4.33.0→4.33.1` rung's own verify step on the live target caught, minutes after v4.33.1
@@ -199,7 +236,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.33.0, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.1), `UPGRADE` (row +
   `4.32.1→4.33.0` rung with a triage-now step). → serves: vision-agent-memory (shared memory must
   be *safe to share* — a faithful record that leaks credentials is a liability, not memory)
-  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 7 | tier: active | origin: 2026-08-13-222439 -->
+  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 8 | tier: active | origin: 2026-08-13-222439 -->
 
 - [x] **Shipped v4.32.1 (PATCH) — Mode A `last_session` contradiction fix.** From a **real Mode A
   enable** (2026-08-06, target `~/sandbox/demo`), confirmed by an adversarial protocol audit:
@@ -249,7 +286,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   10-cap trim + file tree), `UPGRADE` (row + `4.30.0→4.31.0` rung). Non-goals: CODEOWNERS, issue templates, other
   forges (the forge seam is where they'd slot in). → serves: vision-agent-memory (adoption stays
   "point it at a repo" — on whichever forge the repo lives)
-  <!-- id: gitlab-forge-support-v4310 | created: 2026-07-27 | last_used: 2026-07-27 | uses: 3 | tier: active | origin: 2026-07-27-203400 -->
+  <!-- id: gitlab-forge-support-v4310 | created: 2026-07-27 | last_used: 2026-07-27 | uses: 3 | tier: archive-candidate | origin: 2026-07-27-203400 -->
 
 - [x] **(SHIPPED v4.32.0 MINOR, 2026-07-27) Azure DevOps forge support — field installation exists; mechanics
   verified (2026-07-27); maintainer approved and shipped same day.** Delivered exactly per the proposed
@@ -277,7 +314,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   agent-memory-ci.yml` + PR template), ENABLE forge detection (dev.azure.com/visualstudio.com), Step 6
   installs files + REPORTS the one-time activation command (run only at explicit user direction),
   third squash branch, rung. → serves: vision-agent-memory
-  <!-- id: ot-azure-devops-forge-next | created: 2026-07-27 | last_used: 2026-07-27 | uses: 2 | tier: active | origin: 2026-07-27-210655 -->
+  <!-- id: ot-azure-devops-forge-next | created: 2026-07-27 | last_used: 2026-07-27 | uses: 2 | tier: archive-candidate | origin: 2026-07-27-210655 -->
 
 - [ ] **(backlog) Bitbucket forge support — trigger-gated; mechanics pre-verified (2026-07-27).** From a
   maintainer question during the v4.31.0 GitLab release ("investigate viability to include Bitbucket").

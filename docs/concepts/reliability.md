@@ -9,8 +9,18 @@ So agent-memory hardens the ritual's *execution*, not just its documentation.
 
 ## Vendor-neutral triggers
 
-Enable installs two things, agent-activated, with **no manual user step**:
+Enable installs these, agent-activated, with **no manual user step**:
 
+- A committed **`pre-commit` git hook** (v4.34.0) — the `[secret-material]` guard: scans the
+  **staged** content of `memory/**.md` *and* of config files (`.json`, `.yml`/`.yaml`,
+  `.properties`, `.toml`, `.ini`, `.env*`) before the commit exists, so an accidental
+  credential never enters history at all — whether it's headed for a session log or for a
+  Postman collection in `src/`. **Enforcing by default**: findings block the commit — the
+  deliberate, scoped exception to the advisory doctrine, because secrets carry irreversible
+  after-the-fact cost (rotation, history exposure). Opt down to warn-only with
+  `AGENT_MEMORY_SECRET_GUARD=advisory`; `git commit --no-verify` bypasses once;
+  JSON/properties exemptions live in the committed `.agent/secret-scan-ignore`. The CI floor
+  runs the matching changed-config scan on every push.
 - A committed **`post-commit` git hook** (advisory; never blocks). After a commit it
   auto-stubs a session log when the commit did real work but carried none, and re-syncs
   adapters when a skill changed.
