@@ -11,6 +11,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.34.1, 8/14/2026
+
+> **Secret-guard output readability (PATCH).** Field feedback from the maintainer's own
+> regression test of the v4.34.0 pre-commit guard: every finding line repeated the same
+> advisory tail, burying the findings. Guidance now appears **once per run**, not once per
+> finding.
+
+### Changed
+- **`[secret-material]` finding lines are findings only** — they end at
+  `(N hit(s), first at line N)`; the redact/rotate/history guidance moved to a single
+  consolidated line per consumer: the pre-commit hook's `-> fix it` footer (now preceded by a
+  blank separator line and carrying the shared/rotation/history wording), a one-line trailer
+  in `--scan-files` mode, and a one-line trailer after the warnings in a full `memory-lint`
+  run. Both runtimes at parity; 49 mirror tests unchanged and passing; the hook's grep
+  contract is unaffected (the guidance line carries no `[secret-material]` tag).
+
+Targets: re-copy the `memory-lint` built-in + `.githooks/pre-commit`, stamp.
+
 ## Version 4.34.0, 8/14/2026
 
 > **Pre-commit secret guard — the layer that prevents instead of detects (MINOR).** The
