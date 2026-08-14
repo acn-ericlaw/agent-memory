@@ -64,6 +64,30 @@ jobs:
             else
               echo "ritual check: ok"
             fi
+            # changed-config secret scan (v4.34.0) — push-time sibling of the pre-commit guard:
+            # credential-class scan of changed .json/.yml/.yaml/.properties/.toml/.ini/.env* files.
+            cfgs="$(printf '%s\n' "$changed" | grep -E '(\.(json|ya?ml|properties|toml|ini|env))$|(^|/)\.env(\.[^/]+)?$' || true)"
+            if [ -n "$cfgs" ] && [ -f .agent/secret-scan-ignore ]; then
+              cfgs="$(printf '%s\n' "$cfgs" | while IFS= read -r f; do
+                [ -n "$f" ] || continue
+                keep=1
+                while IFS= read -r pat || [ -n "$pat" ]; do
+                  case "$pat" in ''|'#'*) continue ;; esac
+                  case "$f" in $pat) keep=0; break ;; esac
+                done < .agent/secret-scan-ignore
+                [ "$keep" = "1" ] && printf '%s\n' "$f"
+              done)"
+            fi
+            if [ -n "$cfgs" ] && [ -f agent-skills/memory-lint/scripts/memory-lint.py ]; then
+              out="$(printf '%s\n' "$cfgs" | tr '\n' '\0' | xargs -0 python3 agent-skills/memory-lint/scripts/memory-lint.py --scan-files 2>/dev/null || true)"
+              if [ -n "$out" ]; then
+                printf '%s\n' "$out"
+                echo "##vso[task.logissue type=warning]agent-memory secret scan: possible credential material in changed config files (see log above)"
+                status=1
+              else
+                echo "config secret scan: ok"
+              fi
+            fi
           else
             echo "no base ref; skipping ritual check"
           fi

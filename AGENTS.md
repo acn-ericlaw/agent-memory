@@ -224,13 +224,21 @@ expected (the decay math counts log files — `DECAY.md` §4).
 
 > **Reinforced, not just documented (v4.19.0).** Enabled repos ship vendor-neutral triggers — a committed
 > `.githooks/post-commit` (auto-stubs a session log when a commit does real work without one;
-> agent-activated via `git config core.hooksPath .githooks`) + a CI floor
+> agent-activated via `git config core.hooksPath .githooks`), a committed `.githooks/pre-commit`
+> (v4.34.0 — the `[secret-material]` guard on *staged* memory files **and staged config files**
+> (`.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*` — credential-class checks;
+> JSON/properties waivers live in the committed `.agent/secret-scan-ignore`): **enforcing by
+> default** — findings block the commit (`AGENT_MEMORY_SECRET_GUARD=advisory` opts down to
+> warn-only; `git commit --no-verify` bypasses once); the one placement that *prevents* a
+> committed secret rather than detecting it after push) + a CI floor
 > (`.github/workflows/agent-memory.yml` on GitHub; `.gitlab-ci.yml` + `.gitlab/agent-memory-ci.yml`
 > on GitLab; `.azuredevops/agent-memory-ci.yml` on Azure DevOps — zero per-user setup on
 > GitHub/GitLab.com; a self-managed GitLab needs an admin-registered runner; an Azure DevOps
 > pipeline needs its one-time activation) — so the ritual fires for any vendor on any supported
 > forge. Treat
-> the log as part of **done**. Advisory (never blocks) + no-code (git/CI run them in your env; the tool
+> the log as part of **done**. Advisory by default — the pre-commit secret guard alone
+> *enforces* (a deliberate, scoped exception: secrets carry irreversible after-the-fact cost) —
+> + no-code (git/CI run them in your env; the tool
 > runs nothing). Design + per-vendor hook extras: `docs/DESIGN-ritual-triggers.md`, `docs/optional-ritual-hook.md`.
 >
 > **First session in a fresh clone? Self-initialize.** A clone has the gitignored skill adapters

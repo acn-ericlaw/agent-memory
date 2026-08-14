@@ -2,9 +2,8 @@
 
 ## Deterministic memory as a substrate; a lightweight cognitive loop as the control layer
 
-**Version:** 1.2 (describes agent-memory **v4.26.1**)
-**Status:** Draft for peer / leadership review
-**Date:** June 29, 2026
+**Version:** 1.3 (describes agent-memory **v4.34.0**)
+**Date:** August 14, 2026
 
 ---
 
@@ -49,8 +48,9 @@ ritual (re-tiering, the archive move, adapter regeneration, integrity checks) ar
 resolve a contradiction, what the Vision is) stays with the agent and the human (§5, §6).
 
 A second line of maturation hardened **operational reliability** (§5b): the after-session
-ritual no longer depends on an agent reliably self-triggering. Enable now installs a
-vendor-neutral **git post-commit hook + a CI floor** (forge-aware: GitHub Actions, GitLab
+ritual no longer depends on an agent reliably self-triggering. Enable now installs
+vendor-neutral **git hooks (a post-commit ritual capture + an enforcing pre-commit secret
+guard) + a CI floor** (forge-aware: GitHub Actions, GitLab
 CI, or Azure Pipelines; agent-activated, **zero manual user
 step**), a one-command **first-run init** for fresh clones, Windows line-ending hardening, a
 **`MERGE.md`** conflict protocol, and a **safe-write** discipline — all from the adoption
@@ -274,7 +274,12 @@ an untrained team or a less-agentic vendor. The governing adoption constraint be
 manual user step is a barrier**. A line of work hardened the ritual's *execution*, not just
 its documentation:
 
-- **Vendor-neutral triggers, agent-activated.** Enable installs a committed **`post-commit`
+- **Vendor-neutral triggers, agent-activated.** Enable installs a committed **`pre-commit`
+  git hook** (the `[secret-material]` guard on staged memory files **and staged config files** —
+  `.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*` — **enforcing by default**:
+  findings block the commit, the deliberate exception to the advisory doctrine, with
+  `AGENT_MEMORY_SECRET_GUARD=advisory` as the opt-down; prevents an accidental credential from
+  entering history at all, wherever it lands), a committed **`post-commit`
   git hook** (advisory; auto-stubs a session log when a commit did real work but carried none,
   and re-syncs adapters when a skill changed) and a **CI floor** (GitHub Actions, GitLab CI, or Azure Pipelines: `memory-lint` + a session-log
   presence check; zero per-user setup on GitHub/GitLab.com — a self-managed GitLab needs an

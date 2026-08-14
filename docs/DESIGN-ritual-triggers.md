@@ -1,5 +1,22 @@
 # DESIGN — Reliable, Vendor-Neutral Ritual Triggers
 
+> **Amendment (v4.34.0, 2026-08-14):** the §7.3 "opt-in pre-commit" half exists — with a different
+> job than the auto-stub this doc envisioned. `.githooks/pre-commit` is the **`[secret-material]`
+> guard**: it scans the *staged* content (index, not worktree) of `memory/**.md` **and of config
+> files** (`.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*`, credential-class checks —
+> from the field incident where live credentials entered via a Postman JSON + an OpenShift YAML
+> and contaminated a session log downstream; a 661-file live-corpus probe tuned the placeholder
+> rules to zero false positives first). It is the one placement that *prevents* a committed
+> secret rather than detecting it after push (the v4.33.x DLP arc's missing timing layer for
+> human-direct commits). **Enforcing by default** — findings block the commit, the deliberate,
+> maintainer-decided exception to this doc's advisory-by-default doctrine (secrets carry
+> irreversible after-the-fact cost; `AGENT_MEMORY_SECRET_GUARD=advisory` opts down,
+> `--no-verify` bypasses once). The CI floor stays advisory-by-default (`AGENT_MEMORY_STRICT=1`
+> gates), and its three wrappers gained the matching **changed-config scan** on push.
+> JSON/properties waivers live in the committed `.agent/secret-scan-ignore` (the inline line-tag
+> needs a comment syntax those formats lack). Session-log auto-stub stays post-commit
+> (frictionless), exactly as §7.3 recommended.
+>
 > **Status:** **IMPLEMENTED v4.19.0** (2026-06-24) — maintainer endorsed git-hooks + CI and added the
 > zero-manual / untrained-user adoption constraint; built (`.githooks/post-commit` + CI workflow,
 > agent-activated, advisory) and dogfooded. The §6 forks were resolved as recommended (auto-stub + nudge,
