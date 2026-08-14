@@ -434,7 +434,12 @@ PLACEHOLDER_VALUE_RE = re.compile(
     r"|[A-Za-z0-9_.\-]+[-_](?:changeme|change-me|example|sample|dummy|placeholder))"
 )
 TEMPLATE_VALUE_RE = re.compile(
-    r"(?:\$\{[A-Za-z_][A-Za-z0-9_]*\}|\$\([^)]+\)|\{\{[^{}]+\}\}"
+    # ${…} accepts any brace-delimited reference, not just bare identifiers: default-value
+    # and dotted forms (`${REDIS_PASSWORD:}`, `${VAR:-x}`, `${a.b.c}`) are standard
+    # parameterization, and rejecting them re-flagged a target repo's documented safe
+    # pattern for secrets. Still an anchored fullmatch — a partially-literal value
+    # (`abc${X}def`) does not pass.
+    r"(?:\$\{[^{}\s]+\}|\$\([^)]+\)|\{\{[^{}]+\}\}"
     r"|<[A-Za-z0-9_.:\-]+>|%\([A-Za-z_][A-Za-z0-9_]*\)s|\(REDACTED\)|\*+)",
     re.IGNORECASE,
 )

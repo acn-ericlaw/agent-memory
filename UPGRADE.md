@@ -1971,7 +1971,11 @@ forge wrappers did not pass `--strict`, so warnings never reached the branch tha
 `AGENT_MEMORY_STRICT`; the global ALL-CAPS exemption also trusted uppercase secrets; quoted
 JSON/YAML keys and Authorization headers escaped assignment detection; and Mode C migration did
 not require redaction/lint triage. All four are fixed. The linter remains non-echoing and
-advisory by default; the forge wrapper decides whether a finding warns or blocks.
+advisory by default; the forge wrapper decides whether a finding warns or blocks. Fold-in
+(pre-tag, from the post-merge live-target review): the template-value pattern accepts any
+brace-delimited `${…}` reference — default-value / dotted forms like `${REDIS_PASSWORD:}` and
+`${a.b.c}` are placeholders, verified against the live targets — while staying full-value
+anchored.
 
 **Steps:**
 

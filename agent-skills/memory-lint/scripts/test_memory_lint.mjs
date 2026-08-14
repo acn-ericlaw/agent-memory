@@ -496,6 +496,11 @@ test("check_secret_material: placeholders and number shapes are not flagged", ()
       "access_token: 2026-08-06-153509",
       "max_tokens_password: 128000000",
       "password=changeme-please",
+      // env-var references with default-value / dotted forms are placeholders too
+      // (field FP, mercury-composable 2026-08-13 — line quoted VERBATIM below):
+      "  (`redis.host`/`redis.port`/`redis.password=${REDIS_PASSWORD:}`/`redis.ssl`/`redis.database`/`redis.timeout.ms`)",
+      "client_secret: ${vault.paths.kafka}",
+      "password=${REDIS_URL:-redis://localhost}",
     ].join("\n") + "\n",
   });
   try {

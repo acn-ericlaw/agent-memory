@@ -34,6 +34,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   launders a credential; template/redaction forms remain safe.
 - **Mode C migration hardened:** `MIGRATE.md` requires redaction during conversion, and
   `ENABLE.md` verification requires `[secret-material]` triage before the enable commit.
+- **Fold-in (pre-tag, from the post-merge live-target review):** the tightened template
+  recognition initially accepted only `${IDENTIFIER}`, re-flagging standard default-value and
+  dotted env-var forms (`${REDIS_PASSWORD:}`, `${VAR:-x}`, `${a.b.c}`) — including a target
+  repo's own documented safe pattern for secrets (two live false positives on
+  mercury-composable). The `${…}` alternative now accepts any brace-delimited reference;
+  recognition stays full-value anchored, so a partially-literal value still flags. The
+  motivating line is a verbatim mirror fixture.
 
 Both runtimes remain at output parity; mirror suites now pass 46 tests each. No memory-file
 shape change; SKILL.md description unchanged, so adapters are untouched. Targets re-copy the
