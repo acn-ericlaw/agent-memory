@@ -1899,9 +1899,8 @@
 
 <h1 id="agent-memory-a-lightweight-vendor-neutral-memory-cognitive-loop-system-for-predictable-aihuman-delivery">agent-memory: A Lightweight, Vendor-Neutral Memory + Cognitive-Loop System for Predictable AI–Human Delivery<a class="headerlink" href="#agent-memory-a-lightweight-vendor-neutral-memory-cognitive-loop-system-for-predictable-aihuman-delivery" title="Permanent link">&para;</a></h1>
 <h2 id="deterministic-memory-as-a-substrate-a-lightweight-cognitive-loop-as-the-control-layer">Deterministic memory as a substrate; a lightweight cognitive loop as the control layer<a class="headerlink" href="#deterministic-memory-as-a-substrate-a-lightweight-cognitive-loop-as-the-control-layer" title="Permanent link">&para;</a></h2>
-<p><strong>Version:</strong> 1.2 (describes agent-memory <strong>v4.26.1</strong>)
-<strong>Status:</strong> Draft for peer / leadership review
-<strong>Date:</strong> June 29, 2026</p>
+<p><strong>Version:</strong> 1.3 (describes agent-memory <strong>v4.34.0</strong>)
+<strong>Date:</strong> August 14, 2026</p>
 <hr />
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">&para;</a></h2>
 <p>AI agents are moving from single-turn prompting to persistent, tool-using, memory-driven
@@ -1941,8 +1940,9 @@ ritual (re-tiering, the archive move, adapter regeneration, integrity checks) ar
 <strong>mechanized as runnable helpers</strong>, while every act of <em>judgment</em> (what to archive, how to
 resolve a contradiction, what the Vision is) stays with the agent and the human (§5, §6).</p>
 <p>A second line of maturation hardened <strong>operational reliability</strong> (§5b): the after-session
-ritual no longer depends on an agent reliably self-triggering. Enable now installs a
-vendor-neutral <strong>git post-commit hook + a CI floor</strong> (forge-aware: GitHub Actions, GitLab
+ritual no longer depends on an agent reliably self-triggering. Enable now installs
+vendor-neutral <strong>git hooks (a post-commit ritual capture + an enforcing pre-commit secret
+guard) + a CI floor</strong> (forge-aware: GitHub Actions, GitLab
 CI, or Azure Pipelines; agent-activated, <strong>zero manual user
 step</strong>), a one-command <strong>first-run init</strong> for fresh clones, Windows line-ending hardening, a
 <strong><code>MERGE.md</code></strong> conflict protocol, and a <strong>safe-write</strong> discipline — all from the adoption
@@ -2199,7 +2199,12 @@ an untrained team or a less-agentic vendor. The governing adoption constraint be
 manual user step is a barrier</strong>. A line of work hardened the ritual's <em>execution</em>, not just
 its documentation:</p>
 <ul>
-<li><strong>Vendor-neutral triggers, agent-activated.</strong> Enable installs a committed <strong><code>post-commit</code>
+<li><strong>Vendor-neutral triggers, agent-activated.</strong> Enable installs a committed <strong><code>pre-commit</code>
+  git hook</strong> (the <code>[secret-material]</code> guard on staged memory files <strong>and staged config files</strong> —
+  <code>.json</code>/<code>.yml</code>/<code>.yaml</code>/<code>.properties</code>/<code>.toml</code>/<code>.ini</code>/<code>.env*</code> — <strong>enforcing by default</strong>:
+  findings block the commit, the deliberate exception to the advisory doctrine, with
+  <code>AGENT_MEMORY_SECRET_GUARD=advisory</code> as the opt-down; prevents an accidental credential from
+  entering history at all, wherever it lands), a committed <strong><code>post-commit</code>
   git hook</strong> (advisory; auto-stubs a session log when a commit did real work but carried none,
   and re-syncs adapters when a skill changed) and a <strong>CI floor</strong> (GitHub Actions, GitLab CI, or Azure Pipelines: <code>memory-lint</code> + a session-log
   presence check; zero per-user setup on GitHub/GitLab.com — a self-managed GitLab needs an

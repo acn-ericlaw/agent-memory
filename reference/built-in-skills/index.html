@@ -1763,6 +1763,10 @@ Node</strong> at output parity, so it runs on a node-only box too. Ten checks:</
     SSN/payment-card (Luhn), absolute home paths; scans <code>sessions/</code> and <code>archive/</code> too, never
     echoes the matched value, waivable per-line with <code>lint:allow-secret-material</code></li>
 </ol>
+<p>Plus a standalone mode (v4.34.0): <code>--scan-files FILE...</code> runs the <strong>credential-class</strong> subset of
+check 10 over arbitrary config files (<code>.json</code>/<code>.yml</code>/<code>.yaml</code>/<code>.properties</code>/<code>.toml</code>/<code>.ini</code>/<code>.env*</code>) —
+the engine behind the <code>pre-commit</code> secret guard and the CI floor's changed-config scan. JSON and
+<code>.properties</code> exemptions live in the committed <code>.agent/secret-scan-ignore</code>.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>agent-skills/memory-lint/scripts/memory-lint.py<span class="w">      </span><span class="c1"># or</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>node<span class="w">   </span>agent-skills/memory-lint/scripts/memory-lint.mjs
 </code></pre></div>

@@ -1697,8 +1697,18 @@ an untrained team or a less-agentic vendor. The governing adoption constraint be
 </blockquote>
 <p>So agent-memory hardens the ritual's <em>execution</em>, not just its documentation.</p>
 <h2 id="vendor-neutral-triggers">Vendor-neutral triggers<a class="headerlink" href="#vendor-neutral-triggers" title="Permanent link">&para;</a></h2>
-<p>Enable installs two things, agent-activated, with <strong>no manual user step</strong>:</p>
+<p>Enable installs these, agent-activated, with <strong>no manual user step</strong>:</p>
 <ul>
+<li>A committed <strong><code>pre-commit</code> git hook</strong> (v4.34.0) — the <code>[secret-material]</code> guard: scans the
+  <strong>staged</strong> content of <code>memory/**.md</code> <em>and</em> of config files (<code>.json</code>, <code>.yml</code>/<code>.yaml</code>,
+  <code>.properties</code>, <code>.toml</code>, <code>.ini</code>, <code>.env*</code>) before the commit exists, so an accidental
+  credential never enters history at all — whether it's headed for a session log or for a
+  Postman collection in <code>src/</code>. <strong>Enforcing by default</strong>: findings block the commit — the
+  deliberate, scoped exception to the advisory doctrine, because secrets carry irreversible
+  after-the-fact cost (rotation, history exposure). Opt down to warn-only with
+  <code>AGENT_MEMORY_SECRET_GUARD=advisory</code>; <code>git commit --no-verify</code> bypasses once;
+  JSON/properties exemptions live in the committed <code>.agent/secret-scan-ignore</code>. The CI floor
+  runs the matching changed-config scan on every push.</li>
 <li>A committed <strong><code>post-commit</code> git hook</strong> (advisory; never blocks). After a commit it
   auto-stubs a session log when the commit did real work but carried none, and re-syncs
   adapters when a skill changed.</li>

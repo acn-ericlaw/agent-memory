@@ -1723,6 +1723,22 @@
 
 <h1 id="design-reliable-vendor-neutral-ritual-triggers">DESIGN — Reliable, Vendor-Neutral Ritual Triggers<a class="headerlink" href="#design-reliable-vendor-neutral-ritual-triggers" title="Permanent link">&para;</a></h1>
 <blockquote>
+<p><strong>Amendment (v4.34.0, 2026-08-14):</strong> the §7.3 "opt-in pre-commit" half exists — with a different
+job than the auto-stub this doc envisioned. <code>.githooks/pre-commit</code> is the <strong><code>[secret-material]</code>
+guard</strong>: it scans the <em>staged</em> content (index, not worktree) of <code>memory/**.md</code> <strong>and of config
+files</strong> (<code>.json</code>/<code>.yml</code>/<code>.yaml</code>/<code>.properties</code>/<code>.toml</code>/<code>.ini</code>/<code>.env*</code>, credential-class checks —
+from the field incident where live credentials entered via a Postman JSON + an OpenShift YAML
+and contaminated a session log downstream; a 661-file live-corpus probe tuned the placeholder
+rules to zero false positives first). It is the one placement that <em>prevents</em> a committed
+secret rather than detecting it after push (the v4.33.x DLP arc's missing timing layer for
+human-direct commits). <strong>Enforcing by default</strong> — findings block the commit, the deliberate,
+maintainer-decided exception to this doc's advisory-by-default doctrine (secrets carry
+irreversible after-the-fact cost; <code>AGENT_MEMORY_SECRET_GUARD=advisory</code> opts down,
+<code>--no-verify</code> bypasses once). The CI floor stays advisory-by-default (<code>AGENT_MEMORY_STRICT=1</code>
+gates), and its three wrappers gained the matching <strong>changed-config scan</strong> on push.
+JSON/properties waivers live in the committed <code>.agent/secret-scan-ignore</code> (the inline line-tag
+needs a comment syntax those formats lack). Session-log auto-stub stays post-commit
+(frictionless), exactly as §7.3 recommended.</p>
 <p><strong>Status:</strong> <strong>IMPLEMENTED v4.19.0</strong> (2026-06-24) — maintainer endorsed git-hooks + CI and added the
 zero-manual / untrained-user adoption constraint; built (<code>.githooks/post-commit</code> + CI workflow,
 agent-activated, advisory) and dogfooded. The §6 forks were resolved as recommended (auto-stub + nudge,
