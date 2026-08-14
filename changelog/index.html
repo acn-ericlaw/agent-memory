@@ -7309,6 +7309,13 @@ advisory-by-default doctrine.</p>
   launders a credential; template/redaction forms remain safe.</li>
 <li><strong>Mode C migration hardened:</strong> <code>MIGRATE.md</code> requires redaction during conversion, and
   <code>ENABLE.md</code> verification requires <code>[secret-material]</code> triage before the enable commit.</li>
+<li><strong>Fold-in (pre-tag, from the post-merge live-target review):</strong> the tightened template
+  recognition initially accepted only <code>${IDENTIFIER}</code>, re-flagging standard default-value and
+  dotted env-var forms (<code>${REDIS_PASSWORD:}</code>, <code>${VAR:-x}</code>, <code>${a.b.c}</code>) — including a target
+  repo's own documented safe pattern for secrets (two live false positives on
+  mercury-composable). The <code>${…}</code> alternative now accepts any brace-delimited reference;
+  recognition stays full-value anchored, so a partially-literal value still flags. The
+  motivating line is a verbatim mirror fixture.</li>
 </ul>
 <p>Both runtimes remain at output parity; mirror suites now pass 46 tests each. No memory-file
 shape change; SKILL.md description unchanged, so adapters are untouched. Targets re-copy the
