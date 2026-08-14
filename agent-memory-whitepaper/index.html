@@ -1291,6 +1291,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="1. Motivation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-era-shift-from-prompts-to-context-to-intent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The era shift: from prompts to context to intent
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1732,6 +1749,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="1. Motivation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-era-shift-from-prompts-to-context-to-intent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The era shift: from prompts to context to intent
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1899,8 +1933,11 @@
 
 <h1 id="agent-memory-a-lightweight-vendor-neutral-memory-cognitive-loop-system-for-predictable-aihuman-delivery">agent-memory: A Lightweight, Vendor-Neutral Memory + Cognitive-Loop System for Predictable AI–Human Delivery<a class="headerlink" href="#agent-memory-a-lightweight-vendor-neutral-memory-cognitive-loop-system-for-predictable-aihuman-delivery" title="Permanent link">&para;</a></h1>
 <h2 id="deterministic-memory-as-a-substrate-a-lightweight-cognitive-loop-as-the-control-layer">Deterministic memory as a substrate; a lightweight cognitive loop as the control layer<a class="headerlink" href="#deterministic-memory-as-a-substrate-a-lightweight-cognitive-loop-as-the-control-layer" title="Permanent link">&para;</a></h2>
-<p><strong>Version:</strong> 1.3 (describes agent-memory <strong>v4.34.0</strong>)
+<p><strong>Version:</strong> 1.4 (describes agent-memory <strong>v4.34.0</strong>)
 <strong>Date:</strong> August 14, 2026</p>
+<blockquote>
+<p><em>"Acceleration without direction is only faster drift."</em></p>
+</blockquote>
 <hr />
 <h2 id="executive-summary">Executive Summary<a class="headerlink" href="#executive-summary" title="Permanent link">&para;</a></h2>
 <p>AI agents are moving from single-turn prompting to persistent, tool-using, memory-driven
@@ -1974,6 +2011,28 @@ action, not a passive context buffer.</p>
 <p>agent-memory targets both: a <strong>shared, vendor-neutral memory</strong> that <em>evolves</em> faithfully,
 and a <strong>forward cognitive loop</strong> that makes intent traceable and drift detectable — without
 imposing a heavyweight process.</p>
+<h3 id="the-era-shift-from-prompts-to-context-to-intent">The era shift: from prompts to context to intent<a class="headerlink" href="#the-era-shift-from-prompts-to-context-to-intent" title="Permanent link">&para;</a></h3>
+<p>AI-assisted development has moved through three phases. <strong>Prompt engineering</strong> asked for
+better instructions. <strong>Context engineering</strong> — steering files, design briefs, repository
+conventions, memory notes — asked for better information, and it worked until the context
+went stale: static documents drift, and agents confidently follow instructions that are no
+longer true. The phase now emerging is <strong>intent-driven development</strong>: the human provides
+vision, goals, boundaries, priorities, and judgment; AI participates as a collaborator in
+analysis, design, implementation, and refinement; and the repository itself becomes
+<strong>living context</strong> — code, documentation, decisions, and agent-facing conventions that
+evolve together instead of rotting apart.</p>
+<blockquote>
+<p><em>Prompts tell AI what to do. Context helps AI understand. Intent explains what matters.</em></p>
+</blockquote>
+<p>agent-memory is infrastructure for that third phase — specifically, the <strong>continuity</strong> half
+of a two-part answer. Structured repository conventions ("AI grammar") make a system
+<em>legible</em>: derivable rather than guessable. But grammar solves legibility, not continuity —
+an agent that perfectly understands a repository still starts each session not knowing what
+was decided last week, why the trade-offs were made, or which assumptions were later
+rejected. The backward layer is what keeps context <em>living</em> (decay, supersession,
+contradiction checks, provenance — the machinery that stops explanatory drift), and the
+forward loop is what carries <em>intent</em> from vision to delivered change. The companion
+article develops this argument in full (<a href="#references">References</a>, entry 8).</p>
 <hr />
 <h2 id="2-what-agent-memory-is">2. What agent-memory Is<a class="headerlink" href="#2-what-agent-memory-is" title="Permanent link">&para;</a></h2>
 <p>A <strong>no-code, markdown-only</strong> system with three jobs in one repository:</p>
@@ -2254,12 +2313,18 @@ its documentation:</p>
   ritual (re-tiering, the archive move, adapter sync, integrity checks) become runnable
   helpers so a capable agent can't silently skip them; every act of judgment stays with the
   agent and the human. The boundary is <em>judgment vs. arithmetic</em>, never <em>automate the decision</em>.</li>
-<li><strong>No manual user step.</strong> Once the protocol lands with untrained users, any manual op is an
-  adoption barrier — so triggers, init, and adapter sync are agent-activated, with CI as the
-  zero-config backstop (matched to the hosting forge; Azure DevOps needs a one-time activation).</li>
-<li><strong>Additive, non-destructive upgrades.</strong> Versioned (<code>VERSION</code> + per-repo stamp); a repo on
-  an older version upgrades in place via an idempotent ladder.</li>
 </ul>
+<blockquote>
+<p><em>"Mechanize the arithmetic. Do not mechanize the judgment."</em> — the companion article
+calls this principle, in miniature, the entire argument for intent-driven development:
+automation earns trust exactly where it is deterministic, and defers exactly where
+meaning is at stake.
+- <strong>No manual user step.</strong> Once the protocol lands with untrained users, any manual op is an
+  adoption barrier — so triggers, init, and adapter sync are agent-activated, with CI as the
+  zero-config backstop (matched to the hosting forge; Azure DevOps needs a one-time activation).
+- <strong>Additive, non-destructive upgrades.</strong> Versioned (<code>VERSION</code> + per-repo stamp); a repo on
+  an older version upgrades in place via an idempotent ladder.</p>
+</blockquote>
 <hr />
 <h2 id="7-how-it-works-in-practice">7. How It Works in Practice<a class="headerlink" href="#7-how-it-works-in-practice" title="Permanent link">&para;</a></h2>
 <ul>
@@ -2437,6 +2502,7 @@ partnership</strong> — bold ideas, faithful delivery, the human in the loop at
 <li>Mem0 Engineering. <em>State of AI Agent Memory 2026: Benchmarks, Architectures &amp; Production Gaps</em>. 2026. https://mem0.ai/blog/state-of-ai-agent-memory-2026</li>
 <li><em>Agent Cognitive Framework for Memory-Driven AI Systems</em> (the framework integrated here as the forward layer). 2026. <code>docs/agent-cognitive-framework.md</code>.</li>
 <li>Internal design docs: <code>docs/DESIGN-evolving-memory.md</code> (backward layer), <code>docs/DESIGN-vbdi-lifecycle.md</code> (forward layer), <code>docs/assessments/2026-06-13-industry-alignment.md</code>.</li>
+<li>Law, Eric. <em>From Context Engineering to Intent-Driven Development — why the next professional skill is not writing better prompts, but expressing clearer intent</em>. August 11, 2026. The companion thought-leadership article — written from the evolution of this project and the human–AI collaboration that built it. https://www.linkedin.com/posts/ericclaw_intent-driven-development-activity-7493145001313390593-cyc5</li>
 </ol>
 
 
