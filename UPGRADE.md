@@ -120,6 +120,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.33.3 | **`[secret-material]` security-review hardening (PATCH):** closes four fresh-context findings: all forge wrappers invoke `memory-lint --strict` so warnings reach their advisory/blocking branch and `AGENT_MEMORY_STRICT=1` genuinely gates; ALL-CAPS enums are exempt only on enum-dimension keys, closing uppercase-secret bypasses; quoted JSON/YAML assignments, Authorization headers, and embedded-placeholder values now flag without echoing secrets; Mode C redacts migrated history and triages lint before commit. Both runtimes byte-identical, 46 mirror tests each. Targets re-copy the built-in + forge CI file, merge migration guidance if applicable, then stamp |
 | 4.33.4 | **`[secret-material]`: reject non-empty template defaults (PATCH):** v4.33.3's broad `${…}` placeholder exemption also trusted literal fallbacks, so `client_secret=${CLIENT_SECRET:-RealSecret123}` bypassed assignment detection. `${NAME}`, `${NAME:}`, and dotted references remain safe; non-empty defaults flag without echoing values. Both runtimes at parity, 46 mirror tests each. Targets re-copy the built-in + stamp |
 | 4.34.0 | **Pre-commit secret guard, memory + config surfaces (MINOR):** the v4.33.x arc's missing timing layer — and the field incident's true *origin*: credentials entered the repo inside a Postman JSON and an OpenShift YAML before a dry-run contaminated a session log. The committed `.githooks/pre-commit` scans the **staged** content (index; only what THIS commit stages) of `memory/**.md` (full profile) and of config files (`.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*` — credential-class) **before the commit exists**; all three forge CI wrappers run the matching changed-config scan on push via the new `memory-lint --scan-files` mode. The guard **enforces by default** — findings block the commit, the deliberate exception to the advisory doctrine (secrets carry irreversible after-the-fact cost); `AGENT_MEMORY_SECRET_GUARD=advisory` opts down to warn-only, `--no-verify` bypasses once; JSON/properties exemptions in the committed, human-audited `.agent/secret-scan-ignore` (config only, never memory/); the CI floor stays advisory (`AGENT_MEMORY_STRICT=1` gates). Detector tuned on a 661-file live-corpus probe to zero FPs (single-brace + GH-Actions template forms, `demo`/`test` placeholder words, placeholder-fallback defaults, dotted route refs exempt from Authorization, `;` value delimiter, Postman split-pair pattern); 49 mirror tests per runtime, parity held. Rides existing `core.hooksPath` activation; never-initialized clones fall through to the CI floor |
+| 4.34.1 | **Secret-guard output readability (PATCH):** field feedback from the maintainer's regression test — every `[secret-material]` finding line repeated the same advisory tail. Finding lines now end at `(N hit(s), first at line N)`; guidance appears **once per run**: the pre-commit hook's `-> fix it` footer (blank separator line added, shared/rotation/history wording folded in), a single trailer in `--scan-files` mode, and a single trailer after warnings in a full lint run. Both runtimes at parity, 49 mirror tests unchanged; hook grep contract unaffected. Targets re-copy the built-in + `.githooks/pre-commit`, stamp |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -2074,3 +2075,26 @@ adapters untouched.
 8. **Verify:** mirror suites pass (49 each); `.githooks/pre-commit` is present and executable
    and runs clean with nothing staged; `memory-lint --scan-files <a-known-config-file>` exits 0
    on clean content; `memory-lint` clean or consciously triaged.
+
+---
+
+## Rung: 4.34.0 → 4.34.1 — secret-guard output readability (PATCH)
+
+**What changed:** field feedback from the maintainer's own regression test of the enforcing
+guard — every `[secret-material]` finding line carried the same advisory tail, burying the
+findings. Finding lines now end at `(N hit(s), first at line N)`; the redact/rotate/history
+guidance appears **once per run**: in the pre-commit hook's `-> fix it` footer (now preceded
+by a blank separator line and carrying the shared/rotation/history wording), as a one-line
+trailer in `--scan-files` mode, and as a one-line trailer after the warnings in a full
+`memory-lint` run. Output-format only — no detection change; both runtimes at parity.
+
+**Steps:**
+
+1. **Re-copy the tool-managed built-in** `agent-skills/memory-lint/` (scripts + tests) and
+   **`.githooks/pre-commit`** verbatim from the tool repo; keep the hook executable
+   (`chmod +x`, mode `100755`).
+2. **Stamp** `.agent/version.md` → `version: 4.34.1`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
+3. **Verify:** mirror suites pass (49 each); stage a scratch file with a dummy credential and
+   run `bash .githooks/pre-commit` directly — findings print without per-line tails, one
+   consolidated footer, then the block line; unstage and remove the scratch file.

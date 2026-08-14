@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.34.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hooks — pre-commit secret guard (v4.34.0) + post-commit ritual capture — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.34.1 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hooks — pre-commit secret guard (v4.34.0) + post-commit ritual capture — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-14 | agent: Claude Code (2026-08-14-155434)
+- **last_session:** 2026-08-14 | agent: Claude Code (2026-08-14-163127)
 - **last_review:** 2026-08-14 | through 2026-08-14-011037
 - **last_invariant_check:** 2026-08-14 | through 2026-08-14-011037
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -130,10 +130,13 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   unchanged → adapters untouched), 3 forge CI files, `AGENTS.md` ×2, `ENABLE.md` (5e + Step 6 +
   chmod), DESIGN amendment, whitepaper ×2, docs-site ×2, presentation deck, `VERSION`→4.34.0,
   `CHANGELOG`, `README` (row + 10-cap trim, drops 4.29.1), `UPGRADE` (row + `4.33.4→4.34.0`
-  rung). → serves:
+  rung). **Fold-up (v4.34.1 PATCH, same day):** the maintainer's own field regression test
+  validated the blocking and yielded output-readability feedback — finding lines no longer
+  repeat the advisory tail; guidance prints once per run (hook footer with blank separator,
+  one trailer in --scan-files and full-lint runs). → serves:
   vision-agent-memory (shared memory must be safe to share — guarded at write, commit, AND push
   time, wherever the secret lands)
-  <!-- id: pre-commit-secret-guard-v4340 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 1 | tier: working | origin: 2026-08-14-021712 -->
+  <!-- id: pre-commit-secret-guard-v4340 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 2 | tier: active | origin: 2026-08-14-021712 -->
 
 - [ ] **Re-verify invariants (due):** confirm `target-repo-scope-only`,
   `never-delete-vendor-files`, `never-pick-a-winner`, `no-build-step-agent-run`,
@@ -257,7 +260,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   optional truth fix for a never-worked enable still showing `(none yet)`). → serves:
   vision-agent-memory (a fresh enable must leave a *true* memory state — the continuity check has to
   work from session one)
-  <!-- id: last-session-enable-log-v4321 | created: 2026-08-06 | last_used: 2026-08-13 | uses: 2 | tier: active | origin: 2026-08-06-153509 -->
+  <!-- id: last-session-enable-log-v4321 | created: 2026-08-06 | last_used: 2026-08-13 | uses: 2 | tier: archive-candidate | origin: 2026-08-06-153509 -->
 
 - [x] **Shipped v4.31.0 (MINOR) — GitLab forge support: forge-aware ritual floor + MR template.** From a
   **GitLab-hosted field report** (2026-07-26): GitLab ignores `.github/` entirely (verified — no shim in
