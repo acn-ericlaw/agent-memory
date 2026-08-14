@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.33.3 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hook + a CI floor matched to the hosting forge — GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-13 | agent: GitHub Copilot (2026-08-13-235301)
+- **last_session:** 2026-08-14 | agent: Claude Code (2026-08-14-001455)
 - **last_review:** 2026-07-27 | through 2026-07-27-203400
 - **last_invariant_check:** 2026-06-27 | through 2026-06-27-215825
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -107,9 +107,14 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   forge wrappers now deliberately consume strict lint status while preserving advisory defaults;
   enum exemption is key-scoped; placeholder matching is anchored; pasted-output formats flag
   without value echo; migration redacts and verifies before commit. Python/Node byte-identical,
-  46 mirror tests each. → serves: vision-agent-memory (shared memory is safe to share, and the
+  46 mirror tests each. **Fold-in (pre-tag, Claude Code post-merge review):** the live-target
+  probe the review had skipped caught the tightened template pattern rejecting default-value /
+  dotted env-var forms — `${REDIS_PASSWORD:}`, mercury-composable's own documented safe pattern
+  for secrets, 2 live FPs; the `${…}` alternative now accepts any brace-delimited reference
+  (still fullmatch-anchored), verbatim fixture added, both live targets re-probe zero findings.
+  → serves: vision-agent-memory (shared memory is safe to share, and the
   advertised strict gate is real)
-  <!-- id: secret-review-hardening-v4333 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 1 | tier: working | origin: 2026-08-13-235301 -->
+  <!-- id: secret-review-hardening-v4333 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 2 | tier: active | origin: 2026-08-13-235301 -->
 
 - [x] **Shipped v4.33.2 (PATCH) — `[secret-material]`: backtick is a value delimiter.** The
   `4.33.0→4.33.1` rung's own verify step on the live target caught, minutes after v4.33.1
@@ -130,7 +135,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   in a created PR/MR; rung gains an optional template re-copy step. → serves:
   vision-agent-memory (the advisory stays signal — and the trigger layer's verify steps are
   what keep it honest)
-  <!-- id: secret-fp-backtick-v4332 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 2 | tier: active | origin: 2026-08-13-231459 -->
+  <!-- id: secret-fp-backtick-v4332 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 3 | tier: active | origin: 2026-08-13-231459 -->
 
 - [x] **Shipped v4.33.1 (PATCH) — `[secret-material]`: ALL-CAPS enum constants are not credentials.**
   Check 10's first field contact (the 2026-08-13 Mode B upgrades of mercury + mercury-composable,
@@ -169,7 +174,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.33.0, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.1), `UPGRADE` (row +
   `4.32.1→4.33.0` rung with a triage-now step). → serves: vision-agent-memory (shared memory must
   be *safe to share* — a faithful record that leaks credentials is a liability, not memory)
-  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 4 | tier: active | origin: 2026-08-13-222439 -->
+  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 5 | tier: active | origin: 2026-08-13-222439 -->
 
 - [x] **Shipped v4.32.1 (PATCH) — Mode A `last_session` contradiction fix.** From a **real Mode A
   enable** (2026-08-06, target `~/sandbox/demo`), confirmed by an adversarial protocol audit:
@@ -288,7 +293,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   change. Lockstep: `ENABLE.md` (5b + 7 + 8 + 9), `VERSION`→4.30.0, `CHANGELOG`, `README` (row +
   10-cap trim), `UPGRADE` (row + `4.29.1→4.30.0` rung with optional additive target steps). → serves:
   vision-agent-memory (faithful enablement — the first build after enable must not dirty the repo)
-  <!-- id: gitignore-stack-seed-v4300 | created: 2026-07-15 | last_used: 2026-07-15 | uses: 1 | tier: active | origin: 2026-07-15-232735.md -->
+  <!-- id: gitignore-stack-seed-v4300 | created: 2026-07-15 | last_used: 2026-07-15 | uses: 1 | tier: archive-candidate | origin: 2026-07-15-232735.md -->
 
 - [x] **Shipped v4.29.1 (PATCH) — template import blocks → `{{BOOTSTRAP_IMPORTS}}` placeholder.** From a
   **GitHub Copilot assessment of v4.29.0** (its "Dogfood Finding"), **corroborated live on Claude Code**
