@@ -11,6 +11,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.33.4, 8/13/2026
+
+> **`[secret-material]` — reject non-empty template defaults (PATCH).** Post-release review
+> found that v4.33.3's broad `${…}` placeholder exemption also trusted literal fallback
+> values. A line such as `client_secret=${CLIENT_SECRET:-RealSecret123}` could therefore evade
+> assignment detection.
+
+### Fixed
+- `${NAME}`, `${NAME:}`, and dotted references such as `${vault.paths.kafka}` remain safe
+  placeholders. Any non-empty fallback is no longer exempt, so
+  `client_secret=${CLIENT_SECRET:-RealSecret123}` flags without echoing the value.
+- Python and Node remain at output parity; mirror suites pass 46 tests each.
+
+No memory-file shape change; SKILL.md description unchanged, so adapters are untouched.
+Targets re-copy the tool-managed `memory-lint` built-in and stamp.
+
 ## Version 4.33.3, 8/13/2026
 
 > **`[secret-material]` security-review hardening (PATCH).** A fresh-context security review
