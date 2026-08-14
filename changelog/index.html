@@ -1496,6 +1496,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#version-4333-8132026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version 4.33.3, 8/13/2026
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Version 4.33.3, 8/13/2026">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#version-4332-8132026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4368,6 +4396,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#version-4333-8132026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version 4.33.3, 8/13/2026
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Version 4.33.3, 8/13/2026">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#version-4332-8132026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -7229,6 +7285,35 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 introduced after 3.0.0 shipped), organized by capability rather than by individual
 commit. The capability ladder matches <code>VERSION</code> and <code>UPGRADE.md</code>.</p>
 </blockquote>
+<h2 id="version-4333-8132026">Version 4.33.3, 8/13/2026<a class="headerlink" href="#version-4333-8132026" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong><code>[secret-material]</code> security-review hardening (PATCH).</strong> A fresh-context security review
+found that the detector was useful but not a reliable enforcement control: forge wrappers
+never passed <code>--strict</code>, the v4.33.1 ALL-CAPS exemption trusted uppercase secrets globally,
+common quoted/Authorization forms could bypass assignment detection, and Mode C did not
+require migrated-history triage. This patch closes all four findings while preserving the
+advisory-by-default doctrine.</p>
+</blockquote>
+<h3 id="security">Security<a class="headerlink" href="#security" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Forge CI enforcement fixed:</strong> GitHub, GitLab, and Azure wrappers now invoke
+  <code>memory-lint --strict</code>, making warnings observable to the wrapper. The wrapper still converts
+  findings to its native advisory result by default; <code>AGENT_MEMORY_STRICT=1</code> now genuinely
+  blocks.</li>
+<li><strong>Uppercase-secret bypass closed:</strong> ALL-CAPS enum values are exempt only when the key names an
+  enum dimension (<code>source</code>, <code>type</code>, <code>mode</code>, <code>mechanism</code>, or <code>strategy</code>). Uppercase passwords,
+  client secrets, and opaque tokens on secret-bearing keys flag.</li>
+<li><strong>Pasted-output coverage expanded:</strong> quoted JSON/YAML credential keys and
+  <code>Authorization</code>/<code>Proxy-Authorization</code> headers flag without echoing their values. Placeholder
+  recognition is full-value anchored, so embedding <code>dummy</code>, <code>sample</code>, or similar text no longer
+  launders a credential; template/redaction forms remain safe.</li>
+<li><strong>Mode C migration hardened:</strong> <code>MIGRATE.md</code> requires redaction during conversion, and
+  <code>ENABLE.md</code> verification requires <code>[secret-material]</code> triage before the enable commit.</li>
+</ul>
+<p>Both runtimes remain at output parity; mirror suites now pass 46 tests each. No memory-file
+shape change; SKILL.md description unchanged, so adapters are untouched. Targets re-copy the
+built-in and their forge CI file, merge the Mode C redaction rule if they use migration, then
+stamp.</p>
 <h2 id="version-4332-8132026">Version 4.33.2, 8/13/2026<a class="headerlink" href="#version-4332-8132026" title="Permanent link">&para;</a></h2>
 <blockquote>
 <p><strong><code>[secret-material]</code> — backtick is a value delimiter (PATCH).</strong> The v4.33.1 enum-constant

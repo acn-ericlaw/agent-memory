@@ -1758,6 +1758,11 @@ never edited) with the best advisory semantics of the set (<code>##vso</code> wa
 the YAML <code>pr:</code> key — PR-time validation is an optional Build Validation branch policy (admin).
 Push builds check the tip commit only (no pushed-range variable) — the log-in-tip-push
 convention covers it.
+<strong>+ strict-gate wiring fix (v4.33.3):</strong> all forge wrappers invoke <code>memory-lint --strict</code>
+unconditionally so WARN findings produce a status the wrapper can interpret. The wrapper then
+preserves advisory-by-default semantics (GitHub warning, GitLab exit 42, Azure partially
+succeeded), while <code>AGENT_MEMORY_STRICT=1</code> converts that same finding into a blocking failure.
+Before this fix, WARN-only lint output exited 0 and bypassed both branches.
 Sibling to <code>DESIGN-evolving-memory.md</code>, <code>DESIGN-vbdi-lifecycle.md</code>, <code>DESIGN-skills-layer.md</code>, and
 <code>DESIGN-fresh-context-review.md</code>. Realizes the <code>(blueprint)</code> gap <strong><code>bp-ritual-triggers</code></strong> →
 serves <code>vision-agent-memory</code>.

@@ -1759,9 +1759,9 @@ Node</strong> at output parity, so it runs on a node-only box too. Ten checks:</
 <li>review cadence + size (<code>[review-overdue]</code> / <code>[continuity-bloat]</code>)</li>
 <li>stale metadata — stored tier ≠ recomputed tier (<code>[stale-metadata]</code>)</li>
 <li>leaked secrets / PII in committed memory files (<code>[secret-material]</code>) — token shapes,
-    credential-key assignments, emails, SSN/payment-card (Luhn), absolute home paths; scans
-    <code>sessions/</code> and <code>archive/</code> too, never echoes the matched value, waivable per-line with
-    <code>lint:allow-secret-material</code></li>
+    credential-key assignments (including quoted JSON/YAML), Authorization headers, emails,
+    SSN/payment-card (Luhn), absolute home paths; scans <code>sessions/</code> and <code>archive/</code> too, never
+    echoes the matched value, waivable per-line with <code>lint:allow-secret-material</code></li>
 </ol>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>agent-skills/memory-lint/scripts/memory-lint.py<span class="w">      </span><span class="c1"># or</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>node<span class="w">   </span>agent-skills/memory-lint/scripts/memory-lint.mjs
