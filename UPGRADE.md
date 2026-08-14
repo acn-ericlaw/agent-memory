@@ -118,6 +118,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.33.1 | **`[secret-material]`: ALL-CAPS enum constants are not credentials (PATCH):** check 10's first field contact (the 2026-08-13 Mode B upgrades of two production repos) produced exactly one finding — a **false positive**: a session log documenting Confluent's `bearer.auth.credentials.source` property with its enum value `OAUTHBEARER` (a source *type*, not a credential). The credential-assignment pattern now treats ALL-CAPS identifiers (`^[A-Z][A-Z0-9_]{2,}$` — `OAUTHBEARER`, `SASL_SSL`, `STATIC_TOKEN`, …) as config constants: real credentials carry mixed case/symbols, and uppercase-only token shapes (AWS key ids) stay covered by the value-shape patterns independently. Both runtimes at parity + mirror test (45 each). Detector-only — targets re-copy the built-in + stamp; a waiver added solely for this FP class can be dropped |
 | 4.33.2 | **`[secret-material]`: backtick is a value delimiter (PATCH):** the v4.33.1 enum-constant exclusion missed the form the motivating field line actually used — markdown inline code: in `` `key=VALUE` `` the closing backtick rode into the captured value, so the ALL-CAPS rule didn't match and the FP survived (caught minutes after release by the 4.33.1 rung's own verify step against the live target). Every scanned memory surface is markdown — the assignment pattern now treats backticks like quotes; mirror enum test uses the exact field form + a backticked real-secret negative control (45 each). Also: the PR/MR description templates' rendered `<sub>` convention footer became an HTML comment (guides authors, never renders in a created PR/MR — maintainer feedback). Targets re-copy the built-in + stamp; the waiver drop 4.33.1 promised becomes genuinely possible here; optionally re-copy the forge description template if uncustomized |
 | 4.33.3 | **`[secret-material]` security-review hardening (PATCH):** closes four fresh-context findings: all forge wrappers invoke `memory-lint --strict` so warnings reach their advisory/blocking branch and `AGENT_MEMORY_STRICT=1` genuinely gates; ALL-CAPS enums are exempt only on enum-dimension keys, closing uppercase-secret bypasses; quoted JSON/YAML assignments, Authorization headers, and embedded-placeholder values now flag without echoing secrets; Mode C redacts migrated history and triages lint before commit. Both runtimes byte-identical, 46 mirror tests each. Targets re-copy the built-in + forge CI file, merge migration guidance if applicable, then stamp |
+| 4.33.4 | **`[secret-material]`: reject non-empty template defaults (PATCH):** v4.33.3's broad `${…}` placeholder exemption also trusted literal fallbacks, so `client_secret=${CLIENT_SECRET:-RealSecret123}` bypassed assignment detection. `${NAME}`, `${NAME:}`, and dotted references remain safe; non-empty defaults flag without echoing values. Both runtimes at parity, 46 mirror tests each. Targets re-copy the built-in + stamp |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -1999,3 +2000,22 @@ anchored.
 6. **Verify:** both mirror suites pass (46 each); Python/Node linter output is byte-identical;
    the target's forge CI invocation includes `memory-lint.py --strict`; lint is clean or only
    consciously triaged.
+
+---
+
+## Rung: 4.33.3 → 4.33.4 — `[secret-material]`: reject non-empty template defaults (PATCH)
+
+**What changed:** v4.33.3 accepted any brace-delimited `${…}` value as a safe placeholder.
+That fixed empty-default and dotted-reference false positives, but also exempted a literal
+fallback that may itself be a rendered secret. `${NAME}`, `${NAME:}`, and dotted references
+remain safe; a non-empty fallback such as `${CLIENT_SECRET:-RealSecret123}` now flags without
+echoing its value. Detector-only — no memory-file shape change; SKILL.md description unchanged
+(adapters untouched).
+
+**Steps:**
+
+1. **Re-copy the tool-managed built-in** `agent-skills/memory-lint/` (scripts + tests) verbatim
+   from the tool repo.
+2. **Stamp** `.agent/version.md` → `version: 4.33.4`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
+3. **Verify:** both mirror suites pass (46 each); lint is clean or consciously triaged.
