@@ -74,7 +74,19 @@
     <div class="kicker">agent-memory · v4.34.0</div>
     <h1>A lightweight, vendor-neutral<br><span class="grad">AI memory + cognitive loop</span></h1>
     <p class="lead" style="margin-top:.6em">Turning shared project context into <b>deterministic delivery with near-zero drift</b> — for human–AI collaboration, across any AI vendor.</p>
-    <div class="foot">Peer / leadership review · June 2026</div>
+    <div class="foot">August 2026</div>
+  </section>
+
+  <!-- 1b · the era shift -->
+  <section class="slide">
+    <div class="kicker">The era shift</div>
+    <h2>From prompts, to context, to <span class="grad">intent</span></h2>
+    <div class="grid g3" style="margin-top:.6em">
+      <div class="card"><h3>Prompt engineering</h3><p>Human provides instructions. AI generates responses. Better phrasing, better answers — one turn at a time.</p></div>
+      <div class="card"><h3>Context engineering</h3><p>Human provides knowledge, constraints, project files. AI responds with more consistency — until the <b>static context drifts</b> and agents confidently follow instructions that are no longer true.</p></div>
+      <div class="card"><h3>Intent-driven development</h3><p>Human provides <b>vision, boundaries, priorities, judgment</b>. AI collaborates in analysis, design, implementation, refinement — inside <b>living context</b> that evolves with the code.</p></div>
+    </div>
+    <p class="lead" style="margin-top:1em"><i>Prompts tell AI what to do. Context helps AI understand. <b>Intent explains what matters.</b></i> agent-memory is infrastructure for the third era.</p>
   </section>
 
   <!-- 2 -->
@@ -85,7 +97,7 @@
       <div class="card"><h3>Memory drift &amp; vendor silos</h3><p>Context is re-explained every session; decisions are silently forgotten or contradicted; each AI tool hoards its own steering files — no shared, durable project memory.</p></div>
       <div class="card"><h3>Intent ↔ delivery gap</h3><p>Agents are creative, but keeping what's <i>built</i> faithful to what was <i>intended</i> is unmanaged. Reversed decisions and "confidently wrong" facts pile up.</p></div>
     </div>
-    <p class="lead" style="margin-top:1em">The bottleneck isn't the model — it's the architecture <span class="muted">around</span> it.</p>
+    <p class="lead" style="margin-top:1em">The bottleneck isn't the model — it's the architecture <span class="muted">around</span> it. <i>"Acceleration without direction is only faster drift."</i></p>
   </section>
 
   <!-- 3 -->
@@ -322,6 +334,7 @@
       <tr><td class="us">Persistence</td><td class="t">per-vendor files / vector store</td><td>one shared, git-committed markdown layer</td></tr>
       <tr><td class="us">Forgetting</td><td class="t">similarity scores, TTLs</td><td>deterministic tiering by counting</td></tr>
       <tr><td class="us">Truth maintenance</td><td class="t">overwrite / let stale persist</td><td>supersession + contradiction + re-verify</td></tr>
+      <tr><td class="us">Context freshness</td><td class="t">static context files that drift</td><td><b>living context</b>: decay, review &amp; supersession keep the explanatory layer true</td></tr>
       <tr><td class="us">Intent → delivery</td><td class="t">unmanaged</td><td>VBDI trace, grep-detectable drift</td></tr>
       <tr><td class="us">Governance</td><td class="t">opaque</td><td>git history + markdown + human gates</td></tr>
       <tr><td class="us">Vendor coupling</td><td class="t">locked to one tool</td><td>neutral; one hub</td></tr>
@@ -352,6 +365,7 @@
     <p class="quote"><span class="grad">Memory is the deterministic substrate.<br>The loop is the lightweight control layer.</span></p>
     <p class="lead" style="margin-top:1em">Next (tracked as Blueprint gaps): greenfield flow · more multi-user hardening (<code>MERGE.md</code> shipped) · an optional SDLC overlay for teams that want it.</p>
     <p class="big" style="margin-top:1em"><b>Predictable innovation with human partnership</b> — bold ideas, faithful delivery, the human in the loop at every altitude.</p>
+    <p class="lead" style="margin-top:.9em">Companion article: <a href="https://www.linkedin.com/posts/ericclaw_intent-driven-development-activity-7493145001313390593-cyc5" style="color:inherit"><b>From Context Engineering to Intent-Driven Development</b></a> — the argument behind this system, written from its evolution.</p>
     <div class="foot">agent-memory · v4.34.0</div>
   </section>
 

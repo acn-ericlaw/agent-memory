@@ -9,7 +9,7 @@
 - **project:** agent-memory
 - **status:** v4.34.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hooks — pre-commit secret guard (v4.34.0) + post-commit ritual capture — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-14 | agent: Claude Code (2026-08-14-021712)
+- **last_session:** 2026-08-14 | agent: Claude Code (2026-08-14-155434)
 - **last_review:** 2026-08-14 | through 2026-08-14-011037
 - **last_invariant_check:** 2026-08-14 | through 2026-08-14-011037
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -374,7 +374,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   4.29.0-rung amendment), `VERSION`→4.29.1, `CHANGELOG`, `README` (row + 10-cap trim). Targets:
   version-stamp only. → serves: vision-agent-memory (the tool's own repo must stay a faithful memory
   environment while it dogfoods the features it ships)
-  <!-- id: template-import-bleed-v4291 | created: 2026-07-12 | last_used: 2026-08-06 | uses: 2 | tier: active | origin: 2026-07-12-030710 -->
+  <!-- id: template-import-bleed-v4291 | created: 2026-07-12 | last_used: 2026-08-06 | uses: 2 | tier: archive-candidate | origin: 2026-07-12-030710 -->
 
 - [ ] **(backlog) Before-session presence for Cursor/Kiro — path-scoped steering imports.** From a
   maintainer question after v4.29.0 shipped ("what about other vendors' entry points?"). v4.29.0

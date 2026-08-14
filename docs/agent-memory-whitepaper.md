@@ -2,8 +2,10 @@
 
 ## Deterministic memory as a substrate; a lightweight cognitive loop as the control layer
 
-**Version:** 1.3 (describes agent-memory **v4.34.0**)
+**Version:** 1.4 (describes agent-memory **v4.34.0**)
 **Date:** August 14, 2026
+
+> *"Acceleration without direction is only faster drift."*
 
 ---
 
@@ -87,6 +89,30 @@ Two consequences follow that existing tools handle poorly:
 agent-memory targets both: a **shared, vendor-neutral memory** that *evolves* faithfully,
 and a **forward cognitive loop** that makes intent traceable and drift detectable — without
 imposing a heavyweight process.
+
+### The era shift: from prompts to context to intent
+
+AI-assisted development has moved through three phases. **Prompt engineering** asked for
+better instructions. **Context engineering** — steering files, design briefs, repository
+conventions, memory notes — asked for better information, and it worked until the context
+went stale: static documents drift, and agents confidently follow instructions that are no
+longer true. The phase now emerging is **intent-driven development**: the human provides
+vision, goals, boundaries, priorities, and judgment; AI participates as a collaborator in
+analysis, design, implementation, and refinement; and the repository itself becomes
+**living context** — code, documentation, decisions, and agent-facing conventions that
+evolve together instead of rotting apart.
+
+> *Prompts tell AI what to do. Context helps AI understand. Intent explains what matters.*
+
+agent-memory is infrastructure for that third phase — specifically, the **continuity** half
+of a two-part answer. Structured repository conventions ("AI grammar") make a system
+*legible*: derivable rather than guessable. But grammar solves legibility, not continuity —
+an agent that perfectly understands a repository still starts each session not knowing what
+was decided last week, why the trade-offs were made, or which assumptions were later
+rejected. The backward layer is what keeps context *living* (decay, supersession,
+contradiction checks, provenance — the machinery that stops explanatory drift), and the
+forward loop is what carries *intent* from vision to delivered change. The companion
+article develops this argument in full ([References](#references), entry 8).
 
 ---
 
@@ -330,6 +356,11 @@ its documentation:
   ritual (re-tiering, the archive move, adapter sync, integrity checks) become runnable
   helpers so a capable agent can't silently skip them; every act of judgment stays with the
   agent and the human. The boundary is *judgment vs. arithmetic*, never *automate the decision*.
+
+  > *"Mechanize the arithmetic. Do not mechanize the judgment."* — the companion article
+  > calls this principle, in miniature, the entire argument for intent-driven development:
+  > automation earns trust exactly where it is deterministic, and defers exactly where
+  > meaning is at stake.
 - **No manual user step.** Once the protocol lands with untrained users, any manual op is an
   adoption barrier — so triggers, init, and adapter sync are agent-activated, with CI as the
   zero-config backstop (matched to the hosting forge; Azure DevOps needs a one-time activation).
@@ -473,3 +504,4 @@ no-code, human-gated design.
 5. Mem0 Engineering. *State of AI Agent Memory 2026: Benchmarks, Architectures & Production Gaps*. 2026. https://mem0.ai/blog/state-of-ai-agent-memory-2026
 6. *Agent Cognitive Framework for Memory-Driven AI Systems* (the framework integrated here as the forward layer). 2026. `docs/agent-cognitive-framework.md`.
 7. Internal design docs: `docs/DESIGN-evolving-memory.md` (backward layer), `docs/DESIGN-vbdi-lifecycle.md` (forward layer), `docs/assessments/2026-06-13-industry-alignment.md`.
+8. Law, Eric. *From Context Engineering to Intent-Driven Development — why the next professional skill is not writing better prompts, but expressing clearer intent*. August 11, 2026. The companion thought-leadership article — written from the evolution of this project and the human–AI collaboration that built it. https://www.linkedin.com/posts/ericclaw_intent-driven-development-activity-7493145001313390593-cyc5
