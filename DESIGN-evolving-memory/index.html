@@ -2241,7 +2241,7 @@ reviews. Default posture: <strong><code>core</code> is human-only.</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gh"># Memory Policy</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="gu">## Lifecycle windows (sessions)</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">-</span><span class="w"> </span>working_window:   3     # new facts stay &quot;working&quot; until re-referenced within this many sessions
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">-</span><span class="w"> </span>working_window:   3     # new facts stay "working" until re-referenced within this many sessions
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">-</span><span class="w"> </span>active_window:    8     # referenced within this many sessions → active
 <a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">-</span><span class="w"> </span>archive_window:   20    # not referenced for more than this → archived
 <a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
@@ -2257,7 +2257,7 @@ reviews. Default posture: <strong><code>core</code> is human-only.</strong></p>
 <a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
 <a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="gu">## Never decays</span>
 <a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="k">-</span><span class="w"> </span>tier: core
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="k">-</span><span class="w"> </span>anything under &quot;## Architectural Invariants&quot;
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="k">-</span><span class="w"> </span>anything under "## Architectural Invariants"
 <a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="k">-</span><span class="w"> </span>unchecked Open Threads ( - [ ] )
 </code></pre></div>
 <p>Users tune by editing integers. Hand-editing any <code>tier:</code> in <code>continuity.md</code>
@@ -2315,7 +2315,7 @@ scanning <em>all</em> session logs. Use this to repair drift or after manual edi
 <a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>  (No metadata editing. Just remember for the log.)
 <a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
 <a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>After:
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>  Write the session log as usual + a &quot;## Memory References&quot; section.
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>  Write the session log as usual + a "## Memory References" section.
 <a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>  Born-this-session facts get an id and tier: working.
 <a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>  If sessions-since-last-review ≥ review_every (or continuity.md &gt; max lines):
 <a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    run REVIEW.md.
@@ -2430,7 +2430,7 @@ pattern). Keeps one user-facing entry point.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Mode B (Already Ours):
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>  installed = read .agent/version.md   (missing → treat as 2.x baseline)
 <a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>  current   = read root VERSION
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>  if installed == current:  report &quot;up to date&quot;, exit            # idempotent
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>  if installed == current:  report "up to date", exit            # idempotent
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>  if installed &lt;  current:  run UPGRADE.md rungs installed→current, in order
 <a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>                            re-stamp .agent/version.md (version, last_upgraded)
 <a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>                            report what changed
