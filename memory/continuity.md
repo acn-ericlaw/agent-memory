@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.34.1 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hooks — pre-commit secret guard (v4.34.0) + post-commit ritual capture — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.34.2 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hooks — pre-commit secret guard (v4.34.0) + post-commit ritual capture — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-14 | agent: Claude Code (2026-08-14-163127)
+- **last_session:** 2026-08-19 | agent: Claude Code (2026-08-19-203132)
 - **last_review:** 2026-08-14 | through 2026-08-14-011037
 - **last_invariant_check:** 2026-08-14 | through 2026-08-14-011037
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -97,6 +97,28 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Dry-run support so users can preview before committing
 
 ## Open Threads
+
+- [x] **Shipped v4.34.2 (PATCH) — `[secret-material]`: the guard's own opt-down knob is not a
+  credential.** Field issue from the **mercury-composable team** (2026-08-19, during their v4.34.0
+  hook regression test): the pre-commit guard's blocking message prints
+  `AGENT_MEMORY_SECRET_GUARD=advisory`, and any memory file documenting that guidance then flagged
+  as a `credential-assignment` (key contains `SECRET`; `advisory` meets the value floor; no
+  exemption path applied) — the tool taught a phrase, then blocked its quotation. **Their analysis
+  was code-accurate and their fix shape was endorsed as-is** (exact-key, value-constrained
+  exemption; their rejected alternatives — global `advisory` placeholder, widening `ENUM_KEY_RE` —
+  were rejected for the right reasons). **The v4.33.2 verbatim-fixture lesson caught a real
+  variant pre-ship:** the guard's guidance line ends `…=advisory)` and the closing paren rides
+  into the captured value, so the exemption tolerates trailing `).,` punctuation while staying
+  token-constrained (`advisory`/`enforcing` only — any other value under that key still flags; no
+  smuggling envelope; non-echo preserved). Both runtimes at parity, verbatim mirror fixtures
+  (50/50). **Secondary question resolved as a doc note:** AWS's canonical doc-example keys still
+  flag by design — redact or *visibly* waive (`lint:allow-secret-material`); no invisible built-in
+  whitelist (SKILL.md body note; description unchanged → adapters untouched). Re-probed: this repo
+  0/0; mercury-composable 0 `[secret-material]` with the fixed script. Lockstep: skill files ×5,
+  `VERSION`→4.34.2, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.31.0), `UPGRADE` (row +
+  `4.34.1→4.34.2` rung incl. the drop-obsolete-waivers step). → serves: vision-agent-memory (the
+  advisory stays signal — a guard must never block the documentation of its own controls)
+  <!-- id: secret-fp-self-knob-v4342 | created: 2026-08-19 | last_used: 2026-08-19 | uses: 1 | tier: working | origin: 2026-08-19-203132 -->
 
 - [x] **Shipped v4.34.0 (MINOR) — pre-commit secret guard: prevention on both surfaces (memory +
   config).** From the maintainer's confirmation question after the v4.33.x DLP arc ("do we need a
