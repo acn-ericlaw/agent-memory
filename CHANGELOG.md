@@ -11,6 +11,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.34.2, 8/19/2026
+
+> **`[secret-material]`: the guard's own opt-down knob is not a credential (PATCH).** Field report
+> (mercury-composable, 2026-08-19, during a v4.34.0 hook regression test): the pre-commit guard's
+> blocking message prints `AGENT_MEMORY_SECRET_GUARD=advisory` — and any memory file that then
+> *documents* that guidance was itself flagged as a `credential-assignment` (the key contains
+> `SECRET`; `advisory` meets the 8-char value floor; no exemption applied). The tool taught a
+> phrase, then blocked commits that quoted it — pushing authors toward waivers for text the tool
+> itself printed.
+
+### Fixed
+- **Exact-key, value-constrained self-exemption** in `_is_placeholder_value` (both runtimes, at
+  parity): key `AGENT_MEMORY_SECRET_GUARD` (case-insensitive) with a documented setting —
+  `advisory` / `enforcing`, trailing `).,` punctuation tolerated because prose and parenthesized
+  guidance rides it into the captured value (the guard's own line ends `…=advisory)` — the same
+  capture behavior v4.33.2 fixed for backticks, caught this time by testing the verbatim line
+  before writing the fixture). **Any other value under that key still flags**, so the exemption
+  cannot be used as a smuggling envelope; the non-echo guarantee is preserved. The fix shape is
+  the issue reporter's own proposal, endorsed as-is — their analysis was code-accurate, and their
+  rejected alternatives (global `advisory` placeholder; widening `ENUM_KEY_RE`) were rejected for
+  the right reasons.
+- **Verbatim pinning fixtures** in both mirror suites (50 tests each): the guard's printed
+  guidance line, the field repro line, the prose `enforcing.` form, and the backticked inline
+  form all pass; an opaque value under the same key still flags and is never echoed.
+
+### Changed
+- **The issue's secondary question, resolved as a doc note (maintainer call):** AWS's canonical
+  documentation keys (`AKIA…EXAMPLE` + partner) **still flag by design**. The guard keeps one
+  simple contract — anything credential-shaped gets redacted or *visibly* waived
+  (`lint:allow-secret-material`) — rather than growing an invisible built-in whitelist
+  (GitHub/Stripe doc examples would be next). Recorded in the memory-lint `SKILL.md`.
+- **Lockstep:** `VERSION` → 4.34.2; `CHANGELOG`; `README` row (10-cap held); `UPGRADE.md` row +
+  `4.34.1 → 4.34.2` rung (re-copy the skill files; the rung also drops waivers added for this FP
+  class). SKILL.md description unchanged → adapters untouched. No memory-file shape change.
+
+Targets: re-copy the tool-managed memory-lint built-in (both runtimes, tests, SKILL.md) and stamp.
+
 ## Version 4.34.1, 8/14/2026
 
 > **Secret-guard output readability (PATCH).** Field feedback from the maintainer's own

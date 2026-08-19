@@ -121,6 +121,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.33.4 | **`[secret-material]`: reject non-empty template defaults (PATCH):** v4.33.3's broad `${…}` placeholder exemption also trusted literal fallbacks, so `client_secret=${CLIENT_SECRET:-RealSecret123}` bypassed assignment detection. `${NAME}`, `${NAME:}`, and dotted references remain safe; non-empty defaults flag without echoing values. Both runtimes at parity, 46 mirror tests each. Targets re-copy the built-in + stamp |
 | 4.34.0 | **Pre-commit secret guard, memory + config surfaces (MINOR):** the v4.33.x arc's missing timing layer — and the field incident's true *origin*: credentials entered the repo inside a Postman JSON and an OpenShift YAML before a dry-run contaminated a session log. The committed `.githooks/pre-commit` scans the **staged** content (index; only what THIS commit stages) of `memory/**.md` (full profile) and of config files (`.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*` — credential-class) **before the commit exists**; all three forge CI wrappers run the matching changed-config scan on push via the new `memory-lint --scan-files` mode. The guard **enforces by default** — findings block the commit, the deliberate exception to the advisory doctrine (secrets carry irreversible after-the-fact cost); `AGENT_MEMORY_SECRET_GUARD=advisory` opts down to warn-only, `--no-verify` bypasses once; JSON/properties exemptions in the committed, human-audited `.agent/secret-scan-ignore` (config only, never memory/); the CI floor stays advisory (`AGENT_MEMORY_STRICT=1` gates). Detector tuned on a 661-file live-corpus probe to zero FPs (single-brace + GH-Actions template forms, `demo`/`test` placeholder words, placeholder-fallback defaults, dotted route refs exempt from Authorization, `;` value delimiter, Postman split-pair pattern); 49 mirror tests per runtime, parity held. Rides existing `core.hooksPath` activation; never-initialized clones fall through to the CI floor |
 | 4.34.1 | **Secret-guard output readability (PATCH):** field feedback from the maintainer's regression test — every `[secret-material]` finding line repeated the same advisory tail. Finding lines now end at `(N hit(s), first at line N)`; guidance appears **once per run**: the pre-commit hook's `-> fix it` footer (blank separator line added, shared/rotation/history wording folded in), a single trailer in `--scan-files` mode, and a single trailer after warnings in a full lint run. Both runtimes at parity, 49 mirror tests unchanged; hook grep contract unaffected. Targets re-copy the built-in + `.githooks/pre-commit`, stamp |
+| 4.34.2 | **`[secret-material]`: the guard's own opt-down knob is not a credential (PATCH):** field FP (mercury-composable, 2026-08-19) — the pre-commit guard's blocking message prints `AGENT_MEMORY_SECRET_GUARD=advisory`, and any memory file documenting that guidance then flagged (`credential-assignment` — the key contains SECRET, `advisory` meets the value floor, no exemption applied). The tool taught a phrase and blocked its quotation. Fix (issue-proposed shape, endorsed): exact-key, value-constrained exemption in `_is_placeholder_value` — key `AGENT_MEMORY_SECRET_GUARD` (case-insensitive) with a documented setting (`advisory`/`enforcing`; trailing `).,` punctuation tolerated — the guard's own line ends `…=advisory)`, the v4.33.2 capture behavior). Any other value under that key still flags (no smuggling envelope; non-echo preserved). Both runtimes at parity, verbatim mirror fixtures (50 each). Also documented (maintainer call on the issue's secondary question): AWS's canonical doc-example keys **still flag by design** — waive deliberately with `lint:allow-secret-material`; no built-in whitelist |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -2098,3 +2099,38 @@ trailer in `--scan-files` mode, and as a one-line trailer after the warnings in 
 3. **Verify:** mirror suites pass (49 each); stage a scratch file with a dummy credential and
    run `bash .githooks/pre-commit` directly — findings print without per-line tails, one
    consolidated footer, then the block line; unstage and remove the scratch file.
+
+---
+
+## Rung: 4.34.1 → 4.34.2 — secret guard: the tool's own opt-down knob is not a credential (PATCH)
+
+**What changed:** a self-inflicted `[secret-material]` false positive, reported from the field
+(mercury-composable, 2026-08-19): the pre-commit guard's blocking message prints
+`AGENT_MEMORY_SECRET_GUARD=advisory`, and a memory file documenting that guidance (a session log
+describing a hook regression test, a runbook) was itself flagged as a `credential-assignment` —
+the key contains `SECRET` and `advisory` meets the value floor. `_is_placeholder_value` (both
+runtimes) now exempts exactly the knob's documented settings — key `AGENT_MEMORY_SECRET_GUARD`
+(case-insensitive), value `advisory`/`enforcing` with trailing `).,` punctuation tolerated
+(prose/parenthesized guidance rides it into the captured value; the guard's own line ends
+`…=advisory)`). Any other value under that key still flags, so the exemption is not a smuggling
+envelope. Mirror suites gain a verbatim pinning case each (50/50). The skill doc also records the
+maintainer's call on the issue's secondary question: AWS's canonical doc-example keys
+(`AKIA…EXAMPLE` pair) **still flag by design** — quote them deliberately with
+`lint:allow-secret-material`; the guard keeps one contract (redact or visibly waive) rather than
+an invisible whitelist. Tool-managed built-in; no memory-file shape change.
+
+**Steps:**
+
+1. **Re-copy the `memory-lint` skill files** (both runtimes + mirror tests) from this repo:
+   `agent-skills/memory-lint/scripts/memory-lint.py`, `.../memory-lint.mjs`,
+   `.../test_memory_lint.py`, `.../test_memory_lint.mjs`, and `agent-skills/memory-lint/SKILL.md`
+   (body note only — the description is unchanged, so **adapters need no re-sync**).
+2. **Drop any waiver added for this FP class**: a `lint:allow-secret-material` tag on a line whose
+   only "credential" is `AGENT_MEMORY_SECRET_GUARD=advisory`/`=enforcing` is now unnecessary —
+   remove the tag (the line itself stays). Leave all other waivers alone.
+3. **Stamp** `.agent/version.md` → `version: 4.34.2`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
+4. **Verify:** mirror suites pass (50 each); `memory-lint` on the repo shows no
+   `[secret-material]` finding for knob-guidance lines; a scratch line such as
+   `AGENT_MEMORY_SECRET_GUARD=Xk9fQ2mZlp0TrN` (any 8+-char opaque value — not an
+   angle-bracket placeholder, which is exempt as a template shape) still flags.
