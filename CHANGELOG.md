@@ -11,6 +11,91 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.35.0, 8/20/2026
+
+> **Target-state reconcile — enable/upgrade in O(diff), not O(steps/rungs) (MINOR).** Field report
+> (2026-08-19): a fresh Mode A enable of a nearly-empty AI-hackathon monorepo took **over ten
+> minutes**. The cause was structural, not situational — the protocol was imperative and
+> history-ordered (a ~1,000-line ENABLE.md prescribing ~60 files / ~600 KB one write at a time;
+> an 80-rung ladder walked O(rungs-behind) on every Mode B) while ~80% of the work is convergence
+> to a declarative target state. Both costs grew with every release: the faster the field-report
+> flywheel spun, the slower every enable got. The fix finishes what the design already implied —
+> rungs were required to be *idempotent* (reconciliation semantics, executed one version at a
+> time), and UPGRADE.md carried a four-row proto-manifest ("Source of truth for re-synced files").
+
+### Added
+- **`MANIFEST.md`** (tool-side, operator-only): the declarative target state of an enabled repo.
+  40 rows — target path, canonical source, policy, forge condition — under six policies:
+  `verbatim` (tool-owned, re-copied on drift), `verbatim-dir` (the seven built-in skills),
+  `seed-copy` (install-if-absent, **never** overwritten — user waivers/templates accumulate
+  there), `sentinel-merge` (managed `.gitignore`/`.gitattributes` blocks, add-only +
+  de-duplicated), `seed-generate` (agent-authored judgment files, reported when missing, never
+  inspected when present), `stamp` (agent-written closing step, never scripted). Plus a
+  **Semantic steps** table: the ladder's **14 non-mechanical migrations** distilled (metadata
+  backfill, vision-bootstrap gating, ADR path move, knob merges preserving tuned values, import
+  blocks, stack seed, secret triage, guard-default notice, waiver drops), each version-gated and
+  pointing at its rung.
+- **`scripts/reconcile.py` + `scripts/reconcile.mjs`** — byte-parity twins (25 mirror tests
+  each; stdlib-only, no subprocesses). Dry-run by default (the consent artifact: copies, drift,
+  merges, and the agent's work-list); `--apply` performs the mechanical policies in one pass;
+  `--forge` overrides detection (read from `.git/config`; Azure DevOps installs only on positive
+  detection); `--check-manifest` verifies manifest↔tree lockstep (release checklist). Hard
+  guarantees: never deletes, never touches an existing seed-copy/seed-generate file, never edits
+  a pre-existing `.gitlab-ci.yml` (reports the wire item instead), never writes
+  `.agent/version.md`, never writes outside the target (realpath guard), refuses the tool repo
+  itself. Preserves/repairs executable bits; excludes caches from dir syncs.
+- **`templates/memory/archive/INDEX.md`** — the archive-index seed as a real template
+  (content-identical to what enables created by hand; seed-copy).
+- **`docs/DESIGN-reconcile.md`** — the design record: cost anatomy, the judgment boundary,
+  rejected alternatives (per-version hashes; scripting user-CI wiring; auto-stamp; full Mode B
+  automation), honest limits.
+
+### Changed
+- **`ENABLE.md`** — restructured around **the Reconcile Core** (new section): Mode A = consent →
+  analysis → reconcile → generation; Mode B = reconcile → semantic steps → stamp; Mode C
+  unchanged and reconciles **only after** migration (originals must reach `legacy/` first).
+  Steps 5–7 tag their mechanical parts `[reconcile-covered]` — the prose stays authoritative as
+  the behavior spec and the no-runtime fallback (an agent without Python/Node walks MANIFEST.md
+  by hand). Step 8 verify gains item 0: the dry-run reports done/converged.
+- **`UPGRADE.md`** — Mode B's mechanism is now reconcile + semantic steps + stamp; the ladder is
+  the **per-version record and the detailed text behind each semantic step** (walking it stays
+  the no-runtime fallback — the two paths converge on the same state). The release checklist
+  gains **manifest lockstep** + `--check-manifest`. Row + `4.34.2 → 4.35.0` rung (targets:
+  version-stamp; the reconcile run may also apply accumulated managed-block drift — the feature
+  working, not a side effect).
+- **Docs site** — `guides/enable-a-repo.md` (how it converges), `guides/upgrade.md` (O(diff)
+  flow, what reconcile may/never does), `reference/protocol-files.md` (MANIFEST.md row).
+
+### Verified
+- Suites: **25/25 both runtimes**; dry-run, `--check-manifest`, and every error path tested
+  produce **byte-identical** output across Python/Node. Scratch end-to-end: fresh apply →
+  converged; idempotent second run; drift re-copy; seed preservation; sentinel dedup/ordering;
+  forge filtering (github/gitlab/azdo/unknown); 2.x baseline; escape + self-target refusals.
+  **Live read-only probes:** a 4.34.1 target's dry-run reproduced its pending rung exactly
+  (stale built-in, waiver-drop semantic step, stamp); a 4.34.2 target showed
+  converged-but-drift — 11 managed `.gitignore` entries accumulated across template versions
+  that **no rung ever back-filled**, invisible under the ladder, one `merge` line under
+  reconcile.
+- **Hardened by the adversarial pre-ship review** (two lenses; every finding live-reproduced,
+  fixed, and pinned by a mirror test in both runtimes): a target **newer than the tool** now
+  hard-stops instead of being silently downgraded (the ENABLE.md Mode B rule, mechanized); the
+  Node twin's path guard now **resolves symlinks** like the Python one, closing an
+  apply-writes-outside-the-target escape; sentinel merges **preserve a CRLF target's bytes**
+  (Python no longer rewrites the user's whole file to LF — add-only means bytes too); a target
+  path of the wrong kind (a directory named like a file) and a **non-UTF-8** sentinel target
+  are refused with clean errors instead of corrupting or mojibake'ing; `--target ~` is refused
+  (target-repo scope only); a pre-existing **custom `core.hooksPath`** (e.g. husky) is reported
+  for arbitration instead of an unconditional overwrite instruction (trailing-slash `.githooks/`
+  counts as activated); a **worktree/submodule `.git` pointer file** gets verify-by-hand
+  guidance instead of wrong "init git" advice; an undetermined forge is called out in the
+  report, never silent; an `N.x` version stamp is rejected as malformed; `memory/sessions/`
+  containing only OS cruft no longer counts as present.
+
+Targets: version-stamp only (no installed file changes shape or content); the first reconcile
+run may apply accumulated managed-block drift, by design. Supersedes the Mode B automation
+backlog thread — its "script the mechanical parts, leave the merges to the agent" boundary is
+exactly where the manifest/judgment line landed.
+
 ## Version 4.34.2, 8/19/2026
 
 > **`[secret-material]`: the guard's own opt-down knob is not a credential (PATCH).** Field report

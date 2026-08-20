@@ -15,7 +15,8 @@ to run yourself.
 
     ---
 
-    Move an already-enabled repo to the latest version via the idempotent ladder.
+    Move an already-enabled repo to the latest version by reconciling against the declared
+    target state — one idempotent diff-and-apply pass (the version ladder stays the record).
 
 -   :material-broom:{ .lg .middle } __[Review Memory](review-memory.md)__
 

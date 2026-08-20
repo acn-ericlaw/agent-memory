@@ -106,7 +106,7 @@ flowchart LR
 | `AGENTS.md` | The hub every vendor's agent reads first |
 | `agent-skills/` | Portable, vendor-neutral skills (with seven built-ins) |
 | `.github/pull_request_template.md` / `.gitlab/merge_request_templates/Default.md` / `.azuredevops/pull_request_template.md` | Seeds the **What / Why** description convention (per forge) |
-| `.agent/version.md` | The install manifest (gates in-place upgrades) |
+| `.agent/version.md` | The version stamp (gates in-place upgrades) |
 
 ## Next steps
 

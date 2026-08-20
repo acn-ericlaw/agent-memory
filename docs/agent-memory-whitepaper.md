@@ -365,7 +365,8 @@ its documentation:
   adoption barrier — so triggers, init, and adapter sync are agent-activated, with CI as the
   zero-config backstop (matched to the hosting forge; Azure DevOps needs a one-time activation).
 - **Additive, non-destructive upgrades.** Versioned (`VERSION` + per-repo stamp); a repo on
-  an older version upgrades in place via an idempotent ladder.
+  an older version upgrades in place by reconciling against the declared target state
+  (idempotent, O(diff); the version ladder remains the per-version record).
 
 ---
 

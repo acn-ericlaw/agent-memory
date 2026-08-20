@@ -34,7 +34,19 @@ existing AI footprint and chooses one of three modes.
 === "Already-Ours (Mode B)"
 
     The repo is already enabled. The agent is idempotent — and if the repo is on an older
-    version, it [upgrades in place](upgrade.md) via the version ladder.
+    version, it [upgrades in place](upgrade.md) by **reconciling against the current
+    target state** (v4.35.0) — one diff-and-apply pass plus the few version-gated
+    semantic steps, not a walk of every release in between.
+
+## How it converges (v4.35.0)
+
+The mechanical ~80% of an enable — verbatim protocol docs, the seven built-in skills,
+hooks, forge CI, managed `.gitignore`/`.gitattributes` blocks — is declared in a
+tool-side **install manifest** and applied by a runnable **reconcile helper** in one
+pass (dry-run first; the report doubles as the consent summary). The agent's time goes
+where judgment lives: analyzing your repo, harvesting your docs, seeding `memory/`, and
+the DRAFT-Vision gate. On a fresh repo that turns a >10-minute stepwise install into
+seconds of mechanics plus a few minutes of real analysis.
 
 ## What lands in the repo
 
@@ -44,7 +56,7 @@ existing AI footprint and chooses one of three modes.
 | `AGENTS.md` | the hub every vendor's agent reads first |
 | `agent-skills/` | seven built-ins + any promoted skills |
 | `.githooks/` + the forge CI config (`.github/workflows/`, `.gitlab-ci.yml` + `.gitlab/`, or `.azuredevops/`) | the ritual triggers (agent-activated, forge-aware) |
-| `.agent/version.md` | install manifest (gates upgrades) |
+| `.agent/version.md` | version stamp (gates upgrades) |
 | `legacy/` | preserved originals (migration only) |
 
 ## After enabling

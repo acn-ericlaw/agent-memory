@@ -26,7 +26,8 @@ the source on GitHub.
 |---|---|
 | [`ENABLE.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/ENABLE.md) | The 10-step enablement flow (Modes A / B / C). Lives in the tool, never installed into a target. |
 | [`MIGRATE.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/MIGRATE.md) | Vendor-file detection + promotion for Mode C. |
-| [`UPGRADE.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/UPGRADE.md) | The version ladder + per-rung instructions + source-of-truth map. |
+| [`UPGRADE.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/UPGRADE.md) | The version ladder — the per-version record + the detailed text behind each semantic step. |
+| [`MANIFEST.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/MANIFEST.md) | The declarative target state (v4.35.0): every installed artifact + policy, the semantic-steps table, and the coverage contract behind `scripts/reconcile.py`/`.mjs`. |
 
 ## Per-repo state (generated)
 
