@@ -34,6 +34,13 @@ version**, i.e. per state a user could actually have been running. So:
 - The **per-feature** record is not lost — it lives in the **session logs** (immutable journal)
   and the `## Open Threads` in `continuity.md`, which carry each feature's id, origin, and detail.
   Version numbers track releases; memory tracks the work.
+- **Manifest lockstep (v4.35.0+):** every release also updates **`MANIFEST.md`** — a new or
+  changed installed artifact gets (or updates) an install-manifest row; a rung step that a
+  file-sync cannot perform gets a **Semantic steps** row (gated `Below` the new version) —
+  and then runs `python3 scripts/reconcile.py --check-manifest` (or the `.mjs` twin), which
+  fails on any gap between the manifest and the tree. Classify the new rung accordingly:
+  most rungs are fully mechanical (reconcile-covered; the rung text is the record), and only
+  genuine data/judgment migrations earn a semantic row.
 
 *(Precedent: v4.22.0 bundles four features iterated in one unreleased session — originally
 dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
@@ -122,6 +129,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.34.0 | **Pre-commit secret guard, memory + config surfaces (MINOR):** the v4.33.x arc's missing timing layer — and the field incident's true *origin*: credentials entered the repo inside a Postman JSON and an OpenShift YAML before a dry-run contaminated a session log. The committed `.githooks/pre-commit` scans the **staged** content (index; only what THIS commit stages) of `memory/**.md` (full profile) and of config files (`.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*` — credential-class) **before the commit exists**; all three forge CI wrappers run the matching changed-config scan on push via the new `memory-lint --scan-files` mode. The guard **enforces by default** — findings block the commit, the deliberate exception to the advisory doctrine (secrets carry irreversible after-the-fact cost); `AGENT_MEMORY_SECRET_GUARD=advisory` opts down to warn-only, `--no-verify` bypasses once; JSON/properties exemptions in the committed, human-audited `.agent/secret-scan-ignore` (config only, never memory/); the CI floor stays advisory (`AGENT_MEMORY_STRICT=1` gates). Detector tuned on a 661-file live-corpus probe to zero FPs (single-brace + GH-Actions template forms, `demo`/`test` placeholder words, placeholder-fallback defaults, dotted route refs exempt from Authorization, `;` value delimiter, Postman split-pair pattern); 49 mirror tests per runtime, parity held. Rides existing `core.hooksPath` activation; never-initialized clones fall through to the CI floor |
 | 4.34.1 | **Secret-guard output readability (PATCH):** field feedback from the maintainer's regression test — every `[secret-material]` finding line repeated the same advisory tail. Finding lines now end at `(N hit(s), first at line N)`; guidance appears **once per run**: the pre-commit hook's `-> fix it` footer (blank separator line added, shared/rotation/history wording folded in), a single trailer in `--scan-files` mode, and a single trailer after warnings in a full lint run. Both runtimes at parity, 49 mirror tests unchanged; hook grep contract unaffected. Targets re-copy the built-in + `.githooks/pre-commit`, stamp |
 | 4.34.2 | **`[secret-material]`: the guard's own opt-down knob is not a credential (PATCH):** field FP (mercury-composable, 2026-08-19) — the pre-commit guard's blocking message prints `AGENT_MEMORY_SECRET_GUARD=advisory`, and any memory file documenting that guidance then flagged (`credential-assignment` — the key contains SECRET, `advisory` meets the value floor, no exemption applied). The tool taught a phrase and blocked its quotation. Fix (issue-proposed shape, endorsed): exact-key, value-constrained exemption in `_is_placeholder_value` — key `AGENT_MEMORY_SECRET_GUARD` (case-insensitive) with a documented setting (`advisory`/`enforcing`; trailing `).,` punctuation tolerated — the guard's own line ends `…=advisory)`, the v4.33.2 capture behavior). Any other value under that key still flags (no smuggling envelope; non-echo preserved). Both runtimes at parity, verbatim mirror fixtures (50 each). Also documented (maintainer call on the issue's secondary question): AWS's canonical doc-example keys **still flag by design** — waive deliberately with `lint:allow-secret-material`; no built-in whitelist |
+| 4.35.0 | **Target-state reconcile — enable/upgrade in O(diff), not O(steps/rungs) (MINOR):** from a greenfield field case (an AI-hackathon monorepo whose fresh Mode A enable took >10 minutes on a nearly-empty repo). The protocol was imperative and history-ordered while ~80% of its work is convergence to a declarative target state (~60 installed files; 80 rungs and growing — Mode B paid O(rungs-behind), re-deriving the current state stepwise). Now: **`MANIFEST.md`** (tool-side) declares every installed artifact as one row (target, source, policy — `verbatim`/`verbatim-dir`/`seed-copy`/`sentinel-merge`/`seed-generate`/`stamp` — and forge), plus a **Semantic steps** table distilling the ladder's 14 non-mechanical migrations, gated by installed version. A runnable **reconcile helper** (`scripts/reconcile.py` + `.mjs`, byte-parity, 25 mirror tests each) diffs a target against the manifest — dry-run by default (the consent artifact), `--apply` performs the mechanical policies in one pass and prints the agent's judgment work-list (seed-generate files with their ENABLE step, hook activation, GitLab include wiring, semantic steps, the closing stamp). Never deletes, never touches existing seed-copy/seed-generate files, never edits a pre-existing `.gitlab-ci.yml`, never stamps. Drift on tool-owned files becomes *visible* (dry-run lists it before re-copy — live probe: it surfaced 11 managed `.gitignore` entries a production repo's rung history never back-filled). Mode A = reconcile + judgment steps; Mode B = reconcile + applicable semantic rows + stamp; Mode C unchanged (reconcile runs only after migration moves originals to `legacy/`). The ladder stays as the per-version record + semantic detail; walking it remains the no-runtime fallback. Release checklist gains manifest lockstep + `--check-manifest`. Operator-side only — no memory-file shape change; targets stamp (the reconcile run itself may apply accumulated managed-block drift, by design) |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -142,18 +150,28 @@ Each enabled repo records what it is on in **`.agent/version.md`**:
 installed = read target .agent/version.md → version   (missing file → "2.x baseline")
 current   = read tool root VERSION
 if installed == current:  report "up to date — nothing to upgrade", stop.   # idempotent
-if installed <  current:  run each rung below from installed up to current, in order;
-                          then re-stamp .agent/version.md (version=current, last_upgraded=today);
-                          report what changed.
+if installed <  current:  RECONCILE (v4.35.0): run the reconcile helper against the target
+                          (dry-run → consent → --apply) to converge every mechanical
+                          artifact to the current target state (MANIFEST.md), then perform
+                          the Semantic steps the report lists (MANIFEST.md rows gated by
+                          the installed version — each points at its rung below for the
+                          full detail), then re-stamp .agent/version.md
+                          (version=current, last_upgraded=today); report what changed.
 if installed >  current:  the repo is newer than this tool checkout — stop and tell the user.
 either branch (incl. "up to date"):  also run `sync skill adapters` (below) — idempotent, gitignored-only.
 ```
 
 A **missing** `.agent/version.md` means the repo was enabled before versioning
-existed. Treat it as `2.x` and run the 2→3 rung; create the stamp at the end.
+existed. Treat it as `2.x` (the reconcile helper detects this itself when `memory/`
+is present without a stamp); create the stamp at the end.
 
-Rungs are **idempotent**: before each change, check whether it is already present
-and skip if so. Re-running an upgrade must be safe.
+**The ladder below is the per-version record and the detailed text behind each semantic
+step — not the execution path anymore.** Before v4.35.0, Mode B walked every rung from
+`installed` to `current` in order — O(rungs-behind), re-deriving the current state
+stepwise. Reconcile visits each file once against the final state; only the rungs named
+by the Semantic-steps report still need their non-mechanical actions performed. Rungs
+remain **idempotent** as written, so walking them by hand is still a valid (slow)
+fallback where the helper can't run — the two paths converge on the same state.
 
 ## Source of truth for re-synced files (read before any rung)
 
@@ -2134,3 +2152,34 @@ an invisible whitelist. Tool-managed built-in; no memory-file shape change.
    `[secret-material]` finding for knob-guidance lines; a scratch line such as
    `AGENT_MEMORY_SECRET_GUARD=Xk9fQ2mZlp0TrN` (any 8+-char opaque value — not an
    angle-bracket placeholder, which is exempt as a template shape) still flags.
+
+---
+
+## Rung: 4.34.2 → 4.35.0 — target-state reconcile: enable/upgrade in O(diff) (MINOR)
+
+**What changed:** operator-side restructure — the enable/upgrade *mechanism* is now
+**declarative convergence** instead of a stepwise walk. `MANIFEST.md` declares the complete
+target state (every installed artifact: target, source, policy, forge) plus a **Semantic
+steps** table distilling the ladder's non-mechanical migrations; the runnable reconcile
+helper (`scripts/reconcile.py` / `.mjs`, byte-parity) diffs a target against it, applies
+the mechanical policies on `--apply`, and prints the agent's judgment work-list. From a
+greenfield field case: a fresh Mode A enable of a nearly-empty AI-hackathon repo took
+>10 minutes; Mode B paid O(rungs-behind). **No installed file changes shape or content**
+(the one new template, `templates/memory/archive/INDEX.md`, matches what enables already
+created by hand and is seed-copy — only-if-absent), so this rung is a version-stamp for
+targets; the reconcile run itself may also apply accumulated managed-block drift (e.g.
+`.gitignore` entries added across versions that no rung ever back-filled) — that is the
+feature working, not a side effect.
+
+**Steps:**
+
+1. **Run the reconcile helper** from the tool checkout (this rung is also the first use of
+   the new mechanism on the target):
+   `python3 scripts/reconcile.py --target <repo>` (dry-run — review the report, especially
+   any `recopy … drifted` lines: expected staleness re-syncs; a suspected local
+   customization gets the `ENABLE.md` §5i warn-before-clobber arbitration first), then
+   `--apply`. Perform any semantic steps and work-list items it prints.
+2. **Stamp** `.agent/version.md` → `version: 4.35.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
+3. **Verify:** re-run the dry-run — it reports `converged` (or only standing notes);
+   `memory-lint` clean or consciously triaged.

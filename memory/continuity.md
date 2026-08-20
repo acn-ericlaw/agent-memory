@@ -7,10 +7,10 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.34.2 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared. Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hooks — pre-commit secret guard (v4.34.0) + post-commit ritual capture — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.35.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared; enable/upgrade converge **declaratively** against a `MANIFEST.md` target state via the reconcile helper — O(diff), not O(steps/rungs) (v4.35.0). Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hooks — pre-commit secret guard (v4.34.0) + post-commit ritual capture — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-19 | agent: Claude Code (2026-08-19-203132)
-- **last_review:** 2026-08-14 | through 2026-08-14-011037
+- **last_session:** 2026-08-20 | agent: Claude Code (2026-08-20-223624)
+- **last_review:** 2026-08-20 | through 2026-08-20-223624
 - **last_invariant_check:** 2026-08-14 | through 2026-08-14-011037
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
 
@@ -98,6 +98,39 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 ## Open Threads
 
+- [x] **(blueprint — SHIPPED v4.35.0 MINOR, 2026-08-20) Target-state reconcile — enable/upgrade in
+  O(diff), not O(steps/rungs).** Field report (2026-08-19): a fresh Mode A enable of a nearly-empty
+  **AI-hackathon monorepo** took >10 min; maintainer direction — compare a repo's current state to
+  the current tool's target state. Cause: an imperative, history-ordered protocol (989-line
+  `ENABLE.md`, ~60 files write-by-write; 80-rung ladder = O(rungs-behind)) doing ~80% convergence
+  work — a fix the design already implied (idempotent rungs = reconciliation semantics; the 4-row
+  proto-manifest). **Shipped:** `MANIFEST.md` (40 rows
+  — target | source | policy: verbatim / verbatim-dir / seed-copy / sentinel-merge / seed-generate
+  / stamp | forge — + a **Semantic steps** table: the ladder's 14 non-mechanical migrations,
+  version-gated, each pointing at its rung); `scripts/reconcile.py`+`.mjs` (byte-parity, 25 mirror
+  tests each, stdlib, subprocess-free; dry-run default = the consent artifact; `--apply` = one
+  mechanical pass + printed judgment work-list; `--check-manifest` = release lockstep gate; never
+  deletes / never touches seeded files / never edits a pre-existing `.gitlab-ci.yml` / never
+  stamps (agent stamps last) / realpath guard / refuses the tool repo + `~`; azdo only on positive
+  detection). `ENABLE.md` restructured (Reconcile Core; Mode A = consent→analysis→reconcile→
+  generation; Mode B = reconcile→semantic steps→stamp; Mode C reconciles only AFTER migration;
+  Steps 5–7 tagged [reconcile-covered], prose = spec + no-runtime fallback); `UPGRADE.md` =
+  per-version record + semantic detail (release checklist gains manifest lockstep); new
+  archive-INDEX template; `docs/DESIGN-reconcile.md`; 3 docs-site pages.
+  **Verified:** 25/25 ×2 runtimes, byte parity incl. error paths, scratch e2e, live read-only
+  probes — the 4.34.1 AI-hackathon repo's dry-run reproduced its pending rung *exactly*;
+  mercury-composable surfaced 11 managed `.gitignore` entries no rung ever back-filled (drift made
+  visible — §5i warn-before-clobber now *checked* per run). **Pre-ship adversarial review (2
+  lenses; dispositions in the log): 2 blockers fixed** — newer-than-tool target silently
+  downgraded → the hard Mode B stop, mechanized; mjs path guard missed symlink resolution (could
+  write outside the target) → non-strict-realpath parity — **+ 6 hardenings**, all test-pinned
+  (CRLF, wrong-kind/UTF-8/home, hooksPath, worktree, forge); mechanics swept claims (fixed). Judgment
+  boundary per the mechanize-arithmetic-not-judgment doctrine: the manifest absorbs arithmetic;
+  analysis, seeding, vision gate, arbitration, semantic merges stay agent-owned. Lockstep: VERSION,
+  CHANGELOG, README (row + 10-cap trim drops 4.32.0), UPGRADE (flow + checklist + row + rung).
+  → serves: vision-agent-memory (adoption stays "point it at a repo" — in minutes, at any version)
+  <!-- id: bp-reconcile-target-state | created: 2026-08-20 | last_used: 2026-08-20 | uses: 1 | tier: working | supersedes: ot-mode-b-automation-backlog | origin: 2026-08-20-223624 -->
+
 - [x] **Shipped v4.34.2 (PATCH) — `[secret-material]`: the guard's own opt-down knob is not a
   credential.** Field issue from the **mercury-composable team** (2026-08-19, during their v4.34.0
   hook regression test): the pre-commit guard's blocking message prints
@@ -158,7 +191,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   one trailer in --scan-files and full-lint runs). → serves:
   vision-agent-memory (shared memory must be safe to share — guarded at write, commit, AND push
   time, wherever the secret lands)
-  <!-- id: pre-commit-secret-guard-v4340 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 2 | tier: active | origin: 2026-08-14-021712 -->
+  <!-- id: pre-commit-secret-guard-v4340 | created: 2026-08-14 | last_used: 2026-08-19 | uses: 3 | tier: active | origin: 2026-08-14-021712 -->
 
 - [ ] **Re-verify invariants (due):** confirm `target-repo-scope-only`,
   `never-delete-vendor-files`, `never-pick-a-winner`, `no-build-step-agent-run`,
@@ -222,7 +255,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   in a created PR/MR; rung gains an optional template re-copy step. → serves:
   vision-agent-memory (the advisory stays signal — and the trigger layer's verify steps are
   what keep it honest)
-  <!-- id: secret-fp-backtick-v4332 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 3 | tier: active | origin: 2026-08-13-231459 -->
+  <!-- id: secret-fp-backtick-v4332 | created: 2026-08-13 | last_used: 2026-08-19 | uses: 4 | tier: active | origin: 2026-08-13-231459 -->
 
 - [x] **Shipped v4.33.1 (PATCH) — `[secret-material]`: ALL-CAPS enum constants are not credentials.**
   Check 10's first field contact (the 2026-08-13 Mode B upgrades of mercury + mercury-composable,
@@ -238,7 +271,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.33.1, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.2), `UPGRADE` (row +
   `4.33.0→4.33.1` rung). SKILL.md description unchanged → adapters untouched. → serves:
   vision-agent-memory (the advisory stays signal, not noise)
-  <!-- id: secret-fp-enum-constants-v4331 | created: 2026-08-13 | last_used: 2026-08-13 | uses: 3 | tier: active | origin: 2026-08-13-225859 -->
+  <!-- id: secret-fp-enum-constants-v4331 | created: 2026-08-13 | last_used: 2026-08-19 | uses: 4 | tier: active | origin: 2026-08-13-225859 -->
 
 - [x] **Shipped v4.33.0 (MINOR) — session-log secret redaction: ritual rule + `[secret-material]`
   lint advisory.** From a **client-side field incident** (reported 2026-08-13): a DLP scanner caught
@@ -261,7 +294,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.33.0, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.1), `UPGRADE` (row +
   `4.32.1→4.33.0` rung with a triage-now step). → serves: vision-agent-memory (shared memory must
   be *safe to share* — a faithful record that leaks credentials is a liability, not memory)
-  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 8 | tier: active | origin: 2026-08-13-222439 -->
+  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-19 | uses: 9 | tier: active | origin: 2026-08-13-222439 -->
 
 - [x] **Shipped v4.32.1 (PATCH) — Mode A `last_session` contradiction fix.** From a **real Mode A
   enable** (2026-08-06, target `~/sandbox/demo`), confirmed by an adversarial protocol audit:
@@ -432,16 +465,6 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (authorship stays a faithful, stable representation of the AI collaborator over time)
   <!-- id: coauthor-stable-identity-v4280 | created: 2026-06-30 | last_used: 2026-07-27 | uses: 2 | tier: archive-candidate | origin: 2026-06-30-054342 -->
 
-- [ ] **(backlog) Mode B upgrade automation — scope the mechanical steps only.** From the same Gemini critique
-  (point 1): as the user base grows, the high-touch Mode B upgrade (re-sync specific files, run tools, stamp
-  version) could be a source of drift/user error; "consider automating more of `ENABLE.md` Mode B via a
-  script." **Deliberate tension:** the rungs are *semantic merges* (additive, preserve customizations, "re-sync
-  `AGENTS.md` but never the root one") that must stay agent-judged — the chosen mitigation is **deterministic
-  guardrails** (`check_version_manifest`, the v4.24.0 review-cadence advisory), not full automation. *If*
-  revisited, script only the **mechanical** parts (file copies, version stamp — like `sync-adapters` did in
-  v4.18.0) and leave the merges to the agent. Lower priority; logged so the critique isn't lost.
-  <!-- id: ot-mode-b-automation-backlog | created: 2026-06-28 | last_used: 2026-06-28 | uses: 1 | tier: active | origin: 2026-06-28-172159 -->
-
 ### Evolving long-term memory layer (v3.0.0) — BUILT 2026-06-13
 - [ ] **Dogfood backfill (optional):** this repo adopted the layer — added
   Architectural Invariants (core), `memory/decay-policy.md`, `memory/archive/INDEX.md`,
@@ -492,7 +515,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 
 - [ ] **(blueprint)** Greenfield path — the tool handles brownfield (enable/migrate) well
   but has no "start from a Vision, no code yet" flow. → serves: vision-agent-memory
-  <!-- id: bp-greenfield | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-000531 -->
+  <!-- id: bp-greenfield | created: 2026-06-15 | last_used: 2026-08-20 | uses: 2 | tier: active | origin: 2026-06-15-000531 -->
 - [ ] **(blueprint)** Multi-user concurrent contribution — mostly supported (shared
   committed `memory/`, multi-agent continuity, collision-safe session filenames); validate
   and harden for *simultaneous* contributors. → serves: vision-agent-memory
@@ -539,7 +562,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   enable surfaced v3.1.0 (`.gitignore`), and the simple-proxy Node→Rust refactor's
   field report drove v3.2.0 (protocol clarifications). Keep feeding real-work insights
   back into this backlog. (Stated 2026-06-13.)
-  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-08-13 | uses: 16 | tier: active -->
+  <!-- id: backlog-real-work-dogfood | created: 2026-06-13 | last_used: 2026-08-20 | uses: 18 | tier: active -->
 
 - [ ] ~~**Knowledge graph layer — SurrealDB for long-term memory.**~~ **Set aside**
   (2026-06-13) in favor of the markdown-native evolving-memory layer above. Not

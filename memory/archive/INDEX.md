@@ -87,3 +87,4 @@
 - refresh-metadata-builtin-v4260 — Shipped v4.26.0 (MINOR) — `refresh-metadata` (7th built-in) + a `memory-lint` `[stale-meta… — faded — 2026-Q3.md
 - archive-fact-builtin-v4250 — Shipped v4.25.0 (MINOR) — `archive-fact`, a deterministic safe archive-move helper (6th bu… — faded — 2026-Q3.md
 - decay-policy-retune-v4240 — Shipped v4.24.0 (MINOR) — decay-policy retune + a review-cadence/size advisory in `memory-… — faded — 2026-Q3.md
+- ot-mode-b-automation-backlog — (backlog) Mode B upgrade automation — scope the mechanical steps only. From the same Gemin… — superseded by bp-reconcile-target-state (v4.35.0 target-state reconcile realized it, extended to Mode A) — 2026-Q3.md

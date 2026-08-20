@@ -85,8 +85,10 @@ git-committed `memory/` directory. The files **are** the product; the agent is t
 - **No manual user step.** Triggers, init, and adapter sync are agent-activated, with CI as
   the zero-config backstop (GitHub Actions, GitLab CI, or Azure Pipelines — matched to the hosting
   forge; Azure DevOps needs a one-time pipeline activation).
-- **Additive, non-destructive upgrades.** Versioned; an older repo upgrades in place via an
-  idempotent ladder. Nothing is ever deleted — faded facts archive to a greppable index.
+- **Additive, non-destructive upgrades.** Versioned; an older repo upgrades in place by
+  reconciling against the declared target state (idempotent, O(diff) — the version ladder
+  stays the per-version record). Nothing is ever deleted — faded facts archive to a
+  greppable index.
 
 ## Get going
 

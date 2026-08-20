@@ -178,9 +178,13 @@ Then:
 - **Up to date** (`installed == current`): tell the user and stop —
   > "This repo is already AI-enabled with agent-memory v<current>.
   > Found N sessions logged. Nothing to migrate or upgrade. Last session: <date> by <agent>."
-- **Older** (`installed < current`): an in-place upgrade is available.
-  **Read `UPGRADE.md` and run its ladder** from `installed` up to `current`, then
-  re-stamp `.agent/version.md` and report what changed. Ask first:
+- **Older** (`installed < current`): an in-place upgrade is available — **run the
+  Reconcile Core** (next section): dry-run, consent, `--apply`, then the **Semantic
+  steps** the report lists (version-gated rows from `MANIFEST.md`; each points at its
+  `UPGRADE.md` rung for the full detail), then re-stamp `.agent/version.md` and report
+  what changed. (`UPGRADE.md` stays the per-version record and the detailed text behind
+  each semantic step — read the rungs the report names; walking the full ladder
+  rung-by-rung is the no-runtime fallback, not the mechanism.) Ask first:
   > "This repo is on agent-memory v<installed>; current is v<current>.
   > I can upgrade it in place (additive, non-destructive). Proceed? (yes/no/dry-run)"
 - **Newer** (`installed > current`): the repo is ahead of this tool checkout —
@@ -200,6 +204,52 @@ Ask the user before starting migration:
 
 If `dry-run`, print what would happen without writing anything.
 If `no`, ask whether to proceed with fresh enable instead, or abort.
+
+---
+
+## The Reconcile Core (v4.35.0) — converge, don't re-derive
+
+**`MANIFEST.md`** (tool-side, like this file — never installed) declares the complete
+**target state** of an enabled repo: every installed artifact as one row — target path,
+canonical source in this checkout, policy (`verbatim` / `verbatim-dir` / `seed-copy` /
+`sentinel-merge` / `seed-generate` / `stamp`), and forge condition. The runnable
+**reconcile helper** diffs a target against it and applies the mechanical policies in one
+pass:
+
+```
+python3 scripts/reconcile.py --target /path/to/repo            # dry-run (default)
+python3 scripts/reconcile.py --target /path/to/repo --apply    # perform the mechanical part
+node scripts/reconcile.mjs --target /path/to/repo              # Node twin, byte-parity
+```
+
+- **Dry-run first, always.** The report is part of the consent conversation: what will be
+  copied, what drifted (and would be re-copied on apply), what merges, and the work-list
+  it leaves for you — seed-generate files to author (each tagged with its Step below),
+  the hook activation, semantic steps for the installed→current range, and forge notes.
+- **What `--apply` never does:** touch an existing `seed-copy` or `seed-generate` file,
+  edit a pre-existing `.gitlab-ci.yml`, write `.agent/version.md`, delete anything, or
+  write outside the target. Drifted `verbatim` files **are** re-copied (they are
+  tool-owned) — so read the dry-run's `recopy` lines first: expected staleness re-syncs,
+  but a suspected local customization gets the §5i warn-before-clobber arbitration
+  *before* apply (a genuine fix should be upstreamed, not clobbered).
+- **You finish the job.** The judgment work stays the agent's: the Step 3 consent, Step 4
+  analysis + harvest, the Step 5 seed-generate files, the Step 6/7 judgment rules kept
+  below (GitLab root-CI wiring, Azure DevOps activation reporting, per-file conflict
+  arbitration, the stack-aware `.gitignore` seed), Mode B semantic steps, `sync skill
+  adapters`, and the closing version stamp.
+- **No-runtime fallback.** With neither Python nor Node available, walk `MANIFEST.md` by
+  hand — each row is a complete instruction and the policies are defined at the top of
+  that file. The protocol stays no-code: the script is an optional helper the agent
+  invokes during a human-directed enable/upgrade (`no-build-step-agent-run`), never a
+  daemon.
+- **When it runs.** Mode A — after the Step 3 consent and Step 4 analysis, as the opening
+  of Step 5. Mode B — immediately after version detection (Step 3). Mode C — **only after
+  migration completes** (migration moves vendor originals to `legacy/` first; reconciling
+  earlier could re-copy over a not-yet-preserved vendor file).
+
+Steps 5–7 below tag their mechanical parts **[reconcile-covered]**: those paragraphs
+remain authoritative as the behavior spec (and the by-hand fallback), but on a scripted
+run you don't perform them file-by-file.
 
 ---
 
@@ -338,6 +388,10 @@ Open Thread rather than silently picking one.
 
 ## Step 5 — Generate or Complete Memory Files
 
+**Open this step by running the Reconcile Core** (dry-run → consent → `--apply`) — it
+materializes every mechanical artifact in Steps 5–7 in one pass and prints the
+seed-generate work-list that the sub-steps below then fill with judgment.
+
 If Mode A (fresh): generate all memory files from templates, replacing every
 `{{placeholder}}` with real content derived from your analysis.
 
@@ -419,7 +473,7 @@ supplies the value 5b's `last_session` points at (the enable *is* the first sess
 leave `(none yet)`). (A `.gitkeep` is then unnecessary — the directory is non-empty; only add
 one if for some reason no first log is written.)
 
-### 5d. `.agent/schema.md`
+### 5d. `.agent/schema.md` [reconcile-covered]
 
 Copy `templates/.agent/schema.md` verbatim. No customisation.
 
@@ -429,13 +483,16 @@ Install the layer so the repo's memory can decay, review, and archive over time:
 
 - `memory/decay-policy.md` — copy from `templates/memory/decay-policy.md`, filling
   `{{PROJECT_NAME}}`. The default windows (3/8/20, review every 10) suit most repos.
-- `memory/archive/INDEX.md` — create with a header and an empty table.
+- `memory/archive/INDEX.md` — seed from `templates/memory/archive/INDEX.md`
+  [reconcile-covered; seed-copy — an existing archive index is never touched].
 - `.agent/version.md` — copy from `templates/.agent/version.md`. Fill
   `{{AGENT_MEMORY_VERSION}}` from this tool's root `VERSION`, `{{TODAY}}`, and
-  `{{ENABLE_MODE}}` (`A` for fresh, `C` for migrate).
+  `{{ENABLE_MODE}}` (`A` for fresh, `C` for migrate). The **stamp is the agent's
+  closing step** — the reconcile helper deliberately never writes it.
 - `.agent/secret-scan-ignore` — copy verbatim from `templates/.agent/secret-scan-ignore`
   (a commented, zero-effect stub documenting the config-file waiver format for the
-  pre-commit / CI secret scans; v4.34.0).
+  pre-commit / CI secret scans; v4.34.0) [reconcile-covered; seed-copy — a stub that has
+  accumulated the team's waivers is never overwritten].
 
 `DECAY.md`, `REVIEW.md`, and `SKILLS.md` are installed at the repo root in Step 6.
 
@@ -542,7 +599,8 @@ gets**, because they support the core workflow:
   never archives. Closes the gap where agents archive but skip the metadata pass (`memory-lint` flags it as
   `[stale-metadata]`). Python *or* Node at parity, with mirror tests.
 
-**Install all seven** (every mode, including a fresh Mode A enable): copy `agent-skills/<name>/`
+**Install all seven** (every mode, including a fresh Mode A enable) [reconcile-covered;
+verbatim-dir]: copy `agent-skills/<name>/`
 **verbatim from this tool's root** into the target's `agent-skills/` (including `memory-lint`'s and
 `sync-adapters`' bundled `scripts/`), then regenerate their adapters via the 5h recipe (which now
 *runs* the freshly-installed `sync-adapters` script). Each ships marked
@@ -560,7 +618,7 @@ enable **does** create `agent-skills/` — populated with these built-ins, never
 > (your own `agent-skills/<your-name>/`, which is never overwritten). **If the change is a genuine fix
 > rather than a customization, upstream it to the agent-memory project** (file an issue in its repo in
 > production; bring it to the maintainer pre-release) so it is back-ported + validated and survives
-> upgrades. The overwrite is scoped to these three tool-owned skills, so `upgrades-additive` still holds
+> upgrades. The overwrite is scoped to these seven tool-owned skills, so `upgrades-additive` still holds
 > for everything else in `agent-skills/`.
 >
 > **Warn before you clobber.** Before overwriting an *already-installed* built-in, check whether the
@@ -578,6 +636,14 @@ enable **does** create `agent-skills/` — populated with these built-ins, never
 ---
 
 ## Step 6 — Install Bootstrap Files
+
+> **[reconcile-covered — file placement.]** Every copy in this step (bootstraps, protocol
+> docs, hooks, the forge-matched CI + description-template set) is a manifest row the
+> Reconcile Core applies, forge-filtered from the Step 4 detection. What stays yours:
+> expanding `{{BOOTSTRAP_IMPORTS}}` + project placeholders in `CLAUDE.md`/`GEMINI.md`
+> (seed-generate), the per-file conflict arbitration below, wiring a **pre-existing**
+> `.gitlab-ci.yml` (the helper only reports it), reporting the Azure DevOps activation,
+> and running `git config core.hooksPath .githooks`.
 
 Copy from `templates/` into target repo root:
 
@@ -729,6 +795,10 @@ forge (it is read by local tooling, not by the forge). On a GitLab-hosted target
 
 ## Step 7 — Install / Update Target .gitignore
 
+> **[reconcile-covered — the managed AI-infrastructure block]** (create-or-merge,
+> add-only, de-duplicating, sentinel-merge policy). The **stack-aware build-output seed**
+> below stays agent judgment — it needs the Step 4 stack detection.
+
 Personal AI-IDE runtime directories (`.claude/`, `.kiro/`, `.cursor/`, …) are
 per-machine state that should never be committed to the shared repo — but the
 agent-memory *steering* files and the `memory/` layer **must** stay tracked. The
@@ -794,6 +864,10 @@ IDE/OS/coverage/etc. entries.
 
 ### Step 7b — Install / merge `.gitattributes` (Windows line-ending hardening, v4.20.2)
 
+> **[reconcile-covered — the LF-rule merge.]** The closing `git add --renormalize .` (and
+> the CRLF-repo staged-diff check) stays agent-run — the helper lists it as a work item
+> whenever it changed `.gitattributes`.
+
 The executable scripts (`*.sh`) and git hooks (`.githooks/*`) **must stay LF**, or Git for Windows
 (`core.autocrlf=true` by default) rewrites them to CRLF on checkout and bash fails with
 `bad interpreter: /usr/bin/env bash^M`. The canonical rules live in `templates/.gitattributes`:
@@ -815,6 +889,11 @@ Apply additively (same discipline as `.gitignore`): **no `.gitattributes`** → 
 Before reporting, sanity-check the output. Fix any issue found here before
 proceeding — the report should describe a correct state, not optimistically
 describe what was intended.
+
+0. **Reconcile reports done.** Re-run the Reconcile Core dry-run: `[mechanical]` shows
+   nothing to do and `[agent work]` lists nothing you haven't consciously deferred (a
+   fresh enable ends `converged` once the stamp is written). This one check subsumes most
+   of item 1 mechanically; item 1 stays as the by-hand fallback.
 
 1. **Files exist.** Confirm all of the following are present in the target repo:
    - `memory/instructions.md`, `memory/continuity.md`, `memory/sessions/`
@@ -861,7 +940,8 @@ describe what was intended.
    and no Blueprint gaps were derived yet (they await the confirmed Vision).
 
 7. **Skills installed + promoted + adapters complete.** Confirm the **built-in skills**
-   (`memory-lint`, `second-opinion`, `apply-critique`, `sync-adapters`, `harvest-knowledge`) were
+   (`memory-lint`, `second-opinion`, `apply-critique`, `sync-adapters`, `harvest-knowledge`,
+   `archive-fact`, `refresh-metadata`) were
    installed into `agent-skills/` (Step 5i) and `review-scratch/` is gitignored. Additionally (Mode C), if the source repo had
    vendor skills (e.g. `.claude/skills/`), confirm each was promoted to
    `agent-skills/<name>/SKILL.md` (committed), the original preserved under `legacy/`.
@@ -980,7 +1060,8 @@ Respond accordingly.
   pre-exists — only the `include:` entry, never `workflow:rules`) /
   `.azuredevops/agent-memory-ci.yml` + `.azuredevops/pull_request_template.md` (Azure DevOps;
   never touch an existing `azure-pipelines.yml`) — the v4.19.0/v4.31.0/v4.32.0
-  ritual triggers, and the bootstrap files listed in Step 6. (`UPGRADE.md` and `VERSION` are tool-only — never written into a
+  ritual triggers, and the bootstrap files listed in Step 6. (`UPGRADE.md`, `MANIFEST.md`,
+  `scripts/` (the reconcile helper), and `VERSION` are tool-only — never written into a
   target.)
 - **Activating the local git hook** (`git config core.hooksPath .githooks`) is the one allowed git-*config*
   change in the target — it points git at the committed `.githooks/`; it writes no source and is reversible
