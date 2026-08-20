@@ -713,15 +713,23 @@ tool-operator-only — do **not** install it.)
 install these — the GitHub set copies verbatim from this tool's root, the GitLab and Azure
 DevOps sets from `templates/` — so the after-session ritual fires reliably for *any* vendor (see `docs/DESIGN-ritual-triggers.md`):
 
-- **`.githooks/`** — the committed, vendor-neutral git hooks (`pre-commit` + `post-commit` +
-  `README.md` + `init.sh`): the **pre-commit secret guard** (v4.34.0) scans the *staged* content
+- **`.githooks/`** — the committed, vendor-neutral hook dispatchers (`pre-commit` + `post-commit`),
+  their ordered fragment directories (`pre-commit.d/` + `post-commit.d/`), `README.md`, and
+  `init.sh`. Executable fragments run in deterministic filename order; agent-memory owns only its
+  `50-` fragments, so other hook layers compose before or after without replacing an entrypoint.
+  The **pre-commit secret-guard fragment** (v4.34.0) scans the *staged* content
   of `memory/**.md` **and of config files** (`.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/
   `.env*` — credential-class checks; JSON/properties waivers via the committed
   `.agent/secret-scan-ignore`) for `[secret-material]` before the commit exists — **enforcing by
   default**: findings block the commit (`AGENT_MEMORY_SECRET_GUARD=advisory` opts down to
   warn-only; `--no-verify` bypasses once); the one placement that *prevents* a committed secret
-  instead of detecting it post-push. `post-commit` auto-stubs a session log when a commit does
-  real work without one and re-syncs adapters when a skill changed.
+  instead of detecting it post-push. The **post-commit ritual-capture fragment** auto-stubs a
+  session log when a commit does real work without one and re-syncs adapters when a skill changed.
+  **Composition-safe install:** inspect existing hook entrypoints and fragment directories first.
+  Preserve locally owned entrypoint behavior in a differently named ordered fragment before
+  installing a dispatcher; never overwrite a differently named fragment or a locally modified
+  managed file. If local and agent-memory logic are interleaved and cannot be separated faithfully,
+  stop for a human decision rather than dropping behavior or running it twice.
 - The **CI floor** — runs `memory-lint`, an advisory session-log check, **and a changed-config
   credential scan (v4.34.0 — the push-time sibling of the pre-commit guard, honoring the same
   `.agent/secret-scan-ignore`)** on every push and
@@ -765,8 +773,10 @@ DevOps sets from `templates/` — so the after-session ritual fires reliably for
     or a self-hosted agent.
   - **Forge unknown** → install the GitHub + GitLab sets (each forge ignores the other's files).
 
-**Ensure both `.githooks/` hooks are executable** (`chmod +x .githooks/pre-commit .githooks/post-commit`; committed with mode `100755`) —
-git **silently ignores** a non-executable hook. Then **the agent activates the local hook**: run
+**Ensure both dispatchers and every installed fragment are executable**
+(`chmod +x .githooks/pre-commit .githooks/post-commit .githooks/pre-commit.d/50-agent-memory-secret-guard .githooks/post-commit.d/50-agent-memory-ritual-capture`;
+committed with mode `100755`) — git silently ignores a non-executable dispatcher, and a dispatcher
+deliberately skips non-executable fragments. Then **the agent activates the local hooks**: run
 `git config core.hooksPath .githooks` in the target — **do this yourself; never ask the user** (the
 adoption constraint: any manual step is a barrier). CI needs
 no activation on GitHub or GitLab.com (a committed config runs server-side, zero per-user config);
@@ -777,8 +787,9 @@ auto-run committed hooks on a fresh clone (security), so where no agent has run,
 Both `.githooks/` and the CI config (`.github/workflows/` on GitHub; `.gitlab-ci.yml` +
 `.gitlab/agent-memory-ci.yml` on GitLab; `.azuredevops/agent-memory-ci.yml` on Azure DevOps) are
 **tracked** (they travel); only `.github/skills/` is
-gitignored. The hooks/CI are **advisory** (never block); the tool runs nothing itself
-(`no-build-step-agent-run` — git/CI invoke them in the user's env).
+gitignored. The trigger layer is advisory by default; the pre-commit secret-guard fragment alone
+enforces. The tool runs nothing itself (`no-build-step-agent-run` — git/CI invoke the dispatchers
+and fragments in the user's env).
 
 **Conflict handling:**
 - If Mode C ran and a vendor bootstrap file was migrated, the migration step
@@ -868,13 +879,15 @@ IDE/OS/coverage/etc. entries.
 > the CRLF-repo staged-diff check) stays agent-run — the helper lists it as a work item
 > whenever it changed `.gitattributes`.
 
-The executable scripts (`*.sh`) and git hooks (`.githooks/*`) **must stay LF**, or Git for Windows
+The executable scripts (`*.sh`), git hook dispatchers (`.githooks/*`), and hook fragments
+(`.githooks/*.d/*`) **must stay LF**, or Git for Windows
 (`core.autocrlf=true` by default) rewrites them to CRLF on checkout and bash fails with
 `bad interpreter: /usr/bin/env bash^M`. The canonical rules live in `templates/.gitattributes`:
 
 ```
 *.sh        text eol=lf
 .githooks/* text eol=lf
+.githooks/*.d/* text eol=lf
 ```
 
 Apply additively (same discipline as `.gitignore`): **no `.gitattributes`** → copy

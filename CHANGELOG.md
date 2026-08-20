@@ -11,6 +11,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.36.0, 8/20/2026
+
+> **Composable Git hook dispatchers (MINOR).** The `pre-commit` and `post-commit` files were
+> single-owner monoliths. Any second hook layer had to overwrite, wrap, or patch those same
+> entrypoints, creating upgrade contention and making the behaviors hard to exercise in isolation.
+
+### Added
+- **Ordered fragment directories:** `.githooks/pre-commit.d/` and `.githooks/post-commit.d/`.
+  Agent-memory's existing behavior moves intact to managed `50-` fragments:
+  `50-agent-memory-secret-guard` and `50-agent-memory-ritual-capture`. Other layers can use
+  `00-`–`49-` to run before or `51-`–`99-` to run after without replacing the hook entrypoint.
+- **Focused dispatcher contract test** (`tests/test_githook_dispatchers.sh`): pins deterministic
+  order, hidden/non-executable filtering, argument forwarding, continue-after-failure, first-failure
+  status propagation, failure attribution, and the no-fragment-directory fast path for both hooks.
+
+### Changed
+- **Stable hook entrypoints:** `.githooks/pre-commit` and `.githooks/post-commit` are now small,
+  Bash 3.2-compatible dispatchers. Executable regular files run in C-locale filename order; every
+  fragment runs even after a failure; the dispatcher returns the first non-zero status. A failing
+  pre-commit fragment therefore still blocks the commit, while Git continues to ignore
+  post-commit status (direct invocation and CI can observe it).
+- **Install/upgrade and reliability docs** now describe the composition seam, managed-fragment
+  ownership, executable-mode contract, and additive preservation of differently named fragments.
+  `.gitattributes` now pins `.githooks/*.d/*` to LF alongside the entrypoints, so fragments remain
+  runnable under Git Bash/WSL with `core.autocrlf=true`.
+- **Architecture:** ADR-0007 records fragment dispatch as the durable hook composition contract.
+  No memory-file shape or skill-adapter change.
+
+Targets: refresh unchanged copies of both dispatchers and the two managed `50-` fragments, re-copy
+`.githooks/README.md` + `init.sh`, merge the fragment LF rule into `.gitattributes`, preserve all
+differently named fragments, human-gate locally modified managed files, and stamp.
+
 ## Version 4.35.0, 8/20/2026
 
 > **Target-state reconcile — enable/upgrade in O(diff), not O(steps/rungs) (MINOR).** Field report
