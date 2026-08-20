@@ -222,7 +222,7 @@ expected (the decay math counts log files — `DECAY.md` §4).
 > The ledger stays continuous for anything that touched a *tracked* file; the review treats a lite log
 > as a normal reference-free session, so usage is unaffected.
 
-> **Reinforced, not just documented (v4.19.0; composable dispatchers v4.35.0).** Enabled repos ship
+> **Reinforced, not just documented (v4.19.0; composable dispatchers v4.36.0).** Enabled repos ship
 > vendor-neutral triggers as committed `.githooks/pre-commit` + `.githooks/post-commit`
 > **dispatchers**. They run executable `.githooks/<hook>.d/*` fragments in deterministic filename
 > order, so other hook layers compose without replacing the entrypoints. The managed

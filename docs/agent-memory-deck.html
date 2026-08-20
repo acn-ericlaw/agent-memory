@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>agent-memory — v4.34.0</title>
+<title>agent-memory — v4.36.0</title>
 <style>
   :root{
     --bg:#0b1020; --bg2:#0e1530; --panel:#131c3a; --panel2:#18224a;
@@ -71,7 +71,7 @@
 
   <!-- 1 -->
   <section class="slide active">
-    <div class="kicker">agent-memory · v4.34.0</div>
+    <div class="kicker">agent-memory · v4.36.0</div>
     <h1>A lightweight, vendor-neutral<br><span class="grad">AI memory + cognitive loop</span></h1>
     <p class="lead" style="margin-top:.6em">Turning shared project context into <b>deterministic delivery with near-zero drift</b> — for human–AI collaboration, across any AI vendor.</p>
     <div class="foot">August 2026</div>
@@ -266,8 +266,8 @@
     <h2>No protocol survives a <span class="grad">manual step</span></h2>
     <p class="lead">A ritual that depends on the agent self-triggering fails the moment it lands with an untrained team. So execution got hardened, not just documented — <b>zero manual user step</b>.</p>
     <div class="grid g3" style="margin-top:.6em">
-      <div class="card"><h3>Agent-activated triggers</h3><p>A committed <code>pre-commit</code> <b>secret guard</b> blocks a staged credential before it enters history (memory <i>and</i> config files — JSON, YAML, properties, env); a <code>post-commit</code> hook auto-stubs a missing session log + re-syncs adapters; a <b>CI floor</b> runs <code>memory-lint</code> + a changed-config scan with zero per-user setup. The tool runs nothing — git &amp; CI do.</p></div>
-      <div class="card"><h3>First-run init + Windows</h3><p>One idempotent <code>init.sh</code> regenerates adapters &amp; activates the hooks on a fresh clone; <code>.gitattributes</code> pins shell scripts to LF so Git for Windows can't break them.</p></div>
+      <div class="card"><h3>Composable triggers</h3><p>Committed <code>pre-commit</code> + <code>post-commit</code> dispatchers run ordered <code>*.d</code> fragments, so hook layers compose. The secret-guard fragment blocks staged credentials; ritual capture auto-stubs a missing session log + re-syncs adapters; a <b>CI floor</b> runs <code>memory-lint</code> + a changed-config scan. The tool runs nothing — git &amp; CI do.</p></div>
+      <div class="card"><h3>First-run init + Windows</h3><p>One idempotent <code>init.sh</code> regenerates adapters &amp; activates the dispatchers on a fresh clone; <code>.gitattributes</code> pins shell scripts + hook fragments to LF so Git for Windows can't break them.</p></div>
       <div class="card"><h3><code>MERGE.md</code> + safe-write</h3><p>Conflict resolution that <b>never picks a winner</b> (clash → preserve both + Contradiction); and a read-into-memory-write-once discipline that makes the old truncate-before-read bug structurally impossible.</p></div>
     </div>
     <p class="lead" style="margin-top:.9em">Enable opens with an <b>exec summary + cancel gate</b> — informed consent before a single file is written.</p>
@@ -366,7 +366,7 @@
     <p class="lead" style="margin-top:1em">Next (tracked as Blueprint gaps): greenfield flow · more multi-user hardening (<code>MERGE.md</code> shipped) · an optional SDLC overlay for teams that want it.</p>
     <p class="big" style="margin-top:1em"><b>Predictable innovation with human partnership</b> — bold ideas, faithful delivery, the human in the loop at every altitude.</p>
     <p class="lead" style="margin-top:.9em">Companion article: <a href="https://www.linkedin.com/posts/ericclaw_intent-driven-development-activity-7493145001313390593-cyc5" style="color:inherit"><b>From Context Engineering to Intent-Driven Development</b></a> — the argument behind this system, written from its evolution.</p>
-    <div class="foot">agent-memory · v4.34.0</div>
+    <div class="foot">agent-memory · v4.36.0</div>
   </section>
 
 </div>

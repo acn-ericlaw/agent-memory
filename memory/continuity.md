@@ -7,7 +7,7 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.35.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared; enable/upgrade converge **declaratively** against a `MANIFEST.md` target state via the reconcile helper — O(diff), not O(steps/rungs) (v4.35.0). Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (committed git hooks — pre-commit secret guard (v4.34.0) + post-commit ritual capture — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.36.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared; enable/upgrade converge **declaratively** against a `MANIFEST.md` target state via the reconcile helper — O(diff), not O(steps/rungs) (v4.35.0). Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (composable pre/post-commit **fragment dispatchers** over `.githooks/<hook>.d/*` — pre-commit secret guard (v4.34.0) + post-commit ritual capture as managed `50-` fragments (v4.36.0) — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
 - **last_session:** 2026-08-20 | agent: Claude Code (2026-08-20-223624)
 - **last_review:** 2026-08-20 | through 2026-08-20-223624
@@ -95,8 +95,25 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - Contradictions between vendors surface as Open Threads — the tool never picks a winner
 - Three modes: Fresh Enable (A), Already Ours (B, idempotent), Migrate Vendor (C)
 - Dry-run support so users can preview before committing
+- Git hook entrypoints dispatch ordered fragments (ADR-0007) — `.githooks/pre-commit` and
+  `.githooks/post-commit` stay minimal and stable; executable `.githooks/<hook>.d/*` fragments run
+  in C-locale filename order, all fragments run, and the first non-zero status is returned.
+  Agent-memory owns only its `50-` fragments; differently named fragments belong to other layers
+  and upgrades preserve them.
+  <!-- id: git-hook-fragment-dispatch | created: 2026-08-20 | last_used: 2026-08-20 | uses: 1 | tier: working | origin: 2026-08-20-210047 -->
 
 ## Open Threads
+
+- [x] **Shipped v4.36.0 (MINOR) — composable Git hook dispatchers.** The `pre-commit`/`post-commit`
+  monoliths became deterministic fragment dispatchers; the secret guard and ritual capture moved
+  intact to managed `50-` fragments (+2 `MANIFEST.md` rows). All executable fragments run in
+  filename order and the first failure propagates, so pre-commit still enforces while every layer
+  reports; tests pin order, filtering, arg forwarding, continue-after-failure, status propagation,
+  empty-dir. Install, upgrade, LF hardening, docs, ADR-0007 in lockstep. Renumbered 4.35.0→4.36.0
+  on rebase (4.35.0 shipped upstream as `bp-reconcile-target-state`); the `id` keeps its original
+  slug — its origin log is immutable. → serves: vision-agent-memory (shared automation composes
+  without ownership collisions and stays directly testable)
+  <!-- id: hook-dispatchers-v4350 | created: 2026-08-20 | last_used: 2026-08-20 | uses: 1 | tier: working | origin: 2026-08-20-210047 -->
 
 - [x] **(blueprint — SHIPPED v4.35.0 MINOR, 2026-08-20) Target-state reconcile — enable/upgrade in
   O(diff), not O(steps/rungs).** Field report (2026-08-19): a fresh Mode A enable of a nearly-empty

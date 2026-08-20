@@ -56,7 +56,9 @@ files on a CRLF repo); `-` = none.
 | .windsurfrules | templates/.windsurfrules | verbatim | all | - |
 | .github/copilot-instructions.md | templates/.github/copilot-instructions.md | verbatim | all | - |
 | .githooks/pre-commit | .githooks/pre-commit | verbatim | all | exec |
+| .githooks/pre-commit.d/50-agent-memory-secret-guard | .githooks/pre-commit.d/50-agent-memory-secret-guard | verbatim | all | exec |
 | .githooks/post-commit | .githooks/post-commit | verbatim | all | exec |
+| .githooks/post-commit.d/50-agent-memory-ritual-capture | .githooks/post-commit.d/50-agent-memory-ritual-capture | verbatim | all | exec |
 | .githooks/init.sh | .githooks/init.sh | verbatim | all | exec |
 | .githooks/README.md | .githooks/README.md | verbatim | all | - |
 | agent-skills/memory-lint/ | agent-skills/memory-lint/ | verbatim-dir | all | - |

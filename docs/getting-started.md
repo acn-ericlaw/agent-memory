@@ -46,7 +46,7 @@ anything is written. Then it:
 4. **Preserves** any originals under `legacy/` — never deleted — and reports exactly what
    happened.
 
-There is **no manual setup step**: the agent activates the local git hook itself, and CI is
+There is **no manual setup step**: the agent activates the local git hook dispatchers itself, and CI is
 the zero-config backstop (on GitHub and GitLab.com; a self-managed GitLab needs an
 admin-registered runner, and an Azure DevOps pipeline needs a one-time activation).
 

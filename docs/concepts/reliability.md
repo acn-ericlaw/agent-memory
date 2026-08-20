@@ -9,9 +9,13 @@ So agent-memory hardens the ritual's *execution*, not just its documentation.
 
 ## Vendor-neutral triggers
 
-Enable installs these, agent-activated, with **no manual user step**:
+Enable installs these, agent-activated, with **no manual user step**. The two Git hook entrypoints
+are composable dispatchers: executable fragments in `.githooks/<hook>.d/` run in deterministic
+filename order, all fragments run, and the first non-zero status is returned. Agent-memory's
+managed behavior occupies the `50-` slot; other hook layers can run before or after without
+replacing an entrypoint.
 
-- A committed **`pre-commit` git hook** (v4.34.0) — the `[secret-material]` guard: scans the
+- A committed **`pre-commit.d/50-agent-memory-secret-guard` fragment** (v4.34.0) — scans the
   **staged** content of `memory/**.md` *and* of config files (`.json`, `.yml`/`.yaml`,
   `.properties`, `.toml`, `.ini`, `.env*`) before the commit exists, so an accidental
   credential never enters history at all — whether it's headed for a session log or for a
@@ -21,7 +25,8 @@ Enable installs these, agent-activated, with **no manual user step**:
   `AGENT_MEMORY_SECRET_GUARD=advisory`; `git commit --no-verify` bypasses once;
   JSON/properties exemptions live in the committed `.agent/secret-scan-ignore`. The CI floor
   runs the matching changed-config scan on every push.
-- A committed **`post-commit` git hook** (advisory; never blocks). After a commit it
+- A committed **`post-commit.d/50-agent-memory-ritual-capture` fragment** (advisory; never blocks).
+  After a commit it
   auto-stubs a session log when the commit did real work but carried none, and re-syncs
   adapters when a skill changed.
 - A **CI floor** — `memory-lint` plus a session-log presence check — with zero per-user
@@ -50,7 +55,7 @@ that gap:
 
 - **`.githooks/init.sh`** — one idempotent command to regenerate adapters and activate the
   hook.
-- **`.gitattributes`** — pins shell scripts to LF so Git for Windows doesn't rewrite them to
+- **`.gitattributes`** — pins shell scripts, hook dispatchers, and hook fragments to LF so Git for Windows doesn't rewrite them to
   CRLF and silently break the hook.
 
 `memory-lint` also catches an empty or malformed install manifest, so a botched version stamp

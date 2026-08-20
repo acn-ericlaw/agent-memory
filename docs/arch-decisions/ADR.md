@@ -56,6 +56,28 @@ trade-offs** the decision accepts.
 
 ---
 
+## ADR-0007 — Git hook entrypoints dispatch ordered fragments
+**Status:** Accepted · **Date:** 2026-08-20T21:00:47.000Z · **Serves:** vision-agent-memory
+<!-- id: adr-0007 | status: accepted | formalizes: git-hook-fragment-dispatch -->
+
+**Abstract.** The committed `.githooks/pre-commit` and `.githooks/post-commit` files are stable,
+minimal dispatchers. Hook behavior lives in executable `.githooks/<hook>.d/*` fragments that run
+in deterministic C-locale filename order. Every fragment runs; the dispatcher returns the first
+non-zero status. Agent-memory owns only its managed `50-` fragments, leaving ordered before/after
+slots for other hook layers.
+
+**Rationale.** Single-file hooks made unrelated automation compete for one entrypoint: an install
+or upgrade could overwrite another layer, and embedded behavior was difficult to exercise in
+isolation. Alternatives were a shared sourced library (one more load-bearing indirection and shared
+shell state), stop-on-first-failure dispatch (later independent checks lose their report), or
+delegating composition to a vendor-specific hook manager (adds a dependency and weakens
+portability). Executed fragments isolate shell state while preserving Git's native status contract;
+running all fragments maximizes diagnostics, and returning the first failure keeps the result
+deterministic. **Trade-offs:** ordering becomes a filename convention, executable bits are part of
+the contract, and all pre-commit fragments run even after the commit is already destined to fail.
+The small cost buys composability, additive upgrades, and direct CI testability without a daemon or
+third-party manager.
+
 ## ADR-0006 — No build step; the agent is the runtime
 **Status:** Accepted · **Date:** 2026-06-16 · **Serves:** vision-agent-memory · **Supersedes:** ADR-0004
 <!-- id: adr-0006 | status: accepted | formalizes: no-build-step-agent-run | supersedes: ADR-0004 -->
