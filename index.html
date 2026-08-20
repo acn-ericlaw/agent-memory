@@ -1235,6 +1235,8 @@
       
         
       
+        
+      
     
     
     
@@ -1407,6 +1409,34 @@
     
   
     Design: Ritual Triggers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="DESIGN-reconcile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Target-State Reconcile
   
 
     
@@ -1697,8 +1727,10 @@ every altitude change.</p>
 <li><strong>No manual user step.</strong> Triggers, init, and adapter sync are agent-activated, with CI as
   the zero-config backstop (GitHub Actions, GitLab CI, or Azure Pipelines — matched to the hosting
   forge; Azure DevOps needs a one-time pipeline activation).</li>
-<li><strong>Additive, non-destructive upgrades.</strong> Versioned; an older repo upgrades in place via an
-  idempotent ladder. Nothing is ever deleted — faded facts archive to a greppable index.</li>
+<li><strong>Additive, non-destructive upgrades.</strong> Versioned; an older repo upgrades in place by
+  reconciling against the declared target state (idempotent, O(diff) — the version ladder
+  stays the per-version record). Nothing is ever deleted — faded facts archive to a
+  greppable index.</li>
 </ul>
 <h2 id="get-going">Get going<a class="headerlink" href="#get-going" title="Permanent link">&para;</a></h2>
 <div class="grid cards">

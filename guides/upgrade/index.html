@@ -900,10 +900,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-a-rung-may-do" class="md-nav__link">
+  <a href="#what-reconcile-may-do-and-never-does" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What a rung may do
+        What reconcile may do — and never does
       
     </span>
   </a>
@@ -1251,6 +1251,8 @@
       
         
       
+        
+      
     
     
     
@@ -1443,6 +1445,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../DESIGN-reconcile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Target-State Reconcile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../DESIGN-fresh-context-review/" class="md-nav__link">
         
   
@@ -1603,10 +1633,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-a-rung-may-do" class="md-nav__link">
+  <a href="#what-reconcile-may-do-and-never-does" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What a rung may do
+        What reconcile may do — and never does
       
     </span>
   </a>
@@ -1656,32 +1686,42 @@
 
 
 <h1 id="upgrade-in-place">Upgrade in Place<a class="headerlink" href="#upgrade-in-place" title="Permanent link">&para;</a></h1>
-<p>agent-memory upgrades are <strong>additive and non-destructive</strong>. A repo on an older version moves
-forward through an idempotent <strong>version ladder</strong> — one rung per release — so you never lose
-local content.</p>
+<p>agent-memory upgrades are <strong>additive and non-destructive</strong> — and since <strong>v4.35.0</strong> they run
+in <strong>O(diff), not O(rungs)</strong>: the agent reconciles your repo against the current version's
+declared target state in one pass, instead of walking every release you're behind.</p>
 <h2 id="how-versioning-works">How versioning works<a class="headerlink" href="#how-versioning-works" title="Permanent link">&para;</a></h2>
 <ul>
 <li>The tool's current version lives in <code>VERSION</code>; each enabled repo records its own in
-  <code>.agent/version.md</code> (the install manifest).</li>
-<li>The gap between the two tells the agent which <strong>rungs</strong> to apply, in order.</li>
+  <code>.agent/version.md</code> (the version stamp).</li>
+<li><strong><code>MANIFEST.md</code></strong> (tool-side) declares the target state — every installed artifact with
+  its source and policy — plus the <strong>Semantic steps</strong> table: the few version-gated
+  migrations a file-sync can't do (metadata backfill, knob merges that preserve your
+  tuning, secret triage).</li>
 <li><strong>One version per release.</strong> <code>VERSION</code> and the ladder track release <em>events</em>, not
-  per-feature dev iterations.</li>
+  per-feature dev iterations. The ladder (<code>UPGRADE.md</code>) remains the per-version record
+  and the detailed text behind each semantic step.</li>
 </ul>
 <h2 id="ask-the-agent">Ask the agent<a class="headerlink" href="#ask-the-agent" title="Permanent link">&para;</a></h2>
 <blockquote>
 <p><strong>"AI enable <code>/path/to/your-project</code>."</strong></p>
 </blockquote>
 <p>When the repo is already enabled but behind, the agent detects the drift from
-<code>.agent/version.md</code> and walks the ladder. Each rung is <strong>idempotent</strong> — re-running is safe.</p>
+<code>.agent/version.md</code> and runs the <strong>reconcile helper</strong>: a dry-run report first (what will
+be copied, what drifted, what stays yours), then — with your consent — one apply pass,
+the applicable semantic steps, and the version stamp. Re-running is safe (idempotent).</p>
 <pre class="mermaid"><code>flowchart LR
-  V[".agent/version.md&lt;br/&gt;e.g. 4.14.1"] --&gt; L[apply rungs&lt;br/&gt;4.14.1 → … → 4.26.1]
-  L --&gt; S[re-sync adapters&lt;br/&gt;+ stamp version.md]</code></pre>
-<h2 id="what-a-rung-may-do">What a rung may do<a class="headerlink" href="#what-a-rung-may-do" title="Permanent link">&para;</a></h2>
+  V[".agent/version.md&lt;br/&gt;e.g. 4.14.1"] --&gt; R["reconcile vs MANIFEST.md&lt;br/&gt;dry-run → apply"]
+  R --&gt; SS["semantic steps&lt;br/&gt;(version-gated, usually 1–2)"]
+  SS --&gt; S[re-sync adapters&lt;br/&gt;+ stamp version.md]</code></pre>
+<h2 id="what-reconcile-may-do-and-never-does">What reconcile may do — and never does<a class="headerlink" href="#what-reconcile-may-do-and-never-does" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Re-sync a protocol file from its canonical source.</li>
-<li>Install a new built-in skill, then re-sync adapters.</li>
-<li>Merge (never overwrite) into a repo-customized file — and <strong>warn before overwriting</strong> a
-  locally-modified built-in, letting you keep yours, take the update, or upstream the fix.</li>
+<li>Re-copy a stale tool-owned file from its canonical source; seed a missing one.</li>
+<li>Add missing entries to the managed <code>.gitignore</code>/<code>.gitattributes</code> blocks (add-only,
+  de-duplicated — it also catches entries older upgrades never back-filled).</li>
+<li><strong>Never</strong>: overwrite your seeded files (<code>continuity.md</code>, your PR template, your waiver
+  stub), edit a pre-existing <code>.gitlab-ci.yml</code>, delete anything, or stamp the version
+  itself. Drift that looks like a local customization gets a <strong>warn before overwrite</strong> —
+  keep yours, take the update, or upstream the fix.</li>
 </ul>
 <div class="admonition info">
 <p class="admonition-title">Source of truth matters</p>
@@ -1696,9 +1736,10 @@ you reload — <code>/restart</code> or a skills rescan. Claude, Cursor, and Kir
 description-matched skill without a restart.</p>
 <h2 id="verify">Verify<a class="headerlink" href="#verify" title="Permanent link">&para;</a></h2>
 <p>After an upgrade, run <a href="../../reference/built-in-skills/#memory-lint"><code>memory-lint</code></a>. A clean
-run (0 errors) confirms the install manifest, decay counts, and links are all consistent.</p>
-<p>For the authoritative ladder and rungs, see <a href="../../reference/protocol-files/"><code>UPGRADE.md</code></a>
-(operator-only).</p>
+run (0 errors) confirms the version stamp, decay counts, and links are all consistent.</p>
+<p>For the authoritative target state and semantic steps, see <code>MANIFEST.md</code>; for the
+per-version record and rung detail, see <a href="../../reference/protocol-files/"><code>UPGRADE.md</code></a>
+(both operator-only).</p>
 
 
 

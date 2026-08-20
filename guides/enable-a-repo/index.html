@@ -872,6 +872,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#how-it-converges-v4350" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it converges (v4.35.0)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-lands-in-the-repo" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1240,6 +1251,8 @@
       
         
       
+        
+      
     
     
     
@@ -1432,6 +1445,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../DESIGN-reconcile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Target-State Reconcile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../DESIGN-fresh-context-review/" class="md-nav__link">
         
   
@@ -1592,6 +1633,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#how-it-converges-v4350" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it converges (v4.35.0)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-lands-in-the-repo" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1663,10 +1715,20 @@ with <strong>originals preserved under <code>legacy/</code>, never deleted</stro
 </div>
 <div class="tabbed-block">
 <p>The repo is already enabled. The agent is idempotent — and if the repo is on an older
-version, it <a href="../upgrade/">upgrades in place</a> via the version ladder.</p>
+version, it <a href="../upgrade/">upgrades in place</a> by <strong>reconciling against the current
+target state</strong> (v4.35.0) — one diff-and-apply pass plus the few version-gated
+semantic steps, not a walk of every release in between.</p>
 </div>
 </div>
 </div>
+<h2 id="how-it-converges-v4350">How it converges (v4.35.0)<a class="headerlink" href="#how-it-converges-v4350" title="Permanent link">&para;</a></h2>
+<p>The mechanical ~80% of an enable — verbatim protocol docs, the seven built-in skills,
+hooks, forge CI, managed <code>.gitignore</code>/<code>.gitattributes</code> blocks — is declared in a
+tool-side <strong>install manifest</strong> and applied by a runnable <strong>reconcile helper</strong> in one
+pass (dry-run first; the report doubles as the consent summary). The agent's time goes
+where judgment lives: analyzing your repo, harvesting your docs, seeding <code>memory/</code>, and
+the DRAFT-Vision gate. On a fresh repo that turns a &gt;10-minute stepwise install into
+seconds of mechanics plus a few minutes of real analysis.</p>
 <h2 id="what-lands-in-the-repo">What lands in the repo<a class="headerlink" href="#what-lands-in-the-repo" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1694,7 +1756,7 @@ version, it <a href="../upgrade/">upgrades in place</a> via the version ladder.<
 </tr>
 <tr>
 <td><code>.agent/version.md</code></td>
-<td>install manifest (gates upgrades)</td>
+<td>version stamp (gates upgrades)</td>
 </tr>
 <tr>
 <td><code>legacy/</code></td>

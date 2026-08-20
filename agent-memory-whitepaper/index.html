@@ -1146,6 +1146,8 @@
       
         
       
+        
+      
     
     
     
@@ -1561,6 +1563,34 @@
     
   
     Design: Ritual Triggers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DESIGN-reconcile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Target-State Reconcile
   
 
     
@@ -2323,7 +2353,8 @@ meaning is at stake.
   adoption barrier — so triggers, init, and adapter sync are agent-activated, with CI as the
   zero-config backstop (matched to the hosting forge; Azure DevOps needs a one-time activation).
 - <strong>Additive, non-destructive upgrades.</strong> Versioned (<code>VERSION</code> + per-repo stamp); a repo on
-  an older version upgrades in place via an idempotent ladder.</p>
+  an older version upgrades in place by reconciling against the declared target state
+  (idempotent, O(diff); the version ladder remains the per-version record).</p>
 </blockquote>
 <hr />
 <h2 id="7-how-it-works-in-practice">7. How It Works in Practice<a class="headerlink" href="#7-how-it-works-in-practice" title="Permanent link">&para;</a></h2>
