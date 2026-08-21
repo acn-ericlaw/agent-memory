@@ -41,6 +41,12 @@ version**, i.e. per state a user could actually have been running. So:
   fails on any gap between the manifest and the tree. Classify the new rung accordingly:
   most rungs are fully mechanical (reconcile-covered; the rung text is the record), and only
   genuine data/judgment migrations earn a semantic row.
+- **Protocol-text lockstep (v4.37.0+):** `memory/PROTOCOL.md` is a **`seed-copy`** row, so an
+  installed protocol is never re-copied and protocol edits do **not** propagate by themselves.
+  A release that edits `templates/memory/PROTOCOL.md` therefore **always** earns a **Semantic
+  steps** row telling the upgrade to re-copy a still-stock target protocol and to arbitrate a
+  customized one (`ENABLE.md` §5i). Check this before tagging — under the old inline-`AGENTS.md`
+  hub these edits rode along on a `verbatim` row; they no longer do (`MANIFEST.md` row notes).
 
 *(Precedent: v4.22.0 bundles four features iterated in one unreleased session — originally
 dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*

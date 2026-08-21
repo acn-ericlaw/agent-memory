@@ -659,8 +659,21 @@ def main(argv):
     if pending == 0:
         print("result: converged — nothing to do")
         sys.exit(0)
-    hint = ("re-run with --apply for the mechanical part" if mechanical
-            else "all pending items are agent work")
+    # The dry-run is the consent artifact: its closing hint must name the next
+    # real move. Sending the agent to --apply when --apply would refuse with zero
+    # writes is the one way this line can mislead.
+    pre_steps, hard, confirmation = pre_apply_state(
+        installed, semantic, mechanical, notes)
+    if hard:
+        hint = ("--apply refuses until the PRE-APPLY boundary converges for: " +
+                ", ".join(sorted(hard)))
+    elif pre_steps or confirmation:
+        hint = ("re-run with --apply --pre-apply-complete once the listed "
+                "PRE-APPLY checks are done")
+    elif mechanical:
+        hint = "re-run with --apply for the mechanical part"
+    else:
+        hint = "all pending items are agent work"
     print("result: " + str(len(mechanical)) + " mechanical + " +
           str(len(agent) + len(semantic)) + " agent item(s) pending "
           "(dry-run — " + hint + ")")

@@ -30,6 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Instruction/memory trust contract:** `docs/architecture/security.md` makes permission
   precedence, evidence-only memory, provenance checks, and fail-closed lifecycle promotion
   durable beyond this release's feature spec.
+- **A named protocol-propagation obligation:** `memory/PROTOCOL.md` installs as `seed-copy`,
+  so an installed protocol is never re-copied — deliberate, since the rung merges the old
+  root's local directives into it. Protocol text therefore no longer rides along on a
+  `verbatim` row as it did under the inline `AGENTS.md` hub, so `MANIFEST.md`'s row notes and
+  the `UPGRADE.md` manifest-lockstep rule now make a **Semantic steps** row a standing release
+  obligation for any future release that edits `templates/memory/PROTOCOL.md`.
 
 ### Changed
 
@@ -46,7 +52,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `--pre-apply-complete` after the listed hook/protocol preservation and hash checks. The
   guard is activation-state-based: a current stamp cannot authorize root replacement, and
   current hook/managed-fragment drift or a fresh custom protocol still requires confirmation.
-  32 mirrored tests pin refusal, confirmed apply, local-fragment survival, and collisions.
+  The dry-run's closing hint names the move that will actually work — the PRE-APPLY refusal
+  set, or `--apply --pre-apply-complete` — so the consent artifact never points at an apply
+  that would refuse. 35 mirrored tests pin refusal, confirmed apply, local-fragment survival,
+  collisions, and the hint.
 - **Lockstep:** enablement, upgrade source maps/rung, schema, smoke guidance, architecture
   maps, README/release table, and target reporting recognize the shim/protocol boundary;
   `VERSION` → 4.37.0.

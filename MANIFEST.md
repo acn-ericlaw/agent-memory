@@ -97,6 +97,16 @@ Row notes (the table stays machine-lean; nuance lives here):
   `templates/memory/PROTOCOL.md`; because it may hold repository-specific instructions,
   reconcile never overwrites an existing copy. Fresh enable completes the protocol before
   installing the shim; the v4.37.0 pre-apply semantic step safely relocates older roots.
+  **`seed-copy` here is a chosen cost, and it has a named propagation mechanism.** The
+  policy is deliberate: the v4.37.0 rung merges the old root's local directives *into* this
+  file, so a mechanical re-copy could silently drop team-authored steering — the one file
+  where that loss is unrecoverable, since the old root is gone by then. The cost is that
+  protocol-text edits do **not** reach installed targets on their own. So every release that
+  edits `templates/memory/PROTOCOL.md` **must** add a **Semantic steps** row for it — re-copy
+  when the target's protocol is still byte-identical to the previous release's template,
+  arbitrate per `ENABLE.md` §5i when it carries local content. This is a standing release
+  obligation, not a one-off (see the manifest-lockstep rule in `UPGRADE.md`): a release that
+  changes the protocol and ships no such row leaves every target on the old text.
 - **memory/sessions/** — "present" means the directory exists with at least one file; the
   first enable session log (Step 5c) is what normally satisfies it (`.gitkeep` only as a
   fallback when no log is written).

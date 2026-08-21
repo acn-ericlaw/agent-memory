@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.37.0 protocol-pointer conflict resolutions and gates are complete; awaiting human rebase continuation.
+- **status:** v4.37.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared; activation enters through a one-line root `AGENTS.md` shim to the canonical `memory/PROTOCOL.md` (v4.37.0); enable/upgrade converge **declaratively** against a `MANIFEST.md` target state via the reconcile helper — O(diff), not O(steps/rungs) (v4.35.0). Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (composable pre/post-commit **fragment dispatchers** over `.githooks/<hook>.d/*` — pre-commit secret guard (v4.34.0) + post-commit ritual capture as managed `50-` fragments (v4.36.0) — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-21 | agent: Codex (2026-08-21-033351)
+- **last_session:** 2026-08-21 | agent: Claude Code (2026-08-21-052644)
 - **last_review:** 2026-08-20 | through 2026-08-20-223624
 - **last_invariant_check:** 2026-08-14 | through 2026-08-14-011037
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -159,10 +159,36 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   optimized tool/target protocols, lifecycle/release wiring, a durable
   instruction-versus-evidence boundary, and fail-closed collision handling are complete.
   Strict gates, target-local Git recovery/idempotence walkthrough, and final adversarial,
-  quality, and security reviews pass. → serves:
-  vision-agent-memory (lower default context cost without weakening deterministic,
+  quality, and security reviews pass. **PR #24 multi-vendor review, 2026-08-21:** dry-run's
+  closing hint now names the real next move (it pointed at an `--apply` that refuses with zero
+  writes — the consent artifact must agree with apply; test-pinned both runtimes); `status:`
+  restored after a WIP marker leaked in (v4.22.0 anti-pattern); protocol row stays `seed-copy`.
+  → serves: vision-agent-memory (lower default context cost without weakening deterministic,
   cross-vendor activation)
   <!-- id: protocol-pointer-enterprise-activation | created: 2026-08-20 | last_used: 2026-08-20 | uses: 1 | tier: working | origin: 2026-08-20-204952 -->
+
+- [ ] **Protocol-text propagation is a per-release obligation, not a mechanism.**
+  `memory/PROTOCOL.md` is `seed-copy`, so an installed protocol is never re-copied — deliberate
+  (the v4.37.0 rung merges the old root's local directives into it, and a re-copy could drop
+  them irrecoverably), but it ends the automatic propagation the old `verbatim` `AGENTS.md` hub
+  had, and ~half of recent releases edited protocol text. Now stated in `MANIFEST.md`'s row
+  notes + the `UPGRADE.md` manifest-lockstep rule: any release editing
+  `templates/memory/PROTOCOL.md` ships a Semantic steps row (re-copy a still-stock protocol,
+  arbitrate a customized one per §5i). **Open for the maintainer:** keep that cost, or move the
+  row to `verbatim` and lean on §5i drift arbitration — truer to the house model, but it weakens
+  AC-MP-07/08's "preserved without loss". → serves: vision-agent-memory (a protocol fix must
+  reach the repos running it)
+  <!-- id: ot-protocol-text-propagation | created: 2026-08-21 | last_used: 2026-08-21 | uses: 1 | tier: working | origin: 2026-08-21-052644 -->
+
+- [ ] **Field canary: AGENTS.md-native activation is unproven.** Codex, Kiro, and Antigravity
+  auto-load root `AGENTS.md`, so v4.37.0 trades their inline protocol for a 61-byte imperative
+  plus one read-action — the v4.29.0 failure class (pointer prose, skipped under task pressure)
+  reintroduced for exactly the enterprise-IDE class this targets. Mitigated by the single
+  unambiguous imperative and the activation-first rewrite, motivated by a real ~20 KB/session
+  tax, but never observed on a live Kiro or Codex session: treat activation there as unvalidated
+  until a field canary confirms it (the v4.29.0 attestation pattern). → serves:
+  vision-agent-memory (cross-vendor activation is a claim to observe, not assume)
+  <!-- id: ot-agents-native-activation-canary | created: 2026-08-21 | last_used: 2026-08-21 | uses: 1 | tier: working | origin: 2026-08-21-052644 -->
 
 - [x] **Shipped v4.34.2 (PATCH) — `[secret-material]`: the guard's own opt-down knob is not a
   credential.** Field issue from the **mercury-composable team** (2026-08-19, during their v4.34.0

@@ -6,7 +6,9 @@ Tests run against the REAL tool checkout as the source of truth, writing only to
 temp dirs — so they double as a validation of MANIFEST.md itself.
 """
 
+import contextlib
 import importlib.util
+import io
 import os
 import shutil
 import stat
@@ -272,6 +274,48 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(stopped.exception.code, 1)
         self.assertEqual(snapshot_tree(t), before)
         self.assertFalse(os.path.exists(os.path.join(t, "DECAY.md")))
+
+    def dry_run(self, target):
+        """Return (exit code, last printed line) for a dry-run."""
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf), self.assertRaises(SystemExit) as done:
+            rec.main(["--target", target])
+        return done.exception.code, buf.getvalue().strip().splitlines()[-1]
+
+    def test_dry_run_hint_names_the_apply_refusal(self):
+        t = make_target(self.tmp, "https://github.com/acme/demo.git")
+        stamp(t, "4.36.0")
+        with open(os.path.join(t, "AGENTS.md"), "w", encoding="utf-8") as f:
+            f.write("legacy project instructions\n")
+        code, result = self.dry_run(t)
+        self.assertEqual(code, 3)
+        self.assertIn("--apply refuses until the PRE-APPLY boundary converges for: "
+                      "AGENTS.md, memory/PROTOCOL.md", result)
+        self.assertNotIn("re-run with --apply for the mechanical part", result)
+        # The dry-run is the consent artifact: its hint must agree with --apply.
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf), self.assertRaises(SystemExit) as blocked:
+            rec.main(["--target", t, "--apply"])
+        self.assertEqual(blocked.exception.code, 1)
+        self.assertIn("AGENTS.md, memory/PROTOCOL.md", buf.getvalue())
+
+    def test_dry_run_hint_names_the_confirmation_flag(self):
+        t = make_target(self.tmp, "https://github.com/acme/demo.git")
+        os.makedirs(os.path.join(t, "memory"), exist_ok=True)
+        shutil.copy2(os.path.join(TOOL_ROOT, "templates", "AGENTS.md"),
+                     os.path.join(t, "AGENTS.md"))
+        with open(os.path.join(t, "memory", "PROTOCOL.md"), "w", encoding="utf-8") as f:
+            f.write("repository-specific instructions\n")
+        code, result = self.dry_run(t)
+        self.assertEqual(code, 3)
+        self.assertIn("re-run with --apply --pre-apply-complete once the listed "
+                      "PRE-APPLY checks are done", result)
+
+    def test_dry_run_hint_stays_plain_with_no_boundary(self):
+        t = make_target(self.tmp, "https://github.com/acme/demo.git")
+        code, result = self.dry_run(t)
+        self.assertEqual(code, 3)
+        self.assertIn("re-run with --apply for the mechanical part", result)
 
     def test_apply_proceeds_after_explicit_pre_apply_completion(self):
         t = make_target(self.tmp, "https://github.com/acme/demo.git")

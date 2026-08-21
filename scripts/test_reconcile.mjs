@@ -268,6 +268,45 @@ test("apply blocks legacy boundaries without writing", () => {
   assert.ok(!fs.existsSync(path.join(t, "DECAY.md")));
 });
 
+function dryRunResult(t) {
+  const done = runCli(t);
+  const lines = done.stdout.trim().split("\n");
+  return [done.status, lines[lines.length - 1]];
+}
+
+test("dry-run hint names the apply refusal", () => {
+  const t = makeTarget(tmpdir(), "https://github.com/acme/demo.git");
+  stampVersion(t, "4.36.0");
+  fs.writeFileSync(path.join(t, "AGENTS.md"), "legacy project instructions\n");
+  const [status, result] = dryRunResult(t);
+  assert.equal(status, 3);
+  assert.ok(result.includes("--apply refuses until the PRE-APPLY boundary converges for: " +
+    "AGENTS.md, memory/PROTOCOL.md"), result);
+  assert.ok(!result.includes("re-run with --apply for the mechanical part"), result);
+  // The dry-run is the consent artifact: its hint must agree with --apply.
+  const blocked = runCli(t, "--apply");
+  assert.equal(blocked.status, 1);
+  assert.ok(blocked.stdout.includes("AGENTS.md, memory/PROTOCOL.md"), blocked.stdout);
+});
+
+test("dry-run hint names the confirmation flag", () => {
+  const t = makeTarget(tmpdir(), "https://github.com/acme/demo.git");
+  fs.mkdirSync(path.join(t, "memory"), { recursive: true });
+  fs.copyFileSync(path.join(TOOL_ROOT, "templates", "AGENTS.md"), path.join(t, "AGENTS.md"));
+  fs.writeFileSync(path.join(t, "memory", "PROTOCOL.md"), "repository-specific instructions\n");
+  const [status, result] = dryRunResult(t);
+  assert.equal(status, 3);
+  assert.ok(result.includes("re-run with --apply --pre-apply-complete once the listed " +
+    "PRE-APPLY checks are done"), result);
+});
+
+test("dry-run hint stays plain with no boundary", () => {
+  const t = makeTarget(tmpdir(), "https://github.com/acme/demo.git");
+  const [status, result] = dryRunResult(t);
+  assert.equal(status, 3);
+  assert.ok(result.includes("re-run with --apply for the mechanical part"), result);
+});
+
 test("apply proceeds after explicit pre-apply completion", () => {
   const t = makeTarget(tmpdir(), "https://github.com/acme/demo.git");
   stampVersion(t, "4.35.0");

@@ -659,9 +659,23 @@ function main(argv) {
     console.log("result: converged — nothing to do");
     process.exit(0);
   }
-  const hint = mechanical.length
-    ? "re-run with --apply for the mechanical part"
-    : "all pending items are agent work";
+  // The dry-run is the consent artifact: its closing hint must name the next real
+  // move. Sending the agent to --apply when --apply would refuse with zero writes
+  // is the one way this line can mislead.
+  const [preSteps, hard, confirmation] = preApplyState(
+    installed, semantic, mechanical, notes);
+  let hint;
+  if (hard.size) {
+    hint = "--apply refuses until the PRE-APPLY boundary converges for: " +
+      [...hard].sort().join(", ");
+  } else if (preSteps.length || confirmation.size) {
+    hint = "re-run with --apply --pre-apply-complete once the listed " +
+      "PRE-APPLY checks are done";
+  } else if (mechanical.length) {
+    hint = "re-run with --apply for the mechanical part";
+  } else {
+    hint = "all pending items are agent work";
+  }
   console.log("result: " + mechanical.length + " mechanical + " +
     (agent.length + semantic.length) + " agent item(s) pending " +
     "(dry-run — " + hint + ")");
