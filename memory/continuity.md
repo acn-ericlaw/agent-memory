@@ -171,41 +171,17 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   <!-- id: secret-fp-self-knob-v4342 | created: 2026-08-19 | last_used: 2026-08-19 | uses: 1 | tier: working | origin: 2026-08-19-203132 -->
 
 - [x] **Shipped v4.34.0 (MINOR) — pre-commit secret guard: prevention on both surfaces (memory +
-  config).** From the maintainer's confirmation question after the v4.33.x DLP arc ("do we need a
-  pre-commit hook?") plus the decisive incident detail: the leak's *origin* was a **Postman JSON
-  and an OpenShift YAML with live credentials** (root + `src/`) — the session-log leak was
-  downstream contamination from a dry-run rendering them. Gap analysis: ritual rule covers agents
-  at write time, CI floor covers pushes (post-exposure); a human committing directly met nothing
-  at the only placement that *prevents* — before the commit exists. **Investigated first**
-  (maintainer-directed): a 661-file live-corpus probe (all committed json/yml/yaml/properties in
-  both mercury repos) → 6 findings, 0 real, 4 FP classes → detector tuned to **0/661**. Maintainer
-  scoped via decisions: fold into v4.34.0, CI symmetry, ignore file, widest extensions. **Shipped:**
-  `.githooks/pre-commit` scans **staged** (index) `memory/**.md` (full profile) + config files
-  (`.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*`, **credential-class only**);
-  `memory-lint --scan-files` mode (both runtimes) powers it + the **changed-config scan added to
-  all three forge CI wrappers**; committed `.agent/secret-scan-ignore` (human-audited shell-globs)
-  handles JSON/properties waivers (config only, never memory/); probe-tuned refinements
-  (single-brace + GH-Actions templates, `demo`/`test` words, placeholder-fallback defaults with
-  the v4.33.4 rule preserved, dotted route refs exempt from Authorization, `;` delimiter, Postman
-  split-pair pattern — the incident artifact class). **The guard ENFORCES by default**
-  (maintainer decision mid-release): findings block the commit — the deliberate, scoped exception
-  to the advisory doctrine, since secrets carry irreversible after-the-fact cost and an advisory
-  default lets an inattentive commit ride to the remote; the `AGENT_MEMORY_SECRET_GUARD` env
-  knob opts the guard down to advisory, `--no-verify` bypasses once, the CI floor stays
-  advisory (`AGENT_MEMORY_STRICT` gates). Rides existing `core.hooksPath`; never-initialized clones fall through to CI.
-  Verified: 49/49 mirror tests ×2 runtimes (byte parity), 14 scratch-repo hook paths incl.
-  default-block + both opt-downs, 3 CI YAMLs validated + GH block simulated live, both live
-  corpora re-scanned clean via the real CLI. Doctrine refined: "advisory by default; the
-  pre-commit secret guard alone enforces" (DESIGN §7.3 had recommended the pre-commit half at
-  v4.19.0). Lockstep:
-  hook + hooks README/init, ignore-stub template, built-in (runtimes/tests/SKILL body; frontmatter
-  unchanged → adapters untouched), 3 forge CI files, `AGENTS.md` ×2, `ENABLE.md` (5e + Step 6 +
-  chmod), DESIGN amendment, whitepaper ×2, docs-site ×2, presentation deck, `VERSION`→4.34.0,
-  `CHANGELOG`, `README` (row + 10-cap trim, drops 4.29.1), `UPGRADE` (row + `4.33.4→4.34.0`
-  rung). **Fold-up (v4.34.1 PATCH, same day):** the maintainer's own field regression test
-  validated the blocking and yielded output-readability feedback — finding lines no longer
-  repeat the advisory tail; guidance prints once per run (hook footer with blank separator,
-  one trailer in --scan-files and full-lint runs). → serves:
+  config).** From the maintainer's post-DLP-arc question + the decisive incident detail (the
+  leak's *origin* was a Postman JSON + an OpenShift YAML with live credentials). `.githooks/
+  pre-commit` scans **staged** `memory/**.md` (full profile) + config files (credential-class;
+  JSON/properties waivers in the committed `.agent/secret-scan-ignore`); `memory-lint
+  --scan-files` powers it + the changed-config scan in all three forge CI wrappers; detector
+  probe-tuned on a 661-file live corpus to 0 FPs. **Enforcing by default** (maintainer decision —
+  the deliberate, scoped exception to the advisory doctrine; secrets carry irreversible
+  after-the-fact cost); `AGENT_MEMORY_SECRET_GUARD` opts down, `--no-verify` bypasses once, the
+  CI floor stays advisory. Verified 49/49 ×2 runtimes + 14 scratch hook paths; both live corpora
+  clean. **Fold-up v4.34.1 (same day):** finding lines no longer repeat the advisory tail —
+  guidance prints once per run. Full detail: origin log + the `4.33.4→4.34.0` rung. → serves:
   vision-agent-memory (shared memory must be safe to share — guarded at write, commit, AND push
   time, wherever the secret lands)
   <!-- id: pre-commit-secret-guard-v4340 | created: 2026-08-14 | last_used: 2026-08-19 | uses: 3 | tier: active | origin: 2026-08-14-021712 -->
@@ -335,60 +311,34 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   <!-- id: last-session-enable-log-v4321 | created: 2026-08-06 | last_used: 2026-08-13 | uses: 2 | tier: archive-candidate | origin: 2026-08-06-153509 -->
 
 - [x] **Shipped v4.31.0 (MINOR) — GitLab forge support: forge-aware ritual floor + MR template.** From a
-  **GitLab-hosted field report** (2026-07-26): GitLab ignores `.github/` entirely (verified — no shim in
-  templates/CODEOWNERS/importer docs). A 5-agent workflow gap-analysis found exactly **two** dead
-  artifacts — the **CI floor** (fresh clones had NO ritual backstop; the v4.19.0 guarantee silently
-  collapsed) and the **What/Why PR template** — while `.github/` files read by *local* tooling
-  (copilot-instructions, skills adapters) were never broken and stay put on every forge. Root cause
-  named: "vendor-neutral" had conflated *AI vendor* with *hosting forge*. **Shipped:** `ENABLE.md` forge
-  detection (Step 4: remote URL + `.gitlab-ci.yml`/`.gitlab/`; unknown → both sets, additive-safe) +
-  forge-matched install (Step 6/8/9 + write-scope); `templates/.gitlab/agent-memory-ci.yml` (same two
-  checks; advisory via `allow_failure: exit_codes: [42]`, `AGENT_MEMORY_STRICT=1` gates; `image:
-  python:3`, `GIT_DEPTH: 0`); root wiring additive-safe (`templates/.gitlab-ci.yml` verbatim when
-  absent — carries the canonical `workflow:rules` guard GitLab requires in the ROOT file for MR
-  pipelines; pre-existing file → **add-only `include:` entry, never `workflow:rules`** — that would
-  change when the repo's own jobs run; job then rides branch-push pipelines, a sufficient floor);
-  `templates/.gitlab/merge_request_templates/Default.md` (auto-applies, all tiers). **Squash guidance
-  inverts per forge** (AGENTS.md root + template): GitHub piles trailers (dedup, v4.28.x) — GitLab
-  DROPS them (default squash message = MR title only; survive via re-add-at-merge or `%{all_commits}`
-  in the project squash template — NOT `%{co_authored_by}`, which credits commit authors only; the
-  pre-ship adversarial review caught that misprescription against GitLab's own source, plus a
-  missing-`stage:` hazard that could invalidate a target's whole pipeline — both fixed pre-commit).
-  Honest limit: GitLab.com runners zero-config; self-managed needs an
-  admin-registered runner. Lockstep: ENABLE (detection/install/verify/report/consent/write-scope),
-  AGENTS ×2, `.githooks/README` + `init.sh`, `REVIEW.md`,
-  DESIGN-ritual-triggers amendment, 6 docs-site pages, `VERSION`→4.31.0, `CHANGELOG`, `README` (row +
-  10-cap trim + file tree), `UPGRADE` (row + `4.30.0→4.31.0` rung). Non-goals: CODEOWNERS, issue templates, other
-  forges (the forge seam is where they'd slot in). → serves: vision-agent-memory (adoption stays
-  "point it at a repo" — on whichever forge the repo lives)
+  **GitLab-hosted field report** (2026-07-26): GitLab ignores `.github/` entirely — exactly two
+  installed artifacts were dead there (the CI floor and the What/Why template); local-tooling
+  `.github/` files stay put on every forge. Root cause named: "vendor-neutral" had conflated *AI
+  vendor* with *hosting forge*. Shipped ENABLE forge detection (unknown → both sets, additive-safe)
+  + matched install: `.gitlab/agent-memory-ci.yml` (advisory via `allow_failure: exit_codes: [42]`),
+  root wiring additive-safe (verbatim root file when absent — carries the required `workflow:rules`;
+  pre-existing → **add-only `include:` + mandatory stage check, never `workflow:rules`**), MR
+  template (auto-applies, all tiers). **Squash guidance inverts per forge:** GitHub piles trailers
+  (dedup) — GitLab DROPS them (re-add at merge or `%{all_commits}`; NOT `%{co_authored_by}` — the
+  pre-ship review caught that misprescription + a missing-`stage:` pipeline killer). Honest limit:
+  self-managed GitLab needs an admin-registered runner. Full detail: origin log + the
+  `4.30.0→4.31.0` rung. → serves: vision-agent-memory (adoption stays "point it at a repo" — on
+  whichever forge the repo lives)
   <!-- id: gitlab-forge-support-v4310 | created: 2026-07-27 | last_used: 2026-07-27 | uses: 3 | tier: archive-candidate | origin: 2026-07-27-203400 -->
 
-- [x] **(SHIPPED v4.32.0 MINOR, 2026-07-27) Azure DevOps forge support — field installation exists; mechanics
-  verified (2026-07-27); maintainer approved and shipped same day.** Delivered exactly per the proposed
-  shape below: own-pipeline model (`templates/.azuredevops/agent-memory-ci.yml` — existing
-  `azure-pipelines.yml` never touched; script-owned result so STRICT stays a true red), PR template,
-  forge detection, activation command REPORTED never silently run, unknown-forge = GitHub+GitLab sets
-  only, third squash branch. Ship record: session `2026-07-27-211935` + the `4.31.0→4.32.0` rung.
-  Original verified fact sheet kept below for the record: A real installation runs on Azure DevOps, so the
-  complaints-=-adoption trigger is satisfied (unlike Bitbucket, below). Verified against
-  learn.microsoft.com: **clean wins** — `.azuredevops/pull_request_template.md` auto-applies
-  (default-branch-read, `.azuredevops/`→`.vsts/`→`docs/`→root precedence, 4000-char cap); best
-  advisory semantics of any forge (`continueOnError: true` → "partially succeeded" tri-state +
-  `##vso[task.logissue type=warning]`; Build Validation policy has a notify-only Optional mode); two
-  additive seams (multiple pipelines per repo each bound to its own YAML — an own-file job touches
-  nothing of theirs; `- template:` local includes, triggers must stay in the main file); needs
-  `fetchDepth: 0` (shallow=1 default since sprint 209); `System.PullRequest.*` base vars.
-  **The honest asymmetry — activation is not file-driven, twice:** (1) a pipeline is a RESOURCE —
-  committing YAML is inert until `az pipelines create --yml-path … --skip-first-run` binds it
-  (one-time, scriptable, default permission Contributors; implied CI trigger then runs on pushes);
-  (2) Azure Repos ignores the YAML `pr:` trigger — PR-time validation needs the Build Validation
-  branch policy (admin settings change; document as optional human step, never made by the tool).
-  Microsoft-hosted parallelism needs an Azure-subscription link (self-hosted automatic). Attribution:
-  squash drops trailers, no template mechanism, editable at merge — PR-description footer is the
-  durable record. **Proposed shape (v4.32.0):** own-pipeline model (`templates/.azuredevops/
-  agent-memory-ci.yml` + PR template), ENABLE forge detection (dev.azure.com/visualstudio.com), Step 6
-  installs files + REPORTS the one-time activation command (run only at explicit user direction),
-  third squash branch, rung. → serves: vision-agent-memory
+- [x] **(SHIPPED v4.32.0 MINOR, 2026-07-27) Azure DevOps forge support.** A real field installation
+  satisfied the complaints-=-adoption trigger (unlike Bitbucket, below); mechanics verified against
+  learn.microsoft.com pre-ship; maintainer approved and shipped same day. **Own-pipeline model:**
+  `.azuredevops/agent-memory-ci.yml` is complete and self-contained — an existing
+  `azure-pipelines.yml` is never touched; best advisory semantics of any forge (`##vso` warnings +
+  "partially succeeded" tri-state; STRICT stays a true red); PR template auto-applies
+  (default-branch-read, 4000-char cap); needs `fetchDepth: 0`. **Honest asymmetry — activation is
+  not file-driven, twice:** a pipeline is a RESOURCE (inert until the one-time `az pipelines create
+  … --skip-first-run` binding — REPORTED, never silently run, after push), and Azure Repos ignores
+  YAML `pr:` (PR-time validation = Build Validation branch policy — admin; documented, never
+  configured). Squash drops trailers (no template mechanism; re-add at completion — the
+  PR-description footer is the durable record). Unknown forge = GitHub+GitLab sets only. Ship
+  record: session `2026-07-27-211935` + the `4.31.0→4.32.0` rung. → serves: vision-agent-memory
   <!-- id: ot-azure-devops-forge-next | created: 2026-07-27 | last_used: 2026-07-27 | uses: 2 | tier: archive-candidate | origin: 2026-07-27-210655 -->
 
 - [ ] **(backlog) Bitbucket forge support — trigger-gated; mechanics pre-verified (2026-07-27).** From a
@@ -544,29 +494,19 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `docs/DESIGN-vbdi-lifecycle.md` §13): ceremony + scoring live in the target's own space,
   never in `memory/`. → serves: vision-agent-memory
   <!-- id: bp-sdlc-overlay | created: 2026-06-15 | last_used: 2026-06-15 | uses: 1 | tier: active | origin: 2026-06-15-010142 -->
-- [x] **(blueprint — SHIPPED v4.29.0 MINOR, 2026-07-12)** Before-session context *presence* — the read chain (`CLAUDE.md` →
-  `AGENTS.md` → `memory/*`) is advisory prose; the v4.19.0 trigger layer reinforces only the
-  *after*-session rituals (its substrate — git + CI — has no session-start moment), so the
-  before-session read rests on prompt adherence, the same non-determinism v4.20.1 recorded for
-  Copilot self-init. **Field-proven gap** (child-repo report, 2026-07-11: reads skipped under
-  task pressure → skill-unawareness, off-model engagement, rework; patched locally with a
-  SessionStart injection + attestation canary and recommended upstreaming). **Agreed upstream
-  shape:** (a) native `@`-imports in `templates/CLAUDE.md` + `templates/GEMINI.md`
-  (`@AGENTS.md`, `@memory/instructions.md`, `@memory/continuity.md`, `@memory/vision.md`) —
-  markdown-only, presence becomes structural on import-capable runtimes; imports stay in the
-  per-vendor bootstrap files, `AGENTS.md` stays vendor-neutral; (b) an **opt-in** Claude Code
-  `SessionStart` injection recipe in `docs/optional-ritual-hook.md` (tool-only; never installed
-  by default — a committed `.claude/settings.json` conflicts with the installed `.gitignore`
-  and leaks personal allowlists); (c) the attestation canary/oracle stays **downstream**
-  (per-repo, Claude-specific). Honest limits: imports can't cover `memory/sessions/` (dynamic
-  paths); Cursor/Windsurf/Copilot keep prose pointers (Copilot's mitigation is the v4.20.1
-  front-load pattern); imported files enter context every session, so the continuity-bloat
-  controls (v4.24.0/4.28.2/4.28.3) become load-bearing. **Shipped 2026-07-12 as v4.29.0**:
-  root + template `CLAUDE.md`/`GEMINI.md` imports (Gemini in its `@./` form, `.md`-only),
-  optional-hook doc "Option A0" (+ retitle), full lockstep (VERSION/CHANGELOG/README/UPGRADE
-  row + `4.28.4→4.29.0` rung; site changelog auto-includes). Import syntax verified against
-  both vendors' current docs before shipping. → serves: vision-agent-memory
-  (the memory layer is *present* every session, not contingent on the agent choosing to read)
+- [x] **(blueprint — SHIPPED v4.29.0 MINOR, 2026-07-12)** Before-session context *presence* — the
+  read chain was advisory prose, empirically skipped under task pressure (child-repo field
+  report, 2026-07-11: skill-unawareness, off-model engagement, rework). Shipped native
+  `@`-imports in `templates/CLAUDE.md` + `templates/GEMINI.md` (hub + core memory files
+  structurally present on import-capable runtimes; Gemini `@./` form, `.md`-only; imports stay in
+  per-vendor bootstraps — `AGENTS.md` stays vendor-neutral) + an **opt-in** Claude Code
+  SessionStart recipe in `docs/optional-ritual-hook.md` (never installed by default); the
+  attestation canary stays downstream. Honest limits: imports can't express `memory/sessions/`
+  (dynamic paths); Cursor/Windsurf/Copilot keep prose pointers; imported files enter context
+  every session, so the continuity-bloat controls became load-bearing. Import syntax verified
+  against both vendors' docs pre-ship. Full detail: origin log + the `4.28.4→4.29.0` rung.
+  → serves: vision-agent-memory (the memory layer is *present* every session, not contingent on
+  the agent choosing to read)
   <!-- id: bp-before-session-presence | created: 2026-07-12 | last_used: 2026-07-12 | uses: 3 | tier: archive-candidate | origin: 2026-07-12-013817 -->
 
 ### Backlog — vNext (temporal & supersession) + beyond
