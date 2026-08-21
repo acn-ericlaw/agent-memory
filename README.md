@@ -36,8 +36,8 @@ your **first prompt**:
 
 > **"Start from `AGENTS.md`."**
 
-This points the agent at the hub so it loads the agent-memory protocol *before* doing anything
-else. It's the reliable entry point on every vendor — and it's **required** in enterprise IDEs
+This loads the one-line universal shim, which points to `memory/PROTOCOL.md` before any
+substantive work. It is the reliable entry point on every vendor — and is **required** in enterprise IDEs
 (e.g. Kiro) that otherwise self-bootstrap from their own onboarding before reading `AGENTS.md`.
 
 ### 2 · Enable a target repo
@@ -173,6 +173,7 @@ it in place** — additively, never destructively.
 
 | Version | Capability |
 |---|---|
+| 4.37.0 | **Enterprise-efficient protocol activation:** root `AGENTS.md` is now an exact one-line pointer to `memory/PROTOCOL.md`, cutting the enterprise IDE auto-loaded surface from ~20 KB to 61 bytes. The relocated tool and target protocols are ordered for activation, compressed without weakening directives (both under 11.2 KB), and directly imported by capable bootstraps. Reconcile installs the target protocol before the shim and enforces the PRE-APPLY boundary: fresh enable and upgrade preserve pre-existing protocol destinations, customized roots, and hook behavior, refusing every write until the protected files are safe and explicitly confirmed |
 | 4.36.0 | **Composable Git hook dispatchers:** `.githooks/pre-commit` and `post-commit` are now stable run-parts-style dispatchers; agent-memory's secret guard and ritual capture live in ordered `*.d/50-agent-memory-*` fragments. Executable fragments run in deterministic filename order, every layer gets a chance to report, and the first non-zero status is returned (so any failing pre-commit fragment blocks; Git still ignores post-commit status). Other hook layers can occupy before/after slots without replacing an entrypoint; focused tests pin ordering, filtering, argument forwarding, continue-after-failure, and status propagation. Fragment LF rules travel to Windows targets |
 | 4.35.0 | **Target-state reconcile — enable/upgrade in O(diff), not O(steps/rungs):** from a greenfield field case (a fresh Mode A enable of a nearly-empty repo took >10 minutes; Mode B paid O(rungs-behind) across a ladder of 80). The stepwise protocol becomes **declarative convergence**: `MANIFEST.md` (tool-side) declares every installed artifact as one row — target, source, policy (`verbatim` / `verbatim-dir` / `seed-copy` / `sentinel-merge` / `seed-generate` / `stamp`), forge — plus a **Semantic steps** table distilling the ladder's 14 non-mechanical migrations, version-gated. A runnable reconcile helper (`scripts/reconcile.py` + `.mjs`, byte-parity, 25 mirror tests each) diffs a target against it: dry-run by default (the consent artifact), one `--apply` pass for the mechanics, and a printed work-list for the judgment half (seeding, vision gate, hook activation, GitLab root-CI wiring, semantic steps, the closing stamp — which the script deliberately never writes). Never deletes, never touches seeded/user files, never edits a pre-existing `.gitlab-ci.yml`; drift on tool-owned files becomes *visible* before re-copy (live probe: surfaced 11 managed `.gitignore` entries no rung ever back-filled). The ladder stays as the per-version record; `--check-manifest` gates every release's manifest lockstep |
 | 4.34.2 | **`[secret-material]` self-knob FP fix:** the pre-commit guard's blocking message prints `AGENT_MEMORY_SECRET_GUARD=advisory` — and any memory file documenting that guidance then flagged as a credential assignment (the key contains SECRET; the tool taught a phrase, then blocked its quotation). Now an exact-key, value-constrained exemption covers only the knob's documented settings (`advisory`/`enforcing`, trailing punctuation tolerated — the guard's own line ends `…=advisory)`); any other value under that key still flags. Verbatim mirror fixtures both runtimes (50 each). Also recorded: AWS's canonical doc-example keys still flag by design — waive visibly, no invisible whitelist |
@@ -281,7 +282,7 @@ agent-memory/
   REVIEW.md                          ← the review ritual (installed into targets)
   SKILLS.md                          ← skills reference: author/sync/adopt/sanity (installed; on-demand)
   MERGE.md                           ← git-conflict resolution protocol (installed; on-demand)
-  AGENTS.md                          ← memory protocol + enable dispatch
+  AGENTS.md                          ← one-line universal pointer to memory/PROTOCOL.md
   CLAUDE.md / GEMINI.md              ← vendor bootstraps for this repo
   .cursorrules / .windsurfrules      ← Cursor / Windsurf bootstraps
   .github/copilot-instructions.md    ← GitHub Copilot bootstrap
@@ -296,6 +297,7 @@ agent-memory/
 
   templates/                         ← installed into target repos
     AGENTS.md, CLAUDE.md, GEMINI.md, ...
+    memory/PROTOCOL.md               ← canonical target-only memory protocol
     .gitlab-ci.yml                   ← GitLab CI floor root wiring (v4.31.0; installed when target has none)
     .gitlab/agent-memory-ci.yml      ← GitLab CI floor job (advisory; forge twin of the GitHub workflow)
     .gitlab/merge_request_templates/Default.md  ← MR What / Why template (GitLab)
@@ -310,6 +312,7 @@ agent-memory/
     .agent/version.md                ← install manifest (with {{placeholders}})
 
   memory/                            ← this tool's own memory layer
+    PROTOCOL.md                      ← dual-mode tool protocol + session lifecycle
     instructions.md
     continuity.md
     decay-policy.md

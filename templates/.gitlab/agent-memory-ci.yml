@@ -52,7 +52,7 @@ agent-memory:
         work="$(printf '%s\n' "$changed" | grep -vE '^(memory/|\.agent/)' | grep -v '^$' || true)"
         logged="$(printf '%s\n' "$changed" | grep -E '^memory/sessions/.*\.md$' || true)"
         if [ -n "$work" ] && [ -z "$logged" ]; then
-          echo "agent-memory ritual: changes touched tracked files but added no memory/sessions/ log — write or enrich a session log per AGENTS.md 'After Every Session'."
+          echo "agent-memory ritual: changes touched tracked files but added no memory/sessions/ log — write or enrich a session log per memory/PROTOCOL.md 'Close every session'."
           status=42
         else
           echo "ritual check: ok"

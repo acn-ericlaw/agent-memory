@@ -27,6 +27,7 @@ vendors, and the protocol files that drive everything.
 
     ---
 
-    `AGENTS.md`, `DECAY.md`, `REVIEW.md`, `MERGE.md`, `SKILLS.md`, and friends.
+    `memory/PROTOCOL.md`, the `AGENTS.md` shim, `DECAY.md`, `REVIEW.md`, `MERGE.md`,
+    `SKILLS.md`, and friends.
 
 </div>

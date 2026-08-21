@@ -6,6 +6,10 @@ This file shows what the agent prints when you run:
 
 on a repo that already uses Cursor and Aider.
 
+> **Historical fixture:** this captured run predates v4.37.0. A current migration also
+> creates `memory/PROTOCOL.md` and installs `AGENTS.md` as its exact one-line pointer; the
+> output below remains unedited evidence of the earlier run.
+
 ---
 
 ```

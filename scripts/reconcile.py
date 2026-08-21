@@ -5,7 +5,8 @@ Tool-operator-side (runs from this checkout; never installed into targets). Pyth
 stdlib only. A byte-parity Node twin lives at scripts/reconcile.mjs.
 
 Usage:
-  python3 scripts/reconcile.py --target <path> [--apply] [--forge github|gitlab|azdo|unknown]
+  python3 scripts/reconcile.py --target <path> [--apply] [--pre-apply-complete]
+      [--forge github|gitlab|azdo|unknown]
   python3 scripts/reconcile.py --check-manifest
 
 Default is a dry-run report. --apply performs the mechanical policies only
@@ -388,6 +389,64 @@ def build_plan(tool_root, target, manifest, forge, installed, current_version):
     return mechanical, agent, semantic, notes
 
 
+PRE_APPLY_TARGETS = {
+    "4.36.0": {
+        ".githooks/pre-commit",
+        ".githooks/post-commit",
+        ".githooks/pre-commit.d/50-agent-memory-secret-guard",
+        ".githooks/post-commit.d/50-agent-memory-ritual-capture",
+    },
+    "4.37.0": {"memory/PROTOCOL.md", "AGENTS.md"},
+}
+
+
+def pre_apply_state(installed, semantic, mechanical, notes):
+    """Return (steps, hard blockers, explicit-confirmation reasons).
+
+    The activation boundary is state-gated, not merely version-gated: a current
+    stamp cannot authorize replacement of live root instructions, and fresh
+    custom protocols still require provenance confirmation. Unknown future
+    PRE-APPLY steps fail closed until they gain a completion rule here.
+    """
+    steps = [s for s in semantic if s["step"].startswith("PRE-APPLY:")]
+    pending_by_target = {item[1]["target"]: item[0] for item in mechanical}
+    hard = set()
+    confirmation = set()
+    protocol_custom = any(
+        note[0] == "keep" and note[1] == "memory/PROTOCOL.md"
+        for note in notes)
+
+    # Existing root instructions are never mechanically replaced. A missing root
+    # may be installed only when it cannot activate an unclassified custom protocol.
+    agents_action = pending_by_target.get("AGENTS.md")
+    if agents_action == "recopy":
+        hard.add("AGENTS.md")
+    elif agents_action == "copy" and protocol_custom:
+        hard.update({"AGENTS.md", "memory/PROTOCOL.md"})
+
+    # Hook drift can contain local policy/security behavior. The dry-run exposes
+    # it; the explicit handshake attests that behavior was preserved or approved.
+    for target in PRE_APPLY_TARGETS["4.36.0"]:
+        if pending_by_target.get(target) == "recopy":
+            confirmation.add(target)
+
+    for step in steps:
+        targets = PRE_APPLY_TARGETS.get(step["below"])
+        if targets is None:
+            hard.add("<unknown PRE-APPLY boundary for " + step["below"] + ">")
+        elif step["below"] == "4.36.0":
+            # Hook drift is confirmable after inspection/extraction: the explicit
+            # handshake authorizes the dispatcher re-copy. The protocol boundary
+            # below is different—it must converge before any mechanical apply.
+            pass
+        else:
+            hard.update(targets & set(pending_by_target))
+
+    if installed is None and protocol_custom:
+        confirmation.add("memory/PROTOCOL.md")
+    return steps, hard, confirmation
+
+
 def print_report(mechanical, agent, semantic, notes, mode):
     def line(verb, path, detail):
         out = "  " + verb.ljust(9) + path
@@ -509,7 +568,8 @@ def check_manifest(tool_root, manifest):
 
 
 def main(argv):
-    target, forge_override, do_apply, do_check = None, None, False, False
+    target, forge_override = None, None
+    do_apply, do_check, pre_apply_complete = False, False, False
     i = 0
     while i < len(argv):
         a = argv[i]
@@ -523,6 +583,8 @@ def main(argv):
                 die("--forge must be github|gitlab|azdo|unknown")
         elif a == "--apply":
             do_apply = True
+        elif a == "--pre-apply-complete":
+            pre_apply_complete = True
         elif a == "--check-manifest":
             do_check = True
         else:
@@ -574,6 +636,21 @@ def main(argv):
 
     pending = len(mechanical) + len(agent) + len(semantic)
     if do_apply:
+        pre_steps, hard, confirmation = pre_apply_state(
+            installed, semantic, mechanical, notes)
+        if hard:
+            blocked = sorted(hard)
+            print("result: blocked — PRE-APPLY boundary unresolved for: " +
+                  ", ".join(blocked))
+            print("no target files were written; complete the listed preservation, "
+                  "provenance, merge, and hash checks, then rerun the dry-run")
+            sys.exit(1)
+        if (pre_steps or confirmation) and not pre_apply_complete:
+            print("result: blocked — no hard PRE-APPLY boundary writes remain, but "
+                  "explicit confirmation is required")
+            print("no target files were written; after completing the listed checks, "
+                  "rerun with --apply --pre-apply-complete")
+            sys.exit(1)
         applied = apply_mechanical(tool_root, target, mechanical)
         remaining = len(agent) + len(semantic)
         print("result: applied " + str(applied) + " mechanical change(s); " +
@@ -582,8 +659,21 @@ def main(argv):
     if pending == 0:
         print("result: converged — nothing to do")
         sys.exit(0)
-    hint = ("re-run with --apply for the mechanical part" if mechanical
-            else "all pending items are agent work")
+    # The dry-run is the consent artifact: its closing hint must name the next
+    # real move. Sending the agent to --apply when --apply would refuse with zero
+    # writes is the one way this line can mislead.
+    pre_steps, hard, confirmation = pre_apply_state(
+        installed, semantic, mechanical, notes)
+    if hard:
+        hint = ("--apply refuses until the PRE-APPLY boundary converges for: " +
+                ", ".join(sorted(hard)))
+    elif pre_steps or confirmation:
+        hint = ("re-run with --apply --pre-apply-complete once the listed "
+                "PRE-APPLY checks are done")
+    elif mechanical:
+        hint = "re-run with --apply for the mechanical part"
+    else:
+        hint = "all pending items are agent work"
     print("result: " + str(len(mechanical)) + " mechanical + " +
           str(len(agent) + len(semantic)) + " agent item(s) pending "
           "(dry-run — " + hint + ")")

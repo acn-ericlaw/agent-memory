@@ -1,6 +1,6 @@
 # Protocol Files
 
-The protocol itself is a small set of markdown files at the repo root. They are written for an
+The protocol is a small set of Markdown files rooted at `memory/` and the repository root. They are written for an
 **AI agent to execute**, so they're terse and operational — this page is a map. Each links to
 the source on GitHub.
 
@@ -8,7 +8,8 @@ the source on GitHub.
 
 | File | Role |
 |---|---|
-| [`AGENTS.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/AGENTS.md) | The hub. Every vendor's agent reads it first; it routes to everything else. A **target's** `AGENTS.md` is the memory hub (from `templates/AGENTS.md`); the tool's **root** `AGENTS.md` is the dual-mode operator dispatcher. |
+| [`AGENTS.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/AGENTS.md) | Exact one-line universal discovery shim to `memory/PROTOCOL.md`. |
+| [`memory/PROTOCOL.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/memory/PROTOCOL.md) | Canonical activation and lifecycle protocol. The tool copy includes dual-mode operator routing; enabled targets receive the target-only source from `templates/memory/PROTOCOL.md`. |
 | [`README.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/README.md) | Human-facing quickstart + design philosophy. |
 
 ## Read on demand
@@ -19,6 +20,9 @@ the source on GitHub.
 | [`REVIEW.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/REVIEW.md) | The review ritual, step by step, with the safe-write Safety section. |
 | [`MERGE.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/MERGE.md) | The tiered, human-gated `memory/` conflict-resolution protocol. |
 | [`SKILLS.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/SKILLS.md) | The skills layer — authoring, syncing, deleting, the adapter recipe. |
+
+The protocol's instruction-versus-evidence boundary is governed by the
+[agent instruction and memory security contract](../architecture/security.md).
 
 ## Operator-only
 

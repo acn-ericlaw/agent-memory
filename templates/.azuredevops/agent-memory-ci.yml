@@ -59,7 +59,7 @@ jobs:
             work="$(printf '%s\n' "$changed" | grep -vE '^(memory/|\.agent/)' | grep -v '^$' || true)"
             logged="$(printf '%s\n' "$changed" | grep -E '^memory/sessions/.*\.md$' || true)"
             if [ -n "$work" ] && [ -z "$logged" ]; then
-              echo "##vso[task.logissue type=warning]agent-memory ritual: changes touched tracked files but added no memory/sessions/ log — write or enrich a session log per AGENTS.md 'After Every Session'."
+              echo "##vso[task.logissue type=warning]agent-memory ritual: changes touched tracked files but added no memory/sessions/ log — write or enrich a session log per memory/PROTOCOL.md 'Close every session'."
               status=1
             else
               echo "ritual check: ok"

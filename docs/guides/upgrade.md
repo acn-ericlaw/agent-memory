@@ -23,7 +23,12 @@ declared target state in one pass, instead of walking every release you're behin
 When the repo is already enabled but behind, the agent detects the drift from
 `.agent/version.md` and runs the **reconcile helper**: a dry-run report first (what will
 be copied, what drifted, what stays yours), then — with your consent — one apply pass,
-the applicable semantic steps, and the version stamp. Re-running is safe (idempotent).
+the applicable semantic steps, and the version stamp. A semantic step labelled
+`PRE-APPLY` runs before the apply pass and is followed by a confirming dry-run; the CLI
+refuses writes until protected protocol files converge, then requires
+`--pre-apply-complete` to attest that the listed preservation and hash checks are done.
+This protects content that a mechanical re-copy would otherwise replace. Re-running is
+safe (idempotent).
 
 ```mermaid
 flowchart LR
@@ -43,9 +48,10 @@ flowchart LR
   keep yours, take the update, or upstream the fix.
 
 !!! info "Source of truth matters"
-    A target's `AGENTS.md` is re-synced from **`templates/AGENTS.md`** (the memory hub), never
-    from the tool's *root* `AGENTS.md` (the operator dispatcher). The ladder encodes this
-    per-file map so an upgrade can't mis-source a file.
+    A target's one-line `AGENTS.md` comes from **`templates/AGENTS.md`** and its canonical
+    protocol comes from **`templates/memory/PROTOCOL.md`**, never the tool's dual-mode
+    `memory/PROTOCOL.md`. The manifest encodes this per-file map so an upgrade cannot
+    install operator routing into a target.
 
 ## After a new built-in is installed
 

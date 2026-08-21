@@ -5,7 +5,8 @@
 // stdlib only. Byte-parity twin of scripts/reconcile.py — keep outputs identical.
 //
 // Usage:
-//   node scripts/reconcile.mjs --target <path> [--apply] [--forge github|gitlab|azdo|unknown]
+//   node scripts/reconcile.mjs --target <path> [--apply] [--pre-apply-complete]
+//       [--forge github|gitlab|azdo|unknown]
 //   node scripts/reconcile.mjs --check-manifest
 //
 // Exit codes: 0 converged / applied / manifest OK; 3 pending actions (dry-run); 1 error.
@@ -397,6 +398,58 @@ export function buildPlan(toolRoot, target, manifest, forge, installed, currentV
   return [mechanical, agent, semantic, notes];
 }
 
+const PRE_APPLY_TARGETS = new Map([
+  ["4.36.0", new Set([
+    ".githooks/pre-commit",
+    ".githooks/post-commit",
+    ".githooks/pre-commit.d/50-agent-memory-secret-guard",
+    ".githooks/post-commit.d/50-agent-memory-ritual-capture",
+  ])],
+  ["4.37.0", new Set(["memory/PROTOCOL.md", "AGENTS.md"])],
+]);
+
+export function preApplyState(installed, semantic, mechanical, notes) {
+  const steps = semantic.filter((s) => s.step.startsWith("PRE-APPLY:"));
+  const pendingByTarget = new Map(mechanical.map((item) => [item[1].target, item[0]]));
+  const hard = new Set();
+  const confirmation = new Set();
+  const protocolCustom = notes.some((note) =>
+    note[0] === "keep" && note[1] === "memory/PROTOCOL.md");
+
+  const agentsAction = pendingByTarget.get("AGENTS.md");
+  if (agentsAction === "recopy") {
+    hard.add("AGENTS.md");
+  } else if (agentsAction === "copy" && protocolCustom) {
+    hard.add("AGENTS.md");
+    hard.add("memory/PROTOCOL.md");
+  }
+
+  for (const target of PRE_APPLY_TARGETS.get("4.36.0")) {
+    if (pendingByTarget.get(target) === "recopy") confirmation.add(target);
+  }
+
+  for (const step of steps) {
+    const targets = PRE_APPLY_TARGETS.get(step.below);
+    if (!targets) {
+      hard.add("<unknown PRE-APPLY boundary for " + step.below + ">");
+      continue;
+    }
+    for (const target of targets) {
+      if (step.below === "4.36.0") {
+        // Hook drift is confirmable after inspection/extraction: the explicit
+        // handshake authorizes the dispatcher re-copy. The protocol boundary
+        // below must instead converge before any mechanical apply.
+        continue;
+      } else if (pendingByTarget.has(target)) {
+        hard.add(target);
+      }
+    }
+  }
+
+  if (installed === null && protocolCustom) confirmation.add("memory/PROTOCOL.md");
+  return [steps, hard, confirmation];
+}
+
 function printReport(mechanical, agent, semantic, notes) {
   const line = (verb, p, detail) => {
     let out = "  " + verb.padEnd(9) + p;
@@ -509,6 +562,7 @@ function checkManifest(toolRoot, manifest) {
 
 function main(argv) {
   let target = null, forgeOverride = null, doApply = false, doCheck = false;
+  let preApplyComplete = false;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--target") {
@@ -524,6 +578,8 @@ function main(argv) {
       }
     } else if (a === "--apply") {
       doApply = true;
+    } else if (a === "--pre-apply-complete") {
+      preApplyComplete = true;
     } else if (a === "--check-manifest") {
       doCheck = true;
     } else {
@@ -577,6 +633,22 @@ function main(argv) {
 
   const pending = mechanical.length + agent.length + semantic.length;
   if (doApply) {
+    const [preSteps, hard, confirmation] = preApplyState(
+      installed, semantic, mechanical, notes);
+    const blocked = [...hard].sort();
+    if (blocked.length) {
+      console.log("result: blocked — PRE-APPLY boundary unresolved for: " + blocked.join(", "));
+      console.log("no target files were written; complete the listed preservation, " +
+        "provenance, merge, and hash checks, then rerun the dry-run");
+      process.exit(1);
+    }
+    if ((preSteps.length || confirmation.size) && !preApplyComplete) {
+      console.log("result: blocked — no hard PRE-APPLY boundary writes remain, but " +
+        "explicit confirmation is required");
+      console.log("no target files were written; after completing the listed checks, " +
+        "rerun with --apply --pre-apply-complete");
+      process.exit(1);
+    }
     const applied = applyMechanical(toolRoot, target, mechanical);
     const remaining = agent.length + semantic.length;
     console.log("result: applied " + applied + " mechanical change(s); " +
@@ -587,9 +659,23 @@ function main(argv) {
     console.log("result: converged — nothing to do");
     process.exit(0);
   }
-  const hint = mechanical.length
-    ? "re-run with --apply for the mechanical part"
-    : "all pending items are agent work";
+  // The dry-run is the consent artifact: its closing hint must name the next real
+  // move. Sending the agent to --apply when --apply would refuse with zero writes
+  // is the one way this line can mislead.
+  const [preSteps, hard, confirmation] = preApplyState(
+    installed, semantic, mechanical, notes);
+  let hint;
+  if (hard.size) {
+    hint = "--apply refuses until the PRE-APPLY boundary converges for: " +
+      [...hard].sort().join(", ");
+  } else if (preSteps.length || confirmation.size) {
+    hint = "re-run with --apply --pre-apply-complete once the listed " +
+      "PRE-APPLY checks are done";
+  } else if (mechanical.length) {
+    hint = "re-run with --apply for the mechanical part";
+  } else {
+    hint = "all pending items are agent work";
+  }
   console.log("result: " + mechanical.length + " mechanical + " +
     (agent.length + semantic.length) + " agent item(s) pending " +
     "(dry-run — " + hint + ")");

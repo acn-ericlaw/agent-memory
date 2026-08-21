@@ -11,6 +11,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.37.0, 8/20/2026
+
+> **Enterprise-efficient protocol activation (MINOR).** Enterprise IDEs often auto-load
+> root `AGENTS.md`; the former ~20 KB protocol therefore consumed default context even when
+> a task did not need it. The root file is now a 61-byte, one-line discovery shim to the
+> canonical `memory/PROTOCOL.md`.
+
+### Added
+
+- **Two correctly scoped protocol sources:** `memory/PROTOCOL.md` retains this tool's
+  dual-mode operator dispatch; `templates/memory/PROTOCOL.md` is the target-only protocol
+  installed into enabled repositories. Both put activation before rationale and retain the
+  complete memory, VBDI, skill, safety, review, attribution, and multi-agent obligations.
+- **Collision-safe lifecycle rules:** fresh enable and the `4.36.0 → 4.37.0` rung preserve
+  a pre-existing target protocol and customized root instructions exactly once, stop before
+  writes on unsafe merges, and require a byte-recovery path before collapsing the old root.
+- **Instruction/memory trust contract:** `docs/architecture/security.md` makes permission
+  precedence, evidence-only memory, provenance checks, and fail-closed lifecycle promotion
+  durable beyond this release's feature spec.
+- **A named protocol-propagation obligation:** `memory/PROTOCOL.md` installs as `seed-copy`,
+  so an installed protocol is never re-copied — deliberate, since the rung merges the old
+  root's local directives into it. Protocol text therefore no longer rides along on a
+  `verbatim` row as it did under the inline `AGENTS.md` hub, so `MANIFEST.md`'s row notes and
+  the `UPGRADE.md` manifest-lockstep rule now make a **Semantic steps** row a standing release
+  obligation for any future release that edits `templates/memory/PROTOCOL.md`.
+
+### Changed
+
+- **Root `AGENTS.md` ×2** (tool + template) is byte-identical and exactly one physical line
+  plus a terminal newline. Import-capable Claude/Gemini bootstraps load
+  `memory/PROTOCOL.md` before the core memory files; Cursor, Windsurf, and Copilot point to it
+  directly while keeping the universal shim.
+- **Protocol efficiency and accuracy:** the tool protocol is 11,147 bytes and the target
+  protocol is 10,231 bytes, both below the 14,500-byte contract, with duplicate prose
+  collapsed and directives reordered to their activation or session-close point.
+- **Reconcile integration:** `MANIFEST.md` owns the target protocol seed and a pre-apply
+  semantic step protects customized roots before the mechanical reconcile pass. Both
+  runtimes refuse every write while the protocol/shim boundary is unresolved and require
+  `--pre-apply-complete` after the listed hook/protocol preservation and hash checks. The
+  guard is activation-state-based: a current stamp cannot authorize root replacement, and
+  current hook/managed-fragment drift or a fresh custom protocol still requires confirmation.
+  The dry-run's closing hint names the move that will actually work — the PRE-APPLY refusal
+  set, or `--apply --pre-apply-complete` — so the consent artifact never points at an apply
+  that would refuse. 35 mirrored tests pin refusal, confirmed apply, local-fragment survival,
+  collisions, and the hint.
+- **Lockstep:** enablement, upgrade source maps/rung, schema, smoke guidance, architecture
+  maps, README/release table, and target reporting recognize the shim/protocol boundary;
+  `VERSION` → 4.37.0.
+
+Targets: install the target-only protocol, preserve unmatched local instructions, collapse
+root `AGENTS.md` only after recovery and merge checks, re-sync activation bootstraps, and stamp.
+
 ## Version 4.36.0, 8/20/2026
 
 > **Composable Git hook dispatchers (MINOR).** The `pre-commit` and `post-commit` files were
@@ -127,7 +179,6 @@ Targets: version-stamp only (no installed file changes shape or content); the fi
 run may apply accumulated managed-block drift, by design. Supersedes the Mode B automation
 backlog thread — its "script the mechanical parts, leave the merges to the agent" boundary is
 exactly where the manifest/judgment line landed.
-
 ## Version 4.34.2, 8/19/2026
 
 > **`[secret-material]`: the guard's own opt-down knob is not a credential (PATCH).** Field report

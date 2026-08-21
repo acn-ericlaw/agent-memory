@@ -8,7 +8,7 @@
 
 ## How to run
 
-1. Read **only** `memory/instructions.md`, `memory/continuity.md`, the latest 2–3
+1. Read **only** `memory/PROTOCOL.md`, `memory/instructions.md`, `memory/continuity.md`, the latest 2–3
    `memory/sessions/`, and `memory/archive/INDEX.md`. Do not read source or ask the user.
 2. Answer each question from those alone; mark ✅ or ❌ (with a one-line note on misses).
 3. Append a row to the **Result log**. For each ❌, add the missing fact to memory (or

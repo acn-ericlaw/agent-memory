@@ -118,6 +118,11 @@ partnership. No scoring, no float; same discipline as the rest of the tool.
 
 ## 10. What changes (implementation plan)
 
+> **Activation placement amendment (v4.37.0):** the original implementation list below is
+> historical. The VBDI session/gate instructions now live in `memory/PROTOCOL.md`; root
+> `AGENTS.md` is its one-line discovery shim. `DECAY.md`, `REVIEW.md`, schema, enablement,
+> and smoke-test ownership remain as described.
+
 - **New:** `templates/memory/vision.md` (+ the tool's own `memory/vision.md`). Blueprint =
   a typed Open Thread (no new file).
 - **Wire the loop in:** `AGENTS.md` (Before/During/After name the loop + the gates),

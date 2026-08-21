@@ -2,7 +2,7 @@
 
 ## Deterministic memory as a substrate; a lightweight cognitive loop as the control layer
 
-**Version:** 1.5 (describes agent-memory **v4.36.0**)
+**Version:** 1.5 (describes agent-memory **v4.37.0**)
 **Date:** August 20, 2026
 
 > *"Acceleration without direction is only faster drift."*
@@ -235,7 +235,7 @@ procedure, optionally helper scripts) authored once and usable by any agent.
 
 - **Neutral source of truth.** A committed `agent-skills/<name>/SKILL.md` — vendor-neutral
   markdown — is the single definition; it travels with the repo, like `memory/`.
-- **Universal runtime.** The `AGENTS.md` "Skills" section is the baseline: when a task
+- **Universal runtime.** The `memory/PROTOCOL.md` "Use skills correctly" section is the baseline: when a task
   matches a skill's `description`, the agent reads and follows that `SKILL.md`. Because the
   agent *is* the runtime, this works on **any** vendor with no engine.
 - **Thin per-vendor adapters.** For runtimes with a native skill/command system, the tool
@@ -346,8 +346,8 @@ its documentation:
 ## 6. Design Principles
 
 - **No-code, markdown-only.** The files are the product; the agent is the runtime.
-- **Vendor-neutral.** One shared memory; thin per-vendor bootstrap pointers route every
-  agent to a single hub (`AGENTS.md`). No lock-in.
+- **Vendor-neutral.** One shared memory; the one-line `AGENTS.md` shim and thin vendor
+  bootstraps route every agent to `memory/PROTOCOL.md`. No lock-in.
 - **Deterministic — no floating-point.** Every decision reduces to counting or comparing
   integers, so results are reproducible across agents and runs.
 - **Reversible reconciliation.** Immutable ledger + mutable projection + replay — the

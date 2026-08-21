@@ -25,18 +25,18 @@ is an AI agent reading them. Validation is manual: confirm the protocol files re
 unambiguously and that `examples/` still reflect documented behavior.
 
 > **Control flow.** Every agent enters via its bootstrap pointer (`CLAUDE.md`, `GEMINI.md`,
-> `.cursorrules`, …) → **`AGENTS.md`** (the hub), which branches: working *within* this
-> repo → the memory protocol (read this file + `continuity.md` + `vision.md` + recent
-> `sessions/`); *AI-enabling another repo* → `ENABLE.md` (then `MIGRATE.md`/`UPGRADE.md`
-> as it directs). Don't improvise from memory — read the protocol file.
+> `.cursorrules`, …) or the exact one-line root **`AGENTS.md`** shim →
+> **`memory/PROTOCOL.md`**, which branches: working *within* this repo → activate shared
+> memory; *AI-enabling another repo* → `ENABLE.md` (then `MIGRATE.md`/`UPGRADE.md` as it
+> directs). Don't improvise from memory — read the protocol file.
 
 ## Repository Structure — how the files relate
 
 The system is layered, and the layering is the design (README "Two Layers"):
 
 - **Root bootstrap files** (`CLAUDE.md`, `GEMINI.md`, `AGENTS.md`, `.cursorrules`,
-  `.windsurfrules`, `.github/copilot-instructions.md`) — one per vendor, **each a thin
-  pointer** so any agent lands in the same `AGENTS.md` protocol. `AGENTS.md` is the hub.
+  `.windsurfrules`, `.github/copilot-instructions.md`) — thin activation pointers;
+  `AGENTS.md` is the universal one-line shim to `memory/PROTOCOL.md`.
 - **`ENABLE.md`** — enablement protocol (detect footprint → Mode A/B/C → analyze →
   generate). **`MIGRATE.md`** — per-vendor detection + conversion, only via Mode C.
   **`UPGRADE.md`** — in-place version-upgrade ladder, only via Mode B. `MIGRATE.md` and
@@ -52,16 +52,18 @@ The system is layered, and the layering is the design (README "Two Layers"):
 - **`templates/`** — exactly what installs into a target repo: bootstrap files + `memory/`
   files with `{{UPPER_SNAKE_CASE}}` placeholders (incl. `decay-policy.md`, `vision.md`),
   `.agent/schema.md` (canonical memory-file format, copied verbatim), `.agent/version.md`.
-- **`memory/`** — this repo's *own* memory layer (it eats its own dog food): this file,
+- **`memory/`** — this repo's *own* memory layer (it eats its own dog food):
+  `PROTOCOL.md` (dual-mode operator/session protocol), this file,
   `continuity.md` (live state + Architectural Invariants + Blueprint), `vision.md`,
   `decay-policy.md`, `sessions/` (immutable event log), `archive/`, `smoke-test.md`.
 - **`examples/`** — real filled-in output, not placeholders: `rust-event-bus/` (Mode A),
   `migrated-cursor-aider-project/` (Mode C), `evolving-memory-example/` (the review cycle).
 - **`docs/`** — design rationale + assessments (`DESIGN-evolving-memory.md`,
-  `DESIGN-vbdi-lifecycle.md`, `agent-cognitive-framework.md`, `assessments/`).
+  `DESIGN-vbdi-lifecycle.md`, `architecture/security.md`,
+  `agent-cognitive-framework.md`, `assessments/`).
 
 **Changes span layers in lockstep:** a new vendor → a row in `MIGRATE.md`'s table + a
-per-vendor section + the supported-vendor tables in `README.md` and `AGENTS.md`. A
+per-vendor section + the supported-vendor tables in `README.md` and `memory/PROTOCOL.md`. A
 memory-file shape change → `templates/`, `templates/.agent/schema.md`, and `examples/`
 together. An evolving-memory change → `DECAY.md`, `REVIEW.md`,
 `templates/memory/decay-policy.md`, the schema, and `examples/evolving-memory-example/`;

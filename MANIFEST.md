@@ -50,6 +50,7 @@ files on a CRLF repo); `-` = none.
 | REVIEW.md | REVIEW.md | verbatim | all | - |
 | SKILLS.md | SKILLS.md | verbatim | all | - |
 | MERGE.md | MERGE.md | verbatim | all | - |
+| memory/PROTOCOL.md | templates/memory/PROTOCOL.md | seed-copy | all | - |
 | AGENTS.md | templates/AGENTS.md | verbatim | all | - |
 | .agent/schema.md | templates/.agent/schema.md | verbatim | all | - |
 | .cursorrules | templates/.cursorrules | verbatim | all | - |
@@ -91,9 +92,21 @@ files on a CRLF repo); `-` = none.
 
 Row notes (the table stays machine-lean; nuance lives here):
 
-- **AGENTS.md** — the source is **always `templates/AGENTS.md`** (the target memory-protocol
-  hub), never this tool's root `AGENTS.md` (the operator dispatcher). See `UPGRADE.md` →
-  "Source of truth for re-synced files".
+- **AGENTS.md + memory/PROTOCOL.md** — the root shim always comes from
+  `templates/AGENTS.md`, never the tool root. The target-only protocol is seeded from
+  `templates/memory/PROTOCOL.md`; because it may hold repository-specific instructions,
+  reconcile never overwrites an existing copy. Fresh enable completes the protocol before
+  installing the shim; the v4.37.0 pre-apply semantic step safely relocates older roots.
+  **`seed-copy` here is a chosen cost, and it has a named propagation mechanism.** The
+  policy is deliberate: the v4.37.0 rung merges the old root's local directives *into* this
+  file, so a mechanical re-copy could silently drop team-authored steering — the one file
+  where that loss is unrecoverable, since the old root is gone by then. The cost is that
+  protocol-text edits do **not** reach installed targets on their own. So every release that
+  edits `templates/memory/PROTOCOL.md` **must** add a **Semantic steps** row for it — re-copy
+  when the target's protocol is still byte-identical to the previous release's template,
+  arbitrate per `ENABLE.md` §5i when it carries local content. This is a standing release
+  obligation, not a one-off (see the manifest-lockstep rule in `UPGRADE.md`): a release that
+  changes the protocol and ships no such row leaves every target on the old text.
 - **memory/sessions/** — "present" means the directory exists with at least one file; the
   first enable session log (Step 5c) is what normally satisfies it (`.gitkeep` only as a
   fallback when no log is written).
@@ -129,7 +142,8 @@ in the named `UPGRADE.md` rung. Mode B = reconcile + the applicable rows + stamp
 | 4.33.0 | 4.32.1 -> 4.33.0 | Run memory-lint and triage every [secret-material] finding now: redact to (REDACTED); rotate anything live (a committed secret is exposed - redaction is not un-leaking); waive only deliberately quoted, non-live examples (lint:allow-secret-material). |
 | 4.34.0 | 4.33.4 -> 4.34.0 | Tell the team the pre-commit secret guard now blocks staged secrets by default (opt down with the AGENT_MEMORY_SECRET_GUARD env knob set to advisory, or bypass once with git commit --no-verify). |
 | 4.34.2 | 4.34.1 -> 4.34.2 | Drop lint:allow-secret-material waivers added solely for since-fixed false-positive classes (ALL-CAPS enum constants, their backticked form, the guard's own opt-down knob); leave all other waivers alone. |
-| 4.36.0 | 4.35.0 -> 4.36.0 | If a hook entrypoint carries locally owned behavior (not the stock agent-memory monolith), move it into a differently named executable fragment (00- to 49- before agent-memory, 51- to 99- after) before accepting the dispatcher re-copy; never overwrite a differently named fragment; if local and agent-memory logic are interleaved, stop for a human decision. |
+| 4.36.0 | 4.35.0 -> 4.36.0 | PRE-APPLY: If a hook entrypoint carries locally owned behavior (not the stock agent-memory monolith), move it into a differently named executable fragment (00- to 49- before agent-memory, 51- to 99- after) before accepting the dispatcher re-copy; never overwrite a differently named fragment; if local and agent-memory logic are interleaved, stop for a human decision. |
+| 4.37.0 | 4.36.0 -> 4.37.0 | PRE-APPLY: Before any reconcile apply, prove recovery of the existing AGENTS.md, merge its local directives and any existing protocol into the target-only memory/PROTOCOL.md with provenance and authority checks, revalidate source hashes, then install the exact one-line shim. Stop before every write on an unsafe merge. |
 
 ## Tool-only (never installed)
 

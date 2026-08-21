@@ -36,7 +36,9 @@ existing AI footprint and chooses one of three modes.
     The repo is already enabled. The agent is idempotent — and if the repo is on an older
     version, it [upgrades in place](upgrade.md) by **reconciling against the current
     target state** (v4.35.0) — one diff-and-apply pass plus the few version-gated
-    semantic steps, not a walk of every release in between.
+    semantic steps, not a walk of every release in between. A `PRE-APPLY` step runs
+    before mechanics when it must preserve content that would otherwise be re-copied;
+    reconcile refuses writes until the protected boundary is safe and explicitly confirmed.
 
 ## How it converges (v4.35.0)
 
@@ -52,8 +54,8 @@ seconds of mechanics plus a few minutes of real analysis.
 
 | Path | Purpose |
 |---|---|
-| `memory/` | continuity, vision, sessions, archive, decay-policy |
-| `AGENTS.md` | the hub every vendor's agent reads first |
+| `memory/` | protocol, continuity, vision, sessions, archive, decay-policy |
+| `AGENTS.md` | the one-line universal shim to `memory/PROTOCOL.md` |
 | `agent-skills/` | seven built-ins + any promoted skills |
 | `.githooks/` + the forge CI config (`.github/workflows/`, `.gitlab-ci.yml` + `.gitlab/`, or `.azuredevops/`) | the ritual triggers (agent-activated, forge-aware) |
 | `.agent/version.md` | version stamp (gates upgrades) |

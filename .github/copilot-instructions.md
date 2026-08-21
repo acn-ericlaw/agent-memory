@@ -2,8 +2,8 @@
 
 Both a shared AI memory layer and an AI-enablement / migration tool — no-code, markdown.
 
-**Read [`AGENTS.md`](../AGENTS.md) first.** It is the hub: it says which mode applies
-(working *within* this repo vs. AI-enabling another) and what to read. If AI-enabling
-another repo, it routes you to [`ENABLE.md`](../ENABLE.md).
+**Follow [`memory/PROTOCOL.md`](../memory/PROTOCOL.md) first.** Root `AGENTS.md` is its
+one-line universal discovery shim; the protocol selects internal-memory work versus
+AI-enabling another repository.
 
 Identify yourself as **GitHub Copilot** in all session logs.
