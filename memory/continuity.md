@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.36.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared; enable/upgrade converge **declaratively** against a `MANIFEST.md` target state via the reconcile helper — O(diff), not O(steps/rungs) (v4.35.0). Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (composable pre/post-commit **fragment dispatchers** over `.githooks/<hook>.d/*` — pre-commit secret guard (v4.34.0) + post-commit ritual capture as managed `50-` fragments (v4.36.0) — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.37.0 protocol-pointer conflict resolutions and gates are complete; awaiting human rebase continuation.
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-20 | agent: Claude Code (2026-08-20-223624)
+- **last_session:** 2026-08-21 | agent: Codex (2026-08-21-033351)
 - **last_review:** 2026-08-20 | through 2026-08-20-223624
 - **last_invariant_check:** 2026-08-14 | through 2026-08-14-011037
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -21,7 +21,9 @@
   analysis (4), generate/complete (5), bootstrap install (6), `.gitignore` install
   (7), verify (8), report (9), post-enable actions (10); version-aware Mode B
 - `MIGRATE.md` — per-vendor migration protocols for 11 vendors (reached via Mode C)
-- `AGENTS.md` — dual-mode dispatch (memory protocol + enable)
+- `AGENTS.md` — exact one-line universal shim to `memory/PROTOCOL.md`
+- `memory/PROTOCOL.md` — dual-mode operator dispatch + internal session protocol;
+  `templates/memory/PROTOCOL.md` is the installed target-only source
 - `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`, Copilot bootstrap
 - `templates/` — bootstrap + memory templates with `{{placeholders}}`, including
   `templates/.gitignore` (v3.1.0), `memory/decay-policy.md`, `.agent/version.md`
@@ -147,6 +149,20 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   CHANGELOG, README (row + 10-cap trim drops 4.32.0), UPGRADE (flow + checklist + row + rung).
   → serves: vision-agent-memory (adoption stays "point it at a repo" — in minutes, at any version)
   <!-- id: bp-reconcile-target-state | created: 2026-08-20 | last_used: 2026-08-20 | uses: 1 | tier: working | supersedes: ot-mode-b-automation-backlog | origin: 2026-08-20-223624 -->
+
+- [x] **(blueprint) Relocate the memory protocol behind a one-line root `AGENTS.md`
+  pointer and optimize it for activation, efficiency, instruction accuracy, and
+  terseness.** The maintainer confirmed the boundary applies to both this tool and
+  enabled targets, preserves the tool-vs-target protocol split, and ships through a
+  v4.37.0 upgrade. A full-mode spec and plan are under
+  `docs/specs/memory-protocol-pointer/`. Rebased onto v4.36.0 as v4.37.0: both 61-byte shims,
+  optimized tool/target protocols, lifecycle/release wiring, a durable
+  instruction-versus-evidence boundary, and fail-closed collision handling are complete.
+  Strict gates, target-local Git recovery/idempotence walkthrough, and final adversarial,
+  quality, and security reviews pass. → serves:
+  vision-agent-memory (lower default context cost without weakening deterministic,
+  cross-vendor activation)
+  <!-- id: protocol-pointer-enterprise-activation | created: 2026-08-20 | last_used: 2026-08-20 | uses: 1 | tier: working | origin: 2026-08-20-204952 -->
 
 - [x] **Shipped v4.34.2 (PATCH) — `[secret-material]`: the guard's own opt-down knob is not a
   credential.** Field issue from the **mercury-composable team** (2026-08-19, during their v4.34.0
@@ -404,8 +420,8 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - [ ] **(backlog) Before-session presence for Cursor/Kiro — path-scoped steering imports.** From a
   maintainer question after v4.29.0 shipped ("what about other vendors' entry points?"). v4.29.0
   covered the only two entry files with native import syntax (`CLAUDE.md` `@path`, `GEMINI.md`
-  `@./path.md`); AGENTS.md-native runtimes (Codex, Kiro, Antigravity) already auto-load the hub —
-  only the `AGENTS.md → memory/*` hop stays voluntary; Copilot/`.cursorrules`/`.windsurfrules` have
+  `@./path.md`); AGENTS.md-native runtimes (Codex, Kiro, Antigravity) auto-load the one-line shim —
+  only the `AGENTS.md → memory/PROTOCOL.md` hop stays voluntary; Copilot/`.cursorrules`/`.windsurfrules` have
   no import mechanism (the v4.20.1 front-load pattern is the one inline lever — small stable
   snippets only, never protocol copies). **Two real levers exist, blocked by our own `.gitignore`
   stance, not the vendors:** Cursor modern rules (`.cursor/rules/*.mdc`) attach files via
@@ -554,4 +570,4 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   schema `repo:` guidance, and flagged by `memory-lint` `[secret-material]` since v4.33.0.)
 - Any secrets — PII and credentials — must be redacted from session memory, never
   committed. (Stated 2026-08-13, after a client-side DLP catch; enforced via the
-  AGENTS.md redaction rule + `memory-lint` `[secret-material]`, v4.33.0.)
+  `memory/PROTOCOL.md` redaction rule + `memory-lint` `[secret-material]`, v4.33.0.)

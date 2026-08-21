@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
@@ -42,6 +43,26 @@ function stampVersion(t, version) {
     "\n- **last_upgraded:** 2026-01-01\n- **mode:**          A\n");
 }
 
+function snapshotTree(root) {
+  const snapshot = {};
+  function walk(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.isFile()) {
+        snapshot[path.relative(root, full)] = fs.readFileSync(full).toString("base64");
+      }
+    }
+  }
+  walk(root);
+  return snapshot;
+}
+
+function runCli(t, ...args) {
+  return spawnSync(process.execPath, [path.join(HERE, "reconcile.mjs"), "--target", t, ...args],
+    { encoding: "utf-8" });
+}
+
 function plan(t, forge = null) {
   const installed = detectInstalled(t);
   return buildPlan(TOOL_ROOT, t, MANIFEST, forge || detectForge(t), installed, CURRENT);
@@ -63,6 +84,11 @@ test("manifest shape", () => {
   for (const s of MANIFEST.semantic) assert.notEqual(parseSemver(s.below), null);
   const agents = MANIFEST.rows.filter((r) => r.target === "AGENTS.md");
   assert.equal(agents[0].source, "templates/AGENTS.md"); // never the root dispatcher
+  const protocol = MANIFEST.rows.filter((r) => r.target === "memory/PROTOCOL.md");
+  assert.equal(protocol[0].source, "templates/memory/PROTOCOL.md");
+  assert.equal(protocol[0].policy, "seed-copy");
+  const targets = MANIFEST.rows.map((r) => r.target);
+  assert.ok(targets.indexOf("memory/PROTOCOL.md") < targets.indexOf("AGENTS.md"));
 });
 
 // -- fresh enable ---------------------------------------------------------
@@ -212,6 +238,140 @@ test("semantic gating", () => {
   stampVersion(t, CURRENT);
   const [, , semantic2] = plan(t);
   assert.deepEqual(semantic2, []);
+});
+
+test("protocol pointer is a 4.37 pre-apply step", () => {
+  const t = makeTarget(tmpdir(), "https://github.com/acme/demo.git");
+  fs.mkdirSync(path.join(t, "memory"), { recursive: true });
+  fs.writeFileSync(path.join(t, "memory", "instructions.md"), "");
+  stampVersion(t, "4.36.0");
+  const [, , semantic] = plan(t);
+  const pointer = semantic.filter((s) => s.below === "4.37.0");
+  assert.equal(pointer.length, 1);
+  assert.ok(pointer[0].step.startsWith("PRE-APPLY:"));
+  stampVersion(t, "4.37.0");
+  const [, , semantic2] = plan(t);
+  assert.ok(!semantic2.map((s) => s.below).includes("4.37.0"));
+});
+
+test("apply blocks legacy boundaries without writing", () => {
+  const t = makeTarget(tmpdir(), "https://github.com/acme/demo.git");
+  stampVersion(t, "4.35.0");
+  fs.writeFileSync(path.join(t, "AGENTS.md"), "legacy project instructions\n");
+  fs.mkdirSync(path.join(t, ".githooks"), { recursive: true });
+  fs.writeFileSync(path.join(t, ".githooks", "pre-commit"),
+    "#!/usr/bin/env bash\necho local-check\n");
+  const before = snapshotTree(t);
+  const stopped = runCli(t, "--apply");
+  assert.equal(stopped.status, 1);
+  assert.deepEqual(snapshotTree(t), before);
+  assert.ok(!fs.existsSync(path.join(t, "DECAY.md")));
+});
+
+test("apply proceeds after explicit pre-apply completion", () => {
+  const t = makeTarget(tmpdir(), "https://github.com/acme/demo.git");
+  stampVersion(t, "4.35.0");
+  fs.mkdirSync(path.join(t, ".githooks", "pre-commit.d"), { recursive: true });
+  const local = path.join(t, ".githooks", "pre-commit.d", "40-local-check");
+  fs.writeFileSync(local, "#!/usr/bin/env bash\necho preserved\n");
+  fs.chmodSync(local, 0o755);
+  for (const hook of ["pre-commit", "post-commit"]) {
+    const hookPath = path.join(t, ".githooks", hook);
+    fs.writeFileSync(hookPath, "#!/usr/bin/env bash\necho inspected-stock-monolith\n");
+    fs.chmodSync(hookPath, 0o755);
+  }
+  const installs = new Map([
+    ["AGENTS.md", "templates/AGENTS.md"],
+    ["memory/PROTOCOL.md", "templates/memory/PROTOCOL.md"],
+  ]);
+  for (const [targetRel, sourceRel] of installs) {
+    const targetPath = path.join(t, targetRel);
+    const sourcePath = path.join(TOOL_ROOT, sourceRel);
+    fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+    fs.copyFileSync(sourcePath, targetPath);
+    fs.chmodSync(targetPath, fs.statSync(sourcePath).mode);
+  }
+  const beforeConfirmation = snapshotTree(t);
+  const stopped = runCli(t, "--apply");
+  assert.equal(stopped.status, 1);
+  assert.deepEqual(snapshotTree(t), beforeConfirmation);
+  const applied = runCli(t, "--apply", "--pre-apply-complete");
+  assert.equal(applied.status, 0, applied.stdout + applied.stderr);
+  assert.ok(fs.existsSync(path.join(t, "DECAY.md")));
+  assert.equal(fs.readFileSync(local, "utf-8"), "#!/usr/bin/env bash\necho preserved\n");
+  for (const hook of ["pre-commit", "post-commit"]) {
+    assert.deepEqual(fs.readFileSync(path.join(t, ".githooks", hook)),
+      fs.readFileSync(path.join(TOOL_ROOT, ".githooks", hook)));
+  }
+});
+
+test("fresh custom protocol collision blocks without writing", () => {
+  const t = makeTarget(tmpdir(), "https://github.com/acme/demo.git");
+  fs.mkdirSync(path.join(t, "memory"), { recursive: true });
+  fs.writeFileSync(path.join(t, "memory", "PROTOCOL.md"),
+    "repository-specific instructions\n");
+  const before = snapshotTree(t);
+  const stopped = runCli(t, "--apply");
+  assert.equal(stopped.status, 1);
+  assert.deepEqual(snapshotTree(t), before);
+});
+
+test("fresh exact shim custom protocol requires confirmation", () => {
+  const t = makeTarget(tmpdir(), "https://github.com/acme/demo.git");
+  fs.mkdirSync(path.join(t, "memory"), { recursive: true });
+  fs.copyFileSync(path.join(TOOL_ROOT, "templates", "AGENTS.md"), path.join(t, "AGENTS.md"));
+  const protocol = path.join(t, "memory", "PROTOCOL.md");
+  fs.writeFileSync(protocol, "repository-specific instructions\n");
+  const before = snapshotTree(t);
+  const stopped = runCli(t, "--apply");
+  assert.equal(stopped.status, 1);
+  assert.deepEqual(snapshotTree(t), before);
+  const applied = runCli(t, "--apply", "--pre-apply-complete");
+  assert.equal(applied.status, 0, applied.stdout + applied.stderr);
+  assert.equal(fs.readFileSync(protocol, "utf-8"), "repository-specific instructions\n");
+});
+
+test("current stamp cannot authorize root recopy", () => {
+  const t = makeTarget(tmpdir(), "https://github.com/acme/demo.git");
+  stampVersion(t, "4.37.0");
+  fs.mkdirSync(path.join(t, "memory"), { recursive: true });
+  fs.writeFileSync(path.join(t, "AGENTS.md"), "legacy root instructions\n");
+  fs.writeFileSync(path.join(t, "memory", "PROTOCOL.md"), "custom protocol\n");
+  const before = snapshotTree(t);
+  const stopped = runCli(t, "--apply", "--pre-apply-complete");
+  assert.equal(stopped.status, 1);
+  assert.deepEqual(snapshotTree(t), before);
+});
+
+test("current hook drift requires confirmation", () => {
+  const t = makeTarget(tmpdir(), "https://github.com/acme/demo.git");
+  stampVersion(t, "4.37.0");
+  fs.mkdirSync(path.join(t, "memory"), { recursive: true });
+  fs.mkdirSync(path.join(t, ".githooks", "pre-commit.d"), { recursive: true });
+  fs.copyFileSync(path.join(TOOL_ROOT, "templates", "AGENTS.md"), path.join(t, "AGENTS.md"));
+  fs.copyFileSync(path.join(TOOL_ROOT, "templates", "memory", "PROTOCOL.md"),
+    path.join(t, "memory", "PROTOCOL.md"));
+  const hook = path.join(t, ".githooks", "pre-commit");
+  fs.writeFileSync(hook, "#!/usr/bin/env bash\necho inspected-local-hook\n");
+  fs.chmodSync(hook, 0o755);
+  const local = path.join(t, ".githooks", "pre-commit.d", "40-local-check");
+  fs.writeFileSync(local, "#!/usr/bin/env bash\necho preserved\n");
+  fs.chmodSync(local, 0o755);
+  const managed = path.join(t, ".githooks", "pre-commit.d",
+    "50-agent-memory-secret-guard");
+  fs.writeFileSync(managed, "#!/usr/bin/env bash\necho inspected-managed-drift\n");
+  fs.chmodSync(managed, 0o755);
+  const before = snapshotTree(t);
+  const stopped = runCli(t, "--apply");
+  assert.equal(stopped.status, 1);
+  assert.deepEqual(snapshotTree(t), before);
+  const applied = runCli(t, "--apply", "--pre-apply-complete");
+  assert.equal(applied.status, 0, applied.stdout + applied.stderr);
+  assert.equal(fs.readFileSync(local, "utf-8"), "#!/usr/bin/env bash\necho preserved\n");
+  assert.deepEqual(fs.readFileSync(hook),
+    fs.readFileSync(path.join(TOOL_ROOT, ".githooks", "pre-commit")));
+  assert.deepEqual(fs.readFileSync(managed), fs.readFileSync(path.join(
+    TOOL_ROOT, ".githooks", "pre-commit.d", "50-agent-memory-secret-guard")));
 });
 
 test("2.x baseline detection", () => {

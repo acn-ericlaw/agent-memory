@@ -31,7 +31,7 @@ greeting that confirms skills are wired up.
 3. **Report the result — not your invocation path.** Confirm the skill ran (show the greeting +
    timestamps) and that you read the single neutral source `agent-skills/hello-world/SKILL.md` —
    that is the demonstration: the portable layer works on this vendor.
-   **Do not try to report *which* path triggered you** (native adapter vs. `AGENTS.md` baseline).
+   **Do not try to report *which* path triggered you** (native adapter vs. `memory/PROTOCOL.md` baseline).
    You can't tell reliably: a vendor like Gemini **expands a `/hello-world` slash command into this
    prompt *before you see it***, so the trigger is invisible to you, and the neutral skill reads
    identically on every path. The proof of native wiring is simply that the user's invocation *ran

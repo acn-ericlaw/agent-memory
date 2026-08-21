@@ -24,8 +24,9 @@ current hook documentation before relying on them.
 
 ## Option A0 — Claude Code SessionStart injection (before-session presence)
 
-Since v4.29.0 the `CLAUDE.md` / `GEMINI.md` bootstrap pointers **import** the hub and core
-memory files (`@AGENTS.md`, `@memory/instructions.md`, `@memory/continuity.md`,
+Since v4.29.0 the `CLAUDE.md` / `GEMINI.md` bootstrap pointers **import** the activation
+surface and core memory files (`@AGENTS.md`, `@memory/PROTOCOL.md`,
+`@memory/instructions.md`, `@memory/continuity.md`,
 `@memory/vision.md`), so those are already structurally present at session start with no hook
 at all. What imports **cannot** express is a dynamic path — "the newest 2–3 files in
 `memory/sessions/`" stays an explicit read the agent must choose to make. If you want the
@@ -74,7 +75,7 @@ agent to persist memory. In your project's or personal `.claude/settings.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "test -n \"$(find memory/sessions -name '*.md' -newer memory/continuity.md 2>/dev/null)\" || echo 'Reminder: write a session log + update memory/continuity.md before wrapping up (see AGENTS.md).'"
+            "command": "test -n \"$(find memory/sessions -name '*.md' -newer memory/continuity.md 2>/dev/null)\" || echo 'Reminder: write a session log + update memory/continuity.md before wrapping up (see memory/PROTOCOL.md).'"
           }
         ]
       }
@@ -99,7 +100,7 @@ per-machine). Keep it advisory — just `echo`, never a non-zero exit that could
     "sessionEnd": [
       {
         "type": "command",
-        "bash": "test -z \"$(git status --porcelain 2>/dev/null)\" || test -n \"$(find memory/sessions -name '*.md' -newer memory/continuity.md 2>/dev/null)\" || echo 'agent-memory: the working tree changed but no session log is newer than continuity.md — follow AGENTS.md \"After Every Session\" before wrapping up.'",
+        "bash": "test -z \"$(git status --porcelain 2>/dev/null)\" || test -n \"$(find memory/sessions -name '*.md' -newer memory/continuity.md 2>/dev/null)\" || echo 'agent-memory: the working tree changed but no session log is newer than continuity.md — follow memory/PROTOCOL.md \"Close every session\" before wrapping up.'",
         "timeoutSec": 10
       }
     ]
@@ -157,12 +158,12 @@ Remind (don't block) when a commit touches code but not `memory/`. Save as
 staged="$(git diff --cached --name-only)"
 if echo "$staged" | grep -qv '^memory/' && ! echo "$staged" | grep -q '^memory/'; then
   echo "Note: committing changes with no memory/ update."
-  echo "Did you log the session and update continuity.md? (see AGENTS.md)"
+  echo "Did you log the session and update continuity.md? (see memory/PROTOCOL.md)"
 fi
 exit 0   # advisory only — never fail the commit
 ```
 
 ## Option C — no tooling at all
 
-Prefer zero hooks? The after-session checklist lives in `AGENTS.md`; re-read it at the
+Prefer zero hooks? The after-session checklist lives in `memory/PROTOCOL.md`; re-read it at the
 end of a working session. That is the default, and it is enough for solo work.

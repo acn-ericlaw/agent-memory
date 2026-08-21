@@ -122,4 +122,4 @@ git-committed `memory/` directory. The files **are** the product; the agent is t
 
 !!! note "Status"
     agent-memory is independent research published under Apache-2.0. It is **not** an
-    official Accenture product. The current release is documented against **v4.26.1**.
+    official Accenture product. The current release is documented against **v4.37.0**.

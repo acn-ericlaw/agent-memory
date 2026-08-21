@@ -8,7 +8,7 @@ helper scripts — authored once and usable by any agent.
 
 - **Neutral source of truth.** A committed `agent-skills/<name>/SKILL.md` — vendor-neutral
   markdown — is the single definition; it travels with the repo, like `memory/`.
-- **Universal runtime.** The `AGENTS.md` "Skills" section is the baseline: when a task
+- **Universal runtime.** The `memory/PROTOCOL.md` "Use skills correctly" section is the baseline: when a task
   matches a skill's `description`, the agent reads and follows that `SKILL.md`. Because the
   agent *is* the runtime, this works on **any** vendor with no engine.
 - **Thin per-vendor adapters.** For runtimes with a native skill/command system, the tool

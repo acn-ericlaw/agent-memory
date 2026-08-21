@@ -17,8 +17,8 @@ Copilot, …) and make your **first prompt**:
 
 > **"Start from `AGENTS.md`."**
 
-This points the agent at the hub so it loads the agent-memory protocol *before* doing
-anything else. It is the reliable entry point on every vendor — and it is **required** in
+This loads the one-line discovery shim, which points to `memory/PROTOCOL.md` before
+substantive work. It is the reliable entry point on every vendor — and it is **required** in
 enterprise IDEs (e.g. Kiro) that otherwise self-bootstrap from their own onboarding before
 reading `AGENTS.md`.
 
@@ -99,11 +99,12 @@ flowchart LR
 
 | Path | What it is |
 |---|---|
+| `memory/PROTOCOL.md` | The canonical activation and session lifecycle protocol |
 | `memory/continuity.md` | The live project state — facts, decisions, open threads |
 | `memory/vision.md` | The north star (a DRAFT you confirm; never fabricated) |
 | `memory/sessions/` | Immutable, dated session logs — the event ledger |
 | `memory/archive/` | Faded facts + a greppable `INDEX.md` (nothing is deleted) |
-| `AGENTS.md` | The hub every vendor's agent reads first |
+| `AGENTS.md` | The one-line universal shim to `memory/PROTOCOL.md` |
 | `agent-skills/` | Portable, vendor-neutral skills (with seven built-ins) |
 | `.github/pull_request_template.md` / `.gitlab/merge_request_templates/Default.md` / `.azuredevops/pull_request_template.md` | Seeds the **What / Why** description convention (per forge) |
 | `.agent/version.md` | The version stamp (gates in-place upgrades) |

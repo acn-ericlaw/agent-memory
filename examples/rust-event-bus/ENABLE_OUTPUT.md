@@ -11,6 +11,8 @@ The `memory/` files beside this README are the real, unedited result.
 > session log, added later) — hence `memory/sessions/ (empty, ready)` below and
 > `last_session: (none yet)` in its `continuity.md`. A fresh Mode A enable today writes the
 > enable log and points `last_session` at it (v4.32.1). The fixture stays unedited by design.
+> It also predates v4.37.0: a current enable creates `memory/PROTOCOL.md` and installs
+> `AGENTS.md` as its exact one-line pointer. The captured output below remains historical.
 
 ---
 

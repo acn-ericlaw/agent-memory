@@ -221,6 +221,7 @@ templates — no scripts), `ENABLE.md` Step 5i (built-in-skills **install**, all
 report/scope/verify), the `UPGRADE.md` 4.10.0 rung (installs the three built-ins into existing
 repos), root & `templates/.gitignore` (`review-scratch/`), `.agent/schema.md` (`review-scratch/`
 section), and the version ladder (`VERSION` → 4.10.0, `UPGRADE.md` rung + table, `README`,
-`CHANGELOG`). `AGENTS.md` / `SKILLS.md` / `DECAY.md` / `REVIEW.md` **unchanged** — skills
-auto-discover via the existing `AGENTS.md` "Skills" baseline, and the critique→repair loop
+`CHANGELOG`). `AGENTS.md` / `SKILLS.md` / `DECAY.md` / `REVIEW.md` **unchanged at v4.10.0** — skills
+then auto-discovered via the `AGENTS.md` baseline; since v4.37.0 that baseline lives in
+`memory/PROTOCOL.md`. The critique→repair loop
 reuses the existing session ritual.

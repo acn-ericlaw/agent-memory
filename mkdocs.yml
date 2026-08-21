@@ -135,6 +135,7 @@ nav:
       - "Design: Ritual Triggers": DESIGN-ritual-triggers.md
       - "Design: Target-State Reconcile": DESIGN-reconcile.md
       - "Design: Fresh-Context Review": DESIGN-fresh-context-review.md
+      - Agent Instruction & Memory Security: architecture/security.md
       - Agent Cognitive Framework: agent-cognitive-framework.md
       - Architecture Decision Record: arch-decisions/ADR.md
   - Changelog: changelog.md

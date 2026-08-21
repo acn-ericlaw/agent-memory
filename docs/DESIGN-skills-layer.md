@@ -1,5 +1,9 @@
 # DESIGN — Cross-Vendor Skills Layer (portable capabilities over the shared layer)
 
+> **Activation amendment (v4.37.0):** root `AGENTS.md` is now a one-line shim;
+> the universal skills runtime and session instructions live in `memory/PROTOCOL.md`.
+> Historical version notes below retain the placement they describe at the time.
+
 > **Status:** **implemented v4.1.0** (2026-06-15), **refined v4.1.1** (folder finalized as
 > `agent-skills/`; Cursor adapter fixed), **+ "sync skill adapters" v4.2.0** (regenerate
 > adapters from the neutral skill on demand — adapters are gitignored, so they don't travel),
@@ -44,7 +48,7 @@
 ## 1. Why
 
 agent-memory shares two things across vendors today: **memory** (`memory/`) and
-**steering** (folded into `memory/instructions.md`, surfaced through the `AGENTS.md` hub +
+**steering** (folded into `memory/instructions.md`, surfaced through `memory/PROTOCOL.md` +
 thin per-vendor pointers). It shares **no capabilities** — the *procedural skills* a team
 builds up (a `SKILL.md` that says *when* to do something and *how*, plus optional helper
 scripts).
@@ -66,7 +70,8 @@ This is the missing third leg of the shared layer: **memory + steering + skills*
   skill is markdown + optional portable scripts; nothing here needs an engine.
 - **Vendor-neutral / never-pick-a-winner** — one neutral source of truth; vendors adapt to
   it. The tool does not privilege Claude's format.
-- **Map, don't duplicate** — reuse the existing hub-and-pointers mechanism (`AGENTS.md` +
+- **Map, don't duplicate** — reuse the existing shim/protocol mechanism (`AGENTS.md` →
+  `memory/PROTOCOL.md` +
   thin vendor files), the `legacy/` preservation rule, and the personal-vs-shared split.
 - **Target-repo scope only** — skills live in the repo; `~/` and `~/.claude/` are untouched.
 - **Additive / non-destructive** — a repo with no skills works exactly as before; an
@@ -99,24 +104,24 @@ regardless of vendor. Normalized frontmatter is deliberately minimal (`name`,
 `description`); Claude's existing `SKILL.md` frontmatter already matches, so Claude is the
 trivial case and other vendors adapt.
 
-### 4b. Universal runtime — the `AGENTS.md` hub (no per-vendor code)
+### 4b. Universal runtime — `memory/PROTOCOL.md` (no per-vendor code)
 
-`AGENTS.md` — which every bootstrap file already points to — gains a short **Skills**
-section:
+`memory/PROTOCOL.md` — activated by the one-line root shim and vendor bootstraps — carries
+the short **Use skills correctly** section:
 
 > *Capabilities live in `agent-skills/`. When a task matches a skill's `description`, read and
 > follow its `SKILL.md` (and any scripts it references).*
 
 Because **the agent is the runtime**, this works for *every* vendor, including those with
 no native skill mechanism (Codex/AGENTS.md, plain Cursor). Zero per-vendor code; the
-baseline is just "an agent reading markdown."
+baseline is the agent following `memory/PROTOCOL.md` through the universal shim.
 
 ### 4c. Optional per-vendor adapters (thin, generated, pointers)
 
 For vendors with a *native* skill/command system, the enable/sync step may generate a thin
 adapter so the skill **auto-triggers** in that runtime — each adapter a 2-line pointer to
 the neutral skill, never a copy (no duplicated content to drift, same reason the read-order
-lives only in `AGENTS.md`):
+lives only in `memory/PROTOCOL.md`):
 
 | Vendor | Native mechanism | Adapter |
 |---|---|---|
@@ -125,7 +130,7 @@ lives only in `AGENTS.md`):
 | Cursor | rule (`.cursor/rules/*.mdc`) | rule referencing the neutral skill |
 | Kiro | `.kiro/skills/<n>/SKILL.md` (open Agent Skills standard — auto-matched) | same shape as Claude: frontmatter + body "follow `agent-skills/<n>/SKILL.md`" |
 | GitHub Copilot CLI | `.github/skills/<n>/SKILL.md` (open Agent Skills standard — auto-matched + `/<n>`) | same shape as Claude/Kiro: frontmatter + body "follow `agent-skills/<n>/SKILL.md`" |
-| Codex / Kiro / AGENTS.md-only | *(none)* | nothing needed — auto-reads root `AGENTS.md`, uses the §4b baseline |
+| Codex / Kiro / AGENTS.md-only | *(none)* | nothing needed — auto-reads the root shim, then uses the `memory/PROTOCOL.md` §4b baseline |
 
 > **Trigger semantics differ (v4.5.1, from a Gemini dogfood).** "Auto-triggers" above holds for
 > the *description-matched* mechanisms (Claude Skill tool, Cursor agent-requested rules, Kiro's and
@@ -200,8 +205,9 @@ adoption, so the neutral `agent-skills/` layer stays the single source of truth.
 
 A future implementation rung would touch, additively:
 `ENABLE.md` (a Step to generate `agent-skills/` baseline + adapters), `MIGRATE.md` (detect &
-promote vendor skill bundles → `agent-skills/`, preserve under `legacy/`), `templates/AGENTS.md`
-+ root `AGENTS.md` (the §4b Skills section), `templates/.gitignore` (confirm adapter dirs
+promote vendor skill bundles → `agent-skills/`, preserve under `legacy/`), the then-current
+root/template protocol surfaces (now `memory/PROTOCOL.md` + `templates/memory/PROTOCOL.md`),
+`templates/.gitignore` (confirm adapter dirs
 stay ignored under Option A; `agent-skills/` tracked), `.agent/schema.md` (document `agent-skills/`),
 and the version ladder (`VERSION` / `UPGRADE.md` — additive ⇒ **MINOR**, e.g. a 4.x rung).
 
@@ -216,9 +222,10 @@ and the version ladder (`VERSION` / `UPGRADE.md` — additive ⇒ **MINOR**, e.g
   small discovery budget — long abstract paragraphs weaken activation); YAML `>`/`|` blocks
   are YAML-only and don't carry into the TOML adapter, so the canonical value is one logical
   line.)
-- **Adapter generation locus** — **RESOLVED v4.2.0:** a "sync skill adapters" operation lives
-  in the installed `AGENTS.md` "Skills" section (so a target's own agent, any vendor, can
-  self-sync), idempotent (overwrite adapters, prune orphans, never touch the neutral skill);
+- **Adapter generation locus** — **RESOLVED v4.2.0:** a "sync skill adapters" operation lived
+  in the installed `AGENTS.md` "Skills" section and moved to `SKILLS.md` in v4.4.0; the
+  activation rule now lives in `memory/PROTOCOL.md`. The operation is idempotent (overwrite
+  adapters, prune orphans, never touch the neutral skill);
   `ENABLE.md` Step 5h references that single recipe. Surfaced by a real cross-machine test
   (adapters are gitignored → don't travel with a clone/pull).
 - **Per-vendor fidelity** — Gemini/Cursor mechanisms differ in trigger semantics; how

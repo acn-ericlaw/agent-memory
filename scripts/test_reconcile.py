@@ -43,6 +43,17 @@ def stamp(t, version):
                 "\n- **last_upgraded:** 2026-01-01\n- **mode:**          A\n")
 
 
+def snapshot_tree(root):
+    snapshot = {}
+    for base, _dirs, files in os.walk(root):
+        for name in files:
+            path = os.path.join(base, name)
+            rel = os.path.relpath(path, root)
+            with open(path, "rb") as f:
+                snapshot[rel] = f.read()
+    return snapshot
+
+
 class ReconcileTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp(prefix="reconcile-test-")
@@ -75,6 +86,11 @@ class ReconcileTests(unittest.TestCase):
             self.assertIsNotNone(rec.parse_semver(s["below"]))
         agents = [r for r in rows if r["target"] == "AGENTS.md"]
         self.assertEqual(agents[0]["source"], "templates/AGENTS.md")  # never the root dispatcher
+        protocol = [r for r in rows if r["target"] == "memory/PROTOCOL.md"]
+        self.assertEqual(protocol[0]["source"], "templates/memory/PROTOCOL.md")
+        self.assertEqual(protocol[0]["policy"], "seed-copy")
+        targets = [r["target"] for r in rows]
+        self.assertLess(targets.index("memory/PROTOCOL.md"), targets.index("AGENTS.md"))
 
     # -- fresh enable ---------------------------------------------------------
 
@@ -228,6 +244,155 @@ class ReconcileTests(unittest.TestCase):
         stamp(t, self.current)
         _m2, _a2, semantic2, _n2 = self.plan(t)
         self.assertEqual(semantic2, [])
+
+    def test_protocol_pointer_is_a_437_pre_apply_step(self):
+        t = make_target(self.tmp, "https://github.com/acme/demo.git")
+        os.makedirs(os.path.join(t, "memory"), exist_ok=True)
+        open(os.path.join(t, "memory", "instructions.md"), "w").close()
+        stamp(t, "4.36.0")
+        _m, _a, semantic, _n = self.plan(t)
+        pointer = [s for s in semantic if s["below"] == "4.37.0"]
+        self.assertEqual(len(pointer), 1)
+        self.assertTrue(pointer[0]["step"].startswith("PRE-APPLY:"))
+        stamp(t, "4.37.0")
+        _m2, _a2, semantic2, _n2 = self.plan(t)
+        self.assertNotIn("4.37.0", [s["below"] for s in semantic2])
+
+    def test_apply_blocks_legacy_boundaries_without_writing(self):
+        t = make_target(self.tmp, "https://github.com/acme/demo.git")
+        stamp(t, "4.35.0")
+        with open(os.path.join(t, "AGENTS.md"), "w", encoding="utf-8") as f:
+            f.write("legacy project instructions\n")
+        os.makedirs(os.path.join(t, ".githooks"), exist_ok=True)
+        with open(os.path.join(t, ".githooks", "pre-commit"), "w", encoding="utf-8") as f:
+            f.write("#!/usr/bin/env bash\necho local-check\n")
+        before = snapshot_tree(t)
+        with mock.patch("builtins.print"), self.assertRaises(SystemExit) as stopped:
+            rec.main(["--target", t, "--apply"])
+        self.assertEqual(stopped.exception.code, 1)
+        self.assertEqual(snapshot_tree(t), before)
+        self.assertFalse(os.path.exists(os.path.join(t, "DECAY.md")))
+
+    def test_apply_proceeds_after_explicit_pre_apply_completion(self):
+        t = make_target(self.tmp, "https://github.com/acme/demo.git")
+        stamp(t, "4.35.0")
+        os.makedirs(os.path.join(t, ".githooks", "pre-commit.d"), exist_ok=True)
+        local = os.path.join(t, ".githooks", "pre-commit.d", "40-local-check")
+        with open(local, "w", encoding="utf-8") as f:
+            f.write("#!/usr/bin/env bash\necho preserved\n")
+        os.chmod(local, 0o755)
+        for hook in ("pre-commit", "post-commit"):
+            hook_path = os.path.join(t, ".githooks", hook)
+            with open(hook_path, "w", encoding="utf-8") as f:
+                f.write("#!/usr/bin/env bash\necho inspected-stock-monolith\n")
+            os.chmod(hook_path, 0o755)
+        installs = {
+            "AGENTS.md": "templates/AGENTS.md",
+            "memory/PROTOCOL.md": "templates/memory/PROTOCOL.md",
+        }
+        for target_rel, source_rel in installs.items():
+            target_path = os.path.join(t, target_rel)
+            os.makedirs(os.path.dirname(target_path), exist_ok=True)
+            shutil.copy2(os.path.join(TOOL_ROOT, source_rel), target_path)
+        before_confirmation = snapshot_tree(t)
+        with mock.patch("builtins.print"), self.assertRaises(SystemExit) as stopped:
+            rec.main(["--target", t, "--apply"])
+        self.assertEqual(stopped.exception.code, 1)
+        self.assertEqual(snapshot_tree(t), before_confirmation)
+        with mock.patch("builtins.print"), self.assertRaises(SystemExit) as applied:
+            rec.main(["--target", t, "--apply", "--pre-apply-complete"])
+        self.assertEqual(applied.exception.code, 0)
+        self.assertTrue(os.path.isfile(os.path.join(t, "DECAY.md")))
+        with open(local, "rb") as f:
+            self.assertEqual(f.read(), b"#!/usr/bin/env bash\necho preserved\n")
+        for hook in ("pre-commit", "post-commit"):
+            with open(os.path.join(t, ".githooks", hook), "rb") as actual, \
+                    open(os.path.join(TOOL_ROOT, ".githooks", hook), "rb") as expected:
+                self.assertEqual(actual.read(), expected.read())
+
+    def test_fresh_custom_protocol_collision_blocks_without_writing(self):
+        t = make_target(self.tmp, "https://github.com/acme/demo.git")
+        os.makedirs(os.path.join(t, "memory"), exist_ok=True)
+        with open(os.path.join(t, "memory", "PROTOCOL.md"), "w", encoding="utf-8") as f:
+            f.write("repository-specific instructions\n")
+        before = snapshot_tree(t)
+        with mock.patch("builtins.print"), self.assertRaises(SystemExit) as stopped:
+            rec.main(["--target", t, "--apply"])
+        self.assertEqual(stopped.exception.code, 1)
+        self.assertEqual(snapshot_tree(t), before)
+
+    def test_fresh_exact_shim_custom_protocol_requires_confirmation(self):
+        t = make_target(self.tmp, "https://github.com/acme/demo.git")
+        os.makedirs(os.path.join(t, "memory"), exist_ok=True)
+        shutil.copy2(os.path.join(TOOL_ROOT, "templates", "AGENTS.md"),
+                     os.path.join(t, "AGENTS.md"))
+        protocol = os.path.join(t, "memory", "PROTOCOL.md")
+        with open(protocol, "w", encoding="utf-8") as f:
+            f.write("repository-specific instructions\n")
+        before = snapshot_tree(t)
+        with mock.patch("builtins.print"), self.assertRaises(SystemExit) as stopped:
+            rec.main(["--target", t, "--apply"])
+        self.assertEqual(stopped.exception.code, 1)
+        self.assertEqual(snapshot_tree(t), before)
+        with mock.patch("builtins.print"), self.assertRaises(SystemExit) as applied:
+            rec.main(["--target", t, "--apply", "--pre-apply-complete"])
+        self.assertEqual(applied.exception.code, 0)
+        with open(protocol, encoding="utf-8") as f:
+            self.assertEqual(f.read(), "repository-specific instructions\n")
+
+    def test_current_stamp_cannot_authorize_root_recopy(self):
+        t = make_target(self.tmp, "https://github.com/acme/demo.git")
+        stamp(t, "4.37.0")
+        os.makedirs(os.path.join(t, "memory"), exist_ok=True)
+        with open(os.path.join(t, "AGENTS.md"), "w", encoding="utf-8") as f:
+            f.write("legacy root instructions\n")
+        with open(os.path.join(t, "memory", "PROTOCOL.md"), "w", encoding="utf-8") as f:
+            f.write("custom protocol\n")
+        before = snapshot_tree(t)
+        with mock.patch("builtins.print"), self.assertRaises(SystemExit) as stopped:
+            rec.main(["--target", t, "--apply", "--pre-apply-complete"])
+        self.assertEqual(stopped.exception.code, 1)
+        self.assertEqual(snapshot_tree(t), before)
+
+    def test_current_hook_drift_requires_confirmation(self):
+        t = make_target(self.tmp, "https://github.com/acme/demo.git")
+        stamp(t, "4.37.0")
+        os.makedirs(os.path.join(t, "memory"), exist_ok=True)
+        os.makedirs(os.path.join(t, ".githooks", "pre-commit.d"), exist_ok=True)
+        shutil.copy2(os.path.join(TOOL_ROOT, "templates", "AGENTS.md"),
+                     os.path.join(t, "AGENTS.md"))
+        shutil.copy2(os.path.join(TOOL_ROOT, "templates", "memory", "PROTOCOL.md"),
+                     os.path.join(t, "memory", "PROTOCOL.md"))
+        hook = os.path.join(t, ".githooks", "pre-commit")
+        with open(hook, "w", encoding="utf-8") as f:
+            f.write("#!/usr/bin/env bash\necho inspected-local-hook\n")
+        os.chmod(hook, 0o755)
+        local = os.path.join(t, ".githooks", "pre-commit.d", "40-local-check")
+        with open(local, "w", encoding="utf-8") as f:
+            f.write("#!/usr/bin/env bash\necho preserved\n")
+        os.chmod(local, 0o755)
+        managed = os.path.join(
+            t, ".githooks", "pre-commit.d", "50-agent-memory-secret-guard")
+        with open(managed, "w", encoding="utf-8") as f:
+            f.write("#!/usr/bin/env bash\necho inspected-managed-drift\n")
+        os.chmod(managed, 0o755)
+        before = snapshot_tree(t)
+        with mock.patch("builtins.print"), self.assertRaises(SystemExit) as stopped:
+            rec.main(["--target", t, "--apply"])
+        self.assertEqual(stopped.exception.code, 1)
+        self.assertEqual(snapshot_tree(t), before)
+        with mock.patch("builtins.print"), self.assertRaises(SystemExit) as applied:
+            rec.main(["--target", t, "--apply", "--pre-apply-complete"])
+        self.assertEqual(applied.exception.code, 0)
+        with open(local, "rb") as f:
+            self.assertEqual(f.read(), b"#!/usr/bin/env bash\necho preserved\n")
+        with open(hook, "rb") as actual, \
+                open(os.path.join(TOOL_ROOT, ".githooks", "pre-commit"), "rb") as expected:
+            self.assertEqual(actual.read(), expected.read())
+        with open(managed, "rb") as actual, open(
+                os.path.join(TOOL_ROOT, ".githooks", "pre-commit.d",
+                             "50-agent-memory-secret-guard"), "rb") as expected:
+            self.assertEqual(actual.read(), expected.read())
 
     def test_2x_baseline_detection(self):
         t = make_target(self.tmp)

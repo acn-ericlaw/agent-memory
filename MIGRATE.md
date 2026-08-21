@@ -83,8 +83,9 @@ the vendor is present. Apply the rules in that row's migration section.
 
 **How to tell "ours" vs "non-ours" for shared filenames (CLAUDE.md, AGENTS.md, etc.):**
 Open the file. If it contains the line `This project uses the agent-memory
-shared memory system` or references `memory/instructions.md`, it's ours — skip
-migration. Otherwise treat as vendor content to migrate.
+shared memory system`, references `memory/instructions.md`, or is the canonical
+one-line pointer to `memory/PROTOCOL.md`, it's ours — skip migration. Otherwise
+treat it as vendor content to migrate.
 
 ---
 
@@ -385,8 +386,8 @@ Note this in the report.
 
 ### Kiro
 
-Kiro auto-reads a root `AGENTS.md` (the open standard our hub uses), so once enabled it needs
-no pointer file. Migrate its repo-local artifacts:
+Kiro auto-reads root `AGENTS.md`; once enabled, that one-line standard shim activates
+`memory/PROTOCOL.md`, so Kiro needs no additional pointer file. Migrate its repo-local artifacts:
 
 **Steering:** `.kiro/steering/*.md` (e.g. `product.md`, `tech.md`, `structure.md`)
 - Each is project steering. Append each under `## Migrated rules from Kiro` in

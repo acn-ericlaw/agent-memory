@@ -1,14 +1,15 @@
 # Vendor Support
 
 One shared memory, every major AI tool. "AI enable this repo" detects whatever AI footprint
-already exists, folds it into the shared layer, and routes that vendor's agent to the one hub
-(`AGENTS.md`) — originals preserved, never deleted.
+already exists, folds it into the shared layer, and routes that vendor's agent through the
+one-line `AGENTS.md` shim to `memory/PROTOCOL.md` — originals preserved, never deleted.
 
 ## How neutrality works
 
 agent-memory bets on **open standards**:
 
-- **`AGENTS.md`** for steering — the hub every agent reads first.
+- **`AGENTS.md`** for universal discovery, pointing to the canonical
+  **`memory/PROTOCOL.md`** steering and lifecycle contract.
 - The open **Agent Skills** standard for capabilities — one `SKILL.md` shape.
 
 Tools that adopt them plug in with little or no glue, which is why new vendors (Kiro, Copilot,

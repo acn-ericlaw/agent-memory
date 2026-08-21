@@ -1,5 +1,10 @@
 # DESIGN — Reliable, Vendor-Neutral Ritual Triggers
 
+> **Amendment (v4.37.0, 2026-08-20):** activation and definition-of-done
+> instructions now live in `memory/PROTOCOL.md`; root `AGENTS.md` is an exact one-line
+> discovery shim. Import-capable bootstraps load the protocol directly. Historical notes
+> below retain the `AGENTS.md` placement they describe at those versions.
+>
 > **Amendment (v4.36.0, 2026-08-20):** the two hook entrypoints are now stable **fragment
 > dispatchers**. Executable files in `.githooks/pre-commit.d/` and `.githooks/post-commit.d/` run
 > in deterministic C-locale filename order; all fragments run and the first non-zero status is
@@ -162,7 +167,7 @@ reference-bearing session and is flagged for enrichment — never silently treat
 
 | Layer | Mechanism | Reliability |
 |---|---|---|
-| **0 — Primary (unchanged)** | Agent-runtime ritual; strengthen the **"a task is not *done* until the log exists"** framing in `AGENTS.md` (definition-of-done, not a trailing chore). | Best-effort (agent judgment) |
+| **0 — Primary (unchanged)** | Agent-runtime ritual; strengthen the **"a task is not *done* until the log exists"** framing in `memory/PROTOCOL.md` (definition-of-done, not a trailing chore). | Best-effort (agent judgment) |
 | **1 — Vendor-neutral net (NEW)** | **(a) git hook** (committed `.githooks/` + `core.hooksPath`, one-command activate): on a commit touching tracked files → **auto-stub the session log** (or loud nudge), **run `memory-lint`** to warn if **review is due** (it already computes `sessions_since_last_review`), and **run `sync-adapters`**. **(b) CI check**: a workflow that runs `memory-lint` and **warns** (configurable: fail) when a change lacks a session log — *"checked, not convention."* | Reliable, uniform across vendors |
 | **2 — Optional real-time nicety** | Vendor hooks (Claude `Stop`, Copilot `sessionEnd`) for end-of-turn nudges **where a vendor supports them** — now with the **recipe traveling into the target** (fix the gap: install `optional-ritual-hook.md` or document hook-setup in the installed `SKILLS.md`). | Best-effort, vendor-specific |
 

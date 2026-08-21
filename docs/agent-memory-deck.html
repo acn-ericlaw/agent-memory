@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>agent-memory — v4.36.0</title>
+<title>agent-memory — v4.37.0</title>
 <style>
   :root{
     --bg:#0b1020; --bg2:#0e1530; --panel:#131c3a; --panel2:#18224a;
@@ -71,7 +71,7 @@
 
   <!-- 1 -->
   <section class="slide active">
-    <div class="kicker">agent-memory · v4.36.0</div>
+    <div class="kicker">agent-memory · v4.37.0</div>
     <h1>A lightweight, vendor-neutral<br><span class="grad">AI memory + cognitive loop</span></h1>
     <p class="lead" style="margin-top:.6em">Turning shared project context into <b>deterministic delivery with near-zero drift</b> — for human–AI collaboration, across any AI vendor.</p>
     <div class="foot">August 2026</div>
@@ -207,7 +207,7 @@
     <p class="lead">Memory and steering were already shared across vendors. <b>Skills</b> — reusable capabilities — are the third leg: one neutral, committed source of truth, runnable by any agent.</p>
     <div class="grid g3" style="margin-top:.6em">
       <div class="card"><h3>Neutral source</h3><p>Committed <code>agent-skills/&lt;name&gt;/SKILL.md</code> — a name, a when-to-use description, a procedure. The single source of truth; travels with the repo.</p></div>
-      <div class="card"><h3>Universal runtime</h3><p>The <code>AGENTS.md</code> "Skills" baseline: when a task matches, the agent reads &amp; follows the skill. The agent <i>is</i> the runtime — any vendor, no engine.</p></div>
+      <div class="card"><h3>Universal runtime</h3><p>The <code>memory/PROTOCOL.md</code> skills baseline: when a task matches, the agent reads &amp; follows the skill. The agent <i>is</i> the runtime — any vendor, no engine.</p></div>
       <div class="card"><h3>Thin adapters</h3><p>Regenerated, gitignored pointers across <b>six</b> vendors — Claude, Gemini, Cursor, Kiro, GitHub Copilot &amp; Google Antigravity — give native auto-trigger; never copies, so the neutral skill never drifts.</p></div>
     </div>
     <p class="lead" style="margin-top:1em">Migration <b>promotes</b> a vendor's skills (e.g. <code>.claude/skills/</code>) into the shared layer — originals preserved under <code>legacy/</code>, never flattened into steering.</p>
@@ -295,7 +295,7 @@
     </div>
     <div class="grid g2" style="margin-top:1.1em">
       <div class="card"><h3>Detected &amp; migrated, not re-typed</h3><p>Steering folds into <code>memory/</code>; chat history becomes session logs; a vendor's skills are <b>promoted</b> into the neutral <code>agent-skills/</code> layer.</p></div>
-      <div class="card new"><h3>Riding open standards = future-proof</h3><p>We bet on <code>AGENTS.md</code> (steering) and the open <b>Agent Skills</b> standard (capabilities). Tools that adopt them — Kiro, Copilot, Antigravity, Codex — plug in with little or no glue. <b>Each shipped as a point release.</b></p></div>
+      <div class="card new"><h3>Riding open standards = future-proof</h3><p>We bet on <code>AGENTS.md</code> (universal discovery) and the open <b>Agent Skills</b> standard (capabilities). Tools that adopt them — Kiro, Copilot, Antigravity, Codex — plug in with little or no glue. <b>Each shipped as a point release.</b></p></div>
     </div>
   </section>
 
@@ -366,7 +366,7 @@
     <p class="lead" style="margin-top:1em">Next (tracked as Blueprint gaps): greenfield flow · more multi-user hardening (<code>MERGE.md</code> shipped) · an optional SDLC overlay for teams that want it.</p>
     <p class="big" style="margin-top:1em"><b>Predictable innovation with human partnership</b> — bold ideas, faithful delivery, the human in the loop at every altitude.</p>
     <p class="lead" style="margin-top:.9em">Companion article: <a href="https://www.linkedin.com/posts/ericclaw_intent-driven-development-activity-7493145001313390593-cyc5" style="color:inherit"><b>From Context Engineering to Intent-Driven Development</b></a> — the argument behind this system, written from its evolution.</p>
-    <div class="foot">agent-memory · v4.36.0</div>
+    <div class="foot">agent-memory · v4.37.0</div>
   </section>
 
 </div>
