@@ -1753,9 +1753,17 @@
 
 <h1 id="design-reliable-vendor-neutral-ritual-triggers">DESIGN — Reliable, Vendor-Neutral Ritual Triggers<a class="headerlink" href="#design-reliable-vendor-neutral-ritual-triggers" title="Permanent link">&para;</a></h1>
 <blockquote>
+<p><strong>Amendment (v4.36.0, 2026-08-20):</strong> the two hook entrypoints are now stable <strong>fragment
+dispatchers</strong>. Executable files in <code>.githooks/pre-commit.d/</code> and <code>.githooks/post-commit.d/</code> run
+in deterministic C-locale filename order; all fragments run and the first non-zero status is
+returned. Agent-memory owns the <code>50-</code> slots, leaving before/after space for other hook layers.
+This removes the single-file ownership collision, makes behaviors independently runnable in CI,
+and preserves enforcement semantics (any failing pre-commit fragment blocks; Git ignores
+post-commit status). See ADR-0007.</p>
 <p><strong>Amendment (v4.34.0, 2026-08-14):</strong> the §7.3 "opt-in pre-commit" half exists — with a different
-job than the auto-stub this doc envisioned. <code>.githooks/pre-commit</code> is the <strong><code>[secret-material]</code>
-guard</strong>: it scans the <em>staged</em> content (index, not worktree) of <code>memory/**.md</code> <strong>and of config
+job than the auto-stub this doc envisioned. The behavior now lives in
+<code>.githooks/pre-commit.d/50-agent-memory-secret-guard</code>: it scans the <em>staged</em> content (index,
+not worktree) of <code>memory/**.md</code> <strong>and of config
 files</strong> (<code>.json</code>/<code>.yml</code>/<code>.yaml</code>/<code>.properties</code>/<code>.toml</code>/<code>.ini</code>/<code>.env*</code>, credential-class checks —
 from the field incident where live credentials entered via a Postman JSON + an OpenShift YAML
 and contaminated a session log downstream; a 661-file live-corpus probe tuned the placeholder
@@ -1781,7 +1789,8 @@ human command does it); CI remains the zero-config floor regardless.
 <strong>+ 4.20.1:</strong> self-init also folded into <strong><code>copilot-instructions.md</code></strong> — a fresh-clone dogfood showed
 Claude self-inits (it acts on <code>AGENTS.md</code>) but Copilot CLI did <strong>not</strong> (its <code>start</code> front-loads
 <code>copilot-instructions.md</code> + summarizes), so the first-run init now <strong>leads</strong> that file too.
-<strong>+ 4.20.2:</strong> a <code>.gitattributes</code> pins <code>*.sh</code> + <code>.githooks/*</code> to <strong>LF</strong> so they run under bash on Windows
+<strong>+ 4.20.2; extended v4.36.0:</strong> a <code>.gitattributes</code> pins <code>*.sh</code>, <code>.githooks/*</code>, and
+<code>.githooks/*.d/*</code> to <strong>LF</strong> so dispatchers and fragments run under bash on Windows
 (Git Bash / WSL) regardless of <code>core.autocrlf</code> — Windows-hardening from a Copilot feasibility check
 (otherwise a Windows clone rewrites them to CRLF and bash fails). <strong>Validated cross-platform on the
 happy path; Windows now robust, not luck-of-the-default.</strong>
