@@ -1253,6 +1253,8 @@
       
         
       
+        
+      
     
     
     
@@ -1501,6 +1503,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../architecture/security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Instruction & Memory Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../agent-cognitive-framework/" class="md-nav__link">
         
   
@@ -1708,7 +1738,12 @@ declared target state in one pass, instead of walking every release you're behin
 <p>When the repo is already enabled but behind, the agent detects the drift from
 <code>.agent/version.md</code> and runs the <strong>reconcile helper</strong>: a dry-run report first (what will
 be copied, what drifted, what stays yours), then — with your consent — one apply pass,
-the applicable semantic steps, and the version stamp. Re-running is safe (idempotent).</p>
+the applicable semantic steps, and the version stamp. A semantic step labelled
+<code>PRE-APPLY</code> runs before the apply pass and is followed by a confirming dry-run; the CLI
+refuses writes until protected protocol files converge, then requires
+<code>--pre-apply-complete</code> to attest that the listed preservation and hash checks are done.
+This protects content that a mechanical re-copy would otherwise replace. Re-running is
+safe (idempotent).</p>
 <pre class="mermaid"><code>flowchart LR
   V[".agent/version.md&lt;br/&gt;e.g. 4.14.1"] --&gt; R["reconcile vs MANIFEST.md&lt;br/&gt;dry-run → apply"]
   R --&gt; SS["semantic steps&lt;br/&gt;(version-gated, usually 1–2)"]
@@ -1725,9 +1760,10 @@ the applicable semantic steps, and the version stamp. Re-running is safe (idempo
 </ul>
 <div class="admonition info">
 <p class="admonition-title">Source of truth matters</p>
-<p>A target's <code>AGENTS.md</code> is re-synced from <strong><code>templates/AGENTS.md</code></strong> (the memory hub), never
-from the tool's <em>root</em> <code>AGENTS.md</code> (the operator dispatcher). The ladder encodes this
-per-file map so an upgrade can't mis-source a file.</p>
+<p>A target's one-line <code>AGENTS.md</code> comes from <strong><code>templates/AGENTS.md</code></strong> and its canonical
+protocol comes from <strong><code>templates/memory/PROTOCOL.md</code></strong>, never the tool's dual-mode
+<code>memory/PROTOCOL.md</code>. The manifest encodes this per-file map so an upgrade cannot
+install operator routing into a target.</p>
 </div>
 <h2 id="after-a-new-built-in-is-installed">After a new built-in is installed<a class="headerlink" href="#after-a-new-built-in-is-installed" title="Permanent link">&para;</a></h2>
 <p>Some runtimes load skill adapters only at startup. If your runtime does (e.g. <strong>GitHub

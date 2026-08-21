@@ -1148,6 +1148,8 @@
       
         
       
+        
+      
     
     
     
@@ -1403,10 +1405,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4b-universal-runtime-the-agentsmd-hub-no-per-vendor-code" class="md-nav__link">
+  <a href="#4b-universal-runtime-memoryprotocolmd-no-per-vendor-code" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4b. Universal runtime — the AGENTS.md hub (no per-vendor code)
+        4b. Universal runtime — memory/PROTOCOL.md (no per-vendor code)
       
     </span>
   </a>
@@ -1595,6 +1597,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../architecture/security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Instruction & Memory Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../agent-cognitive-framework/" class="md-nav__link">
         
   
@@ -1761,10 +1791,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4b-universal-runtime-the-agentsmd-hub-no-per-vendor-code" class="md-nav__link">
+  <a href="#4b-universal-runtime-memoryprotocolmd-no-per-vendor-code" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4b. Universal runtime — the AGENTS.md hub (no per-vendor code)
+        4b. Universal runtime — memory/PROTOCOL.md (no per-vendor code)
       
     </span>
   </a>
@@ -1875,6 +1905,9 @@
 
 <h1 id="design-cross-vendor-skills-layer-portable-capabilities-over-the-shared-layer">DESIGN — Cross-Vendor Skills Layer (portable capabilities over the shared layer)<a class="headerlink" href="#design-cross-vendor-skills-layer-portable-capabilities-over-the-shared-layer" title="Permanent link">&para;</a></h1>
 <blockquote>
+<p><strong>Activation amendment (v4.37.0):</strong> root <code>AGENTS.md</code> is now a one-line shim;
+the universal skills runtime and session instructions live in <code>memory/PROTOCOL.md</code>.
+Historical version notes below retain the placement they describe at the time.</p>
 <p><strong>Status:</strong> <strong>implemented v4.1.0</strong> (2026-06-15), <strong>refined v4.1.1</strong> (folder finalized as
 <code>agent-skills/</code>; Cursor adapter fixed), <strong>+ "sync skill adapters" v4.2.0</strong> (regenerate
 adapters from the neutral skill on demand — adapters are gitignored, so they don't travel),
@@ -1917,7 +1950,7 @@ gitignored). Captured as Blueprint gap <code>bp-skills-layer</code> (serves <cod
 <hr />
 <h2 id="1-why">1. Why<a class="headerlink" href="#1-why" title="Permanent link">&para;</a></h2>
 <p>agent-memory shares two things across vendors today: <strong>memory</strong> (<code>memory/</code>) and
-<strong>steering</strong> (folded into <code>memory/instructions.md</code>, surfaced through the <code>AGENTS.md</code> hub +
+<strong>steering</strong> (folded into <code>memory/instructions.md</code>, surfaced through <code>memory/PROTOCOL.md</code> +
 thin per-vendor pointers). It shares <strong>no capabilities</strong> — the <em>procedural skills</em> a team
 builds up (a <code>SKILL.md</code> that says <em>when</em> to do something and <em>how</em>, plus optional helper
 scripts).</p>
@@ -1937,7 +1970,8 @@ scripts).</p>
   skill is markdown + optional portable scripts; nothing here needs an engine.</li>
 <li><strong>Vendor-neutral / never-pick-a-winner</strong> — one neutral source of truth; vendors adapt to
   it. The tool does not privilege Claude's format.</li>
-<li><strong>Map, don't duplicate</strong> — reuse the existing hub-and-pointers mechanism (<code>AGENTS.md</code> +
+<li><strong>Map, don't duplicate</strong> — reuse the existing shim/protocol mechanism (<code>AGENTS.md</code> →
+  <code>memory/PROTOCOL.md</code> +
   thin vendor files), the <code>legacy/</code> preservation rule, and the personal-vs-shared split.</li>
 <li><strong>Target-repo scope only</strong> — skills live in the repo; <code>~/</code> and <code>~/.claude/</code> are untouched.</li>
 <li><strong>Additive / non-destructive</strong> — a repo with no skills works exactly as before; an
@@ -1962,21 +1996,21 @@ tool defining the neutral substrate is the pragmatic move, exactly as it did for
 regardless of vendor. Normalized frontmatter is deliberately minimal (<code>name</code>,
 <code>description</code>); Claude's existing <code>SKILL.md</code> frontmatter already matches, so Claude is the
 trivial case and other vendors adapt.</p>
-<h3 id="4b-universal-runtime-the-agentsmd-hub-no-per-vendor-code">4b. Universal runtime — the <code>AGENTS.md</code> hub (no per-vendor code)<a class="headerlink" href="#4b-universal-runtime-the-agentsmd-hub-no-per-vendor-code" title="Permanent link">&para;</a></h3>
-<p><code>AGENTS.md</code> — which every bootstrap file already points to — gains a short <strong>Skills</strong>
-section:</p>
+<h3 id="4b-universal-runtime-memoryprotocolmd-no-per-vendor-code">4b. Universal runtime — <code>memory/PROTOCOL.md</code> (no per-vendor code)<a class="headerlink" href="#4b-universal-runtime-memoryprotocolmd-no-per-vendor-code" title="Permanent link">&para;</a></h3>
+<p><code>memory/PROTOCOL.md</code> — activated by the one-line root shim and vendor bootstraps — carries
+the short <strong>Use skills correctly</strong> section:</p>
 <blockquote>
 <p><em>Capabilities live in <code>agent-skills/</code>. When a task matches a skill's <code>description</code>, read and
 follow its <code>SKILL.md</code> (and any scripts it references).</em></p>
 </blockquote>
 <p>Because <strong>the agent is the runtime</strong>, this works for <em>every</em> vendor, including those with
 no native skill mechanism (Codex/AGENTS.md, plain Cursor). Zero per-vendor code; the
-baseline is just "an agent reading markdown."</p>
+baseline is the agent following <code>memory/PROTOCOL.md</code> through the universal shim.</p>
 <h3 id="4c-optional-per-vendor-adapters-thin-generated-pointers">4c. Optional per-vendor adapters (thin, generated, pointers)<a class="headerlink" href="#4c-optional-per-vendor-adapters-thin-generated-pointers" title="Permanent link">&para;</a></h3>
 <p>For vendors with a <em>native</em> skill/command system, the enable/sync step may generate a thin
 adapter so the skill <strong>auto-triggers</strong> in that runtime — each adapter a 2-line pointer to
 the neutral skill, never a copy (no duplicated content to drift, same reason the read-order
-lives only in <code>AGENTS.md</code>):</p>
+lives only in <code>memory/PROTOCOL.md</code>):</p>
 <table>
 <thead>
 <tr>
@@ -2014,7 +2048,7 @@ lives only in <code>AGENTS.md</code>):</p>
 <tr>
 <td>Codex / Kiro / AGENTS.md-only</td>
 <td><em>(none)</em></td>
-<td>nothing needed — auto-reads root <code>AGENTS.md</code>, uses the §4b baseline</td>
+<td>nothing needed — auto-reads the root shim, then uses the <code>memory/PROTOCOL.md</code> §4b baseline</td>
 </tr>
 </tbody>
 </table>
@@ -2108,8 +2142,9 @@ adoption, so the neutral <code>agent-skills/</code> layer stays the single sourc
 <h2 id="8-integration-points-when-built-not-in-this-doc">8. Integration points (when built — not in this doc)<a class="headerlink" href="#8-integration-points-when-built-not-in-this-doc" title="Permanent link">&para;</a></h2>
 <p>A future implementation rung would touch, additively:
 <code>ENABLE.md</code> (a Step to generate <code>agent-skills/</code> baseline + adapters), <code>MIGRATE.md</code> (detect &amp;
-promote vendor skill bundles → <code>agent-skills/</code>, preserve under <code>legacy/</code>), <code>templates/AGENTS.md</code>
-+ root <code>AGENTS.md</code> (the §4b Skills section), <code>templates/.gitignore</code> (confirm adapter dirs
+promote vendor skill bundles → <code>agent-skills/</code>, preserve under <code>legacy/</code>), the then-current
+root/template protocol surfaces (now <code>memory/PROTOCOL.md</code> + <code>templates/memory/PROTOCOL.md</code>),
+<code>templates/.gitignore</code> (confirm adapter dirs
 stay ignored under Option A; <code>agent-skills/</code> tracked), <code>.agent/schema.md</code> (document <code>agent-skills/</code>),
 and the version ladder (<code>VERSION</code> / <code>UPGRADE.md</code> — additive ⇒ <strong>MINOR</strong>, e.g. a 4.x rung).</p>
 <h2 id="9-open-questions-deferred-to-build-time">9. Open questions (deferred to build time)<a class="headerlink" href="#9-open-questions-deferred-to-build-time" title="Permanent link">&para;</a></h2>
@@ -2123,9 +2158,10 @@ and the version ladder (<code>VERSION</code> / <code>UPGRADE.md</code> — addit
   small discovery budget — long abstract paragraphs weaken activation); YAML <code>&gt;</code>/<code>|</code> blocks
   are YAML-only and don't carry into the TOML adapter, so the canonical value is one logical
   line.)</li>
-<li><strong>Adapter generation locus</strong> — <strong>RESOLVED v4.2.0:</strong> a "sync skill adapters" operation lives
-  in the installed <code>AGENTS.md</code> "Skills" section (so a target's own agent, any vendor, can
-  self-sync), idempotent (overwrite adapters, prune orphans, never touch the neutral skill);
+<li><strong>Adapter generation locus</strong> — <strong>RESOLVED v4.2.0:</strong> a "sync skill adapters" operation lived
+  in the installed <code>AGENTS.md</code> "Skills" section and moved to <code>SKILLS.md</code> in v4.4.0; the
+  activation rule now lives in <code>memory/PROTOCOL.md</code>. The operation is idempotent (overwrite
+  adapters, prune orphans, never touch the neutral skill);
   <code>ENABLE.md</code> Step 5h references that single recipe. Surfaced by a real cross-machine test
   (adapters are gitignored → don't travel with a clone/pull).</li>
 <li><strong>Per-vendor fidelity</strong> — Gemini/Cursor mechanisms differ in trigger semantics; how

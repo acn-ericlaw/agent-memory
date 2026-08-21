@@ -1148,6 +1148,8 @@
       
         
       
+        
+      
     
     
     
@@ -1639,6 +1641,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../architecture/security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Instruction & Memory Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../agent-cognitive-framework/" class="md-nav__link">
         
   
@@ -1963,7 +1993,7 @@
 
 <h1 id="agent-memory-a-lightweight-vendor-neutral-memory-cognitive-loop-system-for-predictable-aihuman-delivery">agent-memory: A Lightweight, Vendor-Neutral Memory + Cognitive-Loop System for Predictable AI–Human Delivery<a class="headerlink" href="#agent-memory-a-lightweight-vendor-neutral-memory-cognitive-loop-system-for-predictable-aihuman-delivery" title="Permanent link">&para;</a></h1>
 <h2 id="deterministic-memory-as-a-substrate-a-lightweight-cognitive-loop-as-the-control-layer">Deterministic memory as a substrate; a lightweight cognitive loop as the control layer<a class="headerlink" href="#deterministic-memory-as-a-substrate-a-lightweight-cognitive-loop-as-the-control-layer" title="Permanent link">&para;</a></h2>
-<p><strong>Version:</strong> 1.5 (describes agent-memory <strong>v4.36.0</strong>)
+<p><strong>Version:</strong> 1.5 (describes agent-memory <strong>v4.37.0</strong>)
 <strong>Date:</strong> August 20, 2026</p>
 <blockquote>
 <p><em>"Acceleration without direction is only faster drift."</em></p>
@@ -2193,7 +2223,7 @@ procedure, optionally helper scripts) authored once and usable by any agent.</p>
 <ul>
 <li><strong>Neutral source of truth.</strong> A committed <code>agent-skills/&lt;name&gt;/SKILL.md</code> — vendor-neutral
   markdown — is the single definition; it travels with the repo, like <code>memory/</code>.</li>
-<li><strong>Universal runtime.</strong> The <code>AGENTS.md</code> "Skills" section is the baseline: when a task
+<li><strong>Universal runtime.</strong> The <code>memory/PROTOCOL.md</code> "Use skills correctly" section is the baseline: when a task
   matches a skill's <code>description</code>, the agent reads and follows that <code>SKILL.md</code>. Because the
   agent <em>is</em> the runtime, this works on <strong>any</strong> vendor with no engine.</li>
 <li><strong>Thin per-vendor adapters.</strong> For runtimes with a native skill/command system, the tool
@@ -2333,8 +2363,8 @@ its documentation:</p>
 <h2 id="6-design-principles">6. Design Principles<a class="headerlink" href="#6-design-principles" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>No-code, markdown-only.</strong> The files are the product; the agent is the runtime.</li>
-<li><strong>Vendor-neutral.</strong> One shared memory; thin per-vendor bootstrap pointers route every
-  agent to a single hub (<code>AGENTS.md</code>). No lock-in.</li>
+<li><strong>Vendor-neutral.</strong> One shared memory; the one-line <code>AGENTS.md</code> shim and thin vendor
+  bootstraps route every agent to <code>memory/PROTOCOL.md</code>. No lock-in.</li>
 <li><strong>Deterministic — no floating-point.</strong> Every decision reduces to counting or comparing
   integers, so results are reproducible across agents and runs.</li>
 <li><strong>Reversible reconciliation.</strong> Immutable ledger + mutable projection + replay — the

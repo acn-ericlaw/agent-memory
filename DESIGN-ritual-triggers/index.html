@@ -1148,6 +1148,8 @@
       
         
       
+        
+      
     
     
     
@@ -1534,6 +1536,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../architecture/security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Instruction & Memory Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../agent-cognitive-framework/" class="md-nav__link">
         
   
@@ -1753,6 +1783,10 @@
 
 <h1 id="design-reliable-vendor-neutral-ritual-triggers">DESIGN — Reliable, Vendor-Neutral Ritual Triggers<a class="headerlink" href="#design-reliable-vendor-neutral-ritual-triggers" title="Permanent link">&para;</a></h1>
 <blockquote>
+<p><strong>Amendment (v4.37.0, 2026-08-20):</strong> activation and definition-of-done
+instructions now live in <code>memory/PROTOCOL.md</code>; root <code>AGENTS.md</code> is an exact one-line
+discovery shim. Import-capable bootstraps load the protocol directly. Historical notes
+below retain the <code>AGENTS.md</code> placement they describe at those versions.</p>
 <p><strong>Amendment (v4.36.0, 2026-08-20):</strong> the two hook entrypoints are now stable <strong>fragment
 dispatchers</strong>. Executable files in <code>.githooks/pre-commit.d/</code> and <code>.githooks/post-commit.d/</code> run
 in deterministic C-locale filename order; all fragments run and the first non-zero status is
@@ -1909,7 +1943,7 @@ reference-bearing session and is flagged for enrichment — never silently treat
 <tbody>
 <tr>
 <td><strong>0 — Primary (unchanged)</strong></td>
-<td>Agent-runtime ritual; strengthen the <strong>"a task is not <em>done</em> until the log exists"</strong> framing in <code>AGENTS.md</code> (definition-of-done, not a trailing chore).</td>
+<td>Agent-runtime ritual; strengthen the <strong>"a task is not <em>done</em> until the log exists"</strong> framing in <code>memory/PROTOCOL.md</code> (definition-of-done, not a trailing chore).</td>
 <td>Best-effort (agent judgment)</td>
 </tr>
 <tr>

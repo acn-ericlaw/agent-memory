@@ -1253,6 +1253,8 @@
       
         
       
+        
+      
     
     
     
@@ -1501,6 +1503,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../architecture/security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Instruction & Memory Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../agent-cognitive-framework/" class="md-nav__link">
         
   
@@ -1717,7 +1747,9 @@ with <strong>originals preserved under <code>legacy/</code>, never deleted</stro
 <p>The repo is already enabled. The agent is idempotent — and if the repo is on an older
 version, it <a href="../upgrade/">upgrades in place</a> by <strong>reconciling against the current
 target state</strong> (v4.35.0) — one diff-and-apply pass plus the few version-gated
-semantic steps, not a walk of every release in between.</p>
+semantic steps, not a walk of every release in between. A <code>PRE-APPLY</code> step runs
+before mechanics when it must preserve content that would otherwise be re-copied;
+reconcile refuses writes until the protected boundary is safe and explicitly confirmed.</p>
 </div>
 </div>
 </div>
@@ -1740,11 +1772,11 @@ seconds of mechanics plus a few minutes of real analysis.</p>
 <tbody>
 <tr>
 <td><code>memory/</code></td>
-<td>continuity, vision, sessions, archive, decay-policy</td>
+<td>protocol, continuity, vision, sessions, archive, decay-policy</td>
 </tr>
 <tr>
 <td><code>AGENTS.md</code></td>
-<td>the hub every vendor's agent reads first</td>
+<td>the one-line universal shim to <code>memory/PROTOCOL.md</code></td>
 </tr>
 <tr>
 <td><code>agent-skills/</code></td>

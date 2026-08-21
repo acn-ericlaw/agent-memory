@@ -1242,6 +1242,8 @@
       
         
       
+        
+      
     
     
     
@@ -1490,6 +1492,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../architecture/security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Instruction & Memory Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../agent-cognitive-framework/" class="md-nav__link">
         
   
@@ -1664,7 +1694,7 @@
 
 
 <h1 id="protocol-files">Protocol Files<a class="headerlink" href="#protocol-files" title="Permanent link">&para;</a></h1>
-<p>The protocol itself is a small set of markdown files at the repo root. They are written for an
+<p>The protocol is a small set of Markdown files rooted at <code>memory/</code> and the repository root. They are written for an
 <strong>AI agent to execute</strong>, so they're terse and operational — this page is a map. Each links to
 the source on GitHub.</p>
 <h2 id="always-read">Always read<a class="headerlink" href="#always-read" title="Permanent link">&para;</a></h2>
@@ -1678,7 +1708,11 @@ the source on GitHub.</p>
 <tbody>
 <tr>
 <td><a href="https://github.com/acn-ericlaw/agent-memory/blob/main/AGENTS.md"><code>AGENTS.md</code></a></td>
-<td>The hub. Every vendor's agent reads it first; it routes to everything else. A <strong>target's</strong> <code>AGENTS.md</code> is the memory hub (from <code>templates/AGENTS.md</code>); the tool's <strong>root</strong> <code>AGENTS.md</code> is the dual-mode operator dispatcher.</td>
+<td>Exact one-line universal discovery shim to <code>memory/PROTOCOL.md</code>.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/acn-ericlaw/agent-memory/blob/main/memory/PROTOCOL.md"><code>memory/PROTOCOL.md</code></a></td>
+<td>Canonical activation and lifecycle protocol. The tool copy includes dual-mode operator routing; enabled targets receive the target-only source from <code>templates/memory/PROTOCOL.md</code>.</td>
 </tr>
 <tr>
 <td><a href="https://github.com/acn-ericlaw/agent-memory/blob/main/README.md"><code>README.md</code></a></td>
@@ -1713,6 +1747,8 @@ the source on GitHub.</p>
 </tr>
 </tbody>
 </table>
+<p>The protocol's instruction-versus-evidence boundary is governed by the
+<a href="../../architecture/security/">agent instruction and memory security contract</a>.</p>
 <h2 id="operator-only">Operator-only<a class="headerlink" href="#operator-only" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

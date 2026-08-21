@@ -12,13 +12,9 @@
         <meta name="author" content="Eric Law">
       
       
-        <link rel="canonical" href="https://acn-ericlaw.github.io/agent-memory/getting-started/">
+        <link rel="canonical" href="https://acn-ericlaw.github.io/agent-memory/specs/memory-protocol-pointer/spec/">
       
       
-        <link rel="prev" href="..">
-      
-      
-        <link rel="next" href="../concepts/">
       
       
         
@@ -29,14 +25,14 @@
     
     
       
-        <title>Getting Started - agent-memory</title>
+        <title>Spec: Memory protocol pointer - agent-memory</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -55,7 +51,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -80,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#getting-started" class="md-skip">
+        <a href="#spec-memory-protocol-pointer" class="md-skip">
           Skip to content
         </a>
       
@@ -94,7 +90,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="agent-memory" class="md-header__button md-logo" aria-label="agent-memory" data-md-component="logo">
+    <a href="../../.." title="agent-memory" class="md-header__button md-logo" aria-label="agent-memory" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.33 12.91c.09 1.55-.62 3.04-1.89 3.95l.77 1.49c.23.45.26.98.06 1.45-.19.47-.58.84-1.06 1l-.79.25a1.687 1.687 0 0 1-1.86-.55L14.44 18c-.89-.15-1.73-.53-2.44-1.1-.5.15-1 .23-1.5.23-.88 0-1.76-.27-2.5-.79-.53.16-1.07.23-1.62.22-.79.01-1.57-.15-2.3-.45a4.1 4.1 0 0 1-2.43-3.61c-.08-.72.04-1.45.35-2.11-.29-.75-.32-1.57-.07-2.33C2.3 7.11 3 6.32 3.87 5.82c.58-1.69 2.21-2.82 4-2.7 1.6-1.5 4.05-1.66 5.83-.37.42-.11.86-.17 1.3-.17 1.36-.03 2.65.57 3.5 1.64 2.04.53 3.5 2.35 3.58 4.47.05 1.11-.25 2.2-.86 3.13.07.36.11.72.11 1.09m-5-1.41c.57.07 1.02.5 1.02 1.07a1 1 0 0 1-1 1h-.63c-.32.9-.88 1.69-1.62 2.29.25.09.51.14.77.21 5.13-.07 4.53-3.2 4.53-3.25a2.59 2.59 0 0 0-2.69-2.49 1 1 0 0 1-1-1 1 1 0 0 1 1-1c1.23.03 2.41.49 3.33 1.3.05-.29.08-.59.08-.89-.06-1.24-.62-2.32-2.87-2.53-1.25-2.96-4.4-1.32-4.4-.4-.03.23.21.72.25.75a1 1 0 0 1 1 1c0 .55-.45 1-1 1-.53-.02-1.03-.22-1.43-.56-.48.31-1.03.5-1.6.56-.57.05-1.04-.35-1.07-.9a.97.97 0 0 1 .88-1.1c.16-.02.94-.14.94-.77 0-.66.25-1.29.68-1.79-.92-.25-1.91.08-2.91 1.29C6.75 5 6 5.25 5.45 7.2 4.5 7.67 4 8 3.78 9c1.08-.22 2.19-.13 3.22.25.5.19.78.75.59 1.29-.19.52-.77.78-1.29.59-.73-.32-1.55-.34-2.3-.06-.32.27-.32.83-.32 1.27 0 .74.37 1.43 1 1.83.53.27 1.12.41 1.71.4q-.225-.39-.39-.81a1.038 1.038 0 0 1 1.96-.68c.4 1.14 1.42 1.92 2.62 2.05 1.37-.07 2.59-.88 3.19-2.13.23-1.38 1.34-1.5 2.56-1.5m2 7.47-.62-1.3-.71.16 1 1.25zm-4.65-8.61a1 1 0 0 0-.91-1.03c-.71-.04-1.4.2-1.93.67-.57.58-.87 1.38-.84 2.19a1 1 0 0 0 1 1c.57 0 1-.45 1-1 0-.27.07-.54.23-.76.12-.1.27-.15.43-.15.55.03 1.02-.38 1.02-.92"/></svg>
@@ -114,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting Started
+              Spec: Memory protocol pointer
             
           </span>
         </div>
@@ -237,7 +233,7 @@
   
   
     <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
+      <a href="../../.." class="md-tabs__link">
         
   
   
@@ -254,11 +250,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../../../getting-started/" class="md-tabs__link">
         
   
   
@@ -279,7 +273,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../concepts/" class="md-tabs__link">
+        <a href="../../../concepts/" class="md-tabs__link">
           
   
   
@@ -301,7 +295,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../guides/" class="md-tabs__link">
+        <a href="../../../guides/" class="md-tabs__link">
           
   
   
@@ -323,7 +317,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../reference/" class="md-tabs__link">
+        <a href="../../../reference/" class="md-tabs__link">
           
   
   
@@ -345,7 +339,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../agent-memory-whitepaper/" class="md-tabs__link">
+        <a href="../../../agent-memory-whitepaper/" class="md-tabs__link">
           
   
   
@@ -365,7 +359,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../changelog/" class="md-tabs__link">
+      <a href="../../../changelog/" class="md-tabs__link">
         
   
   
@@ -400,7 +394,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="agent-memory" class="md-nav__button md-logo" aria-label="agent-memory" data-md-component="logo">
+    <a href="../../.." title="agent-memory" class="md-nav__button md-logo" aria-label="agent-memory" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.33 12.91c.09 1.55-.62 3.04-1.89 3.95l.77 1.49c.23.45.26.98.06 1.45-.19.47-.58.84-1.06 1l-.79.25a1.687 1.687 0 0 1-1.86-.55L14.44 18c-.89-.15-1.73-.53-2.44-1.1-.5.15-1 .23-1.5.23-.88 0-1.76-.27-2.5-.79-.53.16-1.07.23-1.62.22-.79.01-1.57-.15-2.3-.45a4.1 4.1 0 0 1-2.43-3.61c-.08-.72.04-1.45.35-2.11-.29-.75-.32-1.57-.07-2.33C2.3 7.11 3 6.32 3.87 5.82c.58-1.69 2.21-2.82 4-2.7 1.6-1.5 4.05-1.66 5.83-.37.42-.11.86-.17 1.3-.17 1.36-.03 2.65.57 3.5 1.64 2.04.53 3.5 2.35 3.58 4.47.05 1.11-.25 2.2-.86 3.13.07.36.11.72.11 1.09m-5-1.41c.57.07 1.02.5 1.02 1.07a1 1 0 0 1-1 1h-.63c-.32.9-.88 1.69-1.62 2.29.25.09.51.14.77.21 5.13-.07 4.53-3.2 4.53-3.25a2.59 2.59 0 0 0-2.69-2.49 1 1 0 0 1-1-1 1 1 0 0 1 1-1c1.23.03 2.41.49 3.33 1.3.05-.29.08-.59.08-.89-.06-1.24-.62-2.32-2.87-2.53-1.25-2.96-4.4-1.32-4.4-.4-.03.23.21.72.25.75a1 1 0 0 1 1 1c0 .55-.45 1-1 1-.53-.02-1.03-.22-1.43-.56-.48.31-1.03.5-1.6.56-.57.05-1.04-.35-1.07-.9a.97.97 0 0 1 .88-1.1c.16-.02.94-.14.94-.77 0-.66.25-1.29.68-1.79-.92-.25-1.91.08-2.91 1.29C6.75 5 6 5.25 5.45 7.2 4.5 7.67 4 8 3.78 9c1.08-.22 2.19-.13 3.22.25.5.19.78.75.59 1.29-.19.52-.77.78-1.29.59-.73-.32-1.55-.34-2.3-.06-.32.27-.32.83-.32 1.27 0 .74.37 1.43 1 1.83.53.27 1.12.41 1.71.4q-.225-.39-.39-.81a1.038 1.038 0 0 1 1.96-.68c.4 1.14 1.42 1.92 2.62 2.05 1.37-.07 2.59-.88 3.19-2.13.23-1.38 1.34-1.5 2.56-1.5m2 7.47-.62-1.3-.71.16 1 1.25zm-4.65-8.61a1 1 0 0 0-.91-1.03c-.71-.04-1.4.2-1.93.67-.57.58-.87 1.38-.84 2.19a1 1 0 0 0 1 1c.57 0 1-.45 1-1 0-.27.07-.54.23-.76.12-.1.27-.15.43-.15.55.03 1.02-.38 1.02-.92"/></svg>
@@ -430,7 +424,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -454,37 +448,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Getting Started
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../getting-started/" class="md-nav__link">
         
   
   
@@ -500,81 +467,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-install-agent-memory-one-time" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1 · Install agent-memory (one-time)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-enable-a-target-repo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2 · Enable a target repo
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-work-in-your-ai-enabled-repo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3 · Work in your AI-enabled repo
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-gets-created" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What gets created
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next steps
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -619,7 +511,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../concepts/" class="md-nav__link ">
+            <a href="../../../concepts/" class="md-nav__link ">
               
   
   
@@ -663,7 +555,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../concepts/evolving-memory/" class="md-nav__link">
+      <a href="../../../concepts/evolving-memory/" class="md-nav__link">
         
   
   
@@ -691,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../concepts/vbdi-loop/" class="md-nav__link">
+      <a href="../../../concepts/vbdi-loop/" class="md-nav__link">
         
   
   
@@ -719,7 +611,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../concepts/skills/" class="md-nav__link">
+      <a href="../../../concepts/skills/" class="md-nav__link">
         
   
   
@@ -747,7 +639,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../concepts/decay/" class="md-nav__link">
+      <a href="../../../concepts/decay/" class="md-nav__link">
         
   
   
@@ -775,7 +667,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../concepts/reliability/" class="md-nav__link">
+      <a href="../../../concepts/reliability/" class="md-nav__link">
         
   
   
@@ -843,7 +735,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../guides/" class="md-nav__link ">
+            <a href="../../../guides/" class="md-nav__link ">
               
   
   
@@ -887,7 +779,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/enable-a-repo/" class="md-nav__link">
+      <a href="../../../guides/enable-a-repo/" class="md-nav__link">
         
   
   
@@ -915,7 +807,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/upgrade/" class="md-nav__link">
+      <a href="../../../guides/upgrade/" class="md-nav__link">
         
   
   
@@ -943,7 +835,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/review-memory/" class="md-nav__link">
+      <a href="../../../guides/review-memory/" class="md-nav__link">
         
   
   
@@ -971,7 +863,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/resolve-merge-conflicts/" class="md-nav__link">
+      <a href="../../../guides/resolve-merge-conflicts/" class="md-nav__link">
         
   
   
@@ -999,7 +891,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/author-a-skill/" class="md-nav__link">
+      <a href="../../../guides/author-a-skill/" class="md-nav__link">
         
   
   
@@ -1065,7 +957,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../reference/" class="md-nav__link ">
+            <a href="../../../reference/" class="md-nav__link ">
               
   
   
@@ -1109,7 +1001,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/built-in-skills/" class="md-nav__link">
+      <a href="../../../reference/built-in-skills/" class="md-nav__link">
         
   
   
@@ -1137,7 +1029,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/decay-parameters/" class="md-nav__link">
+      <a href="../../../reference/decay-parameters/" class="md-nav__link">
         
   
   
@@ -1165,7 +1057,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/vendor-support/" class="md-nav__link">
+      <a href="../../../reference/vendor-support/" class="md-nav__link">
         
   
   
@@ -1193,7 +1085,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/protocol-files/" class="md-nav__link">
+      <a href="../../../reference/protocol-files/" class="md-nav__link">
         
   
   
@@ -1302,7 +1194,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../agent-memory-whitepaper/" class="md-nav__link">
+      <a href="../../../agent-memory-whitepaper/" class="md-nav__link">
         
   
   
@@ -1330,7 +1222,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DESIGN-evolving-memory/" class="md-nav__link">
+      <a href="../../../DESIGN-evolving-memory/" class="md-nav__link">
         
   
   
@@ -1358,7 +1250,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DESIGN-vbdi-lifecycle/" class="md-nav__link">
+      <a href="../../../DESIGN-vbdi-lifecycle/" class="md-nav__link">
         
   
   
@@ -1386,7 +1278,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DESIGN-skills-layer/" class="md-nav__link">
+      <a href="../../../DESIGN-skills-layer/" class="md-nav__link">
         
   
   
@@ -1414,7 +1306,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DESIGN-ritual-triggers/" class="md-nav__link">
+      <a href="../../../DESIGN-ritual-triggers/" class="md-nav__link">
         
   
   
@@ -1442,7 +1334,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DESIGN-reconcile/" class="md-nav__link">
+      <a href="../../../DESIGN-reconcile/" class="md-nav__link">
         
   
   
@@ -1470,7 +1362,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DESIGN-fresh-context-review/" class="md-nav__link">
+      <a href="../../../DESIGN-fresh-context-review/" class="md-nav__link">
         
   
   
@@ -1498,7 +1390,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/security/" class="md-nav__link">
+      <a href="../../../architecture/security/" class="md-nav__link">
         
   
   
@@ -1526,7 +1418,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../agent-cognitive-framework/" class="md-nav__link">
+      <a href="../../../agent-cognitive-framework/" class="md-nav__link">
         
   
   
@@ -1554,7 +1446,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../arch-decisions/ADR/" class="md-nav__link">
+      <a href="../../../arch-decisions/ADR/" class="md-nav__link">
         
   
   
@@ -1589,7 +1481,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../changelog/" class="md-nav__link">
+      <a href="../../../changelog/" class="md-nav__link">
         
   
   
@@ -1636,10 +1528,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-install-agent-memory-one-time" class="md-nav__link">
+  <a href="#objective" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1 · Install agent-memory (one-time)
+        Objective
       
     </span>
   </a>
@@ -1647,10 +1539,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-enable-a-target-repo" class="md-nav__link">
+  <a href="#boundaries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2 · Enable a target repo
+        Boundaries
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Boundaries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#always-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Always do
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ask-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ask first
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#never-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Never do
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Strategy
       
     </span>
   </a>
@@ -1658,10 +1600,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-work-in-your-ai-enabled-repo" class="md-nav__link">
+  <a href="#acceptance-criteria" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3 · Work in your AI-enabled repo
+        Acceptance Criteria
       
     </span>
   </a>
@@ -1669,21 +1611,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-gets-created" class="md-nav__link">
+  <a href="#assumptions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What gets created
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next steps
+        Assumptions
       
     </span>
   </a>
@@ -1710,145 +1641,136 @@
   
 
 
-<h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
-<p>Three short phases: <strong>install the tool</strong>, <strong>enable a repo</strong>, then <strong>work in that repo</strong>.</p>
-<p>agent-memory is no-code — there is nothing to build, no API key, no service to run. You
-drive it by talking to your AI agent.</p>
-<h2 id="1-install-agent-memory-one-time">1 · Install agent-memory (one-time)<a class="headerlink" href="#1-install-agent-memory-one-time" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/acn-ericlaw/agent-memory
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>agent-memory
-</code></pre></div>
-<p>Open the cloned folder with your AI agent (Claude Code, Gemini CLI, Cursor, Kiro, GitHub
-Copilot, …) and make your <strong>first prompt</strong>:</p>
-<blockquote>
-<p><strong>"Start from <code>AGENTS.md</code>."</strong></p>
-</blockquote>
-<p>This loads the one-line discovery shim, which points to <code>memory/PROTOCOL.md</code> before
-substantive work. It is the reliable entry point on every vendor — and it is <strong>required</strong> in
-enterprise IDEs (e.g. Kiro) that otherwise self-bootstrap from their own onboarding before
-reading <code>AGENTS.md</code>.</p>
-<div class="admonition tip">
-<p class="admonition-title">VS Code / Kiro</p>
-<p>Add the target repo to the <strong>same workspace</strong> as this tool, so the agent can read both.
-Other CLIs (Claude Code, Gemini CLI, …) work fine without this.</p>
-</div>
-<h2 id="2-enable-a-target-repo">2 · Enable a target repo<a class="headerlink" href="#2-enable-a-target-repo" title="Permanent link">&para;</a></h2>
-<p>Ask the agent:</p>
-<blockquote>
-<p><strong>"AI enable <code>/path/to/your-project</code>."</strong></p>
-</blockquote>
-<p>The agent opens with a short <strong>exec summary</strong> of what the protocol does, what it writes, and
-what it leaves untouched — plus a <strong>cancel gate</strong>, so you give informed consent before
-anything is written. Then it:</p>
-<ol>
-<li><strong>Detects</strong> any existing AI footprint (Cursor, Aider, Copilot, Kiro, …) and offers
-   migration (with a dry-run option).</li>
-<li><strong>Analyses</strong> the repo (language, stack, type) and <strong>harvests</strong> durable facts from your
-   existing docs (ADRs, decision logs, design specs).</li>
-<li><strong>Generates</strong> tailored <code>memory/</code> files, installs bootstrap pointers for all major agents,
-   the six skill adapters, and the git-hook + CI triggers (forge-aware: GitHub Actions,
-   GitLab CI, or Azure Pipelines — matched to the hosting forge).</li>
-<li><strong>Preserves</strong> any originals under <code>legacy/</code> — never deleted — and reports exactly what
-   happened.</li>
-</ol>
-<p>There is <strong>no manual setup step</strong>: the agent activates the local git hook dispatchers itself, and CI is
-the zero-config backstop (on GitHub and GitLab.com; a self-managed GitLab needs an
-admin-registered runner, and an Azure DevOps pipeline needs a one-time activation).</p>
-<h2 id="3-work-in-your-ai-enabled-repo">3 · Work in your AI-enabled repo<a class="headerlink" href="#3-work-in-your-ai-enabled-repo" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Commit the freshly enabled repo</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">cd</span><span class="w"> </span>/path/to/your-project
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>git<span class="w"> </span>add<span class="w"> </span>.<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"chore: AI-enable repo"</span>
-</code></pre></div>
-<p>From now on, <strong>open the target repo with any AI agent and just work</strong>. It reads <code>memory/</code>
-automatically, orients without re-explaining, and records decisions as it goes. Commits stay
-deliberate and human-initiated, with a self-identifying <code>Co-Authored-By:</code> trailer.</p>
-<div class="admonition tip">
-<p class="admonition-title">Pull/merge requests lead with What &amp; Why</p>
-<p>Enable installs a description template — <code>.github/pull_request_template.md</code> on GitHub,
-<code>.gitlab/merge_request_templates/Default.md</code> on GitLab, <code>.azuredevops/pull_request_template.md</code>
-on Azure DevOps — so every PR/MR description opens with two
-short sections — <strong>What</strong> (the change) and <strong>Why</strong> (the intent it serves) — and closes with a
-self-identifying <code>Co-Authored-By:</code> footer naming your <strong>stable agent name</strong> (e.g. <code>Claude Code</code>,
-<code>Gemini CLI</code> — the actual AI collaborator, not a model version), all drawn from the session
-log(s) in the PR. It's advisory, never a gate; the <em>why</em> is a first-class artifact throughout the
-protocol, so a PR is no exception. Since your harness often injects its <em>own</em> <code>Co-Authored-By</code>
-(frequently a model-version name), the rule is <strong>at most one trailer per collaborator, keyed on
-email</strong> — reconcile to a single line rather than stacking a second for the same address.
-(That's GitHub squash behavior. GitLab is the opposite: its default squash message is the MR
-title only, so body trailers are <em>dropped</em> — re-add the trailer when editing the squash message
-at merge, or use <code>%{all_commits}</code> in the project's squash template, which carries body trailers.
-<code>%{co_authored_by}</code> does not — it credits commit authors only. Azure DevOps also drops
-trailers — re-add via "Customize merge commit message" at completion.)</p>
-</div>
-<p>A typical session:</p>
-<pre class="mermaid"><code>flowchart LR
-  A[Read continuity.md&lt;br/&gt;+ Vision] --&gt; B[Do the work]
-  B --&gt; C[Write a session log&lt;br/&gt;with Memory References]
-  C --&gt; D[Update continuity.md]
-  D -.-&gt;|periodically| E[Review ritual]</code></pre>
-<div class="admonition note">
-<p class="admonition-title">Enterprise IDEs (e.g. Kiro)</p>
-<p>Per-machine vendor dirs (<code>.kiro/</code>, <code>.claude/</code>, …) are gitignored, so a fresh clone won't
-have them. After the agent loads the protocol, run <strong><code>sync skill adapters</code></strong> to
-regenerate your local skill adapters. Anything the IDE later deposits in <code>.kiro/</code> stays
-gitignored and per-machine — it never touches the shared <code>memory/</code> layer.</p>
-</div>
-<h2 id="what-gets-created">What gets created<a class="headerlink" href="#what-gets-created" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Path</th>
-<th>What it is</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>memory/PROTOCOL.md</code></td>
-<td>The canonical activation and session lifecycle protocol</td>
-</tr>
-<tr>
-<td><code>memory/continuity.md</code></td>
-<td>The live project state — facts, decisions, open threads</td>
-</tr>
-<tr>
-<td><code>memory/vision.md</code></td>
-<td>The north star (a DRAFT you confirm; never fabricated)</td>
-</tr>
-<tr>
-<td><code>memory/sessions/</code></td>
-<td>Immutable, dated session logs — the event ledger</td>
-</tr>
-<tr>
-<td><code>memory/archive/</code></td>
-<td>Faded facts + a greppable <code>INDEX.md</code> (nothing is deleted)</td>
-</tr>
-<tr>
-<td><code>AGENTS.md</code></td>
-<td>The one-line universal shim to <code>memory/PROTOCOL.md</code></td>
-</tr>
-<tr>
-<td><code>agent-skills/</code></td>
-<td>Portable, vendor-neutral skills (with seven built-ins)</td>
-</tr>
-<tr>
-<td><code>.github/pull_request_template.md</code> / <code>.gitlab/merge_request_templates/Default.md</code> / <code>.azuredevops/pull_request_template.md</code></td>
-<td>Seeds the <strong>What / Why</strong> description convention (per forge)</td>
-</tr>
-<tr>
-<td><code>.agent/version.md</code></td>
-<td>The version stamp (gates in-place upgrades)</td>
-</tr>
-</tbody>
-</table>
-<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
-<div class="grid cards">
+<h1 id="spec-memory-protocol-pointer">Spec: Memory protocol pointer<a class="headerlink" href="#spec-memory-protocol-pointer" title="Permanent link">&para;</a></h1>
 <ul>
-<li><a href="../concepts/evolving-memory/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> How memory evolves</a></li>
-<li><a href="../guides/enable-a-repo/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Enable a repo (detailed)</a></li>
-<li><a href="../reference/built-in-skills/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> The built-in skills</a></li>
-<li><a href="../reference/vendor-support/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Which vendors are supported</a></li>
+<li><strong>Status:</strong> Shipped</li>
+<li><strong>Owner:</strong> maintainer</li>
+<li><strong>Plan:</strong> <a href="../plan/"><code>plan.md</code></a></li>
+<li><strong>Constrained by:</strong> ADR-0005, ADR-0006</li>
+<li><strong>Brief:</strong> none</li>
+<li><strong>Discovery:</strong> none</li>
+<li><strong>Contract:</strong> none</li>
+<li><strong>Shape:</strong> mixed</li>
 </ul>
-</div>
+<blockquote>
+<p><strong>Spec contract:</strong> this document defines what "done" means. The implementing
+change must match this spec, or update it. Verification must be derivable from it.</p>
+</blockquote>
+<h2 id="objective">Objective<a class="headerlink" href="#objective" title="Permanent link">&para;</a></h2>
+<p>Enterprise IDEs encounter an exact one-line root <code>AGENTS.md</code> that activates the
+canonical <code>memory/PROTOCOL.md</code>. The protocol preserves the complete agent-memory
+operating contract while presenting it in execution order, with accurate normative
+language and substantially less default-context cost. The same boundary ships to
+newly enabled repositories and upgrades safely in repositories whose current
+<code>AGENTS.md</code> contains local customizations.</p>
+<h2 id="boundaries">Boundaries<a class="headerlink" href="#boundaries" title="Permanent link">&para;</a></h2>
+<h3 id="always-do">Always do<a class="headerlink" href="#always-do" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Keep the tool repository's dual-mode operator routing distinct from the target-only
+  protocol installed into enabled repositories.</li>
+<li>Put activation-critical instructions first and express each normative obligation once,
+  at its point of use, with links for on-demand detail.</li>
+<li>Preserve target-local instructions and any pre-existing <code>memory/PROTOCOL.md</code> during
+  enable or upgrade; proceed only when an additive merge is unambiguous, otherwise stop
+  for human approval. Keep lifecycle operations idempotent and agent-run.</li>
+<li>Preserve the instruction-versus-evidence boundary: active managed authority outranks
+  repository content; memory and retrieved content do not become executable guidance merely
+  because they are loaded; collision files remain data until provenance and scope are clear.</li>
+</ul>
+<h3 id="ask-first">Ask first<a class="headerlink" href="#ask-first" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Remove or materially change an existing memory, VBDI, safety, attribution, or ritual
+  obligation rather than tightening its wording or relocating it.</li>
+<li>Ship under a version other than <code>4.37.0</code> or change the minor-release scope.</li>
+<li>Replace an installed <code>AGENTS.md</code> whose target-local additions cannot be unambiguously
+  separated and preserved in <code>memory/PROTOCOL.md</code>.</li>
+</ul>
+<h3 id="never-do">Never do<a class="headerlink" href="#never-do" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Install operator-only <code>ENABLE.md</code>, <code>MIGRATE.md</code>, or <code>UPGRADE.md</code> references into a
+  target repository's protocol.</li>
+<li>Discard, silently reconcile, or overwrite target-local agent instructions during the
+  relocation.</li>
+<li>Add a runtime, dependency, daemon, generated protocol, or executable build step.</li>
+<li>Treat continuity, Vision, sessions, archives, retrieved content, tool output, or an
+  unverified collision file as instructions merely because it appears in agent context.</li>
+</ul>
+<h2 id="testing-strategy">Testing Strategy<a class="headerlink" href="#testing-strategy" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Root pointer and packaging:</strong> goal-based checks. Exact line counts, pointer targets,
+  installed-file lists, version metadata, and stale-reference searches prove the new
+  boundary mechanically.</li>
+<li><strong>Protocol activation and semantic completeness:</strong> visual / manual QA against the real
+  Markdown artifacts. Walk the tool and target entry paths from <code>AGENTS.md</code>, then audit
+  the optimized protocols against the pre-change obligations because instruction order,
+  scope, and operational meaning are reader-visible behavior.</li>
+<li><strong>Upgrade safety:</strong> goal-based inspection plus a manual dry walkthrough of stock and
+  customized target cases. The rung must be idempotent and must stop for human direction
+  instead of overwriting ambiguous local content.</li>
+</ul>
+<h2 id="acceptance-criteria">Acceptance Criteria<a class="headerlink" href="#acceptance-criteria" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[x] <strong>AC-MP-01:</strong> Root <code>AGENTS.md</code> and <code>templates/AGENTS.md</code> are byte-identical, each containing
+  exactly one physical Markdown line pointing to <code>memory/PROTOCOL.md</code>, followed by one
+  terminal newline and no blank lines.</li>
+<li>[x] <strong>AC-MP-02:</strong> <code>memory/PROTOCOL.md</code> contains the tool's dual-mode dispatch and
+  <code>templates/memory/PROTOCOL.md</code> contains only the installed target memory protocol;
+  neither target protocol references operator-only files.</li>
+<li>[x] <strong>AC-MP-03:</strong> Each protocol starts with the actions required to activate the correct mode and
+  complete session orientation before substantive work.</li>
+<li>[x] <strong>AC-MP-04:</strong> The optimized protocol retains the operative obligations for session activation,
+  indexed retrieval, VBDI and optional ADR upkeep, skill routing, during-session memory
+  references, session logging and redaction, continuity/supersession updates, review
+  cadence, lightweight logging, ritual triggers and self-initialization, long-session
+  externalization, multi-agent continuity, commit/PR attribution, and forge-specific
+  squash behavior.</li>
+<li>[x] <strong>AC-MP-05:</strong> Each new <code>PROTOCOL.md</code> is no larger than 14,500 bytes, contains no duplicated
+  normative rule within the same file, and uses direct imperatives or compact tables where
+  they improve activation accuracy.</li>
+<li>[x] <strong>AC-MP-06:</strong> Claude and Gemini bootstrap imports structurally include <code>memory/PROTOCOL.md</code> before
+  the core memory files; prose-only bootstraps point to the protocol accurately; template
+  import placeholders remain inert inside this tool checkout.</li>
+<li>[x] <strong>AC-MP-07:</strong> Fresh enablement installs <code>memory/PROTOCOL.md</code> and the one-line root
+  pointer, and its verification/reporting paths recognize both files. A pre-existing
+  target-owned <code>memory/PROTOCOL.md</code> is preserved: an unambiguous additive merge proceeds
+  without duplication, while an ambiguous collision stops before any write for human approval.</li>
+<li>[x] <strong>AC-MP-08:</strong> The <code>4.36.0 → 4.37.0</code> upgrade is idempotent: stock installed protocols relocate
+  directly; customized <code>AGENTS.md</code> content and any pre-existing target-owned
+  <code>memory/PROTOCOL.md</code> are preserved without loss or duplication; ambiguous destination
+  or content merges stop for human approval before the root file is collapsed.</li>
+<li>[x] <strong>AC-MP-09:</strong> Before upgrade collapses an existing root protocol, it proves byte-for-byte recovery
+  from a committed Git blob or a human-approved target-local backup; without either, it
+  stops and requests the minimum recovery action.</li>
+<li>[x] <strong>AC-MP-10:</strong> Current source-of-truth maps, schemas, bootstrap descriptions, smoke guidance, and
+  release documentation name <code>memory/PROTOCOL.md</code>; no current documentation claims that
+  <code>AGENTS.md</code> itself carries the protocol.</li>
+<li>[x] <strong>AC-MP-11:</strong> <code>VERSION</code> identifies <code>4.37.0</code>; enablement and the upgrade rung stamp target
+  <code>.agent/version.md</code> metadata from that version while preserving its other fields; and the
+  changelog and upgrade ladder explain the new activation boundary.</li>
+<li>[x] <strong>AC-MP-12:</strong> A real manual walkthrough from each one-line pointer reaches the correct tool or
+  target workflow without relying on prior conversation context.</li>
+<li>[x] <strong>AC-MP-13:</strong> Both protocols state permission/instruction precedence and distinguish trusted
+  action directives from evidence-only memory; enable and upgrade inspect a pre-existing
+  protocol as data, establish target-local provenance and authority, and fail closed for
+  human confirmation when either is unclear. A clearly out-of-authority directive is a
+  blocking, source-preserving, zero-write stop; it is neither activated nor silently discarded.</li>
+</ul>
+<h2 id="assumptions">Assumptions<a class="headerlink" href="#assumptions" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Technical: the tool root is a dual-mode operator protocol while enabled repositories
+  receive the one-line shim from <code>templates/AGENTS.md</code> and the distinct target-only
+  protocol from <code>templates/memory/PROTOCOL.md</code> (source: <code>UPGRADE.md</code> source-of-truth table).</li>
+<li>Technical: enablement installs bootstrap files from <code>templates/</code> into the target root
+  (source: <code>ENABLE.md</code> Step 6).</li>
+<li>Product: both this repository and enabled repositories use an exact one-line root pointer
+  to <code>memory/PROTOCOL.md</code> (source: user confirmation 2026-08-20).</li>
+<li>Product: the relocated protocols preserve existing behavior while optimizing activation,
+  efficiency, instruction accuracy, and terseness (source: user confirmation 2026-08-20).</li>
+<li>Process: the relocation ships to existing repositories through a <code>4.37.0</code> minor upgrade
+  rung (source: user confirmation 2026-08-20).</li>
+<li>Process: the work is mixed-shape, exposes no separate interface contract, and excludes
+  unrelated protocol changes (source: user confirmation 2026-08-20).</li>
+</ul>
 
 
 
@@ -1881,44 +1803,6 @@ gitignored and per-machine — it never touches the shared <code>memory/</code> 
       
         <footer class="md-footer">
   
-    
-      
-      <nav class="md-footer__inner md-grid" aria-label="Footer" >
-        
-          
-          <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home">
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
-            </div>
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              <div class="md-ellipsis">
-                Home
-              </div>
-            </div>
-          </a>
-        
-        
-          
-          <a href="../concepts/" class="md-footer__link md-footer__link--next" aria-label="Next: Concepts">
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              <div class="md-ellipsis">
-                Concepts
-              </div>
-            </div>
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
-            </div>
-          </a>
-        
-      </nav>
     
   
   <div class="md-footer-meta md-typeset">
@@ -1966,10 +1850,10 @@ gitignored and per-machine — it never touches the shared <code>memory/</code> 
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.footer", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.footer", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

@@ -49,6 +49,10 @@
          <lastmod>2026-08-21</lastmod>
     </url>
     <url>
+         <loc>https://acn-ericlaw.github.io/agent-memory/architecture/security/</loc>
+         <lastmod>2026-08-21</lastmod>
+    </url>
+    <url>
          <loc>https://acn-ericlaw.github.io/agent-memory/concepts/</loc>
          <lastmod>2026-08-21</lastmod>
     </url>
@@ -114,6 +118,22 @@
     </url>
     <url>
          <loc>https://acn-ericlaw.github.io/agent-memory/reference/vendor-support/</loc>
+         <lastmod>2026-08-21</lastmod>
+    </url>
+    <url>
+         <loc>https://acn-ericlaw.github.io/agent-memory/specs/</loc>
+         <lastmod>2026-08-21</lastmod>
+    </url>
+    <url>
+         <loc>https://acn-ericlaw.github.io/agent-memory/specs/memory-protocol-pointer/plan/</loc>
+         <lastmod>2026-08-21</lastmod>
+    </url>
+    <url>
+         <loc>https://acn-ericlaw.github.io/agent-memory/specs/memory-protocol-pointer/spec/</loc>
+         <lastmod>2026-08-21</lastmod>
+    </url>
+    <url>
+         <loc>https://acn-ericlaw.github.io/agent-memory/specs/memory-protocol-pointer/walkthrough/</loc>
          <lastmod>2026-08-21</lastmod>
     </url>
 </urlset>
