@@ -201,7 +201,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (46/46 in each runtime). This changes tests only, so `VERSION` remains 4.33.4. → serves:
   vision-agent-memory (security tooling should not make the repository itself noisy to
   enterprise scanners)
-  <!-- id: secret-test-fixtures-env | created: 2026-08-14 | last_used: 2026-08-14 | uses: 1 | tier: working | origin: 2026-08-14-011037 -->
+  <!-- id: secret-test-fixtures-env | created: 2026-08-14 | last_used: 2026-08-14 | uses: 1 | tier: active | origin: 2026-08-14-011037 -->
 
 - [x] **Shipped v4.33.4 (PATCH) — reject non-empty `${…}` defaults in `[secret-material]`.**
   Post-release review caught that v4.33.3's broad brace-delimited placeholder exemption fixed
@@ -486,7 +486,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
 - [ ] **(blueprint)** Multi-user concurrent contribution — mostly supported (shared
   committed `memory/`, multi-agent continuity, collision-safe session filenames); validate
   and harden for *simultaneous* contributors. → serves: vision-agent-memory
-  <!-- id: bp-multi-user | created: 2026-06-15 | last_used: 2026-08-06 | uses: 5 | tier: active | origin: 2026-06-15-000531 -->
+  <!-- id: bp-multi-user | created: 2026-06-15 | last_used: 2026-08-20 | uses: 6 | tier: active | origin: 2026-06-15-000531 -->
 - [ ] **(blueprint)** *(optional)* SDLC overlay for targets — a scrum-inspired profile a
   target *owner* can opt into: a `(sprint)` tag over Blueprint gaps + a sprint-boundary
   review, **no points/velocity/ceremony**. Not core; only if a real target wants it. The
