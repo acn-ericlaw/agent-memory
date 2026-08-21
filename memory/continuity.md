@@ -102,7 +102,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   in C-locale filename order, all fragments run, and the first non-zero status is returned.
   Agent-memory owns only its `50-` fragments; differently named fragments belong to other layers
   and upgrades preserve them.
-  <!-- id: git-hook-fragment-dispatch | created: 2026-08-20 | last_used: 2026-08-20 | uses: 1 | tier: working | origin: 2026-08-20-210047 -->
+  <!-- id: git-hook-fragment-dispatch | created: 2026-08-20 | last_used: 2026-08-21 | uses: 3 | tier: active | origin: 2026-08-20-210047 -->
 
 ## Open Threads
 
@@ -115,7 +115,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   on rebase (4.35.0 shipped upstream as `bp-reconcile-target-state`); the `id` keeps its original
   slug — its origin log is immutable. → serves: vision-agent-memory (shared automation composes
   without ownership collisions and stays directly testable)
-  <!-- id: hook-dispatchers-v4350 | created: 2026-08-20 | last_used: 2026-08-20 | uses: 1 | tier: working | origin: 2026-08-20-210047 -->
+  <!-- id: hook-dispatchers-v4350 | created: 2026-08-20 | last_used: 2026-08-20 | uses: 1 | tier: active | origin: 2026-08-20-210047 -->
 
 - [x] **(blueprint — SHIPPED v4.35.0 MINOR, 2026-08-20) Target-state reconcile — enable/upgrade in
   O(diff), not O(steps/rungs).** Field report (2026-08-19): a fresh Mode A enable of a nearly-empty
@@ -148,7 +148,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   analysis, seeding, vision gate, arbitration, semantic merges stay agent-owned. Lockstep: VERSION,
   CHANGELOG, README (row + 10-cap trim drops 4.32.0), UPGRADE (flow + checklist + row + rung).
   → serves: vision-agent-memory (adoption stays "point it at a repo" — in minutes, at any version)
-  <!-- id: bp-reconcile-target-state | created: 2026-08-20 | last_used: 2026-08-20 | uses: 1 | tier: working | supersedes: ot-mode-b-automation-backlog | origin: 2026-08-20-223624 -->
+  <!-- id: bp-reconcile-target-state | created: 2026-08-20 | last_used: 2026-08-21 | uses: 3 | tier: active | supersedes: ot-mode-b-automation-backlog | origin: 2026-08-20-223624 -->
 
 - [x] **(blueprint) Relocate the memory protocol behind a one-line root `AGENTS.md`
   pointer and optimize it for activation, efficiency, instruction accuracy, and
@@ -165,7 +165,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   restored after a WIP marker leaked in (v4.22.0 anti-pattern); protocol row stays `seed-copy`.
   → serves: vision-agent-memory (lower default context cost without weakening deterministic,
   cross-vendor activation)
-  <!-- id: protocol-pointer-enterprise-activation | created: 2026-08-20 | last_used: 2026-08-20 | uses: 1 | tier: working | origin: 2026-08-20-204952 -->
+  <!-- id: protocol-pointer-enterprise-activation | created: 2026-08-20 | last_used: 2026-08-21 | uses: 7 | tier: active | origin: 2026-08-20-204952 -->
 
 - [ ] **Protocol-text propagation is a per-release obligation, not a mechanism.**
   `memory/PROTOCOL.md` is `seed-copy`, so an installed protocol is never re-copied — deliberate
@@ -210,7 +210,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.34.2, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.31.0), `UPGRADE` (row +
   `4.34.1→4.34.2` rung incl. the drop-obsolete-waivers step). → serves: vision-agent-memory (the
   advisory stays signal — a guard must never block the documentation of its own controls)
-  <!-- id: secret-fp-self-knob-v4342 | created: 2026-08-19 | last_used: 2026-08-19 | uses: 1 | tier: working | origin: 2026-08-19-203132 -->
+  <!-- id: secret-fp-self-knob-v4342 | created: 2026-08-19 | last_used: 2026-08-19 | uses: 1 | tier: archive-candidate | origin: 2026-08-19-203132 -->
 
 - [x] **Shipped v4.34.0 (MINOR) — pre-commit secret guard: prevention on both surfaces (memory +
   config).** From the maintainer's post-DLP-arc question + the decisive incident detail (the
@@ -226,7 +226,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   guidance prints once per run. Full detail: origin log + the `4.33.4→4.34.0` rung. → serves:
   vision-agent-memory (shared memory must be safe to share — guarded at write, commit, AND push
   time, wherever the secret lands)
-  <!-- id: pre-commit-secret-guard-v4340 | created: 2026-08-14 | last_used: 2026-08-19 | uses: 3 | tier: active | origin: 2026-08-14-021712 -->
+  <!-- id: pre-commit-secret-guard-v4340 | created: 2026-08-14 | last_used: 2026-08-19 | uses: 3 | tier: archive-candidate | origin: 2026-08-14-021712 -->
 
 - [ ] **Re-verify invariants (due):** confirm `target-repo-scope-only`,
   `never-delete-vendor-files`, `never-pick-a-winner`, `no-build-step-agent-run`,
@@ -243,7 +243,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (46/46 in each runtime). This changes tests only, so `VERSION` remains 4.33.4. → serves:
   vision-agent-memory (security tooling should not make the repository itself noisy to
   enterprise scanners)
-  <!-- id: secret-test-fixtures-env | created: 2026-08-14 | last_used: 2026-08-14 | uses: 1 | tier: active | origin: 2026-08-14-011037 -->
+  <!-- id: secret-test-fixtures-env | created: 2026-08-14 | last_used: 2026-08-21 | uses: 2 | tier: active | origin: 2026-08-14-011037 -->
 
 - [x] **Shipped v4.33.4 (PATCH) — reject non-empty `${…}` defaults in `[secret-material]`.**
   Post-release review caught that v4.33.3's broad brace-delimited placeholder exemption fixed
@@ -251,7 +251,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `${NAME}`, `${NAME:}`, and dotted references remain safe; a value such as
   `client_secret=${CLIENT_SECRET:-RealSecret123}` now flags without echoing the value. Python <!-- lint:allow-secret-material -->
   and Node remain byte-identical, 46 mirror tests each. → serves: vision-agent-memory
-  <!-- id: secret-template-default-v4334 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 3 | tier: active | origin: 2026-08-14-003952 -->
+  <!-- id: secret-template-default-v4334 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 3 | tier: archive-candidate | origin: 2026-08-14-003952 -->
 
 - [x] **Shipped v4.33.3 (PATCH) — security-review hardening for `[secret-material]`.** A
   fresh-context security review judged v4.33.x useful defense-in-depth but found four concrete
@@ -269,7 +269,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   (still fullmatch-anchored), verbatim fixture added, both live targets re-probe zero findings.
   → serves: vision-agent-memory (shared memory is safe to share, and the
   advertised strict gate is real)
-  <!-- id: secret-review-hardening-v4333 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 5 | tier: active | origin: 2026-08-13-235301 -->
+  <!-- id: secret-review-hardening-v4333 | created: 2026-08-13 | last_used: 2026-08-14 | uses: 5 | tier: archive-candidate | origin: 2026-08-13-235301 -->
 
 - [x] **Shipped v4.33.2 (PATCH) — `[secret-material]`: backtick is a value delimiter.** The
   `4.33.0→4.33.1` rung's own verify step on the live target caught, minutes after v4.33.1
@@ -290,7 +290,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   in a created PR/MR; rung gains an optional template re-copy step. → serves:
   vision-agent-memory (the advisory stays signal — and the trigger layer's verify steps are
   what keep it honest)
-  <!-- id: secret-fp-backtick-v4332 | created: 2026-08-13 | last_used: 2026-08-19 | uses: 4 | tier: active | origin: 2026-08-13-231459 -->
+  <!-- id: secret-fp-backtick-v4332 | created: 2026-08-13 | last_used: 2026-08-19 | uses: 4 | tier: archive-candidate | origin: 2026-08-13-231459 -->
 
 - [x] **Shipped v4.33.1 (PATCH) — `[secret-material]`: ALL-CAPS enum constants are not credentials.**
   Check 10's first field contact (the 2026-08-13 Mode B upgrades of mercury + mercury-composable,
@@ -306,7 +306,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.33.1, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.2), `UPGRADE` (row +
   `4.33.0→4.33.1` rung). SKILL.md description unchanged → adapters untouched. → serves:
   vision-agent-memory (the advisory stays signal, not noise)
-  <!-- id: secret-fp-enum-constants-v4331 | created: 2026-08-13 | last_used: 2026-08-19 | uses: 4 | tier: active | origin: 2026-08-13-225859 -->
+  <!-- id: secret-fp-enum-constants-v4331 | created: 2026-08-13 | last_used: 2026-08-19 | uses: 4 | tier: archive-candidate | origin: 2026-08-13-225859 -->
 
 - [x] **Shipped v4.33.0 (MINOR) — session-log secret redaction: ritual rule + `[secret-material]`
   lint advisory.** From a **client-side field incident** (reported 2026-08-13): a DLP scanner caught
@@ -329,7 +329,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `VERSION`→4.33.0, `CHANGELOG`, `README` (row + 10-cap trim, drops 4.28.1), `UPGRADE` (row +
   `4.32.1→4.33.0` rung with a triage-now step). → serves: vision-agent-memory (shared memory must
   be *safe to share* — a faithful record that leaks credentials is a liability, not memory)
-  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-19 | uses: 9 | tier: active | origin: 2026-08-13-222439 -->
+  <!-- id: secret-redaction-lint-v4330 | created: 2026-08-13 | last_used: 2026-08-19 | uses: 9 | tier: archive-candidate | origin: 2026-08-13-222439 -->
 
 - [x] **Shipped v4.32.1 (PATCH) — Mode A `last_session` contradiction fix.** From a **real Mode A
   enable** (2026-08-06, target `~/sandbox/demo`), confirmed by an adversarial protocol audit:
