@@ -1,12 +1,15 @@
 # Reinforcing the session rituals with hooks
 
-> **As of v4.19.0 the vendor-neutral reinforcement is installed by `ENABLE.md` and agent-activated** — a
-> committed **`.githooks/post-commit`** (auto-stubs a session log when a commit does real work without
-> one; activated via `git config core.hooksPath .githooks`) and a **CI floor**
+> **As of v4.19.0 the vendor-neutral reinforcement is installed by `ENABLE.md` and agent-activated**;
+> since v4.36.0, committed **`.githooks/pre-commit` + `post-commit` dispatchers** run ordered
+> executable fragments. The managed post-commit fragment auto-stubs a session log when real work
+> lands without one, and the managed pre-commit fragment enforces the staged-secret guard. They are
+> activated via `git config core.hooksPath .githooks` and backed by a **CI floor**
 > (`.github/workflows/agent-memory.yml` on GitHub; `.gitlab-ci.yml` + `.gitlab/agent-memory-ci.yml`
 > on GitLab; `.azuredevops/agent-memory-ci.yml` on Azure DevOps — zero per-user setup on
-> GitHub/GitLab.com; Azure DevOps needs a one-time pipeline activation). Both are **advisory** (never block) and
-> **no-code** (git/CI run them in the user's env; the tool runs nothing). Rationale + design:
+> GitHub/GitLab.com; Azure DevOps needs a one-time pipeline activation). The layer is advisory by
+> default; the pre-commit secret guard alone enforces. It remains **no-code** (git/CI run it in the
+> user's env; the tool runs nothing). Rationale + design:
 > `docs/DESIGN-ritual-triggers.md`; activation: `.githooks/README.md`.
 >
 > **This doc covers three *further, optional* layers** you add yourself if you want them — keep them

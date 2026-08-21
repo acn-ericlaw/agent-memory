@@ -130,6 +130,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.34.1 | **Secret-guard output readability (PATCH):** field feedback from the maintainer's regression test — every `[secret-material]` finding line repeated the same advisory tail. Finding lines now end at `(N hit(s), first at line N)`; guidance appears **once per run**: the pre-commit hook's `-> fix it` footer (blank separator line added, shared/rotation/history wording folded in), a single trailer in `--scan-files` mode, and a single trailer after warnings in a full lint run. Both runtimes at parity, 49 mirror tests unchanged; hook grep contract unaffected. Targets re-copy the built-in + `.githooks/pre-commit`, stamp |
 | 4.34.2 | **`[secret-material]`: the guard's own opt-down knob is not a credential (PATCH):** field FP (mercury-composable, 2026-08-19) — the pre-commit guard's blocking message prints `AGENT_MEMORY_SECRET_GUARD=advisory`, and any memory file documenting that guidance then flagged (`credential-assignment` — the key contains SECRET, `advisory` meets the value floor, no exemption applied). The tool taught a phrase and blocked its quotation. Fix (issue-proposed shape, endorsed): exact-key, value-constrained exemption in `_is_placeholder_value` — key `AGENT_MEMORY_SECRET_GUARD` (case-insensitive) with a documented setting (`advisory`/`enforcing`; trailing `).,` punctuation tolerated — the guard's own line ends `…=advisory)`, the v4.33.2 capture behavior). Any other value under that key still flags (no smuggling envelope; non-echo preserved). Both runtimes at parity, verbatim mirror fixtures (50 each). Also documented (maintainer call on the issue's secondary question): AWS's canonical doc-example keys **still flag by design** — waive deliberately with `lint:allow-secret-material`; no built-in whitelist |
 | 4.35.0 | **Target-state reconcile — enable/upgrade in O(diff), not O(steps/rungs) (MINOR):** from a greenfield field case (an AI-hackathon monorepo whose fresh Mode A enable took >10 minutes on a nearly-empty repo). The protocol was imperative and history-ordered while ~80% of its work is convergence to a declarative target state (~60 installed files; 80 rungs and growing — Mode B paid O(rungs-behind), re-deriving the current state stepwise). Now: **`MANIFEST.md`** (tool-side) declares every installed artifact as one row (target, source, policy — `verbatim`/`verbatim-dir`/`seed-copy`/`sentinel-merge`/`seed-generate`/`stamp` — and forge), plus a **Semantic steps** table distilling the ladder's 14 non-mechanical migrations, gated by installed version. A runnable **reconcile helper** (`scripts/reconcile.py` + `.mjs`, byte-parity, 25 mirror tests each) diffs a target against the manifest — dry-run by default (the consent artifact), `--apply` performs the mechanical policies in one pass and prints the agent's judgment work-list (seed-generate files with their ENABLE step, hook activation, GitLab include wiring, semantic steps, the closing stamp). Never deletes, never touches existing seed-copy/seed-generate files, never edits a pre-existing `.gitlab-ci.yml`, never stamps. Drift on tool-owned files becomes *visible* (dry-run lists it before re-copy — live probe: it surfaced 11 managed `.gitignore` entries a production repo's rung history never back-filled). Mode A = reconcile + judgment steps; Mode B = reconcile + applicable semantic rows + stamp; Mode C unchanged (reconcile runs only after migration moves originals to `legacy/`). The ladder stays as the per-version record + semantic detail; walking it remains the no-runtime fallback. Release checklist gains manifest lockstep + `--check-manifest`. Operator-side only — no memory-file shape change; targets stamp (the reconcile run itself may apply accumulated managed-block drift, by design) |
+| 4.36.0 | **Composable Git hook dispatchers (MINOR):** `.githooks/pre-commit` and `post-commit` become stable Bash 3.2-compatible dispatchers over executable `.githooks/<hook>.d/*` fragments. Agent-memory's secret guard and ritual capture move intact into managed `50-` fragments; other hook layers get deterministic before/after slots without replacing an entrypoint. Every fragment runs, the first non-zero status is returned, and failures name their fragment. Focused contract tests cover both hooks; `.gitattributes` pins fragment files to LF. Targets install the dispatchers + managed fragments while preserving differently named fragments |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -185,6 +186,7 @@ silently installs operator-facing docs into a target:
 | **`AGENTS.md`** | **`<tool>/templates/AGENTS.md`** — the *target* memory-protocol hub |
 | `.agent/schema.md` | `<tool>/templates/.agent/schema.md` |
 | `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md` | `<tool>/templates/` |
+| `.githooks/pre-commit`, `.githooks/post-commit`, `.githooks/*.d/50-agent-memory-*`, `.githooks/README.md`, `.githooks/init.sh` | `<tool>/.githooks/` — dispatchers, managed fragments, and hook docs |
 
 ⚠️ **Never install the tool's _root_ `AGENTS.md` into a target.** The root `AGENTS.md` is the
 operator/dual-mode dispatcher — it routes between "AI-enable another repository" (→ `ENABLE.md`) and
@@ -2183,3 +2185,43 @@ feature working, not a side effect.
    `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
 3. **Verify:** re-run the dry-run — it reports `converged` (or only standing notes);
    `memory-lint` clean or consciously triaged.
+
+---
+
+## Rung: 4.35.0 → 4.36.0 — composable Git hook dispatchers (MINOR)
+
+**What changed:** the two hook entrypoints were single-owner monoliths. A second hook layer had
+to overwrite, wrap, or patch the same files, and the agent-memory behaviors could not be tested
+independently. `.githooks/pre-commit` and `.githooks/post-commit` are now stable Bash 3.2-compatible
+dispatchers. They run executable regular files in their matching `.d/` directory in deterministic
+C-locale filename order, forward hook arguments unchanged, continue after fragment failures, and
+return the first non-zero status. Agent-memory's existing behaviors move intact to the managed
+`50-agent-memory-secret-guard` and `50-agent-memory-ritual-capture` fragments. Other layers can use
+lower or higher numeric slots without replacing an entrypoint. No memory-file or skill shape change.
+
+**Steps:**
+
+1. **Inspect both existing entrypoints and any existing managed `50-` fragments before replacing
+   them.** A stock agent-memory hook can be replaced by the matching dispatcher because its
+   behavior is now supplied by the managed `50-`
+   fragment. If an entrypoint contains locally owned behavior, preserve that behavior in a
+   differently named executable fragment (`00-`–`49-` before agent-memory; `51-`–`99-` after) before
+   installing the dispatcher. Never overwrite an existing differently named fragment, and never
+   silently overwrite a locally modified dispatcher or managed fragment: preserve it and merge with
+   a human gate. If local and agent-memory logic are interleaved and cannot be separated faithfully,
+   stop for a human decision rather than dropping logic or running the guard/capture twice.
+2. **Install from the tool repo:** re-copy unchanged `.githooks/pre-commit` and
+   `.githooks/post-commit`; create or refresh only unchanged copies of the tool-managed
+   `.githooks/pre-commit.d/50-agent-memory-secret-guard` and
+   `.githooks/post-commit.d/50-agent-memory-ritual-capture`; preserve every differently named
+   fragment. Re-copy `.githooks/README.md` + `.githooks/init.sh`.
+3. **Keep the runnable contract:** `chmod +x` both dispatchers and both managed fragments. Merge
+   `.githooks/*.d/* text eol=lf` into `.gitattributes` additively (de-duplicate; do not reorder or
+   remove existing rules). Merge the dispatcher wording into the target's `AGENTS.md` from
+   `templates/AGENTS.md`; never overwrite a customized hub.
+4. **Stamp** `.agent/version.md` → `version: 4.36.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
+5. **Verify:** run `bash tests/test_githook_dispatchers.sh` in the tool repo; run `bash -n` over both
+   target dispatchers and every managed fragment; invoke `.githooks/pre-commit` with no staged files
+   (it exits 0). Confirm executable modes and confirm all pre-existing differently named fragments
+   remain present.

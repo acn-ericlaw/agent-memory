@@ -2,8 +2,8 @@
 
 ## Deterministic memory as a substrate; a lightweight cognitive loop as the control layer
 
-**Version:** 1.4 (describes agent-memory **v4.34.0**)
-**Date:** August 14, 2026
+**Version:** 1.5 (describes agent-memory **v4.36.0**)
+**Date:** August 20, 2026
 
 > *"Acceleration without direction is only faster drift."*
 
@@ -300,14 +300,18 @@ an untrained team or a less-agentic vendor. The governing adoption constraint be
 manual user step is a barrier**. A line of work hardened the ritual's *execution*, not just
 its documentation:
 
-- **Vendor-neutral triggers, agent-activated.** Enable installs a committed **`pre-commit`
-  git hook** (the `[secret-material]` guard on staged memory files **and staged config files** —
+- **Vendor-neutral triggers, agent-activated and composable.** Enable installs committed
+  **`pre-commit` and `post-commit` dispatchers** that run executable `.githooks/<hook>.d/*`
+  fragments in deterministic filename order. Agent-memory owns only its `50-` fragments, so
+  other hook layers compose before or after without replacing an entrypoint. The managed
+  **pre-commit fragment** provides the `[secret-material]` guard on staged memory files **and staged config files** —
   `.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*` — **enforcing by default**:
   findings block the commit, the deliberate exception to the advisory doctrine, with
-  `AGENT_MEMORY_SECRET_GUARD=advisory` as the opt-down; prevents an accidental credential from
-  entering history at all, wherever it lands), a committed **`post-commit`
-  git hook** (advisory; auto-stubs a session log when a commit did real work but carried none,
-  and re-syncs adapters when a skill changed) and a **CI floor** (GitHub Actions, GitLab CI, or Azure Pipelines: `memory-lint` + a session-log
+  `AGENT_MEMORY_SECRET_GUARD=advisory` as the opt-down; it prevents an accidental credential from
+  entering history at all, wherever it lands. The managed **post-commit fragment** is advisory,
+  auto-stubs a session log when a commit did real work but carried none,
+  and re-syncs adapters when a skill changed. A **CI floor** (GitHub Actions, GitLab CI, or Azure
+  Pipelines: `memory-lint` + a session-log
   presence check; zero per-user setup on GitHub/GitLab.com — a self-managed GitLab needs an
   admin-registered runner, and an Azure DevOps pipeline needs a one-time activation). The agent activates the local hook at enable — **no
   manual user step** in the common path. `no-build-step-agent-run` still holds: git and CI
@@ -318,9 +322,9 @@ its documentation:
   session *files*, so per-commit logs would inflate the count and decay facts too fast) — a
   downstream report where one session minted ~6 near-identical logs drove this fix.
 - **First-run init + Windows hardening.** A fresh clone has gitignored adapters absent and the
-  hook unactivated; **`.githooks/init.sh`** is a single idempotent command to regenerate
-  adapters and activate the hook, and a **`.gitattributes`** pins shell scripts to LF so Git
-  for Windows doesn't break them. `memory-lint` also catches an empty/malformed install
+  hook dispatchers unactivated; **`.githooks/init.sh`** is a single idempotent command to regenerate
+  adapters and activate them, and a **`.gitattributes`** pins shell scripts, dispatchers, and
+  fragments to LF so Git for Windows doesn't break them. `memory-lint` also catches an empty/malformed install
   manifest, so a botched stamp fails the lint instead of silently breaking upgrade detection.
 - **`MERGE.md` — conflict resolution without picking a winner.** A no-code, human-gated
   protocol for a git conflict in `memory/`: mechanical hunks reconcile deterministically

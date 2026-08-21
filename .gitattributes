@@ -3,3 +3,4 @@
 # to CRLF on checkout and bash would fail with "bad interpreter: /usr/bin/env bash^M".
 *.sh        text eol=lf
 .githooks/* text eol=lf
+.githooks/*.d/* text eol=lf

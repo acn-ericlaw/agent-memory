@@ -56,7 +56,9 @@ files on a CRLF repo); `-` = none.
 | .windsurfrules | templates/.windsurfrules | verbatim | all | - |
 | .github/copilot-instructions.md | templates/.github/copilot-instructions.md | verbatim | all | - |
 | .githooks/pre-commit | .githooks/pre-commit | verbatim | all | exec |
+| .githooks/pre-commit.d/50-agent-memory-secret-guard | .githooks/pre-commit.d/50-agent-memory-secret-guard | verbatim | all | exec |
 | .githooks/post-commit | .githooks/post-commit | verbatim | all | exec |
+| .githooks/post-commit.d/50-agent-memory-ritual-capture | .githooks/post-commit.d/50-agent-memory-ritual-capture | verbatim | all | exec |
 | .githooks/init.sh | .githooks/init.sh | verbatim | all | exec |
 | .githooks/README.md | .githooks/README.md | verbatim | all | - |
 | agent-skills/memory-lint/ | agent-skills/memory-lint/ | verbatim-dir | all | - |
@@ -127,6 +129,7 @@ in the named `UPGRADE.md` rung. Mode B = reconcile + the applicable rows + stamp
 | 4.33.0 | 4.32.1 -> 4.33.0 | Run memory-lint and triage every [secret-material] finding now: redact to (REDACTED); rotate anything live (a committed secret is exposed - redaction is not un-leaking); waive only deliberately quoted, non-live examples (lint:allow-secret-material). |
 | 4.34.0 | 4.33.4 -> 4.34.0 | Tell the team the pre-commit secret guard now blocks staged secrets by default (opt down with the AGENT_MEMORY_SECRET_GUARD env knob set to advisory, or bypass once with git commit --no-verify). |
 | 4.34.2 | 4.34.1 -> 4.34.2 | Drop lint:allow-secret-material waivers added solely for since-fixed false-positive classes (ALL-CAPS enum constants, their backticked form, the guard's own opt-down knob); leave all other waivers alone. |
+| 4.36.0 | 4.35.0 -> 4.36.0 | If a hook entrypoint carries locally owned behavior (not the stock agent-memory monolith), move it into a differently named executable fragment (00- to 49- before agent-memory, 51- to 99- after) before accepting the dispatcher re-copy; never overwrite a differently named fragment; if local and agent-memory logic are interleaved, stop for a human decision. |
 
 ## Tool-only (never installed)
 
@@ -135,6 +138,7 @@ operator-side. In particular:
 
 - ENABLE.md, MIGRATE.md, UPGRADE.md, MANIFEST.md, VERSION, README.md, CHANGELOG.md, LICENSE
 - scripts/ (the reconcile helper + its tests)
+- tests/ (the git hook dispatcher contract test)
 - the root AGENTS.md, CLAUDE.md, GEMINI.md and root bootstrap dotfiles (this repo's own)
 - agent-skills/hello-world/ (the tool's own skills-layer demo)
 - memory/ (this repo's own dogfooded memory layer)
