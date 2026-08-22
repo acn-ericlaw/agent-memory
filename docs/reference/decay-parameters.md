@@ -16,6 +16,7 @@ archive_window:   20
 review_every:          10
 continuity_max_facts:  30   # primary lean signal
 continuity_max_lines:  600  # coarse backstop
+closed_narrative_max_lines: 150  # completed [x] threads wait as 3–6-line stubs
 
 # Invariant verification
 verify_invariants_every: 40
@@ -41,6 +42,7 @@ core_min_reviews: 5
 | `review_every` | `10` | Run a review at least every N sessions; drives `[review-overdue]` |
 | `continuity_max_facts` | `30` | Decaying facts/threads before `[continuity-bloat]` advises a review |
 | `continuity_max_lines` | `600` | Coarse size backstop on `continuity.md` |
+| `closed_narrative_max_lines` | `150` | Non-empty lines inside completed `[x]` thread blocks before `[closed-thread-bloat]` advises condensing them to stubs at review (v4.38.0) |
 | `verify_invariants_every` | `40` | Sessions between human re-confirmations of `core` / invariants |
 | `enabled` (auto-core) | `false` | Whether usage can auto-promote a fact to `core` (off by default — core is human-set) |
 | `core_min_uses` | `12` | Auto-core threshold (only if `enabled`) |

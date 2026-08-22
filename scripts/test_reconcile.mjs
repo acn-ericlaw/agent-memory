@@ -14,7 +14,7 @@ import { fileURLToPath } from "node:url";
 
 import {
   POLICIES, FORGES, parseSemver, parseManifest, detectInstalled, detectForge,
-  buildPlan, applyMechanical, safeTargetPath, main,
+  buildPlan, applyMechanical, safeTargetPath, main, isSanctionedFork,
 } from "./reconcile.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -522,4 +522,76 @@ test("sessions with only .DS_Store not present", () => {
   const [, agent] = plan(t);
   const gen = new Set(agent.filter(([v]) => v === "generate").map(([, p]) => p));
   assert.ok(gen.has("memory/sessions/"));
+});
+
+// -- sanctioned consumer fork (v4.38.0) --------------------------------------
+
+const FORK = "**Contributing to this repository?** Read [memory/PROTOCOL.md]" +
+  "(memory/PROTOCOL.md) and follow it.\n\n" +
+  "**Building an application WITH this framework?** Skip the memory protocol —\n" +
+  "it is for repository contributors. Start at " +
+  "[system/AGENTS.md](system/AGENTS.md).\n";
+
+// The motivating field artifact VERBATIM (mercury-composable's ratified root,
+// 2026-08-21 — 11 non-empty lines, 945 bytes, incl. a disambiguation paragraph).
+// A paraphrased fixture already burned us once: the first bound (≤ 8 lines)
+// passed the paraphrase and rejected the live file (the v4.33.2 lesson).
+const MC_FORK =
+  "**Contributing to this repository?** Read [memory/PROTOCOL.md]" +
+  "(memory/PROTOCOL.md) and follow it.\n" +
+  "\n" +
+  "**Building an application WITH Mercury** (consuming it as a dependency or " +
+  "plugin)? Skip the\n" +
+  "memory protocol — it is for repository contributors. Start at " +
+  "[system/AGENTS.md](system/AGENTS.md)\n" +
+  "for the version-matched AI discovery surface.\n" +
+  "\n" +
+  "**Unsure which path is yours?** A session that already carries this repo's " +
+  "memory context is a\n" +
+  "contributor; an agent that arrived through `system/AGENTS.md`, the contract " +
+  "provider, or the\n" +
+  "exported `mercury-platform` skill is a consumer. Otherwise you are a fresh " +
+  "session: if the\n" +
+  "first instruction does not itself resolve the path (many questions are valid " +
+  "on both paths),\n" +
+  "ask before loading either: *\"Am I contributing to Mercury itself, or " +
+  "building an application\n" +
+  "that uses it?\"* The answer creates your path — every subsequent interaction " +
+  "lands on it.\n" +
+  "Headless with no signals: default to contributor.\n";
+
+test("live field fork accepted verbatim", () => {
+  assert.ok(isSanctionedFork(Buffer.from(MC_FORK, "utf-8")));
+});
+
+test("sanctioned fork counts as converged", () => {
+  const t = makeTarget(tmpdir(), "https://github.com/acme/demo.git");
+  const [mech] = plan(t);
+  applyMechanical(TOOL_ROOT, t, mech);
+  fs.writeFileSync(path.join(t, "AGENTS.md"), FORK);
+  const [mech2, , , notes2] = plan(t);
+  assert.ok(!mech2.some(([, r]) => r.target === "AGENTS.md"));
+  assert.ok(notes2.some(([v, p, d]) => v === "ok" && p === "AGENTS.md" &&
+    d === "sanctioned consumer fork — structure verified"));
+});
+
+test("fork structure matrix", () => {
+  const buf = (s) => Buffer.from(s, "utf-8");
+  assert.ok(isSanctionedFork(buf(FORK)));
+  // first line must carry the canonical read-imperative
+  assert.ok(!isSanctionedFork(buf(
+    "Contributors read the protocol.\n\nSee [system/AGENTS.md](system/AGENTS.md).\n")));
+  // a fork without a consumer route is just drift
+  assert.ok(!isSanctionedFork(buf(
+    "**Contributing?** Read [memory/PROTOCOL.md](memory/PROTOCOL.md) " +
+    "and follow it.\n\nNo links here.\n")));
+  // the consumer route must be repo-local
+  assert.ok(!isSanctionedFork(buf(
+    FORK.replace("(system/AGENTS.md)", "(https://example.com/AGENTS.md)"))));
+  assert.ok(!isSanctionedFork(buf(
+    FORK.replace("(system/AGENTS.md)", "(../outside/AGENTS.md)"))));
+  // a routing stub, not an instruction file: bounded line count / bytes / encoding
+  assert.ok(!isSanctionedFork(buf(FORK + "extra instruction line\n".repeat(16))));
+  assert.ok(!isSanctionedFork(Buffer.concat([buf(FORK), Buffer.alloc(2048, "x")])));
+  assert.ok(!isSanctionedFork(Buffer.concat([buf(FORK), Buffer.from([0xff, 0xfe])])));
 });

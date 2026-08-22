@@ -40,7 +40,9 @@ detection (its pipeline needs one-time activation — blind installs would just 
 generates it; `wire` = when the file pre-exists, the agent wires it per `ENABLE.md` Step 6
 (add-only include + stage check — never scripted); `renorm` = a merge here is followed by
 `git add --renormalize .` (agent-run; check the staged diff stays within agent-memory
-files on a CRLF repo); `-` = none.
+files on a CRLF repo); `fork-ok` = a byte-drifted copy is still converged when it matches
+the sanctioned contributor/consumer fork structure (v4.38.0 — see the AGENTS.md row note);
+`-` = none.
 
 ## Install manifest
 
@@ -51,7 +53,7 @@ files on a CRLF repo); `-` = none.
 | SKILLS.md | SKILLS.md | verbatim | all | - |
 | MERGE.md | MERGE.md | verbatim | all | - |
 | memory/PROTOCOL.md | templates/memory/PROTOCOL.md | seed-copy | all | - |
-| AGENTS.md | templates/AGENTS.md | verbatim | all | - |
+| AGENTS.md | templates/AGENTS.md | verbatim | all | fork-ok |
 | .agent/schema.md | templates/.agent/schema.md | verbatim | all | - |
 | .cursorrules | templates/.cursorrules | verbatim | all | - |
 | .windsurfrules | templates/.windsurfrules | verbatim | all | - |
@@ -107,6 +109,18 @@ Row notes (the table stays machine-lean; nuance lives here):
   arbitrate per `ENABLE.md` §5i when it carries local content. This is a standing release
   obligation, not a one-off (see the manifest-lockstep rule in `UPGRADE.md`): a release that
   changes the protocol and ships no such row leaves every target on the old text.
+- **AGENTS.md accepts exactly two sanctioned forms** (v4.38.0, from the mercury-composable
+  field report: enabled repos that are *also consumable products* route consumers away from
+  contributor memory). Form 1 is the stock one-line shim (byte-identical to
+  `templates/AGENTS.md`). Form 2 is the **contributor/consumer fork**: first non-empty line
+  = an optional short bold lead-in plus the canonical read-imperative, followed by a
+  consumer paragraph containing at least one **repo-local** markdown link (no URLs, no
+  absolute paths, no `..`), the whole file ≤ 16 non-empty lines and ≤ 2 KB (sized to the
+  live field artifact — an 11-line fork with a disambiguation paragraph — plus headroom) —
+  a routing stub, never an instruction file. The reconcile structure-checks Form 2 (`fork-ok`) and reports
+  it converged; anything else stays ordinary drift (recopy + the PRE-APPLY hard stop).
+  `ENABLE.md` Step 6 carries the fork literal block, emitted when the repo declares a
+  consumer entry point.
 - **memory/sessions/** — "present" means the directory exists with at least one file; the
   first enable session log (Step 5c) is what normally satisfies it (`.gitkeep` only as a
   fallback when no log is written).
@@ -144,6 +158,7 @@ in the named `UPGRADE.md` rung. Mode B = reconcile + the applicable rows + stamp
 | 4.34.2 | 4.34.1 -> 4.34.2 | Drop lint:allow-secret-material waivers added solely for since-fixed false-positive classes (ALL-CAPS enum constants, their backticked form, the guard's own opt-down knob); leave all other waivers alone. |
 | 4.36.0 | 4.35.0 -> 4.36.0 | PRE-APPLY: If a hook entrypoint carries locally owned behavior (not the stock agent-memory monolith), move it into a differently named executable fragment (00- to 49- before agent-memory, 51- to 99- after) before accepting the dispatcher re-copy; never overwrite a differently named fragment; if local and agent-memory logic are interleaved, stop for a human decision. |
 | 4.37.0 | 4.36.0 -> 4.37.0 | PRE-APPLY: Before any reconcile apply, prove recovery of the existing AGENTS.md, merge its local directives and any existing protocol into the target-only memory/PROTOCOL.md with provenance and authority checks, revalidate source hashes, then install the exact one-line shim. Stop before every write on an unsafe merge. |
+| 4.38.0 | 4.37.0 -> 4.38.0 | Protocol text changed (consumer step-0, terse close records, optional ready-to-work checkpoint): re-copy a target memory/PROTOCOL.md that is still byte-identical to the 4.37.0 template; arbitrate a customized one per ENABLE.md 5i (add the new sections, never drop local directives). Optionally add closed_narrative_max_lines: 150 to memory/decay-policy.md (lint falls back to the default when absent). |
 
 ## Tool-only (never installed)
 

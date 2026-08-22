@@ -8,7 +8,7 @@ the source on GitHub.
 
 | File | Role |
 |---|---|
-| [`AGENTS.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/AGENTS.md) | Exact one-line universal discovery shim to `memory/PROTOCOL.md`. |
+| [`AGENTS.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/AGENTS.md) | Exact one-line universal discovery shim to `memory/PROTOCOL.md` — or, on a repo that is also a consumable product, the sanctioned contributor/consumer fork (v4.38.0): contributors to the protocol, consumers to the repo's declared AI entry point. |
 | [`memory/PROTOCOL.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/memory/PROTOCOL.md) | Canonical activation and lifecycle protocol. The tool copy includes dual-mode operator routing; enabled targets receive the target-only source from `templates/memory/PROTOCOL.md`. |
 | [`README.md`](https://github.com/acn-ericlaw/agent-memory/blob/main/README.md) | Human-facing quickstart + design philosophy. |
 

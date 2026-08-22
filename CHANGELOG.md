@@ -11,6 +11,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.38.0, 8/21/2026
+
+> **Onboarding efficiency: consumer routing + close-record economy (MINOR).** From a
+> fresh-agent assessment of mercury-composable — an enabled repo that is *also* a
+> consumable product. Two verified costs: agents consuming the repo as a dependency were
+> routed into contributor memory, and 64% of continuity was completed-thread ship
+> narrative waiting out the archive window (the tool's own repo measured 54%).
+
+### Added
+
+- **Sanctioned contributor/consumer root fork.** `AGENTS.md` now accepts exactly two
+  forms: the stock one-line shim, or a two-paragraph fork routing contributors to
+  `memory/PROTOCOL.md` and consumers to a declared repo-local entry point. The reconcile
+  structure-checks the fork (`fork-ok` attr: canonical read-imperative first line,
+  repo-local consumer link, ≤ 16 non-empty lines / ≤ 2 KB — a routing stub, never an
+  instruction file; bounds sized to the live field artifact, which is pinned verbatim as a
+  test fixture in both runtimes) and reports it converged; anything else stays ordinary drift with the
+  PRE-APPLY hard stop. `ENABLE.md` Step 6 carries the fork literal block, emitted only for
+  an owner-confirmed consumer surface.
+- **Consumers exit here.** The target protocol's activation section opens with a step-0:
+  agents consuming the repository as a dependency/plugin stop and follow the consumer
+  entry point named in the shim instead of ingesting contributor memory.
+- **`[closed-thread-bloat]` advisory** (memory-lint check 11, both runtimes): counts
+  non-empty lines inside completed `- [x]` thread blocks and warns past
+  `closed_narrative_max_lines` (new decay-policy knob, default 150 — absent knob falls
+  back, so existing targets need no policy edit).
+- **Optional ready-to-work checkpoint** in the protocol's Work-from-intent: module,
+  intended change, governing invariant/ADR, targeted validation command, human decision
+  needed. Explicitly optional — a visibility aid, never ceremony.
+
+### Changed
+
+- **Close records are terse by spec.** Protocol Update-continuity item 2 and the schema
+  now spec a completed thread's record as a 3–6-line stub (outcome, refs, one durable
+  lesson, `origin:` pointer — the full narrative lives in the origin session log), and
+  `REVIEW.md` step 5 condenses oversized records to stubs at review time (prose only; ids
+  and footer metadata are never edited). A condensed thread later archives as its stub;
+  retrieval follows `origin:`.
+- **Reconcile:** the `AGENTS.md` manifest row gains `fork-ok`; 38 mirrored tests per
+  runtime (fork-accepted convergence, the live field fork verbatim, structure matrix: bad
+  lead line, missing/external/escaping consumer route, oversize, non-UTF-8). Lint suites:
+  52 mirrored tests each.
+- **Lockstep:** MANIFEST row notes + Semantic steps row (the **first exercise** of the
+  v4.37.0 protocol-propagation obligation: re-copy a still-stock target protocol,
+  arbitrate a customized one per `ENABLE.md` §5i), UPGRADE flow + rung, ENABLE Step 6,
+  decay-policy templates, README/release table; `VERSION` → 4.38.0.
+
+Targets: reconcile; apply the protocol semantic row; optionally adopt the fork (declared
+consumer surface only) and the policy knob; stamp.
+
 ## Version 4.37.0, 8/20/2026
 
 > **Enterprise-efficient protocol activation (MINOR).** Enterprise IDEs often auto-load

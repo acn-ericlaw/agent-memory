@@ -247,6 +247,42 @@ function applySentinel(tgtPath, srcPath, missing) {
   fs.writeFileSync(tgtPath, lines.join("\n") + "\n");
 }
 
+// The one sanctioned deviation from a verbatim root shim (v4.38.0): a short
+// contributor/consumer routing fork for repos that are also consumable products
+// (field report: mercury-composable). Structure-checked, never content-trusted —
+// the contributor line must carry the canonical read-imperative, the consumer
+// route must be repo-local, and the whole file stays a bounded routing stub.
+// Anything else is ordinary drift (recopy + the PRE-APPLY hard stop).
+const FORK_LEAD_RE =
+  /^(\*\*[^*\n]{1,80}\*\* )?Read \[memory\/PROTOCOL\.md\]\(memory\/PROTOCOL\.md\) and follow it\.$/;
+const FORK_LINK_RE = /\[[^\]\n]+\]\(([^)\n]+)\)/g;
+
+export function isSanctionedFork(raw) {
+  // Bounds sized to the live field artifact (mercury-composable's ratified
+  // three-paragraph fork: 11 non-empty lines, 945 bytes) with headroom — a
+  // routing stub with a disambiguation paragraph fits; an instruction file
+  // does not.
+  if (raw.length > 2048) return false;
+  let text;
+  try {
+    text = new TextDecoder("utf-8", { fatal: true }).decode(raw);
+  } catch {
+    return false;
+  }
+  const lines = text.split(/\r\n|\r|\n/).map((l) => l.trim()).filter((l) => l);
+  if (lines.length < 2 || lines.length > 16) return false;
+  if (!FORK_LEAD_RE.test(lines[0])) return false;
+  for (const line of lines.slice(1)) {
+    for (const m of line.matchAll(FORK_LINK_RE)) {
+      const dest = m[1];
+      if (dest === "memory/PROTOCOL.md") continue;
+      if (dest.includes(":") || dest.startsWith("/") || dest.includes("..")) continue;
+      return true;
+    }
+  }
+  return false;
+}
+
 export function buildPlan(toolRoot, target, manifest, forge, installed, currentVersion) {
   const mechanical = [], agent = [], notes = [];
   const fresh = installed === null;
@@ -271,7 +307,12 @@ export function buildPlan(toolRoot, target, manifest, forge, installed, currentV
       if (!fs.existsSync(tgt)) {
         mechanical.push(["copy", row, [], "missing"]);
       } else if (!readBytes(src).equals(readBytes(tgt))) {
-        mechanical.push(["recopy", row, [], "drifted from the tool copy"]);
+        if (row.attrs.includes("fork-ok") && isSanctionedFork(readBytes(tgt))) {
+          notes.push(["ok", row.target,
+            "sanctioned consumer fork — structure verified"]);
+        } else {
+          mechanical.push(["recopy", row, [], "drifted from the tool copy"]);
+        }
       } else if (row.attrs.includes("exec") && !isExecutable(tgt)) {
         mechanical.push(["chmod", row, [], "content ok, not executable"]);
       } else {
