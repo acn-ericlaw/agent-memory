@@ -88,3 +88,10 @@
 - archive-fact-builtin-v4250 — Shipped v4.25.0 (MINOR) — `archive-fact`, a deterministic safe archive-move helper (6th bu… — faded — 2026-Q3.md
 - decay-policy-retune-v4240 — Shipped v4.24.0 (MINOR) — decay-policy retune + a review-cadence/size advisory in `memory-… — faded — 2026-Q3.md
 - ot-mode-b-automation-backlog — (backlog) Mode B upgrade automation — scope the mechanical steps only. From the same Gemin… — superseded by bp-reconcile-target-state (v4.35.0 target-state reconcile realized it, extended to Mode A) — 2026-Q3.md
+- last-session-enable-log-v4321 — Shipped v4.32.1 (PATCH) — Mode A `last_session` contradiction fix. From a real Mode A — faded — 2026-Q3.md
+- gitlab-forge-support-v4310 — Shipped v4.31.0 (MINOR) — GitLab forge support: forge-aware ritual floor + MR template. Fr… — faded — 2026-Q3.md
+- ot-azure-devops-forge-next — (SHIPPED v4.32.0 MINOR, 2026-07-27) Azure DevOps forge support. A real field installation — faded — 2026-Q3.md
+- gitignore-stack-seed-v4300 — Shipped v4.30.0 (MINOR) — stack-aware `.gitignore` build-output seed. From a greenfield — faded — 2026-Q3.md
+- template-import-bleed-v4291 — Shipped v4.29.1 (PATCH) — template import blocks → `{{BOOTSTRAP_IMPORTS}}` placeholder. Fr… — faded — 2026-Q3.md
+- coauthor-stable-identity-v4280 — Shipped v4.28.0 (MINOR) — co-author convention cleanup: stable agent identity + one traile… — faded — 2026-Q3.md
+- bp-before-session-presence — (blueprint — SHIPPED v4.29.0 MINOR, 2026-07-12) Before-session context *presence* — the — faded — 2026-Q3.md
