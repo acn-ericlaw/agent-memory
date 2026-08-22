@@ -187,7 +187,7 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   fail-closed arbitration, reconcile guarantees, Vision vs v4.38.0 state). One enrichment
   at his direction: `no-build-step-agent-run` wording now names the grown helper family
   (substance and footer unchanged); no supersessions. Detail: 2026-08-22-174808.
-  <!-- id: ot-reverify-invariants-20260814 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 1 | tier: working | origin: 2026-08-14-011037 -->
+  <!-- id: ot-reverify-invariants-20260814 | created: 2026-08-14 | last_used: 2026-08-22 | uses: 2 | tier: active | origin: 2026-08-14-011037 -->
 
 - [x] **Hardened `memory-lint` test fixtures against repo secret-scanner FPs (no release
   bump).** Suites construct shape-constrained dummy secrets at runtime instead of
