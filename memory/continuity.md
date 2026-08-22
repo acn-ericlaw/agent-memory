@@ -9,9 +9,9 @@
 - **project:** agent-memory
 - **status:** v4.38.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared; activation enters through a one-line root `AGENTS.md` shim to the canonical `memory/PROTOCOL.md` (v4.37.0; consumer-product repos may carry the sanctioned contributor/consumer fork, v4.38.0); enable/upgrade converge **declaratively** against a `MANIFEST.md` target state via the reconcile helper — O(diff), not O(steps/rungs) (v4.35.0). Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (composable pre/post-commit **fragment dispatchers** over `.githooks/<hook>.d/*` — pre-commit secret guard (v4.34.0) + post-commit ritual capture as managed `50-` fragments (v4.36.0) — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-22 | agent: Claude Code (2026-08-22-174047)
+- **last_session:** 2026-08-22 | agent: Claude Code (2026-08-22-174808)
 - **last_review:** 2026-08-22 | through 2026-08-22-174047
-- **last_invariant_check:** 2026-08-14 | through 2026-08-14-011037
+- **last_invariant_check:** 2026-08-22 | through 2026-08-22-174808 (all 6 confirmed by Eric — walkthrough with live-tree evidence; no-build-step wording refreshed)
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
 
 ## What's Been Built
@@ -73,9 +73,12 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   `## Migrated rules from <vendor>`; surface contradictions as Open Threads
   <!-- id: never-pick-a-winner | created: 2026-06-13 | last_used: 2026-06-18 | uses: 14 | tier: core -->
 - No build step; agent-run (ADR-0006) — the tool itself runs no code and needs none (no install, no
-  daemon). The markdown files are the product and the agent is the runtime. A skill MAY
-  bundle optional helper scripts, but those are invoked by the agent/vendor at the user's
-  direction, never executed by the tool.
+  daemon). The markdown files are the product and the agent is the runtime. Optional helpers
+  MAY ship — skill-bundled scripts, the operator-side reconcile twins (`scripts/`), the
+  committed git-hook fragments, and the forge CI wrappers — but every one is invoked by the
+  agent, vendor, git, or CI at the user's direction, never required: the no-runtime fallback
+  is real (`MANIFEST.md` is walkable by hand) and nothing daemonizes. (Wording refreshed
+  2026-08-22 at invariant re-verify to name the grown helper family — substance unchanged.)
   <!-- id: no-build-step-agent-run | created: 2026-06-16 | last_used: 2026-06-20 | uses: 31 | tier: core | supersedes: no-code-markdown-only | origin: 2026-06-16-002134 -->
 - Upgrades are additive and non-destructive (ADR-0005) — enrich and add, never rewrite or delete —
   **except the tool's own managed built-ins** (`memory-lint`, `second-opinion`, `apply-critique`,
@@ -179,10 +182,11 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   → serves: vision-agent-memory
   <!-- id: pre-commit-secret-guard-v4340 | created: 2026-08-14 | last_used: 2026-08-19 | uses: 3 | tier: archive-candidate | origin: 2026-08-14-021712 -->
 
-- [ ] **Re-verify invariants (due):** confirm `target-repo-scope-only`,
-  `never-delete-vendor-files`, `never-pick-a-winner`, `no-build-step-agent-run`,
-  `upgrades-additive`, and the `vision-agent-memory` Vision still hold, or supersede any
-  that do not (`DECAY.md` §9).
+- [x] **Re-verify invariants — all six confirmed by Eric, 2026-08-22** (one-by-one
+  walkthrough with live-tree evidence: scope guards + boundary tests, MIGRATE legacy rule,
+  fail-closed arbitration, reconcile guarantees, Vision vs v4.38.0 state). One enrichment
+  at his direction: `no-build-step-agent-run` wording now names the grown helper family
+  (substance and footer unchanged); no supersessions. Detail: 2026-08-22-174808.
   <!-- id: ot-reverify-invariants-20260814 | created: 2026-08-14 | last_used: 2026-08-14 | uses: 1 | tier: working | origin: 2026-08-14-011037 -->
 
 - [x] **Hardened `memory-lint` test fixtures against repo secret-scanner FPs (no release
