@@ -248,6 +248,45 @@ def apply_sentinel(tgt_path, src_path, missing):
         f.write("\n".join(lines) + "\n")
 
 
+# The one sanctioned deviation from a verbatim root shim (v4.38.0): a short
+# contributor/consumer routing fork for repos that are also consumable products
+# (field report: mercury-composable). Structure-checked, never content-trusted —
+# the contributor line must carry the canonical read-imperative, the consumer
+# route must be repo-local, and the whole file stays a bounded routing stub.
+# Anything else is ordinary drift (recopy + the PRE-APPLY hard stop).
+FORK_LEAD_RE = re.compile(
+    r"(\*\*[^*\n]{1,80}\*\* )?Read \[memory/PROTOCOL\.md\]\(memory/PROTOCOL\.md\) "
+    r"and follow it\.")
+FORK_LINK_RE = re.compile(r"\[[^\]\n]+\]\(([^)\n]+)\)")
+
+
+def is_sanctioned_fork(raw):
+    # Bounds sized to the live field artifact (mercury-composable's ratified
+    # three-paragraph fork: 11 non-empty lines, 945 bytes) with headroom — a
+    # routing stub with a disambiguation paragraph fits; an instruction file
+    # does not.
+    if len(raw) > 2048:
+        return False
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return False
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    if len(lines) < 2 or len(lines) > 16:
+        return False
+    if not FORK_LEAD_RE.fullmatch(lines[0]):
+        return False
+    for line in lines[1:]:
+        for m in FORK_LINK_RE.finditer(line):
+            dest = m.group(1)
+            if dest == "memory/PROTOCOL.md":
+                continue
+            if ":" in dest or dest.startswith("/") or ".." in dest:
+                continue
+            return True
+    return False
+
+
 def build_plan(tool_root, target, manifest, forge, installed, current_version):
     """Returns (mechanical, agent, semantic, notes) action lists."""
     mechanical, agent, notes = [], [], []
@@ -273,7 +312,11 @@ def build_plan(tool_root, target, manifest, forge, installed, current_version):
             if not os.path.isfile(tgt):
                 mechanical.append(("copy", row, [], "missing"))
             elif read_bytes(src) != read_bytes(tgt):
-                mechanical.append(("recopy", row, [], "drifted from the tool copy"))
+                if "fork-ok" in row["attrs"] and is_sanctioned_fork(read_bytes(tgt)):
+                    notes.append(("ok", row["target"],
+                                  "sanctioned consumer fork — structure verified"))
+                else:
+                    mechanical.append(("recopy", row, [], "drifted from the tool copy"))
             elif "exec" in row["attrs"] and not is_executable(tgt):
                 mechanical.append(("chmod", row, [], "content ok, not executable"))
             else:

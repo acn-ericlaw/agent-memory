@@ -7,9 +7,9 @@
 ## Project State
 
 - **project:** agent-memory
-- **status:** v4.37.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared; activation enters through a one-line root `AGENTS.md` shim to the canonical `memory/PROTOCOL.md` (v4.37.0); enable/upgrade converge **declaratively** against a `MANIFEST.md` target state via the reconcile helper — O(diff), not O(steps/rungs) (v4.35.0). Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (composable pre/post-commit **fragment dispatchers** over `.githooks/<hook>.d/*` — pre-commit secret guard (v4.34.0) + post-commit ritual capture as managed `50-` fragments (v4.36.0) — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
+- **status:** v4.38.0 — a vendor-neutral, no-code (markdown) shared-AI-memory + AI-enablement tool. Three shared layers: **backward memory** (v3.x — fact metadata + ids, decay/review/archive), a **forward VBDI cognitive loop** (v4.0 — Vision→Blueprint→Design→Impl over the memory substrate), and a **cross-vendor skills layer** (v4.1+ — neutral committed `agent-skills/` + a runnable `sync-adapters`; six adapter targets: Claude/Gemini/Cursor/Kiro/Copilot/Antigravity). Agent-as-runtime; `memory/` is committed + shared; activation enters through a one-line root `AGENTS.md` shim to the canonical `memory/PROTOCOL.md` (v4.37.0; consumer-product repos may carry the sanctioned contributor/consumer fork, v4.38.0); enable/upgrade converge **declaratively** against a `MANIFEST.md` target state via the reconcile helper — O(diff), not O(steps/rungs) (v4.35.0). Built-in skills: `memory-lint`, `second-opinion`+`apply-critique`, `sync-adapters`, `harvest-knowledge`, `archive-fact`, `refresh-metadata`. Vendor-neutral, **forge-aware** ritual triggers (composable pre/post-commit **fragment dispatchers** over `.githooks/<hook>.d/*` — pre-commit secret guard (v4.34.0) + post-commit ritual capture as managed `50-` fragments (v4.36.0) — plus a CI floor matched to the hosting forge: GitHub Actions, GitLab CI, or Azure Pipelines, v4.31.0–v4.32.0) with first-run self-init; Windows LF hardening. **Per-version history lives in `UPGRADE.md` (the version ladder) + `memory/sessions/` — kept OUT of this line by design (v4.22.0): `status` is a short current-state descriptor, not a changelog, so this shared line doesn't become a merge-conflict hotspot.** `.agent/version.md` is the canonical version. Validated across six vendors (Claude, Gemini, Cursor, Kiro, Copilot CLI, Antigravity).
 - **last_enabled:** 2026-06-12
-- **last_session:** 2026-08-21 | agent: Claude Code (2026-08-21-052644)
+- **last_session:** 2026-08-22 | agent: Claude Code (2026-08-22-010250)
 - **last_review:** 2026-08-20 | through 2026-08-20-223624
 - **last_invariant_check:** 2026-08-14 | through 2026-08-14-011037
 - **vision:** `memory/vision.md` (north star; Blueprint gaps in Open Threads below)
@@ -105,6 +105,15 @@ GitHub Copilot, GPT/Codex agents, Zed AI, Gemini CLI.
   <!-- id: git-hook-fragment-dispatch | created: 2026-08-20 | last_used: 2026-08-21 | uses: 3 | tier: active | origin: 2026-08-20-210047 -->
 
 ## Open Threads
+
+- [x] **Shipped v4.38.0 (MINOR) — consumer routing + close-record economy.** From the
+  mercury-composable onboarding handoff (ratified 2026-08-21): sanctioned root fork
+  (`fork-ok`; the live artifact pinned verbatim in both suites), consumers-exit-here
+  step-0, 3–6-line close records + review-time condensation + `[closed-thread-bloat]`
+  (knob 150), optional ready-to-work checkpoint; first exercise of the protocol-propagation
+  semantic row. Lesson: my ≤8-line bound from the handoff's *paraphrase* rejected the live
+  11-line fork — verbatim fixtures, third strike. → serves: vision-agent-memory
+  <!-- id: onboarding-efficiency-v4380 | created: 2026-08-21 | last_used: 2026-08-21 | uses: 1 | tier: working | origin: 2026-08-22-010250 -->
 
 - [x] **Shipped v4.36.0 (MINOR) — composable Git hook dispatchers.** The `pre-commit`/`post-commit`
   monoliths became deterministic fragment dispatchers; the secret guard and ritual capture moved

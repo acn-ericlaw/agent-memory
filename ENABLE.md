@@ -693,7 +693,9 @@ enable **does** create `agent-skills/` — populated with these built-ins, never
 
 Copy from `templates/` into target repo root:
 
-- `AGENTS.md` — the byte-exact one-line pointer to `memory/PROTOCOL.md`
+- `AGENTS.md` — the byte-exact one-line pointer to `memory/PROTOCOL.md`; **or**, when the
+  repo is also a consumable product with its own AI discovery surface, the sanctioned
+  contributor/consumer fork (v4.38.0 — literal block below, after the import blocks)
 - `CLAUDE.md`
 - `GEMINI.md`
 - `.cursorrules`
@@ -742,6 +744,28 @@ For `GEMINI.md` (Gemini CLI `@./path.md` idiom — it imports `.md` files only):
 @./memory/continuity.md
 @./memory/vision.md
 ```
+
+**Contributor/consumer fork for `AGENTS.md` (v4.38.0, optional).** When the target is
+*also a consumable product* — a framework, library, or plugin with its own AI-consumer
+discovery surface — and the owner names that entry point (or Step 4 analysis finds one and
+the owner confirms it), install this two-paragraph form instead of the one-liner, filling
+`{{CONSUMER_ENTRY}}` with the repo-local path (field origin: mercury-composable, whose
+consumers were routed into contributor memory):
+
+```text
+**Contributing to this repository?** Read [memory/PROTOCOL.md](memory/PROTOCOL.md) and follow it.
+
+**Consuming {{PROJECT_NAME}} as a dependency or plugin?** Skip the memory protocol — it is
+for repository contributors. Start at [{{CONSUMER_ENTRY}}]({{CONSUMER_ENTRY}}).
+```
+
+The reconcile accepts this structure as converged (`fork-ok` — first line carries the
+canonical read-imperative; the consumer route is a repo-local link; ≤ 16 non-empty lines,
+≤ 2 KB). The emitted form above is the minimal canonical one; a repo may extend it with
+routing-only prose (e.g. a which-path-is-mine disambiguation paragraph) within those
+bounds. It is a **routing stub, never an instruction file**: any other root content is
+ordinary drift (recopy + the PRE-APPLY hard stop). Never fabricate a consumer entry
+point — no declared surface means the one-liner.
 
 The remaining bootstrap files install verbatim.
 

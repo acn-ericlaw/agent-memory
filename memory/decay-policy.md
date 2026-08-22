@@ -13,6 +13,9 @@
 - review_every:         10
 - continuity_max_facts:  30  # primary lean signal (count of decaying facts/threads; verbosity/velocity-immune)
 - continuity_max_lines: 600  # coarse backstop (raised from 300 in v4.24.0 — a mature layer sits ~450–600 even when healthy)
+- closed_narrative_max_lines: 150  # completed [x] threads wait out archive_window as 3–6-line stubs, not
+                             #     ship narratives — the full story lives in the origin log (v4.38.0;
+                             #     reviews condense per REVIEW.md)
 
 ## Invariant verification
 - verify_invariants_every: 40  # sessions between human re-checks of core / invariants (raised from 20: anti-fatigue at burst velocity)

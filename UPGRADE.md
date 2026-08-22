@@ -138,6 +138,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.35.0 | **Target-state reconcile — enable/upgrade in O(diff), not O(steps/rungs) (MINOR):** from a greenfield field case (an AI-hackathon monorepo whose fresh Mode A enable took >10 minutes on a nearly-empty repo). The protocol was imperative and history-ordered while ~80% of its work is convergence to a declarative target state (~60 installed files; 80 rungs and growing — Mode B paid O(rungs-behind), re-deriving the current state stepwise). Now: **`MANIFEST.md`** (tool-side) declares every installed artifact as one row (target, source, policy — `verbatim`/`verbatim-dir`/`seed-copy`/`sentinel-merge`/`seed-generate`/`stamp` — and forge), plus a **Semantic steps** table distilling the ladder's 14 non-mechanical migrations, gated by installed version. A runnable **reconcile helper** (`scripts/reconcile.py` + `.mjs`, byte-parity, 25 mirror tests each) diffs a target against the manifest — dry-run by default (the consent artifact), `--apply` performs the mechanical policies in one pass and prints the agent's judgment work-list (seed-generate files with their ENABLE step, hook activation, GitLab include wiring, semantic steps, the closing stamp). Never deletes, never touches existing seed-copy/seed-generate files, never edits a pre-existing `.gitlab-ci.yml`, never stamps. Drift on tool-owned files becomes *visible* (dry-run lists it before re-copy — live probe: it surfaced 11 managed `.gitignore` entries a production repo's rung history never back-filled). Mode A = reconcile + judgment steps; Mode B = reconcile + applicable semantic rows + stamp; Mode C unchanged (reconcile runs only after migration moves originals to `legacy/`). The ladder stays as the per-version record + semantic detail; walking it remains the no-runtime fallback. Release checklist gains manifest lockstep + `--check-manifest`. Operator-side only — no memory-file shape change; targets stamp (the reconcile run itself may apply accumulated managed-block drift, by design) |
 | 4.36.0 | **Composable Git hook dispatchers (MINOR):** `.githooks/pre-commit` and `post-commit` become stable Bash 3.2-compatible dispatchers over executable `.githooks/<hook>.d/*` fragments. Agent-memory's secret guard and ritual capture move intact into managed `50-` fragments; other hook layers get deterministic before/after slots without replacing an entrypoint. Every fragment runs, the first non-zero status is returned, and failures name their fragment. Focused contract tests cover both hooks; `.gitattributes` pins fragment files to LF. Targets install the dispatchers + managed fragments while preserving differently named fragments |
 | 4.37.0 | **Enterprise-efficient protocol activation (MINOR):** root `AGENTS.md` becomes an exact one-line discovery shim to the new canonical `memory/PROTOCOL.md`. The protocol is reordered for activation, compressed without weakening directives, imported directly by capable bootstraps, and split correctly between the tool's dual-mode operator protocol and the installed target-only protocol. `MANIFEST.md` owns the target protocol row; fresh enable and upgrade preserve pre-existing destinations and customized root instructions, stopping for human resolution on unsafe merges |
+| 4.38.0 | **Onboarding efficiency: consumer routing + close-record economy (MINOR):** from a fresh-agent assessment of mercury-composable (an enabled repo that is *also a consumable product*). (1) The root shim gains a **sanctioned contributor/consumer fork** — structure-checked by the reconcile (`fork-ok`: canonical read-imperative first line, repo-local consumer link, ≤ 16 non-empty lines / ≤ 2 KB routing stub — bounds sized to the live field artifact, pinned verbatim in both test suites), emitted by `ENABLE.md` Step 6 when the repo declares a consumer entry; the target protocol opens with a consumers-exit-here step-0. (2) **Close-record economy** — measured 64% of a hot repo's continuity was completed-`[x]` ship narrative whose canonical home is the origin log: the protocol and schema now spec 3–6-line close records; `REVIEW.md` step 5 condenses oversized records to stubs at review time (prose only, footers immutable); new `memory-lint` advisory `[closed-thread-bloat]` with the `closed_narrative_max_lines` knob (default 150). (3) Optional ready-to-work checkpoint in the protocol's Work-from-intent. Protocol-text change → ships the mandated Semantic steps row (the first exercise of the v4.37.0 propagation obligation) |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -2299,3 +2300,41 @@ old root would destroy the very instructions being relocated.
    imports place the protocol before core memory; `memory-lint` has no errors. Re-run the
    classification/merge checks and confirm zero diff. Report any human-approved recovery
    backup so the owner can decide its retention.
+
+## Rung: 4.37.0 → 4.38.0 — consumer routing + close-record economy (MINOR)
+
+**What changed:** a fresh-agent assessment of an enabled repo that is *also a consumable
+product* (mercury-composable) located two real costs: consumers were routed into
+contributor memory, and completed-`[x]` ship narratives were 64% of continuity while they
+waited out `archive_window`. This rung adds the sanctioned contributor/consumer root fork,
+the consumers-exit-here protocol step-0, the 3–6-line close-record spec plus review-time
+condensation, the `[closed-thread-bloat]` advisory with its `closed_narrative_max_lines`
+knob, and the optional ready-to-work checkpoint.
+
+**Steps:**
+
+1. **Reconcile handles the mechanical set** — `REVIEW.md`, `.agent/schema.md`, and the
+   `memory-lint` built-in re-copy; a target root that already carries the sanctioned fork
+   structure now reports converged instead of drifted (`fork-ok`).
+2. **Protocol text changed — the mandated Semantic step** (the v4.37.0 propagation
+   obligation, first exercise): if the target's `memory/PROTOCOL.md` is byte-identical to
+   the **4.37.0** template, re-copy it from `templates/memory/PROTOCOL.md`. If it carries
+   local content, arbitrate per `ENABLE.md` §5i: add the consumers-exit-here step-0, the
+   close-record wording in Update-continuity item 2, the `[closed-thread-bloat]` mention in
+   item 5, and the optional ready-to-work checkpoint paragraph — never drop or reorder the
+   target's local directives.
+3. **Optional — consumer fork:** if the repo is a consumable product with a declared AI
+   consumer entry point, install the fork form from `ENABLE.md` Step 6 (owner-confirmed;
+   never fabricate an entry point). A locally customized fork that already passes the
+   structure check needs nothing.
+4. **Optional — policy knob:** add `closed_narrative_max_lines: 150` to
+   `memory/decay-policy.md` (comment wording in the template). Lint falls back to the
+   default when the knob is absent, so this is documentation, not activation.
+5. **At the next review**, expect `[closed-thread-bloat]` on a hot repo and let
+   `REVIEW.md` step 5 condense completed threads to stubs — prose only, ids and footers
+   untouched; the full narrative stays in each thread's origin log.
+6. Stamp `.agent/version.md` to `4.38.0`, preserving `enabled_with` and `mode`.
+
+**Verify:** reconcile reports converged (a sanctioned fork shows as
+`ok — sanctioned consumer fork`); `memory-lint` runs clean or its findings are triaged;
+a re-run of the protocol merge produces zero diff.

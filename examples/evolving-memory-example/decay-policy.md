@@ -13,6 +13,7 @@
 - review_every:         10
 - continuity_max_facts:  30  # primary lean signal (count of decaying facts/threads)
 - continuity_max_lines: 600  # coarse backstop
+- closed_narrative_max_lines: 150  # completed [x] threads wait as 3–6-line stubs (v4.38.0)
 
 ## Invariant verification
 - verify_invariants_every: 40  # sessions between human re-checks of core / invariants

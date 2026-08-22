@@ -544,6 +544,81 @@ class ReconcileTests(unittest.TestCase):
         _m, agent, _s, _n = self.plan(t)
         self.assertIn("memory/sessions/", {p for v, p, _d in agent if v == "generate"})
 
+    # -- sanctioned consumer fork (v4.38.0) -------------------------------------
+
+    FORK = ("**Contributing to this repository?** Read [memory/PROTOCOL.md]"
+            "(memory/PROTOCOL.md) and follow it.\n\n"
+            "**Building an application WITH this framework?** Skip the memory protocol —\n"
+            "it is for repository contributors. Start at "
+            "[system/AGENTS.md](system/AGENTS.md).\n")
+
+    # The motivating field artifact VERBATIM (mercury-composable's ratified root,
+    # 2026-08-21 — 11 non-empty lines, 945 bytes, incl. a disambiguation paragraph).
+    # A paraphrased fixture already burned us once: the first bound (≤ 8 lines)
+    # passed the paraphrase and rejected the live file (the v4.33.2 lesson).
+    MC_FORK = (
+        "**Contributing to this repository?** Read [memory/PROTOCOL.md]"
+        "(memory/PROTOCOL.md) and follow it.\n"
+        "\n"
+        "**Building an application WITH Mercury** (consuming it as a dependency or "
+        "plugin)? Skip the\n"
+        "memory protocol — it is for repository contributors. Start at "
+        "[system/AGENTS.md](system/AGENTS.md)\n"
+        "for the version-matched AI discovery surface.\n"
+        "\n"
+        "**Unsure which path is yours?** A session that already carries this repo's "
+        "memory context is a\n"
+        "contributor; an agent that arrived through `system/AGENTS.md`, the contract "
+        "provider, or the\n"
+        "exported `mercury-platform` skill is a consumer. Otherwise you are a fresh "
+        "session: if the\n"
+        "first instruction does not itself resolve the path (many questions are valid "
+        "on both paths),\n"
+        "ask before loading either: *\"Am I contributing to Mercury itself, or "
+        "building an application\n"
+        "that uses it?\"* The answer creates your path — every subsequent interaction "
+        "lands on it.\n"
+        "Headless with no signals: default to contributor.\n")
+
+    def test_sanctioned_fork_counts_as_converged(self):
+        t = make_target(self.tmp, "https://github.com/acme/demo.git")
+        mech, _a, _s, _n = self.plan(t)
+        rec.apply_mechanical(TOOL_ROOT, t, mech)
+        with open(os.path.join(t, "AGENTS.md"), "w", encoding="utf-8") as f:
+            f.write(self.FORK)
+        mech2, _a2, _s2, notes2 = self.plan(t)
+        self.assertNotIn("AGENTS.md", [r["target"] for _v, r, _f, _d in mech2])
+        self.assertIn(
+            ("ok", "AGENTS.md", "sanctioned consumer fork — structure verified"),
+            notes2)
+
+    def test_live_field_fork_accepted_verbatim(self):
+        raw = self.MC_FORK.encode("utf-8")
+        self.assertTrue(rec.is_sanctioned_fork(raw))
+
+    def test_fork_structure_matrix(self):
+        self.assertTrue(rec.is_sanctioned_fork(self.FORK.encode("utf-8")))
+        # first line must carry the canonical read-imperative
+        self.assertFalse(rec.is_sanctioned_fork(
+            b"Contributors read the protocol.\n\n"
+            b"See [system/AGENTS.md](system/AGENTS.md).\n"))
+        # a fork without a consumer route is just drift
+        self.assertFalse(rec.is_sanctioned_fork(
+            b"**Contributing?** Read [memory/PROTOCOL.md](memory/PROTOCOL.md) "
+            b"and follow it.\n\nNo links here.\n"))
+        # the consumer route must be repo-local
+        self.assertFalse(rec.is_sanctioned_fork(self.FORK.replace(
+            "(system/AGENTS.md)", "(https://example.com/AGENTS.md)").encode("utf-8")))
+        self.assertFalse(rec.is_sanctioned_fork(self.FORK.replace(
+            "(system/AGENTS.md)", "(../outside/AGENTS.md)").encode("utf-8")))
+        # a routing stub, not an instruction file: bounded line count / bytes / encoding
+        self.assertFalse(rec.is_sanctioned_fork(
+            (self.FORK + "extra instruction line\n" * 16).encode("utf-8")))
+        self.assertFalse(rec.is_sanctioned_fork(
+            self.FORK.encode("utf-8") + b"x" * 2048))
+        self.assertFalse(rec.is_sanctioned_fork(
+            self.FORK.encode("utf-8") + b"\xff\xfe"))
+
 
 if __name__ == "__main__":
     unittest.main()
