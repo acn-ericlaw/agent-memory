@@ -4,3 +4,20 @@
 *.sh        text eol=lf
 .githooks/* text eol=lf
 .githooks/*.d/* text eol=lf
+
+# agent-memory — auto-resolve the commonest memory conflict (v4.39.0).
+# `memory/continuity.md` is edited by every teammate on every branch, and MERGE.md already
+# prescribes both halves of the resolution: the accreting sections (Open Threads, Key Decisions,
+# Conventions, Architectural Invariants) are independent bullets and UNION cleanly, while the
+# scalars in `## Project State` take the LATER value. `.githooks/merge-continuity.sh` applies
+# both; `.githooks/init.sh` registers it per clone.
+#
+# Plain `merge=union` would get the sections right and the scalars wrong -- `last_session` changes
+# every session, so two parallel branches nearly always both bumped it, and union would keep both
+# lines. That is the common case, not an edge case, which is why this is a driver and not a
+# one-line attribute.
+#
+# Until a clone runs `.githooks/init.sh` the driver is unregistered and git falls back to an
+# ordinary three-way merge -- the behaviour before any of this existed. Never worse, so the
+# attribute is safe to ship ahead of every clone being init'd.
+memory/continuity.md merge=agent-memory-continuity

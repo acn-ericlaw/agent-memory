@@ -45,6 +45,24 @@ Look at what actually diverged between the two sides:
 
 ### Tier 1 — mechanical (deterministic; no AI judgment)
 
+> **Automatic since v4.39.0 — both rules, not just the first.** `.githooks/merge-continuity.sh`
+> applies the two Tier 1 rules below itself: union for the accreting sections, later value for the
+> `## Project State` scalars. `.gitattributes` selects it; `.githooks/init.sh` registers it per
+> clone. The commonest conflict no longer reaches a human at all.
+>
+> A plain `merge=union` would have got the first rule right and the second wrong — `last_session`
+> changes every session, so two parallel branches nearly always both bumped it, and union would
+> keep both lines. That is the common case, not an edge case, which is why this is a driver rather
+> than a one-line attribute.
+>
+> **What still reaches you.** A clone that has not run `init.sh` (git falls back to an ordinary
+> three-way merge — the behaviour before any of this existed, never worse), any memory file the
+> driver does not cover, and every Tier 2 semantic clash. `memory-lint`'s `[duplicate-state-key]`
+> is the backstop: it fires if a `## Project State` key ends up set twice, whatever the route.
+>
+> Driver behaviour is pinned by `tests/test_merge_continuity.sh` in the tool repo —
+> `bash tests/test_merge_continuity.sh`, six cases, temporary repos only.
+
 - **Additive → UNION. Keep BOTH sides' additions.** They are independent facts; dropping
   either loses information. Order doesn't matter — the review re-sorts and decays. Each fact
   keeps its own `id` + footer.

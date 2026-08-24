@@ -951,6 +951,13 @@ IDE/OS/coverage/etc. entries.
 > the CRLF-repo staged-diff check) stays agent-run — the helper lists it as a work item
 > whenever it changed `.gitattributes`.
 
+`templates/.gitattributes` now carries two unrelated groups of rules: **line-ending hardening**
+(below) and a **merge driver selector for `memory/continuity.md`** (v4.39.0). Install both. The
+driver itself is `.githooks/merge-continuity.sh`, registered per clone by `.githooks/init.sh` —
+both ship via `MANIFEST.md`, so a reconcile pass installs them together. Until a clone runs
+`init.sh` the driver is unregistered and git falls back to an ordinary three-way merge, so the
+attribute is safe to install first.
+
 The executable scripts (`*.sh`), git hook dispatchers (`.githooks/*`), and hook fragments
 (`.githooks/*.d/*`) **must stay LF**, or Git for Windows
 (`core.autocrlf=true` by default) rewrites them to CRLF on checkout and bash fails with
@@ -960,10 +967,11 @@ The executable scripts (`*.sh`), git hook dispatchers (`.githooks/*`), and hook 
 *.sh        text eol=lf
 .githooks/* text eol=lf
 .githooks/*.d/* text eol=lf
+memory/continuity.md merge=agent-memory-continuity
 ```
 
 Apply additively (same discipline as `.gitignore`): **no `.gitattributes`** → copy
-`templates/.gitattributes` verbatim; **exists** → add only the LF rules not already present
+`templates/.gitattributes` verbatim; **exists** → add only the rules not already present
 (de-duplicate; never remove/reorder the user's entries). After adding, run `git add --renormalize .`
 (a no-op if the files are already LF) so the index reflects the attributes.
 

@@ -276,6 +276,46 @@ def check_conflict_markers(root):
     return out
 
 
+def check_duplicate_state_keys(root):
+    # (8) `## Project State` holds SCALARS -- one value each, latest wins.
+    # `.githooks/merge-continuity.sh` keeps the later value automatically, so in a clone that
+    # ran `.githooks/init.sh` this should never fire. It is the backstop for the two cases the
+    # driver cannot cover: a clone that has not registered it (git falls back to a normal
+    # three-way merge, and a human resolving by hand can keep both lines), and a hand-edited
+    # header. Cheap to check, and the failure it catches is otherwise silent.
+    # Deliberately scoped to `## Project State`: a repeated key anywhere else is a bullet, not a
+    # scalar, and repetition there is legitimate.
+    out = []
+    path = os.path.join(root, "memory", "continuity.md")
+    text = read_text(path)
+    if not text:
+        return out
+    in_state = False
+    seen = {}
+    key_re = re.compile(r"^-\s+\*\*([a-z_]+):\*\*")
+    for i, line in enumerate(text.splitlines(), 1):
+        if line.startswith("## "):
+            if in_state:
+                break
+            in_state = line.strip() == "## Project State"
+            continue
+        if not in_state:
+            continue
+        m = key_re.match(line)
+        if not m:
+            continue
+        key = m.group(1)
+        if key in seen:
+            out.append(
+                f"[duplicate-state-key] memory/continuity.md:{i} '{key}' is set twice "
+                f"(also line {seen[key]}) -- Project State fields are scalars. Usually a union "
+                f"merge keeping both sides: delete the stale line, keeping the later value."
+            )
+        else:
+            seen[key] = i
+    return out
+
+
 def check_dangling(allf):
     # (4) supersession links resolve
     out = []
@@ -706,6 +746,7 @@ def main():
         + check_over_archived(arch, sslu, aw)
         + check_version_manifest(root)
         + check_conflict_markers(root)
+        + check_duplicate_state_keys(root)
     )
     stems = [os.path.basename(s)[:-3] for s in sessions]
     overdue = check_overdue(cont, pinned, sslu, aw)

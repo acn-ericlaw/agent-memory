@@ -264,6 +264,47 @@ export function check_version_manifest(root) {
   return [];
 }
 
+export function check_duplicate_state_keys(root) {
+  // (8) `## Project State` holds SCALARS — one value each, latest wins.
+  // `.githooks/merge-continuity.sh` keeps the later value automatically, so in a clone that
+  // ran `.githooks/init.sh` this should never fire. It is the backstop for the two cases the
+  // driver cannot cover: a clone that has not registered it (git falls back to a normal
+  // three-way merge, and a human resolving by hand can keep both lines), and a hand-edited
+  // header. Cheap to check, and the failure it catches is otherwise silent.
+  // Deliberately scoped to `## Project State`: a repeated key anywhere else is a bullet, not a
+  // scalar, and repetition there is legitimate.
+  const out = [];
+  const text = read_text(join(root, "memory", "continuity.md"));
+  if (!text) return out;
+  const keyRe = /^-\s+\*\*([a-z_]+):\*\*/;
+  const lines = text.split("\n");
+  const seen = new Map();
+  let inState = false;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (line.startsWith("## ")) {
+      if (inState) break;
+      inState = line.trim() === "## Project State";
+      continue;
+    }
+    if (!inState) continue;
+    const m = keyRe.exec(line);
+    if (!m) continue;
+    const key = m[1];
+    if (seen.has(key)) {
+      out.push(
+        `[duplicate-state-key] memory/continuity.md:${i + 1} '${key}' is set twice ` +
+          `(also line ${seen.get(key)}) — Project State fields are scalars. Usually a union ` +
+          "merge keeping both sides: delete the stale line, keeping the later value."
+      );
+    } else {
+      seen.set(key, i + 1);
+    }
+  }
+  return out;
+}
+
+
 export function check_conflict_markers(root) {
   // (7) No leftover VCS merge-conflict markers in the LIVE top-level memory files —
   // the ones every teammate concurrently edits and the agent reads as truth
@@ -715,6 +756,7 @@ export function main(argv) {
     ...check_over_archived(arch, sslu, aw),
     ...check_version_manifest(root),
     ...check_conflict_markers(root),
+    ...check_duplicate_state_keys(root),
   ];
   const stems = sessions.map((s) => s.replace(/\.md$/, ""));
   const overdue = check_overdue(cont, pinned, sslu, aw);

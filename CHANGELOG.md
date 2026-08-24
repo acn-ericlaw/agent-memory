@@ -11,6 +11,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.39.0, 8/26/2026
+
+> **`continuity.md` merges itself (MINOR).** `MERGE.md` has always prescribed both Tier 1 rules —
+> *"Additive → UNION. Keep BOTH sides' additions"* and *"Scalar → take the LATER value"* — but
+> nothing applied them, so every pair of parallel branches hit the same conflict in `continuity.md`
+> and a human resolved it by hand, on the one file whose purpose is that facts do not get lost.
+> Closes part of the `bp-multi-user` Blueprint gap: simultaneous contributors, hardened rather
+> than assumed.
+>
+> `.githooks/merge-continuity.sh` is a real merge driver and applies **both** rules. Union alone
+> would have got the sections right and the scalars wrong: `last_session` changes every session, so
+> two parallel branches nearly always both bumped it, and union keeps both lines. That is the
+> common case, not an edge case — which is why this is a driver and not a one-line attribute.
+>
+> A merge driver's *definition* cannot be committed (git reads it only from config), so
+> `.githooks/init.sh` registers it per clone, alongside `core.hooksPath`. **Until a clone runs
+> `init.sh`, git falls back to an ordinary three-way merge** — the behaviour before any of this
+> existed. Never worse, so the attribute is safe to ship ahead of every clone being initialised.
+>
+> `memory-lint` gains **`[duplicate-state-key]`** as the backstop for the two cases the driver
+> cannot cover — an unregistered clone, and a hand-edited header. It reports an ERROR when a
+> `## Project State` key is set twice, naming both line numbers and the fix.
+>
+> - `.githooks/merge-continuity.sh` — union the sections, keep the later scalar (new, `exec`)
+> - `.githooks/init.sh` — registers the driver; step count 2 → 3
+> - `templates/.gitattributes` — `memory/continuity.md merge=agent-memory-continuity`
+> - `MANIFEST.md` — new verbatim/exec row so reconcile installs the driver
+> - `memory-lint` — new `[duplicate-state-key]` check, in both the Python and `.mjs` twins
+> - `ENABLE.md` step 7b, `MERGE.md` Tier 1 — document the driver and what still reaches a human
+>
+> - `tests/test_merge_continuity.sh` — six cases, run with
+>   `bash tests/test_merge_continuity.sh` (no build step; temporary repos only)
+>
+> Verified by a committed suite rather than by inspection: union keeps both sides' threads;
+> two branches that both bumped `last_session` merge to the later value, in either merge
+> direction; `(none yet)` loses to a real date; and — the load-bearing case — an **unregistered**
+> driver still degrades to an ordinary conflict, which is what makes the attribute safe to ship
+> ahead of clones being initialised. Mutation-checked: dropping the de-duplication, or picking the
+> earlier scalar, each fail the suite.
+
 ## Version 4.38.1, 8/25/2026
 
 > **Scanner-neutral guidance constant (PATCH).** An enterprise security pipeline (Snyk) in
