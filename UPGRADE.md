@@ -2363,12 +2363,12 @@ change; no semantic step.
 
 **Steps:**
 
-1. **Re-copy the `memory-lint` skill scripts + suites** from this repo:
-   `agent-skills/memory-lint/scripts/memory-lint.py`, `.../memory-lint.mjs`,
-   `.../test_memory_lint.py`, `.../test_memory_lint.mjs` (`SKILL.md` is unchanged — the
-   description is untouched, so **adapters need no re-sync**). A repo that applied the
-   rename locally as an interim edit converges to zero diff — the re-copy is identical to
-   that edit.
+1. **Re-copy the `memory-lint` skill scripts + suites, plus root `SKILLS.md`** from this
+   repo: `agent-skills/memory-lint/scripts/memory-lint.py`, `.../memory-lint.mjs`,
+   `.../test_memory_lint.py`, `.../test_memory_lint.mjs`, and `SKILLS.md` (it carries the
+   new authoring house rule; the skill's `SKILL.md` is unchanged — the description is
+   untouched, so **adapters need no re-sync**). A repo that applied the rename locally as
+   an interim edit converges to zero diff — the re-copy is identical to that edit.
 2. **Stamp** `.agent/version.md` → `version: 4.38.1`, `last_upgraded: <today>`, preserving
    `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
 3. **Verify:** mirror suites pass (53 each); `memory-lint` output on the repo is unchanged
