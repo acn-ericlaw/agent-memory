@@ -11,6 +11,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.38.1, 8/25/2026
+
+> **Scanner-neutral guidance constant (PATCH).** An enterprise security pipeline (Snyk) in
+> a downstream field deployment (Java framework, enterprise installations) rejected builds,
+> flagging `memory-lint`'s consolidated guidance constant as a hardcoded secret:
+> hardcoded-secret detectors key on identifier-contains-SECRET + string-literal assignment,
+> and the prose constant carried that name. A pure false positive — the value is redaction
+> guidance — but enterprise waiver workflows are slow and per-installation, so the fix is
+> at the source: a scanner-neutral identifier.
+
+### Changed
+
+- **`memory-lint` (both runtimes): the guidance constant is renamed `GUIDANCE`.**
+  Behavior-neutral — no string content, output, or hook-contract change; verified
+  byte-identical lint results before/after on a live memory layer, python and node in
+  agreement (matching the reporting repo's own downstream verification).
+
+### Added
+
+- **Mirrored script-hygiene self-check (53 tests per runtime):** each suite scans every
+  shipped `.py`/`.mjs` in the skill's script directory for the flagged shape — an
+  identifier containing a scanner trigger word assigned a string literal — with the
+  trigger words assembled at runtime so the test never commits the shape itself (the same
+  construction the suites already use for dummy secrets). Red-verified against the
+  motivating artifact before the rename.
+- **House rule in `SKILLS.md` (Authoring):** shipped skill scripts land in
+  enterprise-scanned repos — keep SECRET/TOKEN/PASSWORD/KEY-class words out of
+  prose-constant identifiers; the tool's own subject matter makes it prone to exactly this
+  scanner class.
+
+### Notes
+
+- A downstream repo carrying the rename as an interim local edit converges to zero diff on
+  its next upgrade: `agent-skills/memory-lint/` is `verbatim-dir` in `MANIFEST.md`, so the
+  re-copy overwrites the interim edit with identical content. No memory-file shape change;
+  no semantic step.
+
 ## Version 4.38.0, 8/21/2026
 
 > **Onboarding efficiency: consumer routing + close-record economy (MINOR).** From a

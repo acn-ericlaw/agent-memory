@@ -139,6 +139,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.36.0 | **Composable Git hook dispatchers (MINOR):** `.githooks/pre-commit` and `post-commit` become stable Bash 3.2-compatible dispatchers over executable `.githooks/<hook>.d/*` fragments. Agent-memory's secret guard and ritual capture move intact into managed `50-` fragments; other hook layers get deterministic before/after slots without replacing an entrypoint. Every fragment runs, the first non-zero status is returned, and failures name their fragment. Focused contract tests cover both hooks; `.gitattributes` pins fragment files to LF. Targets install the dispatchers + managed fragments while preserving differently named fragments |
 | 4.37.0 | **Enterprise-efficient protocol activation (MINOR):** root `AGENTS.md` becomes an exact one-line discovery shim to the new canonical `memory/PROTOCOL.md`. The protocol is reordered for activation, compressed without weakening directives, imported directly by capable bootstraps, and split correctly between the tool's dual-mode operator protocol and the installed target-only protocol. `MANIFEST.md` owns the target protocol row; fresh enable and upgrade preserve pre-existing destinations and customized root instructions, stopping for human resolution on unsafe merges |
 | 4.38.0 | **Onboarding efficiency: consumer routing + close-record economy (MINOR):** from a fresh-agent assessment of mercury-composable (an enabled repo that is *also a consumable product*). (1) The root shim gains a **sanctioned contributor/consumer fork** — structure-checked by the reconcile (`fork-ok`: canonical read-imperative first line, repo-local consumer link, ≤ 16 non-empty lines / ≤ 2 KB routing stub — bounds sized to the live field artifact, pinned verbatim in both test suites), emitted by `ENABLE.md` Step 6 when the repo declares a consumer entry; the target protocol opens with a consumers-exit-here step-0. (2) **Close-record economy** — measured 64% of a hot repo's continuity was completed-`[x]` ship narrative whose canonical home is the origin log: the protocol and schema now spec 3–6-line close records; `REVIEW.md` step 5 condenses oversized records to stubs at review time (prose only, footers immutable); new `memory-lint` advisory `[closed-thread-bloat]` with the `closed_narrative_max_lines` knob (default 150). (3) Optional ready-to-work checkpoint in the protocol's Work-from-intent. Protocol-text change → ships the mandated Semantic steps row (the first exercise of the v4.37.0 propagation obligation) |
+| 4.38.1 | **`memory-lint`: scanner-neutral guidance constant (PATCH):** an enterprise security pipeline (Snyk) in a downstream field deployment rejected builds, flagging the consolidated guidance constant (introduced 4.34.1) as a hardcoded secret — that detector class keys on identifier-contains-SECRET + string-literal assignment, and the prose constant carried the name. Renamed `GUIDANCE` in both runtimes; no string content, output, or hook-contract change (byte-identical lint results before/after, both runtimes in agreement). Each mirror suite gains a script-hygiene self-check scanning the shipped scripts for the flagged identifier shape, trigger words assembled at runtime (53 each; red-verified against the motivating artifact pre-rename). `SKILLS.md` (Authoring) records the house rule: prose-constant identifiers in shipped scripts stay scanner-neutral. Downstream interim local edits converge to zero diff on re-copy (`verbatim-dir`) |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -2338,3 +2339,37 @@ knob, and the optional ready-to-work checkpoint.
 **Verify:** reconcile reports converged (a sanctioned fork shows as
 `ok — sanctioned consumer fork`); `memory-lint` runs clean or its findings are triaged;
 a re-run of the protocol merge produces zero diff.
+
+---
+
+## Rung: 4.38.0 → 4.38.1 — memory-lint: scanner-neutral guidance constant (PATCH)
+
+**What changed:** an enterprise security pipeline (Snyk) in a downstream field deployment
+(a Java framework with enterprise installations) rejected builds, flagging `memory-lint`'s
+consolidated guidance constant — introduced by the 4.34.1 once-per-run change — as a
+hardcoded secret. Hardcoded-secret detectors key on identifier-contains-SECRET +
+string-literal assignment; the value is prose (the redact/rotate guidance line), a pure
+false positive, but enterprise waiver workflows are slow and per-installation, so the fix
+is at the source: the constant is renamed `GUIDANCE` in both runtimes (definition + two
+consumers each). No string content, output, or hook-contract change — lint results are
+byte-identical before/after, python and node in agreement. Each mirror suite gains a
+script-hygiene self-check scanning every shipped `.py`/`.mjs` in the skill's script
+directory for the flagged shape, with trigger words assembled at runtime so the test never
+commits the shape itself (53 each; red-verified against the motivating artifact before the
+rename). `SKILLS.md` (Authoring) records the house rule: keep SECRET/TOKEN/PASSWORD/KEY-class
+words out of prose-constant identifiers in shipped scripts — the tool's own subject matter
+makes it prone to exactly this scanner class. Tool-managed built-in; no memory-file shape
+change; no semantic step.
+
+**Steps:**
+
+1. **Re-copy the `memory-lint` skill scripts + suites** from this repo:
+   `agent-skills/memory-lint/scripts/memory-lint.py`, `.../memory-lint.mjs`,
+   `.../test_memory_lint.py`, `.../test_memory_lint.mjs` (`SKILL.md` is unchanged — the
+   description is untouched, so **adapters need no re-sync**). A repo that applied the
+   rename locally as an interim edit converges to zero diff — the re-copy is identical to
+   that edit.
+2. **Stamp** `.agent/version.md` → `version: 4.38.1`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
+3. **Verify:** mirror suites pass (53 each); `memory-lint` output on the repo is unchanged
+   from 4.38.0 (same findings, same once-per-run guidance line).
