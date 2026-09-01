@@ -12,13 +12,13 @@
         <meta name="author" content="Eric Law">
       
       
-        <link rel="canonical" href="https://acn-ericlaw.github.io/agent-memory/DESIGN-skills-layer/">
+        <link rel="canonical" href="https://acn-ericlaw.github.io/agent-memory/DESIGN-merge-scale/">
       
       
-        <link rel="prev" href="../DESIGN-vbdi-lifecycle/">
+        <link rel="prev" href="../DESIGN-fresh-context-review/">
       
       
-        <link rel="next" href="../DESIGN-ritual-triggers/">
+        <link rel="next" href="../architecture/security/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Design: Skills Layer - agent-memory</title>
+        <title>Design: Merge-Scale Memory - agent-memory</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#design-cross-vendor-skills-layer-portable-capabilities-over-the-shared-layer" class="md-skip">
+        <a href="#design-merge-scale-memory-threads-as-files-v4390" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Design: Skills Layer
+              Design: Merge-Scale Memory
             
           </span>
         </div>
@@ -1288,37 +1288,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Design: Skills Layer
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../DESIGN-skills-layer/" class="md-nav__link">
         
   
   
@@ -1334,175 +1307,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-why" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Why
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-principles-inherited-already-ours" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Principles (inherited — already ours)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-observation-a-skill-is-90-already-neutral" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Observation: a skill is ~90% already neutral
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-the-design" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. The design
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. The design">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#4a-neutral-source-of-truth-agent-skills-committed" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4a. Neutral source of truth — agent-skills/ (committed)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4b-universal-runtime-memoryprotocolmd-no-per-vendor-code" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4b. Universal runtime — memory/PROTOCOL.md (no per-vendor code)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4c-optional-per-vendor-adapters-thin-generated-pointers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4c. Optional per-vendor adapters (thin, generated, pointers)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4d-the-committed-vs-personal-decision-option-a-chosen" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4d. The committed-vs-personal decision — Option A (chosen)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-migration-promote-dont-flatten" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Migration — promote, don't flatten
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-alignment-with-the-architectural-invariants" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. Alignment with the Architectural Invariants
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7-scope-non-goals" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        7. Scope / non-goals
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#8-integration-points-when-built-not-in-this-doc" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        8. Integration points (when built — not in this doc)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#9-open-questions-deferred-to-build-time" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        9. Open questions (deferred to build time)
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1596,10 +1400,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../DESIGN-merge-scale/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Merge-Scale Memory
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1615,6 +1446,81 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision-structure-over-machinery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision: structure over machinery
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The shape
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lifecycle-semantics-unchanged-rules-new-location" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lifecycle semantics (unchanged rules, new location)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-was-deliberately-deferred" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What was deliberately deferred
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1765,10 +1671,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-why" class="md-nav__link">
+  <a href="#problem" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Why
+        Problem
       
     </span>
   </a>
@@ -1776,10 +1682,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-principles-inherited-already-ours" class="md-nav__link">
+  <a href="#decision-structure-over-machinery" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Principles (inherited — already ours)
+        Decision: structure over machinery
       
     </span>
   </a>
@@ -1787,10 +1693,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-observation-a-skill-is-90-already-neutral" class="md-nav__link">
+  <a href="#the-shape" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Observation: a skill is ~90% already neutral
+        The shape
       
     </span>
   </a>
@@ -1798,71 +1704,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-the-design" class="md-nav__link">
+  <a href="#lifecycle-semantics-unchanged-rules-new-location" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. The design
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. The design">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#4a-neutral-source-of-truth-agent-skills-committed" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4a. Neutral source of truth — agent-skills/ (committed)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4b-universal-runtime-memoryprotocolmd-no-per-vendor-code" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4b. Universal runtime — memory/PROTOCOL.md (no per-vendor code)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4c-optional-per-vendor-adapters-thin-generated-pointers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4c. Optional per-vendor adapters (thin, generated, pointers)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4d-the-committed-vs-personal-decision-option-a-chosen" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4d. The committed-vs-personal decision — Option A (chosen)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-migration-promote-dont-flatten" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Migration — promote, don't flatten
+        Lifecycle semantics (unchanged rules, new location)
       
     </span>
   </a>
@@ -1870,43 +1715,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#6-alignment-with-the-architectural-invariants" class="md-nav__link">
+  <a href="#what-was-deliberately-deferred" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6. Alignment with the Architectural Invariants
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7-scope-non-goals" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        7. Scope / non-goals
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#8-integration-points-when-built-not-in-this-doc" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        8. Integration points (when built — not in this doc)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#9-open-questions-deferred-to-build-time" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        9. Open questions (deferred to build time)
+        What was deliberately deferred
       
     </span>
   </a>
@@ -1933,272 +1745,95 @@
   
 
 
-<h1 id="design-cross-vendor-skills-layer-portable-capabilities-over-the-shared-layer">DESIGN — Cross-Vendor Skills Layer (portable capabilities over the shared layer)<a class="headerlink" href="#design-cross-vendor-skills-layer-portable-capabilities-over-the-shared-layer" title="Permanent link">&para;</a></h1>
+<h1 id="design-merge-scale-memory-threads-as-files-v4390">Design — Merge-scale memory: threads as files (v4.39.0)<a class="headerlink" href="#design-merge-scale-memory-threads-as-files-v4390" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p><strong>Activation amendment (v4.37.0):</strong> root <code>AGENTS.md</code> is now a one-line shim;
-the universal skills runtime and session instructions live in <code>memory/PROTOCOL.md</code>.
-Historical version notes below retain the placement they describe at the time.</p>
-<p><strong>Status:</strong> <strong>implemented v4.1.0</strong> (2026-06-15), <strong>refined v4.1.1</strong> (folder finalized as
-<code>agent-skills/</code>; Cursor adapter fixed), <strong>+ "sync skill adapters" v4.2.0</strong> (regenerate
-adapters from the neutral skill on demand — adapters are gitignored, so they don't travel),
-<strong>+ authoring convention &amp; "adopt skill" safety-net v4.3.0</strong> (author in <code>agent-skills/</code>,
-never a vendor folder; promote a natively-authored skill back into <code>agent-skills/</code>),
-<strong>+ description guidance v4.3.1–4.3.3</strong>, <strong>+ lightweight-skills v4.4.0</strong> (recipe + sync/adopt/
-sanity ops moved to an on-demand <code>SKILLS.md</code>; per-session safety check removed — skill work
-is conscious/on-demand; upgrades do a read-only filename check that <em>recommends</em> sync),
-<strong>+ Kiro adapter v4.5.0</strong> (4th adapter target <code>.kiro/skills/&lt;name&gt;/SKILL.md</code> — Kiro follows
-the open Agent Skills standard, same shape as the Claude adapter; Kiro added to the Mode C
-detection table; Kiro auto-reads root <code>AGENTS.md</code>, so the memory layer needs no pointer file),
-<strong>+ trigger-semantics &amp; commit-guard clarifications v4.5.1</strong> (from a Gemini CLI dogfood: the
-Gemini adapter is a <em>slash command</em> <code>/&lt;name&gt;</code>, not a natural-language auto-trigger — NL routes
-through the baseline to the same skill; and <code>sync</code> must never commit / recommend committing the
-gitignored adapter dirs),
-<strong>+ enforced adapter sync v4.12.0</strong> (enable + every Mode B re-enable now <em>run</em> <code>sync skill
-adapters</code> — idempotent, gitignored-only — instead of a read-only "recommend, don't run" check, so a
-skill's vendor-native adapters are materialized at enable/upgrade rather than left for the user to
-sync by hand; closes the loose end where an upgrade left newer/old-target adapters missing),
-<strong>+ tool-provided-skill provenance v4.13.0</strong> (the three shipped built-ins carry
-<code>provenance: agent-memory-builtin</code> so a target's AI recognizes a <em>system</em> skill at edit time;
-<code>SKILLS.md</code> routes a change to <strong>fork</strong> a variant or <strong>upstream</strong> a genuine fix for back-port +
-validation — closing the gap where a real <code>memory-lint</code> fix in a target nearly got stranded),
-<strong>+ GitHub Copilot CLI adapter v4.17.0</strong> (5th adapter target <code>.github/skills/&lt;name&gt;/SKILL.md</code> —
-Copilot CLI follows the open Agent Skills standard, same shape as the Claude/Kiro adapter,
-description-matched + <code>/&lt;name&gt;</code>; gitignored <strong>path-scoped</strong> since <code>.github/</code> itself stays tracked;
-Copilot project skills also promoted in Mode C — found dogfooding <code>~/sandbox/simple-proxy</code>),
-<strong>+ runnable <code>sync-adapters</code> script v4.18.0</strong> (the <code>sync skill adapters</code> operation becomes a bundled
-built-in script — Node + Python at parity — instead of a prose recipe the agent acts out by hand;
-dogfooding showed Copilot/Gemini couldn't <em>run</em> a prose operation and hunted for a non-existent
-command. Consistent with <code>no-build-step-agent-run</code>: same category as the <code>memory-lint</code> script).
-Sibling to <code>DESIGN-evolving-memory.md</code> and <code>DESIGN-vbdi-lifecycle.md</code>.
-The maintainer chose <strong>all-vendor adapters</strong> at build time (Claude + Gemini + Cursor + Kiro + Copilot),
-so §4c is fully realized rather than Claude-only.
-<strong>Source:</strong> a real-work finding (2026-06-15) — a client repo enabled with agent-memory
-carried user-defined <strong>Claude skills</strong> under <code>.claude/skills/</code>, which the tool neither
-shares across vendors nor (today) even lets travel with the repo (<code>.claude/</code> is
-gitignored). Captured as Blueprint gap <code>bp-skills-layer</code> (serves <code>vision-agent-memory</code>).</p>
+<p>Design record for the merge-conflict reduction iteration. Serves the
+<code>bp-multi-user</code> Blueprint gap → <code>vision-agent-memory</code> ("multi-contributor by
+design"). Tool-only; read on demand. Origin: maintainer field reports of regular
+<code>continuity.md</code> merge conflicts as team adoption grew, plus PR #27's field
+artifact (two stacked branches, both appending an Open Thread and bumping
+<code>last_session</code>).</p>
 </blockquote>
-<hr />
-<h2 id="1-why">1. Why<a class="headerlink" href="#1-why" title="Permanent link">&para;</a></h2>
-<p>agent-memory shares two things across vendors today: <strong>memory</strong> (<code>memory/</code>) and
-<strong>steering</strong> (folded into <code>memory/instructions.md</code>, surfaced through <code>memory/PROTOCOL.md</code> +
-thin per-vendor pointers). It shares <strong>no capabilities</strong> — the <em>procedural skills</em> a team
-builds up (a <code>SKILL.md</code> that says <em>when</em> to do something and <em>how</em>, plus optional helper
-scripts).</p>
-<p>Two concrete failures motivate this:</p>
+<h2 id="problem">Problem<a class="headerlink" href="#problem" title="Permanent link">&para;</a></h2>
+<p><code>memory/continuity.md</code> is the one file every teammate edits on every branch, and its
+<code>## Open Threads</code> section is where the churn concentrates: multi-line thread blocks
+appended and edited at the same anchor collide constantly. <code>last_session</code> bumps on
+nearly every session, so parallel branches almost always conflicted on it too. At
+R&amp;D scale this was an annoyance; at team scale it is a per-merge tax.</p>
+<h2 id="decision-structure-over-machinery">Decision: structure over machinery<a class="headerlink" href="#decision-structure-over-machinery" title="Permanent link">&para;</a></h2>
+<p>Two candidate shapes were evaluated against a maintainer preference for minimalist
+design:</p>
 <ol>
-<li><strong>Skills don't travel.</strong> <code>templates/.gitignore</code> ignores <code>.claude/</code> wholesale (personal
-   per-machine runtime). A team that commits project skills under <code>.claude/skills/</code> finds
-   them excluded from git — they never reach a teammate at all, on any vendor.</li>
-<li><strong>Skills don't cross vendors.</strong> Even shared, a Claude <code>SKILL.md</code> is Claude-shaped; a
-   teammate on Gemini or Cursor can't run it. That contradicts the Vision —
-   <em>"many </em><em>different</em><em> AI vendors collaborate through one shared, committed layer."</em></li>
+<li><strong>A custom git merge driver</strong> (PR #27) that auto-applies MERGE.md's Tier 1 rules
+   (union the accreting sections, later-value the scalars). Rejected: verified
+   against the branch, whole-file <code>--union</code> silently merges Tier 2 semantic clashes
+   (both sides editing the <em>same</em> thread emerged as two checkbox lines sharing one
+   footer — no conflict, no Contradiction, invisible to <code>memory-lint</code>), and dateless
+   scalars (<code>status</code>) resolve as a direction-dependent silent winner-pick. Fixing
+   that honestly needs a diff3 hunk classifier, at which point the driver stops
+   being small — and it only runs on clones that registered it (<code>init.sh</code>), so merge
+   behavior would silently differ per clone. The <code>[duplicate-state-key]</code> lint check
+   is absorbed from the PR with credit; a scalars-only driver remains the pre-scoped
+   follow-up if field pain persists.</li>
+<li><strong>A structural layout change</strong> — remove the conflict surface instead of resolving
+   it. <strong>Chosen</strong>: no merge-time code, no per-clone registration, no partial-coverage
+   mode; pure file layout, the same construction that already makes <code>sessions/</code>
+   conflict-free.</li>
 </ol>
-<p>This is the missing third leg of the shared layer: <strong>memory + steering + skills</strong>.</p>
-<h2 id="2-principles-inherited-already-ours">2. Principles (inherited — already ours)<a class="headerlink" href="#2-principles-inherited-already-ours" title="Permanent link">&para;</a></h2>
+<h2 id="the-shape">The shape<a class="headerlink" href="#the-shape" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>No-code, markdown-only</strong> — <em>the files are the product, the agent is the runtime.</em> A
-  skill is markdown + optional portable scripts; nothing here needs an engine.</li>
-<li><strong>Vendor-neutral / never-pick-a-winner</strong> — one neutral source of truth; vendors adapt to
-  it. The tool does not privilege Claude's format.</li>
-<li><strong>Map, don't duplicate</strong> — reuse the existing shim/protocol mechanism (<code>AGENTS.md</code> →
-  <code>memory/PROTOCOL.md</code> +
-  thin vendor files), the <code>legacy/</code> preservation rule, and the personal-vs-shared split.</li>
-<li><strong>Target-repo scope only</strong> — skills live in the repo; <code>~/</code> and <code>~/.claude/</code> are untouched.</li>
-<li><strong>Additive / non-destructive</strong> — a repo with no skills works exactly as before; an
-  un-upgraded agent simply ignores <code>agent-skills/</code>.</li>
+<li><strong>One thread, one file:</strong> <code>memory/open-threads/thread-&lt;id&gt;.md</code>, where <code>&lt;id&gt;</code> is the
+  thread's existing kebab fact id. File content is exactly the bullet block that
+  previously sat in continuity — checkbox line, body, <code>serves:</code> trace, metadata
+  footer. Nothing else. Migration is a verbatim cut-paste per thread.</li>
+<li><strong>Stable id filenames, not timestamps.</strong> A timestamped delete-and-recreate scheme
+  was considered (mirroring session logs) and rejected: session logs are immutable
+  events, threads are mutable state. Delete+recreate converts a visible same-thread
+  conflict into a silent fork (both branches recreate under different names, git
+  merges cleanly, two divergent copies survive), churns filenames on every review
+  metadata refresh, and divorces filename from fact identity. With stable names,
+  parallel work on <em>different</em> threads cannot conflict (different files), and both
+  sides editing the <em>same</em> thread conflicts per-file — which is MERGE.md Tier 2
+  reaching a human, the required behavior, not a gap.</li>
+<li><strong>No index.</strong> The directory is the index, exactly like <code>sessions/</code>: an index line
+  per thread in continuity would recreate the add/add conflict, one line at a time.
+  Discovery is <code>ls memory/open-threads/</code>; open vs closed is the checkbox in each
+  file (<code>grep -l '^- \[ \]' memory/open-threads/</code> lists the open ones). The
+  activation protocol lists the directory and reads unchecked threads — presence by
+  protocol, at parity with when threads sat in the always-imported continuity.</li>
+<li><strong><code>last_session</code> is dropped</strong> from Project State: it is fully derivable (newest
+  <code>sessions/</code> filename; the agent name is that log's <code>**Agent:**</code> header), and it was
+  the most frequent scalar conflict. The multi-agent continuity check reads the
+  newest log instead. Installed repos delete the line at upgrade (mechanical, safe).</li>
+<li><strong>Archive files union-merge:</strong> <code>memory/archive/*.md merge=union</code> in
+  <code>.gitattributes</code>. These are append-mostly cold storage; concurrent review sweeps
+  appended at EOF and conflicted spuriously. Union is git-native (no driver). The
+  one unsafe case — a reactivation's line removal resurrected by union — is exactly
+  what the existing <code>[both]</code> / <code>[over-archived]</code> ERROR checks detect
+  deterministically. Continuity and thread files never get union: there a conflict
+  is signal.</li>
+<li><strong>Reviews serialize by protocol:</strong> run from an up-to-date default branch, commit
+  promptly — the metadata refresh touches many footers and must not run tangled
+  with in-flight substantive edits.</li>
 </ul>
-<h2 id="3-observation-a-skill-is-90-already-neutral">3. Observation: a skill is ~90% already neutral<a class="headerlink" href="#3-observation-a-skill-is-90-already-neutral" title="Permanent link">&para;</a></h2>
-<p>A Claude <code>SKILL.md</code> is just markdown: a <code>name</code>, a <code>description</code> (the <em>when-to-use</em>
-trigger), a procedure, and maybe a script. The only vendor-specific parts are <strong>where the
-file lives</strong> and <strong>how that runtime auto-discovers it</strong>. So the neutral form ≈ the content
-itself, lifted to a neutral location with a minimal normalized frontmatter. (There is no
-cross-vendor <em>skill</em> standard the way <code>AGENTS.md</code> is becoming one for steering — so the
-tool defining the neutral substrate is the pragmatic move, exactly as it did for <code>memory/</code>.)</p>
-<h2 id="4-the-design">4. The design<a class="headerlink" href="#4-the-design" title="Permanent link">&para;</a></h2>
-<h3 id="4a-neutral-source-of-truth-agent-skills-committed">4a. Neutral source of truth — <code>agent-skills/</code> (committed)<a class="headerlink" href="#4a-neutral-source-of-truth-agent-skills-committed" title="Permanent link">&para;</a></h3>
-<p>A new top-level shared layer, parallel to <code>memory/</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>agent-skills/
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  &lt;skill-name&gt;/
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    SKILL.md        # frontmatter: name + description(when-to-use); body: the procedure
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    scripts/…       # optional portable helpers (sh / python), referenced by relative path
-</code></pre></div>
-<p><code>agent-skills/</code> is <strong>committed</strong> — it travels with the repo and reaches every contributor
-regardless of vendor. Normalized frontmatter is deliberately minimal (<code>name</code>,
-<code>description</code>); Claude's existing <code>SKILL.md</code> frontmatter already matches, so Claude is the
-trivial case and other vendors adapt.</p>
-<h3 id="4b-universal-runtime-memoryprotocolmd-no-per-vendor-code">4b. Universal runtime — <code>memory/PROTOCOL.md</code> (no per-vendor code)<a class="headerlink" href="#4b-universal-runtime-memoryprotocolmd-no-per-vendor-code" title="Permanent link">&para;</a></h3>
-<p><code>memory/PROTOCOL.md</code> — activated by the one-line root shim and vendor bootstraps — carries
-the short <strong>Use skills correctly</strong> section:</p>
-<blockquote>
-<p><em>Capabilities live in <code>agent-skills/</code>. When a task matches a skill's <code>description</code>, read and
-follow its <code>SKILL.md</code> (and any scripts it references).</em></p>
-</blockquote>
-<p>Because <strong>the agent is the runtime</strong>, this works for <em>every</em> vendor, including those with
-no native skill mechanism (Codex/AGENTS.md, plain Cursor). Zero per-vendor code; the
-baseline is the agent following <code>memory/PROTOCOL.md</code> through the universal shim.</p>
-<h3 id="4c-optional-per-vendor-adapters-thin-generated-pointers">4c. Optional per-vendor adapters (thin, generated, pointers)<a class="headerlink" href="#4c-optional-per-vendor-adapters-thin-generated-pointers" title="Permanent link">&para;</a></h3>
-<p>For vendors with a <em>native</em> skill/command system, the enable/sync step may generate a thin
-adapter so the skill <strong>auto-triggers</strong> in that runtime — each adapter a 2-line pointer to
-the neutral skill, never a copy (no duplicated content to drift, same reason the read-order
-lives only in <code>memory/PROTOCOL.md</code>):</p>
-<table>
-<thead>
-<tr>
-<th>Vendor</th>
-<th>Native mechanism</th>
-<th>Adapter</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Claude Code</td>
-<td><code>.claude/skills/&lt;n&gt;/SKILL.md</code> (Skill tool auto-discovers)</td>
-<td>frontmatter + body "follow <code>agent-skills/&lt;n&gt;/SKILL.md</code>"</td>
-</tr>
-<tr>
-<td>Gemini CLI</td>
-<td>custom command (<code>.gemini/commands/&lt;n&gt;.toml</code>) — <strong>slash command <code>/&lt;n&gt;</code>, explicit (not NL-matched)</strong></td>
-<td>command that reads the neutral skill</td>
-</tr>
-<tr>
-<td>Cursor</td>
-<td>rule (<code>.cursor/rules/*.mdc</code>)</td>
-<td>rule referencing the neutral skill</td>
-</tr>
-<tr>
-<td>Kiro</td>
-<td><code>.kiro/skills/&lt;n&gt;/SKILL.md</code> (open Agent Skills standard — auto-matched)</td>
-<td>same shape as Claude: frontmatter + body "follow <code>agent-skills/&lt;n&gt;/SKILL.md</code>"</td>
-</tr>
-<tr>
-<td>GitHub Copilot CLI</td>
-<td><code>.github/skills/&lt;n&gt;/SKILL.md</code> (open Agent Skills standard — auto-matched + <code>/&lt;n&gt;</code>)</td>
-<td>same shape as Claude/Kiro: frontmatter + body "follow <code>agent-skills/&lt;n&gt;/SKILL.md</code>"</td>
-</tr>
-<tr>
-<td>Codex / Kiro / AGENTS.md-only</td>
-<td><em>(none)</em></td>
-<td>nothing needed — auto-reads the root shim, then uses the <code>memory/PROTOCOL.md</code> §4b baseline</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p><strong>Trigger semantics differ (v4.5.1, from a Gemini dogfood).</strong> "Auto-triggers" above holds for
-the <em>description-matched</em> mechanisms (Claude Skill tool, Cursor agent-requested rules, Kiro's and
-GitHub Copilot CLI's open-standard skills). <strong>Gemini is the exception</strong>: a custom command fires only on an explicit
-<code>/&lt;name&gt;</code>, never on natural-language prose — so a phrase like "run hello-world" correctly routes
-through the §4b baseline to the same neutral skill (identical result; not a missing adapter).
-Because every adapter is a pointer back to <code>agent-skills/</code>, no path can diverge. <strong>Adapters are
-never committed</strong> (Option A, §4d) — <code>sync</code> must not stage or recommend committing them.</p>
-<p><strong>Agents can't self-report the trigger (2026-06-17, three dogfood runs).</strong> A Gemini <code>/&lt;name&gt;</code> is
-<em>expanded into the adapter's <code>prompt</code> text before the model sees anything</em> — the model never
-receives the slash token, only the expanded prompt, indistinguishable from a typed request. So an
-agent <strong>cannot</strong> reliably tell "native adapter" from "baseline," and no instruction inside the
-neutral <code>SKILL.md</code> can fix it (the <code>SKILL.md</code> is read <em>after</em> the trigger). The <code>hello-world</code> demo
-therefore <strong>does not ask the agent to narrate its invocation path</strong> (self-report dropped — the
-"B" option): the proof of native wiring is that the user's invocation <em>ran the skill at all</em>. Do
-not re-add path self-reporting; if a future demo truly needs deterministic path proof, carry it in
-the <strong>adapter's own prompt text</strong> (the only thing injected on a native trigger), not agent introspection.</p>
-</blockquote>
-<h3 id="4d-the-committed-vs-personal-decision-option-a-chosen">4d. The committed-vs-personal decision — <strong>Option A (chosen)</strong><a class="headerlink" href="#4d-the-committed-vs-personal-decision-option-a-chosen" title="Permanent link">&para;</a></h3>
-<p><code>.claude/</code>, <code>.gemini/</code>, <code>.cursor/</code>, <code>.kiro/</code> are personal/per-machine and stay <strong>gitignored</strong>. So:</p>
+<h2 id="lifecycle-semantics-unchanged-rules-new-location">Lifecycle semantics (unchanged rules, new location)<a class="headerlink" href="#lifecycle-semantics-unchanged-rules-new-location" title="Permanent link">&para;</a></h2>
+<p>Decay/pinning/supersession rules (<code>DECAY.md</code>) are location-independent: an unchecked
+thread file is pinned; a checked one condenses to a 3–6-line stub and waits out
+<code>archive_window</code>; the sweep <em>moves the file's block</em> to the quarter archive + INDEX
+and deletes the file (<code>archive-fact</code> does this deterministically). <code>refresh-metadata</code>
+rewrites footers in place — filenames never churn. New/Contradiction/Drift threads
+are created as new files. Fact-id creation collisions across branches surface as
+<code>[duplicate-id]</code> (new ERROR check), and <code>[thread-file]</code> pins the filename↔id
+contract.</p>
+<h2 id="what-was-deliberately-deferred">What was deliberately deferred<a class="headerlink" href="#what-was-deliberately-deferred" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Option A (chosen):</strong> the neutral <code>agent-skills/</code> is committed; per-vendor adapter dirs stay
-  gitignored and are <strong>regenerated locally</strong> by the enable/sync step. The only fully
-  vendor-neutral option — every vendor's user gets the skill — and it keeps the
-  personal-vs-shared split clean (<code>.claude/</code> stays entirely personal, consistent with the
-  <code>target-repo-scope-only</code> philosophy).</li>
-<li><strong>Option B (rejected as default):</strong> carve a committed exception (<code>!.claude/skills/</code>).
-  Pragmatic for a Claude-only team, but re-couples the shared layer to one vendor and
-  muddies "<code>.claude/</code> is personal." Available as an opt-in, never the default.</li>
-</ul>
-<h2 id="5-migration-promote-dont-flatten">5. Migration — promote, don't flatten<a class="headerlink" href="#5-migration-promote-dont-flatten" title="Permanent link">&para;</a></h2>
-<p>On enable (Mode C) of a repo with <code>.claude/skills/</code> (or another vendor's skill bundles):</p>
-<ul>
-<li><strong>Promote</strong> them into <code>agent-skills/</code> — they are <em>procedures</em>, so they must <strong>not</strong> be
-  flattened into <code>memory/instructions.md</code> (that home is for <em>steering rules</em>).</li>
-<li><strong>Preserve originals</strong> under <code>legacy/&lt;vendor&gt;/skills/…</code> per <code>never-delete-vendor-files</code>.</li>
-<li><strong>Regenerate</strong> the native adapter(s) from the promoted neutral skill.</li>
-<li>Use <code>git mv</code> for tracked files (history-preserving), per the existing migration rule.</li>
-</ul>
-<p><strong>Authoring convention &amp; the reverse path (v4.2.0–4.3.0).</strong> Going forward, skills are
-authored directly in <code>agent-skills/&lt;name&gt;/SKILL.md</code> (never a vendor folder) and forward-synced
-to adapters via <strong>"sync skill adapters"</strong>. The migration promote above is the <em>one-time</em>
-vendor→neutral import; its ongoing complement is <strong>"adopt skill"</strong> — the same promote, run on
-demand when a skill is authored natively in a vendor folder (e.g. by a built-in skill
-creator). The <strong>session-close ritual</strong> checks for stranded vendor-folder skills and prompts
-adoption, so the neutral <code>agent-skills/</code> layer stays the single source of truth.</p>
-<h2 id="6-alignment-with-the-architectural-invariants">6. Alignment with the Architectural Invariants<a class="headerlink" href="#6-alignment-with-the-architectural-invariants" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Invariant</th>
-<th>How this honors it</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>target-repo-scope-only</code></td>
-<td><code>agent-skills/</code> and adapters live in the repo; <code>~/.claude/</code> untouched</td>
-</tr>
-<tr>
-<td><code>never-delete-vendor-files</code></td>
-<td>original skill bundles preserved under <code>legacy/</code></td>
-</tr>
-<tr>
-<td><code>never-pick-a-winner</code></td>
-<td>neutral source of truth; vendors adapt; no vendor privileged</td>
-</tr>
-<tr>
-<td><code>no-code-markdown-only</code></td>
-<td>skills are markdown + portable scripts; agent is the runtime</td>
-</tr>
-<tr>
-<td><code>upgrades-additive</code></td>
-<td>new optional layer; absent <code>agent-skills/</code> ⇒ no behavior change</td>
-</tr>
-</tbody>
-</table>
-<h2 id="7-scope-non-goals">7. Scope / non-goals<a class="headerlink" href="#7-scope-non-goals" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Not</strong> a skill marketplace, registry, or dependency resolver — just a shared folder.</li>
-<li><strong>Not</strong> a sandbox/execution engine — skill scripts run exactly as they do today under
-  whatever vendor invokes them; the tool adds no new execution surface.</li>
-<li><strong>Not</strong> a new frontmatter spec war — normalize the <em>minimum</em> (<code>name</code>, <code>description</code>);
-  leave richer per-vendor fields to the adapters.</li>
-<li>Skills are <strong>capabilities</strong>, not memory facts and not steering — a distinct third layer,
-  not metadata-tracked/decayed like <code>memory/</code> facts.</li>
-</ul>
-<h2 id="8-integration-points-when-built-not-in-this-doc">8. Integration points (when built — not in this doc)<a class="headerlink" href="#8-integration-points-when-built-not-in-this-doc" title="Permanent link">&para;</a></h2>
-<p>A future implementation rung would touch, additively:
-<code>ENABLE.md</code> (a Step to generate <code>agent-skills/</code> baseline + adapters), <code>MIGRATE.md</code> (detect &amp;
-promote vendor skill bundles → <code>agent-skills/</code>, preserve under <code>legacy/</code>), the then-current
-root/template protocol surfaces (now <code>memory/PROTOCOL.md</code> + <code>templates/memory/PROTOCOL.md</code>),
-<code>templates/.gitignore</code> (confirm adapter dirs
-stay ignored under Option A; <code>agent-skills/</code> tracked), <code>.agent/schema.md</code> (document <code>agent-skills/</code>),
-and the version ladder (<code>VERSION</code> / <code>UPGRADE.md</code> — additive ⇒ <strong>MINOR</strong>, e.g. a 4.x rung).</p>
-<h2 id="9-open-questions-deferred-to-build-time">9. Open questions (deferred to build time)<a class="headerlink" href="#9-open-questions-deferred-to-build-time" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Normalized frontmatter</strong> — exact minimal key set, and how an adapter declares richer
-  vendor-specific fields without polluting the neutral file. <strong>(refined v4.3.2:</strong> a skill
-  <code>description</code> is single-line + quote-free; the adapter <code>description</code> mirrors the neutral
-  skill's <strong>verbatim</strong>; escape/quote for the target format only if a special char is
-  unavoidable — a lifecycle sanity check showed a quoted description otherwise emits invalid
-  TOML/<code>.mdc</code>. <strong>v4.3.3:</strong> also keep it <strong>concise + trigger-phrase-rich</strong> (matched within a
-  small discovery budget — long abstract paragraphs weaken activation); YAML <code>&gt;</code>/<code>|</code> blocks
-  are YAML-only and don't carry into the TOML adapter, so the canonical value is one logical
-  line.)</li>
-<li><strong>Adapter generation locus</strong> — <strong>RESOLVED v4.2.0:</strong> a "sync skill adapters" operation lived
-  in the installed <code>AGENTS.md</code> "Skills" section and moved to <code>SKILLS.md</code> in v4.4.0; the
-  activation rule now lives in <code>memory/PROTOCOL.md</code>. The operation is idempotent (overwrite
-  adapters, prune orphans, never touch the neutral skill);
-  <code>ENABLE.md</code> Step 5h references that single recipe. Surfaced by a real cross-machine test
-  (adapters are gitignored → don't travel with a clone/pull).</li>
-<li><strong>Per-vendor fidelity</strong> — Gemini/Cursor mechanisms differ in trigger semantics; how
-  faithfully a single <code>description</code> maps to each (or whether the baseline §4b suffices and
-  adapters are best-effort).</li>
-<li><strong>Skill-local scripts &amp; portability</strong> — shell vs. python, declaring interpreter/deps in a
-  no-code way.</li>
+<li><strong>Millisecond session filenames</strong> — same-second add/add collisions across
+  contributors are vanishingly rare, and <code>date -u +%3N</code> is not portable (BSD/macOS);
+  a MERGE.md line covers the resolution (rename one file +1s).</li>
+<li><strong>A scalars-only merge driver</strong> — pre-scoped in PR #27's close comment; build it
+  only if scalar-bump conflicts persist in the field after this layout ships.</li>
+<li><strong>Splitting <code>status</code> further</strong> — the schema already mandates a short status line;
+  the fix is compliance, not new structure.</li>
 </ul>
 
 
@@ -2237,7 +1872,7 @@ and the version ladder (<code>VERSION</code> / <code>UPGRADE.md</code> — addit
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../DESIGN-vbdi-lifecycle/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Design: VBDI Lifecycle">
+          <a href="../DESIGN-fresh-context-review/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Design: Fresh-Context Review">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2247,20 +1882,20 @@ and the version ladder (<code>VERSION</code> / <code>UPGRADE.md</code> — addit
                 Previous
               </span>
               <div class="md-ellipsis">
-                Design: VBDI Lifecycle
+                Design: Fresh-Context Review
               </div>
             </div>
           </a>
         
         
           
-          <a href="../DESIGN-ritual-triggers/" class="md-footer__link md-footer__link--next" aria-label="Next: Design: Ritual Triggers">
+          <a href="../architecture/security/" class="md-footer__link md-footer__link--next" aria-label="Next: Agent Instruction &amp; Memory Security">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Design: Ritual Triggers
+                Agent Instruction & Memory Security
               </div>
             </div>
             <div class="md-footer__button md-icon">

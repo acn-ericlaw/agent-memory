@@ -1146,6 +1146,8 @@
       
         
       
+        
+      
     
     
     
@@ -1394,6 +1396,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../DESIGN-merge-scale/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design: Merge-Scale Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../architecture/security/" class="md-nav__link">
         
   
@@ -1549,6 +1579,17 @@
     <span class="md-ellipsis">
       
         Release notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#version-4390-912026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version 4.39.0, 9/1/2026
       
     </span>
   </a>
@@ -4807,6 +4848,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#version-4390-912026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version 4.39.0, 9/1/2026
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#version-4381-8252026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -8046,6 +8098,42 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <p>Releases 1.0.0–3.0.0 below were reconstructed retrospectively (this changelog was
 introduced after 3.0.0 shipped), organized by capability rather than by individual
 commit. The capability ladder matches <code>VERSION</code> and <code>UPGRADE.md</code>.</p>
+</blockquote>
+<h2 id="version-4390-912026">Version 4.39.0, 9/1/2026<a class="headerlink" href="#version-4390-912026" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>Merge-scale memory: threads as files (MINOR).</strong> As team adoption grew, <code>memory/continuity.md</code>
+merge conflicts became regular business — concentrated in <code>## Open Threads</code> (multi-line blocks
+appended and edited at one anchor) and the <code>last_session</code> scalar (bumped by nearly every
+session). This release removes those conflict surfaces structurally, with no merge-time
+machinery (design record: <code>docs/DESIGN-merge-scale.md</code>). It closes part of the <code>bp-multi-user</code>
+Blueprint gap: simultaneous contributors, hardened rather than assumed.</p>
+<ul>
+<li><strong>One thread per file</strong> — <code>memory/open-threads/thread-&lt;id&gt;.md</code>; filename = the thread's kebab
+  fact id, content = exactly the bullet block that previously sat in continuity. Parallel work
+  on <em>different</em> threads cannot conflict (different files); both sides editing the <em>same</em>
+  thread conflicts per-file — the <code>MERGE.md</code> Tier 2 human gate, preserved by design. No index
+  file: the directory is the index, like <code>sessions/</code>. Decay/pinning/supersession rules are
+  unchanged; only the location moved.</li>
+<li><strong><code>last_session</code> dropped</strong> from Project State — fully derivable (newest <code>sessions/</code> filename;
+  the agent name is that log's <code>**Agent:**</code> header) and the most frequent scalar conflict.</li>
+<li><strong>Archive files union-merge</strong> — <code>memory/archive/*.md merge=union</code> in <code>.gitattributes</code>
+  (git-native, no driver, no per-clone registration); the one wrong case (a reactivation's
+  removal resurrected) is caught deterministically by <code>[both]</code> / <code>[over-archived]</code>.</li>
+<li><strong>Reviews run serialized</strong> (<code>REVIEW.md</code>): up-to-date default branch, committed promptly.</li>
+<li><strong>Scripts:</strong> <code>memory-lint</code>, <code>refresh-metadata</code>, and <code>archive-fact</code> treat thread files as
+  fact surfaces (refresh edits footers in place — filenames never churn; the sweep moves a
+  thread's block to the quarter archive and deletes the file). New lint checks:
+  <code>[thread-file]</code> (filename = footer id; one block per file), <code>[duplicate-id]</code> (an id exists
+  exactly once across the live layer — the silent-fork backstop), and <code>[duplicate-state-key]</code>
+  (a Project State scalar set twice — <strong>absorbed from PR #27, credit: Roland Heusser</strong>, whose
+  field artifact and merge-rehearsal test pattern also shaped this release; the PR's merge
+  driver itself was closed after review findings, recorded in the design doc).</li>
+<li><code>tests/test_thread_layout_merge.sh</code> pins the merge contract with real git merges — 4 cases
+  including a mutation check (stripping the union attribute must restore the conflict).</li>
+<li>Suites: memory-lint 67 ×2, refresh-metadata 6 ×2, archive-fact 9 ×2, thread-layout merge 4.</li>
+<li>Protocol text changed (open-threads read/create steps; <code>last_session</code> derivation) → ships
+  the mandated Semantic steps row, plus the thread-migration semantic step for installed repos.</li>
+</ul>
 </blockquote>
 <h2 id="version-4381-8252026">Version 4.38.1, 8/25/2026<a class="headerlink" href="#version-4381-8252026" title="Permanent link">&para;</a></h2>
 <blockquote>
