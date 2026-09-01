@@ -342,8 +342,8 @@ From this analysis, determine:
    (`pom.xml` → `<version>`, `package.json` → `"version"`, `Cargo.toml` →
    `version =`, `pyproject.toml` → `version =`, `*.gemspec` → `spec.version`).
    If README, docs, comments, or other files reference a *different* version
-   string, **do not fix the drift** — log it as an Open Thread in
-   `memory/continuity.md`:
+   string, **do not fix the drift** — log it as an Open Thread
+   (`memory/open-threads/thread-….md`):
    `- [ ] Version drift: build manifest is X.Y.Z but <file(s)> reference a different version — verify and align`
    Resolving drift is the user's responsibility, not the enablement step.
 8. **Hosting forge** — GitHub | GitLab | Azure DevOps | unknown (from the Structure-signals
@@ -408,7 +408,7 @@ Extract the durable, project-defining facts and feed them into the Step 5 seedin
   (and seed **Architectural Invariants** in `continuity.md` from explicit
   "must / never" rules; record an `(ADR-…)` cross-link only if an ADR log exists).
 - Current goals, roadmap, in-flight work, kanban "in progress" / decision-log open
-  items → **Open Threads** in `continuity.md`, and the aspiration → the
+  items → **Open Threads** (one `memory/open-threads/thread-….md` file each), and the aspiration → the
   **Current-state context** of `memory/vision.md` (5g) — still never *fabricate* the
   target.
 - Newcomer-facing knowledge → candidate **smoke-test questions** (5f).
@@ -465,15 +465,10 @@ Fill in:
 - **`## Stack & Tools`** — the canonical live home for the current language version,
   dependencies, and tool versions (the precise facts `instructions.md` defers here)
 - Today's date as `last_enabled`
-- `last_session`:
-  - If migrated from vendor history, use the most recent session date from those logs
-  - Otherwise point it at the **first enable session log** (Step 5c) — the enable *is* the
-    first session: `<today> | agent: <your agent name> (<the 5c log's filename stem>)`, e.g.
-    `2026-08-06 | agent: Claude Code (2026-08-06-142530)`. Fill it when you write that log —
-    the same moment its stem becomes the seeded facts' `origin`. Never leave `(none yet)`:
-    it is false the instant the enable completes, and it defeats the multi-agent continuity
-    check that reads this field (`memory/PROTOCOL.md` → Activate the session).
 - `last_review`: `(none yet)`
+- There is **no `last_session` field** (v4.39.0) — the newest `memory/sessions/` log *is*
+  the last session (its `**Agent:**` header names the agent); the Step 5c enable log
+  satisfies the multi-agent continuity check from day one
 - **repo:** write the path `~`-relative (e.g. `~/projects/foo`) — never an absolute
   `/Users/<name>/…` (or `/home/<name>/…`) path. `memory/` is committed to git and
   shared across the team, so absolute home paths would leak the enabling user's
@@ -481,8 +476,12 @@ Fill in:
 - **Architectural Invariants:** seed from hard constraints in the build manifest /
   README / `instructions.md` (things that must never change — e.g. "POST-only API",
   "no runtime deps"). If none are obvious, remove the section. Facts here never decay.
-- Open Threads: include any TODOs surfaced during analysis or migration
-- **Greenfield only:** seed a `- [ ] Greenfield — no code yet` Open Thread listing what to
+- Open Threads: create `memory/open-threads/` and write any TODOs surfaced during
+  analysis or migration as **one file per thread** — `thread-<id>.md`, whose content is
+  exactly the thread's bullet block with its footer (see `.agent/schema.md`); continuity's
+  `## Open Threads` section carries only the template's pointer note, never thread bodies
+- **Greenfield only:** seed a `- [ ] Greenfield — no code yet` Open Thread (its own
+  `thread-…` file) listing what to
   record as the first code lands: the stack in `## Stack & Tools`, coding conventions,
   Architectural Invariants, **and the stack's build-output `.gitignore` entries** (apply the
   Step 7 stack-aware seed table then — at enable there is no stack to seed)
@@ -515,9 +514,9 @@ Apply the **redaction rule** (`memory/PROTOCOL.md` → Write the session log): n
 into the log — redact any pasted command output to `(REDACTED)` before persisting.
 
 This makes the enable traceable, lets the facts you seed in 5b set a real `origin`, and
-supplies the value 5b's `last_session` points at (the enable *is* the first session — never
-leave `(none yet)`). (A `.gitkeep` is then unnecessary — the directory is non-empty; only add
-one if for some reason no first log is written.)
+is what the multi-agent continuity check reads as the last session (the enable *is* the
+first session). (A `.gitkeep` is then unnecessary — the directory is non-empty; only add
+one if for some reason no first log is written; same for `memory/open-threads/`.)
 
 ### 5d. `.agent/schema.md` [reconcile-covered]
 
@@ -568,7 +567,7 @@ target is the human's to set (same principle as User Preferences: never infer). 
   still the human's to confirm, never inferred).
 - Leave the **target, success criteria, and non-goals as prompts** (the template's `(…)`
   placeholders) — do not infer the aspiration. Keep the ⚠️ DRAFT banner.
-- Raise a human-gate Open Thread in `memory/continuity.md`:
+- Raise a human-gate Open Thread (`memory/open-threads/thread-vision-bootstrap.md`):
   `- [ ] (vision-bootstrap) Confirm the Vision in memory/vision.md — set the target / success criteria / non-goals; then derive the Blueprint.`
 - **Do not derive the Blueprint yet** — Blueprint gaps depend on a confirmed target. The
   gate thread carries that forward. Until the Vision is confirmed, VBDI drift-detection is
@@ -960,7 +959,12 @@ The executable scripts (`*.sh`), git hook dispatchers (`.githooks/*`), and hook 
 *.sh        text eol=lf
 .githooks/* text eol=lf
 .githooks/*.d/* text eol=lf
+memory/archive/*.md merge=union
 ```
+
+The `merge=union` rule (v4.39.0) lets git auto-merge concurrent appends to the
+append-mostly archive files; live memory files deliberately never get union (a conflict
+there is signal — `MERGE.md`).
 
 Apply additively (same discipline as `.gitignore`): **no `.gitattributes`** → copy
 `templates/.gitattributes` verbatim; **exists** → add only the LF rules not already present
@@ -1025,7 +1029,7 @@ describe what was intended.
 6. **Vision bootstrapped (not fabricated).** `memory/vision.md` exists with the
    Current-state context filled and the target / success criteria / non-goals left as
    prompts. The ⚠️ DRAFT banner and the `(…)` prompts are **intentional** — not unfilled
-   placeholders. A `- [ ] (vision-bootstrap)` Open Thread is present in `continuity.md`,
+   placeholders. A `- [ ] (vision-bootstrap)` Open Thread file is present in `memory/open-threads/`,
    and no Blueprint gaps were derived yet (they await the confirmed Vision).
 
 7. **Skills installed + promoted + adapters complete.** Confirm the **built-in skills**
@@ -1056,7 +1060,7 @@ describe what was intended.
    (`instructions.md` / `continuity.md`) and **not** in a vendor steering file. Missing log ⇒
    write it now (Step 5c).
 
-Log any issue you cannot fix as an Open Thread in `memory/continuity.md` and
+Log any issue you cannot fix as an Open Thread (`memory/open-threads/thread-….md`) and
 note it in the report.
 
 ---

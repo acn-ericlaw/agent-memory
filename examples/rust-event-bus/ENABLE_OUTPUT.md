@@ -1,5 +1,13 @@
 # Example: AI Enable Output (real run)
 
+> **Layout note (v4.39.0).** This fixture predates the merge-scale thread layout: it shows
+> Open Threads inline in `continuity.md` and a `last_session` field. As of v4.39.0, each
+> Open Thread lives in its own `memory/open-threads/thread-<id>.md` file (continuity keeps
+> only a pointer note) and `last_session` no longer exists (derived from the newest session
+> log). Every decay/review rule shown here is unchanged — only the threads' storage
+> location moved. See `.agent/schema.md` and `docs/DESIGN-merge-scale.md`.
+
+
 Unlike a mockup, this is the **actual** output of enabling a real repository —
 a small Rust async event-bus demo — captured when running:
 

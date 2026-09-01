@@ -140,6 +140,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.37.0 | **Enterprise-efficient protocol activation (MINOR):** root `AGENTS.md` becomes an exact one-line discovery shim to the new canonical `memory/PROTOCOL.md`. The protocol is reordered for activation, compressed without weakening directives, imported directly by capable bootstraps, and split correctly between the tool's dual-mode operator protocol and the installed target-only protocol. `MANIFEST.md` owns the target protocol row; fresh enable and upgrade preserve pre-existing destinations and customized root instructions, stopping for human resolution on unsafe merges |
 | 4.38.0 | **Onboarding efficiency: consumer routing + close-record economy (MINOR):** from a fresh-agent assessment of mercury-composable (an enabled repo that is *also a consumable product*). (1) The root shim gains a **sanctioned contributor/consumer fork** — structure-checked by the reconcile (`fork-ok`: canonical read-imperative first line, repo-local consumer link, ≤ 16 non-empty lines / ≤ 2 KB routing stub — bounds sized to the live field artifact, pinned verbatim in both test suites), emitted by `ENABLE.md` Step 6 when the repo declares a consumer entry; the target protocol opens with a consumers-exit-here step-0. (2) **Close-record economy** — measured 64% of a hot repo's continuity was completed-`[x]` ship narrative whose canonical home is the origin log: the protocol and schema now spec 3–6-line close records; `REVIEW.md` step 5 condenses oversized records to stubs at review time (prose only, footers immutable); new `memory-lint` advisory `[closed-thread-bloat]` with the `closed_narrative_max_lines` knob (default 150). (3) Optional ready-to-work checkpoint in the protocol's Work-from-intent. Protocol-text change → ships the mandated Semantic steps row (the first exercise of the v4.37.0 propagation obligation) |
 | 4.38.1 | **`memory-lint`: scanner-neutral guidance constant (PATCH):** an enterprise security pipeline (Snyk) in a downstream field deployment rejected builds, flagging the consolidated guidance constant (introduced 4.34.1) as a hardcoded secret — that detector class keys on identifier-contains-SECRET + string-literal assignment, and the prose constant carried the name. Renamed `GUIDANCE` in both runtimes; no string content, output, or hook-contract change (byte-identical lint results before/after, both runtimes in agreement). Each mirror suite gains a script-hygiene self-check scanning the shipped scripts for the flagged identifier shape, trigger words assembled at runtime (53 each; red-verified against the motivating artifact pre-rename). `SKILLS.md` (Authoring) records the house rule: prose-constant identifiers in shipped scripts stay scanner-neutral. Downstream interim local edits converge to zero diff on re-copy (`verbatim-dir`) |
+| 4.39.0 | **Merge-scale memory: threads as files (MINOR):** from maintainer field reports — `continuity.md` merge conflicts became regular business as team adoption grew, concentrated in `## Open Threads` and the `last_session` scalar (PR #27's field artifact: two stacked branches, both appending a thread and bumping `last_session`). Structural fix, no merge-time machinery: (1) **one thread per file** — `memory/open-threads/thread-<id>.md`, filename = the fact id, content = exactly the thread's bullet block; parallel work on different threads cannot conflict, a same-thread edit conflicts per-file (the MERGE.md Tier 2 human gate, preserved by design — a rejected merge-driver alternative silently unioned it; see docs/DESIGN-merge-scale.md). No index file — the directory is the index, like sessions/. (2) **`last_session` dropped** — derivable from the newest session log; the protocol's multi-agent check reads that log's `**Agent:**` header. (3) **archive files union-merge** (`memory/archive/*.md merge=union` in `.gitattributes`; git-native, backstopped by `[both]`/`[over-archived]`). (4) Reviews run serialized (REVIEW.md). All three built-in script pairs treat thread files as fact surfaces (lint 67 tests ×2, refresh 6 ×2, archive 9 ×2); new lint checks `[thread-file]`, `[duplicate-id]`, and `[duplicate-state-key]` (absorbed from PR #27 — credit: Roland Heusser); `tests/test_thread_layout_merge.sh` pins the merge contract with real git merges (4 cases incl. a mutation check). Protocol-text change → ships the mandated Semantic steps row |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -2373,3 +2374,59 @@ change; no semantic step.
    `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
 3. **Verify:** mirror suites pass (53 each); `memory-lint` output on the repo is unchanged
    from 4.38.0 (same findings, same once-per-run guidance line).
+## Rung: 4.38.1 → 4.39.0 — Merge-scale memory: threads as files (MINOR)
+
+**What changed:** at team scale, `memory/continuity.md` merge conflicts became a per-merge
+tax — concentrated in `## Open Threads` (multi-line blocks appended and edited at one
+anchor) and the `last_session` scalar (bumped by nearly every session). The fix is
+structural, not merge-time machinery (design record: `docs/DESIGN-merge-scale.md`; a
+merge-driver alternative, PR #27, was verified to silently union Tier 2 semantic clashes
+and winner-pick dateless scalars, and was closed with its `[duplicate-state-key]` check and
+merge-rehearsal test pattern absorbed — credit: Roland Heusser):
+
+- **One thread per file:** `memory/open-threads/thread-<id>.md`, filename = the thread's
+  kebab fact id (stable for the thread's lifetime), content = exactly the bullet block that
+  previously sat in continuity (checkbox + body + footer). No index file — the directory is
+  the index, like `sessions/`. Decay/pinning/supersession rules are unchanged; only the
+  location moved.
+- **`last_session` dropped** from Project State: derivable (newest `sessions/` filename;
+  agent name in that log's `**Agent:**` header). The protocol's activation and close
+  rituals no longer read or write it.
+- **Archive union-merge:** `memory/archive/*.md merge=union` in `.gitattributes` — concurrent
+  review sweeps' appends merge without conflict; the resurrect case is caught by
+  `[both]`/`[over-archived]`.
+- **Scripts treat thread files as fact surfaces:** `memory-lint` (plus new checks
+  `[thread-file]`, `[duplicate-id]`, `[duplicate-state-key]`), `refresh-metadata`
+  (footers refresh in place — filenames never churn), `archive-fact` (sweeping a thread
+  moves its block to the quarter archive + INDEX and deletes the file).
+- **Reviews run serialized** (REVIEW.md): from an up-to-date default branch, committed
+  promptly.
+
+**Steps:**
+
+1. **Reconcile** (`scripts/reconcile.py --dry-run`, then `--apply`, or walk `MANIFEST.md`
+   by hand): re-copies `DECAY.md`, `REVIEW.md`, `MERGE.md`, `.agent/schema.md`, the three
+   updated built-in skill dirs (`memory-lint`, `refresh-metadata`, `archive-fact`), and
+   merges the new `memory/archive/*.md merge=union` rule into `.gitattributes`
+   (sentinel-merge; `renorm` applies — check the staged diff on a CRLF repo). The new
+   `memory/open-threads/` row seeds the directory.
+2. **Semantic — thread migration** (the judgment half; fail closed on anything odd):
+   move every Open Thread block out of `memory/continuity.md` into its own
+   `memory/open-threads/thread-<id>.md` — a **verbatim cut-paste** of checkbox line, body,
+   `serves:` trace, and footer; never rewrite content in flight. A legacy thread with no
+   id/footer gets one minted first (`created`/`last_used` = today, `uses: 1`,
+   `tier: working` — the 3.0.0 backfill rule). Replace the `## Open Threads` section body
+   with the template's pointer note (`templates/memory/continuity.md`). Then delete the
+   `- **last_session:** …` line from Project State.
+3. **Semantic — protocol re-copy/arbitrate:** protocol text changed (open-threads read and
+   create steps; last_session derivation). If the target's `memory/PROTOCOL.md` is still
+   byte-identical to the 4.38.0 template, re-copy `templates/memory/PROTOCOL.md`; a
+   customized copy is arbitrated per `ENABLE.md` §5i — add the new wording, never drop
+   local directives. Import-capable bootstraps (`CLAUDE.md`/`GEMINI.md`) get the one-line
+   "still list `memory/open-threads/`" note merged into their scan sentence.
+4. **Stamp** `.agent/version.md` → `version: 4.39.0`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
+5. **Verify:** run `memory-lint` (any runtime) — `[thread-file]` and `[duplicate-id]` gate
+   the migration (a mis-named file or an id left behind in continuity fails here);
+   the mirror suites pass (67 lint / 6 refresh / 9 archive, each ×2); in the tool repo,
+   `bash tests/test_thread_layout_merge.sh` pins the merge contract.

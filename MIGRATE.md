@@ -223,9 +223,10 @@ Authorization headers, PII, or absolute home paths verbatim into the converted l
 
 Vendor-specific extraction rules are in the sections below.
 
-### D. Note in continuity
+### D. Note the follow-ups as Open Threads
 
-In `memory/continuity.md`, add to Open Threads:
+Create the follow-ups as Open Thread files (`memory/open-threads/thread-<id>.md`,
+one per thread — v4.39.0; see `.agent/schema.md`):
 
 ```markdown
 - [ ] Review migrated sessions from <vendor> (under memory/sessions/)
