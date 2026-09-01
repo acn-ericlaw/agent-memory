@@ -1586,6 +1586,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#version-4391-912026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version 4.39.1, 9/1/2026
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#version-4390-912026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4848,6 +4859,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#version-4391-912026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version 4.39.1, 9/1/2026
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#version-4390-912026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -8098,6 +8120,26 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <p>Releases 1.0.0–3.0.0 below were reconstructed retrospectively (this changelog was
 introduced after 3.0.0 shipped), organized by capability rather than by individual
 commit. The capability ladder matches <code>VERSION</code> and <code>UPGRADE.md</code>.</p>
+</blockquote>
+<h2 id="version-4391-912026">Version 4.39.1, 9/1/2026<a class="headerlink" href="#version-4391-912026" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>Same-thread merge claim: honest boundary (PATCH).</strong> An independent CoPilot assessment of
+v4.39.0 (2026-09-01, the day it shipped) flagged that "both sides editing the same thread
+conflicts per-file" overstates git's guarantee. Measured: git conflicts only on
+<strong>adjacent/overlapping</strong> hunks — two edits to the same thread file separated by even one
+unchanged line merge cleanly, with <strong>both sides kept</strong>. Low severity (nothing is lost; the
+coexisting-statements case belongs to the write-time contradiction check, <code>DECAY.md</code> §10;
+and the pre-4.39.0 layout merged identically — no regression), but the claim should not
+outrun the mechanism: docs-and-test precision only, no behavior change.</p>
+<ul>
+<li><code>MERGE.md</code>, <code>.agent/schema.md</code>, <code>docs/DESIGN-merge-scale.md</code> — the claim now states the
+  measured boundary and routes the clean-merge case to the contradiction check.</li>
+<li><code>tests/test_thread_layout_merge.sh</code> — two new cases pin the boundary: separated edits
+  merge clean keeping both sides (documented behavior, not a bug); adjacent edits conflict
+  (4 → 6 cases).</li>
+<li>No script, template-protocol, or memory-file shape change → no semantic step; installed
+  repos converge by plain re-copy of <code>MERGE.md</code> + <code>.agent/schema.md</code> at their next reconcile.</li>
+</ul>
 </blockquote>
 <h2 id="version-4390-912026">Version 4.39.0, 9/1/2026<a class="headerlink" href="#version-4390-912026" title="Permanent link">&para;</a></h2>
 <blockquote>
