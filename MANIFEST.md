@@ -87,6 +87,7 @@ the sanctioned contributor/consumer fork structure (v4.38.0 — see the AGENTS.m
 | memory/instructions.md | templates/memory/instructions.md | seed-generate | all | step:5a |
 | memory/continuity.md | templates/memory/continuity.md | seed-generate | all | step:5b |
 | memory/sessions/ | templates/memory/sessions/.gitkeep | seed-generate | all | step:5c |
+| memory/open-threads/ | templates/memory/open-threads/.gitkeep | seed-generate | all | step:5b |
 | memory/decay-policy.md | templates/memory/decay-policy.md | seed-generate | all | step:5e |
 | memory/smoke-test.md | templates/memory/smoke-test.md | seed-generate | all | step:5f |
 | memory/vision.md | templates/memory/vision.md | seed-generate | all | step:5g |
@@ -124,6 +125,10 @@ Row notes (the table stays machine-lean; nuance lives here):
 - **memory/sessions/** — "present" means the directory exists with at least one file; the
   first enable session log (Step 5c) is what normally satisfies it (`.gitkeep` only as a
   fallback when no log is written).
+- **memory/open-threads/** — one Open Thread per `thread-<id>.md` file (v4.39.0, the
+  merge-scale layout). "Present" means the directory exists with at least one file; the
+  threads Step 5b seeds (at minimum the `(vision-bootstrap)` gate thread) normally satisfy
+  it, `.gitkeep` only as a fallback. Thread bodies never live in `continuity.md`.
 - **.gitlab-ci.yml** — seed-copy installs the canonical root file (include + the
   `workflow:rules` guard) only when the target has none. A pre-existing root file is never
   edited mechanically: the `wire` attr sends the agent to `ENABLE.md` Step 6 (add-only
@@ -159,6 +164,8 @@ in the named `UPGRADE.md` rung. Mode B = reconcile + the applicable rows + stamp
 | 4.36.0 | 4.35.0 -> 4.36.0 | PRE-APPLY: If a hook entrypoint carries locally owned behavior (not the stock agent-memory monolith), move it into a differently named executable fragment (00- to 49- before agent-memory, 51- to 99- after) before accepting the dispatcher re-copy; never overwrite a differently named fragment; if local and agent-memory logic are interleaved, stop for a human decision. |
 | 4.37.0 | 4.36.0 -> 4.37.0 | PRE-APPLY: Before any reconcile apply, prove recovery of the existing AGENTS.md, merge its local directives and any existing protocol into the target-only memory/PROTOCOL.md with provenance and authority checks, revalidate source hashes, then install the exact one-line shim. Stop before every write on an unsafe merge. |
 | 4.38.0 | 4.37.0 -> 4.38.0 | Protocol text changed (consumer step-0, terse close records, optional ready-to-work checkpoint): re-copy a target memory/PROTOCOL.md that is still byte-identical to the 4.37.0 template; arbitrate a customized one per ENABLE.md 5i (add the new sections, never drop local directives). Optionally add closed_narrative_max_lines: 150 to memory/decay-policy.md (lint falls back to the default when absent). |
+| 4.39.0 | 4.38.1 -> 4.39.0 | Thread migration (merge-scale layout): create memory/open-threads/ and move every Open Thread block out of memory/continuity.md into its own thread-<id>.md (verbatim cut-paste, checkbox + body + footer intact; mint a kebab id + footer first for a legacy thread that lacks one); replace continuity's Open Threads section body with the template's pointer note; delete the last_session line from Project State (derivable from the newest session log). Run memory-lint after - [thread-file]/[duplicate-id] gate the migration. |
+| 4.39.0 | 4.38.1 -> 4.39.0 | Protocol text changed (open-threads read/create steps, last_session derivation): re-copy a target memory/PROTOCOL.md still byte-identical to the 4.38.0 template; arbitrate a customized one per ENABLE.md 5i (add the new wording, never drop local directives). |
 
 ## Tool-only (never installed)
 

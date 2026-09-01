@@ -4,3 +4,11 @@
 *.sh        text eol=lf
 .githooks/* text eol=lf
 .githooks/*.d/* text eol=lf
+
+# agent-memory — archive files are append-mostly cold storage (review sweeps append at
+# EOF), so let git union-merge them instead of raising spurious add/add conflicts
+# (v4.39.0). Safe here because appends dominate; the one wrong case — a reactivation's
+# removed lines resurrected by the other branch — is caught deterministically by
+# memory-lint ([both] / [over-archived] ERRORs). Live memory files (continuity.md,
+# open-threads/) deliberately do NOT get union: there a conflict is signal (MERGE.md).
+memory/archive/*.md merge=union

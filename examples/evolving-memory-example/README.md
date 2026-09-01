@@ -1,5 +1,13 @@
 # Example — Evolving Memory in Action
 
+> **Layout note (v4.39.0).** This fixture predates the merge-scale thread layout: it shows
+> Open Threads inline in `continuity.md` and a `last_session` field. As of v4.39.0, each
+> Open Thread lives in its own `memory/open-threads/thread-<id>.md` file (continuity keeps
+> only a pointer note) and `last_session` no longer exists (derived from the newest session
+> log). Every decay/review rule shown here is unchanged — only the threads' storage
+> location moved. See `.agent/schema.md` and `docs/DESIGN-merge-scale.md`.
+
+
 A worked example of the evolving-memory layer (`DECAY.md` + `REVIEW.md`) on a
 **fictional** project, `taskflow-api`. It shows one review cycle end to end:
 

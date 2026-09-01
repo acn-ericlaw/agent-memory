@@ -11,6 +11,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.39.0, 9/1/2026
+
+> **Merge-scale memory: threads as files (MINOR).** As team adoption grew, `memory/continuity.md`
+> merge conflicts became regular business — concentrated in `## Open Threads` (multi-line blocks
+> appended and edited at one anchor) and the `last_session` scalar (bumped by nearly every
+> session). This release removes those conflict surfaces structurally, with no merge-time
+> machinery (design record: `docs/DESIGN-merge-scale.md`). It closes part of the `bp-multi-user`
+> Blueprint gap: simultaneous contributors, hardened rather than assumed.
+>
+> - **One thread per file** — `memory/open-threads/thread-<id>.md`; filename = the thread's kebab
+>   fact id, content = exactly the bullet block that previously sat in continuity. Parallel work
+>   on *different* threads cannot conflict (different files); both sides editing the *same*
+>   thread conflicts per-file — the `MERGE.md` Tier 2 human gate, preserved by design. No index
+>   file: the directory is the index, like `sessions/`. Decay/pinning/supersession rules are
+>   unchanged; only the location moved.
+> - **`last_session` dropped** from Project State — fully derivable (newest `sessions/` filename;
+>   the agent name is that log's `**Agent:**` header) and the most frequent scalar conflict.
+> - **Archive files union-merge** — `memory/archive/*.md merge=union` in `.gitattributes`
+>   (git-native, no driver, no per-clone registration); the one wrong case (a reactivation's
+>   removal resurrected) is caught deterministically by `[both]` / `[over-archived]`.
+> - **Reviews run serialized** (`REVIEW.md`): up-to-date default branch, committed promptly.
+> - **Scripts:** `memory-lint`, `refresh-metadata`, and `archive-fact` treat thread files as
+>   fact surfaces (refresh edits footers in place — filenames never churn; the sweep moves a
+>   thread's block to the quarter archive and deletes the file). New lint checks:
+>   `[thread-file]` (filename = footer id; one block per file), `[duplicate-id]` (an id exists
+>   exactly once across the live layer — the silent-fork backstop), and `[duplicate-state-key]`
+>   (a Project State scalar set twice — **absorbed from PR #27, credit: Roland Heusser**, whose
+>   field artifact and merge-rehearsal test pattern also shaped this release; the PR's merge
+>   driver itself was closed after review findings, recorded in the design doc).
+> - `tests/test_thread_layout_merge.sh` pins the merge contract with real git merges — 4 cases
+>   including a mutation check (stripping the union attribute must restore the conflict).
+> - Suites: memory-lint 67 ×2, refresh-metadata 6 ×2, archive-fact 9 ×2, thread-layout merge 4.
+> - Protocol text changed (open-threads read/create steps; `last_session` derivation) → ships
+>   the mandated Semantic steps row, plus the thread-migration semantic step for installed repos.
+
 ## Version 4.38.1, 8/25/2026
 
 > **Scanner-neutral guidance constant (PATCH).** An enterprise security pipeline (Snyk) in

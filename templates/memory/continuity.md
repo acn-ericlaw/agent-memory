@@ -15,7 +15,6 @@
 - **project:** {{PROJECT_NAME}}
 - **status:** {{PROJECT_STATUS}}
 - **last_enabled:** {{TODAY}}
-- **last_session:** {{LAST_SESSION}}
 - **last_review:** (none yet)
 - **last_invariant_check:** (none yet)
 - **repo:** {{REPO_PATH}}
@@ -44,10 +43,12 @@
 
 ## Open Threads
 
-> Mark completed items `- [x]` and leave them in place — the review sweeps them to
-> the archive once older than `archive_window` sessions. Don't archive them by hand.
-
-{{OPEN_THREADS}}
+> Open Threads live **one per file** in `memory/open-threads/` (`thread-<id>.md`;
+> filename = the thread's fact id) so concurrent thread work never merge-conflicts.
+> List that directory to see them; unchecked `- [ ]` threads are the live workstreams
+> and never decay. Mark a completed thread `- [x]` in its file and leave it — the
+> review sweeps it to the archive once older than `archive_window` sessions. Don't
+> archive by hand. See `.agent/schema.md` → `memory/open-threads/`.
 
 ## User Preferences
 

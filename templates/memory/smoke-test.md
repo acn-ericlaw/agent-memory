@@ -23,7 +23,7 @@ review. Don't edit the questions to make them pass.
 2. What is the stack — language, key dependencies, versions? *(→ continuity "Stack & Tools")*
 3. What are the architectural invariants — things that must never change? *(→ continuity "Architectural Invariants")*
 4. What were the last 2–3 key decisions, and **why**? *(→ continuity "Key Decisions" / recent sessions)*
-5. What is in progress right now? *(→ continuity "Open Threads")*
+5. What is in progress right now? *(→ `memory/open-threads/` — the unchecked thread files)*
 6. What conventions should new code follow? *(→ instructions / continuity "Conventions")*
 7. Any recorded user preferences or team / agent assignments? *(→ continuity — explicit only)*
 8. Has any past decision been reversed or **superseded** — and by what? *(→ continuity superseded facts / `archive/INDEX.md`)*
