@@ -5,4 +5,4 @@
   serialized reviews + derived last_session removed the structural conflict surfaces
   (docs/DESIGN-merge-scale.md). Remaining: live simultaneous-contributor validation
   in the field.
-  <!-- id: bp-multi-user | created: 2026-06-15 | last_used: 2026-09-01 | uses: 7 | tier: active | origin: 2026-06-15-000531 -->
+  <!-- id: bp-multi-user | created: 2026-06-15 | last_used: 2026-09-01 | uses: 8 | tier: active | origin: 2026-06-15-000531 -->

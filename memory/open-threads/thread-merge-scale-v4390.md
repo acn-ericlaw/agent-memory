@@ -7,4 +7,4 @@
   structure beats merge-time machinery — the rejected driver silently unioned the one case
   that must reach a human. Detail: docs/DESIGN-merge-scale.md + the 4.38.1→4.39.0 rung.
   → serves: vision-agent-memory (via bp-multi-user)
-  <!-- id: merge-scale-v4390 | created: 2026-09-01 | last_used: 2026-09-01 | uses: 1 | tier: working | origin: 2026-09-01-185108 -->
+  <!-- id: merge-scale-v4390 | created: 2026-09-01 | last_used: 2026-09-01 | uses: 2 | tier: active | origin: 2026-09-01-185108 -->
