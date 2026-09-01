@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.39.1, 9/1/2026
+
+> **Same-thread merge claim: honest boundary (PATCH).** An independent CoPilot assessment of
+> v4.39.0 (2026-09-01, the day it shipped) flagged that "both sides editing the same thread
+> conflicts per-file" overstates git's guarantee. Measured: git conflicts only on
+> **adjacent/overlapping** hunks — two edits to the same thread file separated by even one
+> unchanged line merge cleanly, with **both sides kept**. Low severity (nothing is lost; the
+> coexisting-statements case belongs to the write-time contradiction check, `DECAY.md` §10;
+> and the pre-4.39.0 layout merged identically — no regression), but the claim should not
+> outrun the mechanism: docs-and-test precision only, no behavior change.
+>
+> - `MERGE.md`, `.agent/schema.md`, `docs/DESIGN-merge-scale.md` — the claim now states the
+>   measured boundary and routes the clean-merge case to the contradiction check.
+> - `tests/test_thread_layout_merge.sh` — two new cases pin the boundary: separated edits
+>   merge clean keeping both sides (documented behavior, not a bug); adjacent edits conflict
+>   (4 → 6 cases).
+> - No script, template-protocol, or memory-file shape change → no semantic step; installed
+>   repos converge by plain re-copy of `MERGE.md` + `.agent/schema.md` at their next reconcile.
+
 ## Version 4.39.0, 9/1/2026
 
 > **Merge-scale memory: threads as files (MINOR).** As team adoption grew, `memory/continuity.md`

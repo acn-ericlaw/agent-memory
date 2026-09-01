@@ -49,8 +49,14 @@ design:
   merges cleanly, two divergent copies survive), churns filenames on every review
   metadata refresh, and divorces filename from fact identity. With stable names,
   parallel work on *different* threads cannot conflict (different files), and both
-  sides editing the *same* thread conflicts per-file — which is MERGE.md Tier 2
-  reaching a human, the required behavior, not a gap.
+  sides editing the *same* thread meet ordinary git hunk semantics per-file:
+  adjacent/overlapping edits conflict — MERGE.md Tier 2 reaching a human, the required
+  behavior — while edits separated by unchanged lines merge cleanly with **both sides
+  kept** (measured, v4.39.1: the boundary is one unchanged line; nothing is lost, and
+  the coexisting-statements case belongs to the write-time contradiction check —
+  unchanged from the pre-4.39.0 layout, where the same edits inside a continuity thread
+  block merged the same way). Surfaced by an independent CoPilot assessment
+  (2026-09-01) the day the release shipped.
 - **No index.** The directory is the index, exactly like `sessions/`: an index line
   per thread in continuity would recreate the add/add conflict, one line at a time.
   Discovery is `ls memory/open-threads/`; open vs closed is the checkbox in each
