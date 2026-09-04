@@ -174,7 +174,7 @@ operator-side. In particular:
 
 - ENABLE.md, MIGRATE.md, UPGRADE.md, MANIFEST.md, VERSION, README.md, CHANGELOG.md, LICENSE
 - scripts/ (the reconcile helper + its tests)
-- tests/ (the git hook dispatcher contract test)
+- tests/ + .github/workflows/tests.yml (the tool's own test suites and their CI runner)
 - the root AGENTS.md, CLAUDE.md, GEMINI.md and root bootstrap dotfiles (this repo's own)
 - agent-skills/hello-world/ (the tool's own skills-layer demo)
 - memory/ (this repo's own dogfooded memory layer)

@@ -1,0 +1,35 @@
+name: tests
+# TOOL-REPO-ONLY test suite — not part of the installed floor. Never listed in MANIFEST.md
+# and never copied into enabled repos (ENABLE.md installs only agent-memory.yml on GitHub);
+# it verifies this tool's own shipped shell: the hook fragment dispatchers, the thread-file
+# merge contract, and the CI secret-scan waiver filter (whose behavioral cases need the
+# runner's bash >= 4 — macOS's system bash 3.2 skips them locally, v4.39.2).
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  shell-suites:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: run tests/*.sh
+        run: |
+          set -e
+          bash --version | head -1
+          rc=0
+          for t in tests/*.sh; do
+            echo "::group::$t"
+            if bash "$t"; then
+              echo "PASS $t"
+            else
+              echo "::error title=agent-memory tests::$t failed"
+              rc=1
+            fi
+            echo "::endgroup::"
+          done
+          exit "$rc"
