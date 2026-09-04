@@ -11,6 +11,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > introduced after 3.0.0 shipped), organized by capability rather than by individual
 > commit. The capability ladder matches `VERSION` and `UPGRADE.md`.
 
+## Version 4.39.2, 9/4/2026
+
+> **CI secret-scan waiver: silent abort when the last changed file is waived (PATCH).** Field
+> report (2026-09-04, `Accenture/mercury-composable` PR #318 — the first PR ever to exercise a
+> `.agent/secret-scan-ignore` entry there): the changed-config secret scan (v4.34.0) failed the
+> `memory` check with a hard, outputless `exit 1` whenever the changed-file list's **last**
+> credential-class config file matched a waiver pattern. Root cause: the exemption filter's
+> loop body ended in `[ "$keep" = "1" ] && printf ...` — for a waived trailing file the false
+> test becomes the loop's exit status, which fails the command substitution's **assignment**,
+> and under the runner's `set -e` the step dies before printing anything. The failure fires
+> preferentially on a team's *first legitimate use* of the waiver feature and masquerades as CI
+> flakiness. One-line fix: `if [ "$keep" = "1" ]; then printf ...; fi` (a false `if` condition
+> is exempt from `-e`).
+>
+> - `.github/workflows/agent-memory.yml`, `templates/.gitlab/agent-memory-ci.yml`,
+>   `templates/.azuredevops/agent-memory-ci.yml` — all three floors carried the identical loop;
+>   all three fixed, with a comment pinning the reason.
+> - Class sweep (per the report's audit request): the pre-commit `50-` secret-guard fragment
+>   already uses the safe `if/else` form (confirmed, matching the reporter's downstream
+>   finding); no other shipped shell ends a `-e`-governed loop/substitution with a bare
+>   test-and-act.
+> - `tests/test_ci_secret_scan_waiver.sh` — new: a static idiom guard on all three floors (any
+>   bash) plus behavioral cases that extract each floor's filter loop **verbatim** and run it
+>   under `-e` against the motivating fixture and three neighbors (last-file-waived,
+>   last-file-not-waived, both orderings of waived+unwaived); behavioral cases need bash ≥ 4
+>   (the runner's), red-verified against the pre-fix idiom.
+> - No shape, protocol, or script-contract change; installed repos converge by plain re-copy of
+>   their forge's CI floor at the next reconcile (downstream interim fixes, e.g.
+>   mercury-composable `f8eb051a`, converge to zero diff).
+
 ## Version 4.39.1, 9/1/2026
 
 > **Same-thread merge claim: honest boundary (PATCH).** An independent CoPilot assessment of

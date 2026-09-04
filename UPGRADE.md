@@ -142,6 +142,7 @@ dev-numbered 4.22–4.25 — into a single MINOR over the released 4.21.0.)*
 | 4.38.1 | **`memory-lint`: scanner-neutral guidance constant (PATCH):** an enterprise security pipeline (Snyk) in a downstream field deployment rejected builds, flagging the consolidated guidance constant (introduced 4.34.1) as a hardcoded secret — that detector class keys on identifier-contains-SECRET + string-literal assignment, and the prose constant carried the name. Renamed `GUIDANCE` in both runtimes; no string content, output, or hook-contract change (byte-identical lint results before/after, both runtimes in agreement). Each mirror suite gains a script-hygiene self-check scanning the shipped scripts for the flagged identifier shape, trigger words assembled at runtime (53 each; red-verified against the motivating artifact pre-rename). `SKILLS.md` (Authoring) records the house rule: prose-constant identifiers in shipped scripts stay scanner-neutral. Downstream interim local edits converge to zero diff on re-copy (`verbatim-dir`) |
 | 4.39.0 | **Merge-scale memory: threads as files (MINOR):** from maintainer field reports — `continuity.md` merge conflicts became regular business as team adoption grew, concentrated in `## Open Threads` and the `last_session` scalar (PR #27's field artifact: two stacked branches, both appending a thread and bumping `last_session`). Structural fix, no merge-time machinery: (1) **one thread per file** — `memory/open-threads/thread-<id>.md`, filename = the fact id, content = exactly the thread's bullet block; parallel work on different threads cannot conflict, a same-thread edit conflicts per-file (the MERGE.md Tier 2 human gate, preserved by design — a rejected merge-driver alternative silently unioned it; see docs/DESIGN-merge-scale.md). No index file — the directory is the index, like sessions/. (2) **`last_session` dropped** — derivable from the newest session log; the protocol's multi-agent check reads that log's `**Agent:**` header. (3) **archive files union-merge** (`memory/archive/*.md merge=union` in `.gitattributes`; git-native, backstopped by `[both]`/`[over-archived]`). (4) Reviews run serialized (REVIEW.md). All three built-in script pairs treat thread files as fact surfaces (lint 67 tests ×2, refresh 6 ×2, archive 9 ×2); new lint checks `[thread-file]`, `[duplicate-id]`, and `[duplicate-state-key]` (absorbed from PR #27 — credit: Roland Heusser); `tests/test_thread_layout_merge.sh` pins the merge contract with real git merges (4 cases incl. a mutation check). Protocol-text change → ships the mandated Semantic steps row |
 | 4.39.1 | **Same-thread merge claim: honest boundary (PATCH):** from an independent CoPilot assessment of v4.39.0 (same-day). Git conflicts only on adjacent/overlapping hunks; separated same-thread edits merge cleanly with both sides kept — the docs now state the measured boundary and route the clean-merge case to the write-time contradiction check (`DECAY.md` §10). `MERGE.md` / `.agent/schema.md` / `docs/DESIGN-merge-scale.md` precision + two new merge-contract test cases (4 → 6). No behavior, script, or shape change; converges by plain re-copy |
+| 4.39.2 | **CI secret-scan waiver: silent abort on waived last file (PATCH):** field report (2026-09-04, mercury-composable PR #318 — the first PR to exercise a `.agent/secret-scan-ignore` entry there). The changed-config secret scan's exemption filter ended its loop body with `[ "$keep" = "1" ] && printf ...`; a waived LAST changed config file makes the false test the loop's exit status, fails the command substitution's assignment, and under runner `set -e` kills the step with zero output — a red `memory` check that fires preferentially on a team's first legitimate waiver use. One-line fix (`if ... fi`) applied to all three floors (GitHub workflow + GitLab/AzDO templates); class sweep clean (pre-commit fragment already used `if/else`); new `tests/test_ci_secret_scan_waiver.sh` extracts each floor's loop verbatim and pins 4 cases under `-e`, red-verified. Converges by plain re-copy of the forge CI floor |
 
 
 Each enabled repo records what it is on in **`.agent/version.md`**:
@@ -2452,3 +2453,36 @@ zero behavior change.
    `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
 3. **Verify:** in the tool repo, `bash tests/test_thread_layout_merge.sh` passes 6 cases;
    in a target, `memory-lint` output is unchanged from 4.39.0.
+
+## Rung: 4.39.1 → 4.39.2 — CI secret-scan waiver: silent abort on waived last file (PATCH)
+
+**What changed:** a field report (2026-09-04, `Accenture/mercury-composable` PR #318 — the
+first PR ever to exercise a `.agent/secret-scan-ignore` entry in that repo) showed the
+changed-config secret scan (v4.34.0) failing the `memory` check with a hard, **outputless**
+`exit 1` whenever the last credential-class config file in the push/PR's changed-file list
+matched a waiver pattern. The exemption filter's loop body ended in
+`[ "$keep" = "1" ] && printf ...`; for a waived trailing file, the false test becomes the
+loop's exit status → the command substitution's status → the **assignment's** status, and
+the runner's `set -e` aborts the step before it prints anything. Fixed with `if ... fi` (a
+false `if` condition is exempt from `-e`) in all three floors; the pre-commit `50-` secret
+guard already used the safe `if/else` form, and a sweep found no other shipped shell ending
+a `-e`-governed loop/substitution with a bare test-and-act. New regression test
+`tests/test_ci_secret_scan_waiver.sh` extracts each floor's filter loop verbatim and pins
+the motivating fixture plus three neighbors.
+
+**Steps:**
+
+1. **Reconcile** (or hand-walk `MANIFEST.md`): re-copies the target's forge CI floor —
+   `.github/workflows/agent-memory.yml` (GitHub) / `.gitlab/agent-memory-ci.yml` (GitLab) /
+   `.azuredevops/agent-memory-ci.yml` (AzDO) — verbatim rows. A downstream interim fix
+   (e.g. mercury-composable `f8eb051a` carries the same one-liner with a
+   supersede-on-upgrade marker) converges to zero diff on re-copy. Nothing else changes —
+   no scripts, no protocol, no memory-file shape, so no adapter re-sync and no semantic
+   step.
+2. **Stamp** `.agent/version.md` → `version: 4.39.2`, `last_upgraded: <today>`, preserving
+   `enabled_with` and `mode`. Use an edit/read-before-write path, never truncate first.
+3. **Verify:** in the tool repo, `bash tests/test_ci_secret_scan_waiver.sh` passes (static
+   guard everywhere; behavioral cases where bash ≥ 4 is available, as on the forge
+   runners); in a target with a populated `.agent/secret-scan-ignore`, a push whose only
+   changed config file is a waived one now reports `no changed config files; skipping.`
+   instead of an outputless red check.
