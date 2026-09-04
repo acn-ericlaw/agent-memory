@@ -1586,6 +1586,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#version-4392-942026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version 4.39.2, 9/4/2026
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#version-4391-912026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4859,6 +4870,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#version-4392-942026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version 4.39.2, 9/4/2026
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#version-4391-912026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -8120,6 +8142,37 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <p>Releases 1.0.0–3.0.0 below were reconstructed retrospectively (this changelog was
 introduced after 3.0.0 shipped), organized by capability rather than by individual
 commit. The capability ladder matches <code>VERSION</code> and <code>UPGRADE.md</code>.</p>
+</blockquote>
+<h2 id="version-4392-942026">Version 4.39.2, 9/4/2026<a class="headerlink" href="#version-4392-942026" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>CI secret-scan waiver: silent abort when the last changed file is waived (PATCH).</strong> Field
+report (2026-09-04, <code>Accenture/mercury-composable</code> PR #318 — the first PR ever to exercise a
+<code>.agent/secret-scan-ignore</code> entry there): the changed-config secret scan (v4.34.0) failed the
+<code>memory</code> check with a hard, outputless <code>exit 1</code> whenever the changed-file list's <strong>last</strong>
+credential-class config file matched a waiver pattern. Root cause: the exemption filter's
+loop body ended in <code>[ "$keep" = "1" ] &amp;&amp; printf ...</code> — for a waived trailing file the false
+test becomes the loop's exit status, which fails the command substitution's <strong>assignment</strong>,
+and under the runner's <code>set -e</code> the step dies before printing anything. The failure fires
+preferentially on a team's <em>first legitimate use</em> of the waiver feature and masquerades as CI
+flakiness. One-line fix: <code>if [ "$keep" = "1" ]; then printf ...; fi</code> (a false <code>if</code> condition
+is exempt from <code>-e</code>).</p>
+<ul>
+<li><code>.github/workflows/agent-memory.yml</code>, <code>templates/.gitlab/agent-memory-ci.yml</code>,
+  <code>templates/.azuredevops/agent-memory-ci.yml</code> — all three floors carried the identical loop;
+  all three fixed, with a comment pinning the reason.</li>
+<li>Class sweep (per the report's audit request): the pre-commit <code>50-</code> secret-guard fragment
+  already uses the safe <code>if/else</code> form (confirmed, matching the reporter's downstream
+  finding); no other shipped shell ends a <code>-e</code>-governed loop/substitution with a bare
+  test-and-act.</li>
+<li><code>tests/test_ci_secret_scan_waiver.sh</code> — new: a static idiom guard on all three floors (any
+  bash) plus behavioral cases that extract each floor's filter loop <strong>verbatim</strong> and run it
+  under <code>-e</code> against the motivating fixture and three neighbors (last-file-waived,
+  last-file-not-waived, both orderings of waived+unwaived); behavioral cases need bash ≥ 4
+  (the runner's), red-verified against the pre-fix idiom.</li>
+<li>No shape, protocol, or script-contract change; installed repos converge by plain re-copy of
+  their forge's CI floor at the next reconcile (downstream interim fixes, e.g.
+  mercury-composable <code>f8eb051a</code>, converge to zero diff).</li>
+</ul>
 </blockquote>
 <h2 id="version-4391-912026">Version 4.39.1, 9/1/2026<a class="headerlink" href="#version-4391-912026" title="Permanent link">&para;</a></h2>
 <blockquote>
