@@ -101,6 +101,9 @@
     .deck{height:auto;width:auto;overflow:visible;position:static}
     .slide{position:static;display:flex !important;inset:auto;padding:24px 8mm;
            page-break-after:always;overflow:visible;animation:none;height:auto}
+    /* .foot is absolutely positioned against its slide; static slides would re-anchor
+       every foot to page 1 and overlap them — let it flow at the end of its own slide */
+    .foot{position:static;margin-top:2em}
     .grad{background:none;color:var(--accent);-webkit-text-fill-color:var(--accent)}
     .bar,.zone,.progress{display:none}
   }
