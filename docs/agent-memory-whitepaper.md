@@ -2,8 +2,8 @@
 
 ## Deterministic memory as a substrate; a lightweight cognitive loop as the control layer
 
-**Version:** 1.5 (describes agent-memory **v4.37.0**)
-**Date:** August 20, 2026
+**Version:** 1.6 (describes agent-memory **v4.39.2**)
+**Date:** September 5, 2026
 
 > *"Acceleration without direction is only faster drift."*
 
@@ -57,6 +57,10 @@ CI, or Azure Pipelines; agent-activated, **zero manual user
 step**), a one-command **first-run init** for fresh clones, Windows line-ending hardening, a
 **`MERGE.md`** conflict protocol, and a **safe-write** discipline — all from the adoption
 constraint that *any manual step is a barrier once the protocol lands with untrained users*.
+As team adoption grew, the same line of work removed the measured **merge hotspots
+structurally** (v4.39.0): each Open Thread lives in its own file, the merge-hottest derived
+field was dropped outright, and archive files union-merge — parallel contributors stopped
+colliding without any merge-time machinery (§5b).
 
 Its central claim: pairing a **deterministic memory substrate** with a **lightweight
 cognitive loop** yields **predictable innovation with human partnership** — bold ideas,
@@ -308,7 +312,11 @@ its documentation:
   `.json`/`.yml`/`.yaml`/`.properties`/`.toml`/`.ini`/`.env*` — **enforcing by default**:
   findings block the commit, the deliberate exception to the advisory doctrine, with
   `AGENT_MEMORY_SECRET_GUARD=advisory` as the opt-down; it prevents an accidental credential from
-  entering history at all, wherever it lands. The managed **post-commit fragment** is advisory,
+  entering history at all, wherever it lands. Formats that cannot carry an inline waiver tag
+  (JSON, `.properties`) use a committed, human-audited `.agent/secret-scan-ignore` — a waiver
+  path exercised in the field and hardened by it (a v4.39.2 fix, found on the mechanism's
+  first real use in a downstream repo, with regression tests that pin the shipped CI scripts
+  verbatim). The managed **post-commit fragment** is advisory,
   auto-stubs a session log when a commit did real work but carried none,
   and re-syncs adapters when a skill changed. A **CI floor** (GitHub Actions, GitLab CI, or Azure
   Pipelines: `memory-lint` + a session-log
@@ -332,6 +340,21 @@ its documentation:
   Contradiction** (a supersession only on the human's explicit instruction); `memory-lint`
   gates; the human approves the merge commit. The `status` line was respecified as a short
   current-state line (not an accreted changelog) to stop it being a merge hotspot.
+- **Merge-scale memory — remove the conflict surface, don't referee it (v4.39.0).** With
+  multiple simultaneous contributors, field reports showed `continuity.md` conflicts becoming
+  regular business, concentrated in two spots. Both were removed **structurally**: each Open
+  Thread now lives in its own `memory/open-threads/thread-<id>.md` (filename = the fact id;
+  the directory is the index, like `sessions/`), so parallel work on different threads cannot
+  conflict — while same-thread edits to adjacent lines still conflict per-file, which *is* the
+  Tier 2 human gate, preserved deliberately over a rejected merge-driver that would have
+  silently unioned semantic clashes. The merge-hottest field (`last_session`) was dropped as
+  derivable from the newest session log, and archive files **union-merge** via
+  `.gitattributes`, backstopped by lint checks. Honest boundary, measured and documented
+  (v4.39.1): git conflicts only on adjacent/overlapping hunks; separated same-thread edits
+  merge cleanly keeping both sides, and the write-time contradiction check owns the survivors'
+  consistency. Completed threads condense to **3–6-line close records** (v4.38.0) — the full
+  narrative lives in the origin session log — with a `[closed-thread-bloat]` advisory
+  measuring exactly that class.
 - **Safe-write discipline.** The most-repeated bug was a truncate-before-read shortcut
   (`open(f,"w").write(open(f).read()+…)`) that wiped a file before reading it. The rule —
   append-mode or read-into-a-variable-then-write, and run `memory-lint` after any scripted
@@ -382,7 +405,10 @@ its documentation:
   older version), or **Migrate** (fold vendor files in, preserving originals). It generates
   `memory/`, **harvests durable facts from the repo's docs**, installs the bootstrap pointers,
   the six skill adapters, the **git hook + forge-aware CI triggers**, and a DRAFT Vision + gate — **no
-  manual user step**.
+  manual user step**. A repo that is *also a consumable product* can declare a sanctioned
+  **contributor/consumer fork** in the root shim (v4.38.0): consumers exit to the product's
+  own entry point in step 0, contributors continue into the memory protocol — so a library's
+  users are never routed into its maintainers' memory.
 - **A session.** The agent reads Current State (`continuity.md`) + the Vision, does the
   work tying it to a Blueprint gap and the Design it realizes, writes a session log with
   `## Memory References`, and updates `continuity.md`.
@@ -431,6 +457,21 @@ its documentation:
   never fired; a re-tier step skipped). Rather than exhort the agent to try harder, each was
   closed structurally: a runnable helper for the arithmetic + a `memory-lint` advisory for the
   gap. This is the evidence behind the *mechanize-the-arithmetic* principle (§6).
+- **Friction reports as the flywheel.** The v4.38–v4.39 arc was driven end-to-end by field
+  reports from enabled repos: a fresh-agent onboarding assessment produced the consumer
+  routing and close-record economy (v4.38.0); an enterprise security scanner false-positive
+  produced the scanner-neutral house rule (v4.38.1); recurring merge conflicts under team
+  adoption produced the thread-file layout (v4.39.0, with an independent external PR
+  contributing lint checks); a same-day external assessment tightened the merge claim to its
+  measured boundary (v4.39.1); and the secret-scan waiver's **first legitimate field use**
+  surfaced a shell-semantics bug fixed with verbatim-fixture regression tests (v4.39.2).
+  Complaints are adoption signal; each became a versioned, additive release.
+- **Vendor breadth keeps confirming itself.** Beyond the Copilot/Gemini validation above,
+  the protocol has since been exercised with **Cursor** (a dedicated adapter path) and
+  **Grok** (no dedicated adapter at all — activation purely via the universal one-line
+  `AGENTS.md` shim and the protocol baseline), both working as expected (2026-09). The
+  no-adapter case is the stronger evidence: it validates the design bet that the *agent is
+  the runtime* and native adapters are conveniences, not requirements.
 
 ---
 
@@ -478,9 +519,11 @@ loop with human gates.**
 Tracked as Blueprint gaps against the Vision:
 
 - **Greenfield flow** — start from a Vision with no code yet (the substrate now exists).
-- **Multi-user hardening** — *first increment shipped* (the `MERGE.md` conflict protocol +
-  merge-friendly `continuity.md` conventions + a merge-marker lint check); continue
-  strengthening conventions for simultaneous contributors on one enabled repo.
+- **Multi-user hardening** — *two increments shipped*: the `MERGE.md` conflict protocol +
+  merge-friendly `continuity.md` conventions + a merge-marker lint check, then the
+  **merge-scale layout** (v4.39.0: one thread per file, `last_session` dropped, archive
+  union-merge — conflict surfaces removed structurally). Continue hardening for
+  simultaneous contributors on one enabled repo.
 - **Optional SDLC overlay** — a scrum-inspired profile a target *owner* can opt into
   (`(sprint)` tagging + sprint-boundary review, no points/ceremony). Optional, never core.
 

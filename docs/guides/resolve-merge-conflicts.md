@@ -28,11 +28,24 @@ flowchart TD
 - **Gate.** [`memory-lint`](../reference/built-in-skills.md#memory-lint) must pass.
 - **Approval.** **You** approve the merge commit — never auto-commit.
 
-## Why `status` rarely conflicts now
+## Why most conflicts no longer happen (v4.39.0)
 
-The `continuity.md` `status` field is specified as a **short current-state line, not a
-changelog**. A single accreted `status` line used to be a merge hotspot for concurrent
-teammates; keeping it lean (one fact per line; append-only sections union; scalar bumps
-take-later) removes most conflicts before they happen.
+As team adoption grew, the two measured merge hotspots were removed **structurally** —
+no merge-time machinery:
 
-For the authoritative protocol, see [`MERGE.md`](../reference/protocol-files.md).
+- **One Open Thread per file.** Threads live in `memory/open-threads/thread-<id>.md`
+  (filename = the fact id; the directory is the index). Parallel work on *different*
+  threads cannot conflict. Same-thread edits conflict only when they touch
+  **adjacent/overlapping** lines — that conflict *is* the Tier 2 human gate, preserved by
+  design; edits separated by even one unchanged line merge cleanly with **both sides
+  kept**, and consistency between the survivors is the write-time contradiction check's
+  job.
+- **`last_session` is gone.** It bumped on nearly every session and conflicted constantly;
+  it was always derivable from the newest session log, so v4.39.0 dropped it.
+- **Archive files union-merge.** `memory/archive/*.md merge=union` in `.gitattributes` —
+  git-native, backstopped by the `[both]`/`[over-archived]` lint checks.
+- **`status` stays a short current-state line, not a changelog** — one fact per line, so
+  concurrent bumps rarely collide.
+
+For the authoritative protocol, see [`MERGE.md`](../reference/protocol-files.md); the
+design record is `docs/DESIGN-merge-scale.md`.
