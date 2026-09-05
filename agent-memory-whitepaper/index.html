@@ -2023,8 +2023,8 @@
 
 <h1 id="agent-memory-a-lightweight-vendor-neutral-memory-cognitive-loop-system-for-predictable-aihuman-delivery">agent-memory: A Lightweight, Vendor-Neutral Memory + Cognitive-Loop System for Predictable AI–Human Delivery<a class="headerlink" href="#agent-memory-a-lightweight-vendor-neutral-memory-cognitive-loop-system-for-predictable-aihuman-delivery" title="Permanent link">&para;</a></h1>
 <h2 id="deterministic-memory-as-a-substrate-a-lightweight-cognitive-loop-as-the-control-layer">Deterministic memory as a substrate; a lightweight cognitive loop as the control layer<a class="headerlink" href="#deterministic-memory-as-a-substrate-a-lightweight-cognitive-loop-as-the-control-layer" title="Permanent link">&para;</a></h2>
-<p><strong>Version:</strong> 1.5 (describes agent-memory <strong>v4.37.0</strong>)
-<strong>Date:</strong> August 20, 2026</p>
+<p><strong>Version:</strong> 1.6 (describes agent-memory <strong>v4.39.2</strong>)
+<strong>Date:</strong> September 5, 2026</p>
 <blockquote>
 <p><em>"Acceleration without direction is only faster drift."</em></p>
 </blockquote>
@@ -2073,7 +2073,11 @@ guard) + a CI floor</strong> (forge-aware: GitHub Actions, GitLab
 CI, or Azure Pipelines; agent-activated, <strong>zero manual user
 step</strong>), a one-command <strong>first-run init</strong> for fresh clones, Windows line-ending hardening, a
 <strong><code>MERGE.md</code></strong> conflict protocol, and a <strong>safe-write</strong> discipline — all from the adoption
-constraint that <em>any manual step is a barrier once the protocol lands with untrained users</em>.</p>
+constraint that <em>any manual step is a barrier once the protocol lands with untrained users</em>.
+As team adoption grew, the same line of work removed the measured <strong>merge hotspots
+structurally</strong> (v4.39.0): each Open Thread lives in its own file, the merge-hottest derived
+field was dropped outright, and archive files union-merge — parallel contributors stopped
+colliding without any merge-time machinery (§5b).</p>
 <p>Its central claim: pairing a <strong>deterministic memory substrate</strong> with a <strong>lightweight
 cognitive loop</strong> yields <strong>predictable innovation with human partnership</strong> — bold ideas,
 faithful delivery, a human in the loop at every altitude. This was demonstrated on a real
@@ -2356,7 +2360,11 @@ its documentation:</p>
   <code>.json</code>/<code>.yml</code>/<code>.yaml</code>/<code>.properties</code>/<code>.toml</code>/<code>.ini</code>/<code>.env*</code> — <strong>enforcing by default</strong>:
   findings block the commit, the deliberate exception to the advisory doctrine, with
   <code>AGENT_MEMORY_SECRET_GUARD=advisory</code> as the opt-down; it prevents an accidental credential from
-  entering history at all, wherever it lands. The managed <strong>post-commit fragment</strong> is advisory,
+  entering history at all, wherever it lands. Formats that cannot carry an inline waiver tag
+  (JSON, <code>.properties</code>) use a committed, human-audited <code>.agent/secret-scan-ignore</code> — a waiver
+  path exercised in the field and hardened by it (a v4.39.2 fix, found on the mechanism's
+  first real use in a downstream repo, with regression tests that pin the shipped CI scripts
+  verbatim). The managed <strong>post-commit fragment</strong> is advisory,
   auto-stubs a session log when a commit did real work but carried none,
   and re-syncs adapters when a skill changed. A <strong>CI floor</strong> (GitHub Actions, GitLab CI, or Azure
   Pipelines: <code>memory-lint</code> + a session-log
@@ -2380,6 +2388,21 @@ its documentation:</p>
   Contradiction</strong> (a supersession only on the human's explicit instruction); <code>memory-lint</code>
   gates; the human approves the merge commit. The <code>status</code> line was respecified as a short
   current-state line (not an accreted changelog) to stop it being a merge hotspot.</li>
+<li><strong>Merge-scale memory — remove the conflict surface, don't referee it (v4.39.0).</strong> With
+  multiple simultaneous contributors, field reports showed <code>continuity.md</code> conflicts becoming
+  regular business, concentrated in two spots. Both were removed <strong>structurally</strong>: each Open
+  Thread now lives in its own <code>memory/open-threads/thread-&lt;id&gt;.md</code> (filename = the fact id;
+  the directory is the index, like <code>sessions/</code>), so parallel work on different threads cannot
+  conflict — while same-thread edits to adjacent lines still conflict per-file, which <em>is</em> the
+  Tier 2 human gate, preserved deliberately over a rejected merge-driver that would have
+  silently unioned semantic clashes. The merge-hottest field (<code>last_session</code>) was dropped as
+  derivable from the newest session log, and archive files <strong>union-merge</strong> via
+  <code>.gitattributes</code>, backstopped by lint checks. Honest boundary, measured and documented
+  (v4.39.1): git conflicts only on adjacent/overlapping hunks; separated same-thread edits
+  merge cleanly keeping both sides, and the write-time contradiction check owns the survivors'
+  consistency. Completed threads condense to <strong>3–6-line close records</strong> (v4.38.0) — the full
+  narrative lives in the origin session log — with a <code>[closed-thread-bloat]</code> advisory
+  measuring exactly that class.</li>
 <li><strong>Safe-write discipline.</strong> The most-repeated bug was a truncate-before-read shortcut
   (<code>open(f,"w").write(open(f).read()+…)</code>) that wiped a file before reading it. The rule —
   append-mode or read-into-a-variable-then-write, and run <code>memory-lint</code> after any scripted
@@ -2429,7 +2452,10 @@ meaning is at stake.
   older version), or <strong>Migrate</strong> (fold vendor files in, preserving originals). It generates
   <code>memory/</code>, <strong>harvests durable facts from the repo's docs</strong>, installs the bootstrap pointers,
   the six skill adapters, the <strong>git hook + forge-aware CI triggers</strong>, and a DRAFT Vision + gate — <strong>no
-  manual user step</strong>.</li>
+  manual user step</strong>. A repo that is <em>also a consumable product</em> can declare a sanctioned
+  <strong>contributor/consumer fork</strong> in the root shim (v4.38.0): consumers exit to the product's
+  own entry point in step 0, contributors continue into the memory protocol — so a library's
+  users are never routed into its maintainers' memory.</li>
 <li><strong>A session.</strong> The agent reads Current State (<code>continuity.md</code>) + the Vision, does the
   work tying it to a Blueprint gap and the Design it realizes, writes a session log with
   <code>## Memory References</code>, and updates <code>continuity.md</code>.</li>
@@ -2477,6 +2503,21 @@ meaning is at stake.
   never fired; a re-tier step skipped). Rather than exhort the agent to try harder, each was
   closed structurally: a runnable helper for the arithmetic + a <code>memory-lint</code> advisory for the
   gap. This is the evidence behind the <em>mechanize-the-arithmetic</em> principle (§6).</li>
+<li><strong>Friction reports as the flywheel.</strong> The v4.38–v4.39 arc was driven end-to-end by field
+  reports from enabled repos: a fresh-agent onboarding assessment produced the consumer
+  routing and close-record economy (v4.38.0); an enterprise security scanner false-positive
+  produced the scanner-neutral house rule (v4.38.1); recurring merge conflicts under team
+  adoption produced the thread-file layout (v4.39.0, with an independent external PR
+  contributing lint checks); a same-day external assessment tightened the merge claim to its
+  measured boundary (v4.39.1); and the secret-scan waiver's <strong>first legitimate field use</strong>
+  surfaced a shell-semantics bug fixed with verbatim-fixture regression tests (v4.39.2).
+  Complaints are adoption signal; each became a versioned, additive release.</li>
+<li><strong>Vendor breadth keeps confirming itself.</strong> Beyond the Copilot/Gemini validation above,
+  the protocol has since been exercised with <strong>Cursor</strong> (a dedicated adapter path) and
+  <strong>Grok</strong> (no dedicated adapter at all — activation purely via the universal one-line
+  <code>AGENTS.md</code> shim and the protocol baseline), both working as expected (2026-09). The
+  no-adapter case is the stronger evidence: it validates the design bet that the <em>agent is
+  the runtime</em> and native adapters are conveniences, not requirements.</li>
 </ul>
 <hr />
 <h2 id="9-relationship-to-the-literature">9. Relationship to the Literature<a class="headerlink" href="#9-relationship-to-the-literature" title="Permanent link">&para;</a></h2>
@@ -2569,9 +2610,11 @@ loop with human gates.</strong></p>
 <p>Tracked as Blueprint gaps against the Vision:</p>
 <ul>
 <li><strong>Greenfield flow</strong> — start from a Vision with no code yet (the substrate now exists).</li>
-<li><strong>Multi-user hardening</strong> — <em>first increment shipped</em> (the <code>MERGE.md</code> conflict protocol +
-  merge-friendly <code>continuity.md</code> conventions + a merge-marker lint check); continue
-  strengthening conventions for simultaneous contributors on one enabled repo.</li>
+<li><strong>Multi-user hardening</strong> — <em>two increments shipped</em>: the <code>MERGE.md</code> conflict protocol +
+  merge-friendly <code>continuity.md</code> conventions + a merge-marker lint check, then the
+  <strong>merge-scale layout</strong> (v4.39.0: one thread per file, <code>last_session</code> dropped, archive
+  union-merge — conflict surfaces removed structurally). Continue hardening for
+  simultaneous contributors on one enabled repo.</li>
 <li><strong>Optional SDLC overlay</strong> — a scrum-inspired profile a target <em>owner</em> can opt into
   (<code>(sprint)</code> tagging + sprint-boundary review, no points/ceremony). Optional, never core.</li>
 </ul>

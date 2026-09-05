@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>agent-memory — v4.37.0</title>
+<title>agent-memory — v4.39.2</title>
 <style>
   :root{
     --bg:#0b1020; --bg2:#0e1530; --panel:#131c3a; --panel2:#18224a;
@@ -21,8 +21,8 @@
   }
   .deck{height:100vh;width:100vw;overflow:hidden;position:relative}
   .slide{
-    position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
-    padding:6vh 9vw;animation:fade .4s ease both;
+    position:absolute;inset:0 0 56px 0;display:none;flex-direction:column;justify-content:center;
+    padding:6vh 9vw;animation:fade .4s ease both;overflow-y:auto;
   }
   .slide.active{display:flex}
   @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -60,9 +60,50 @@
   .back .tag{color:var(--accent2)} .fwd .tag{color:var(--accent)}
   .quote{font-size:clamp(22px,3vw,34px);line-height:1.3;max-width:24ch;font-weight:600}
   .progress{position:fixed;top:0;left:0;height:4px;background:var(--grad);width:0;transition:width .3s;z-index:10}
-  .counter{position:fixed;bottom:18px;right:24px;color:var(--muted);font-size:13px;letter-spacing:.05em;z-index:10}
-  .hint{position:fixed;bottom:18px;left:24px;color:var(--line);font-size:12px;z-index:10}
   .foot{position:absolute;bottom:5vh;left:9vw;color:var(--line);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+
+  /* ── chrome (navigation design borrowed from the mercury-composable deck) ── */
+  .bar{
+    position:absolute;left:0;right:0;bottom:0;height:56px;
+    display:flex;align-items:center;gap:18px;padding:0 clamp(18px,4vw,48px);
+    border-top:1px solid var(--line);background:var(--bg);z-index:5;
+  }
+  .wordmark{font-weight:700;letter-spacing:.02em}
+  .wordmark .dot{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .home{display:flex;align-items:center;gap:9px;color:inherit;text-decoration:none}
+  .home svg{width:21px;height:21px;fill:var(--accent);flex:none;transition:fill .15s}
+  .home:hover svg{fill:var(--accent2)}
+  .home:hover .wordmark{color:var(--accent2)}
+  .home:focus-visible{outline:2px solid var(--warn);outline-offset:3px;border-radius:6px}
+  .counter{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.85em;margin-left:auto}
+  .dots{display:flex;gap:7px}
+  .dots button{width:9px;height:9px;border-radius:50%;border:0;background:var(--line);cursor:pointer;padding:0}
+  .dots button.on{background:var(--accent)}
+  .dots button:focus-visible{outline:2px solid var(--warn);outline-offset:2px}
+  .navbtn{border:1px solid var(--line);background:var(--panel);color:var(--ink);
+          border-radius:8px;padding:.35em .8em;font:inherit;font-size:.85em;cursor:pointer}
+  .navbtn:hover{background:var(--panel2)}
+  .navbtn:focus-visible{outline:2px solid var(--warn);outline-offset:2px}
+  .hint{color:var(--muted);font-size:.8em}
+  @media (max-width:720px){ .hint,.dots{display:none} }
+
+  /* invisible page-turn click zones (left back, right forward; middle stays selectable) */
+  .zone{position:absolute;top:0;bottom:56px;z-index:2;background:transparent;border:0;cursor:pointer}
+  .zone:focus-visible{outline:2px solid var(--warn);outline-offset:-4px}
+  .zone.zback{left:0;width:22%} .zone.zfwd{right:0;width:26%}
+
+  /* ── print: a light handout, one slide per page ── */
+  @media print{
+    :root{--bg:#fff;--bg2:#fff;--panel:#f2f4fb;--panel2:#e9edf9;--ink:#1b2340;--muted:#4a5578;
+          --line:#d5dbef;--accent:#5b3df0;--accent2:#0e7490;--good:#0f766e;--warn:#a16207;
+          --grad:linear-gradient(120deg,#5b3df0,#0e7490)}
+    body{background:#fff;color:var(--ink)}
+    .deck{height:auto;width:auto;overflow:visible;position:static}
+    .slide{position:static;display:flex !important;inset:auto;padding:24px 8mm;
+           page-break-after:always;overflow:visible;animation:none;height:auto}
+    .grad{background:none;color:var(--accent);-webkit-text-fill-color:var(--accent)}
+    .bar,.zone,.progress{display:none}
+  }
 </style>
 </head>
 <body>
@@ -71,10 +112,10 @@
 
   <!-- 1 -->
   <section class="slide active">
-    <div class="kicker">agent-memory · v4.37.0</div>
+    <div class="kicker">agent-memory · v4.39.2</div>
     <h1>A lightweight, vendor-neutral<br><span class="grad">AI memory + cognitive loop</span></h1>
     <p class="lead" style="margin-top:.6em">Turning shared project context into <b>deterministic delivery with near-zero drift</b> — for human–AI collaboration, across any AI vendor.</p>
-    <div class="foot">August 2026</div>
+    <div class="foot">September 2026</div>
   </section>
 
   <!-- 1b · the era shift -->
@@ -268,7 +309,7 @@
     <div class="grid g3" style="margin-top:.6em">
       <div class="card"><h3>Composable triggers</h3><p>Committed <code>pre-commit</code> + <code>post-commit</code> dispatchers run ordered <code>*.d</code> fragments, so hook layers compose. The secret-guard fragment blocks staged credentials; ritual capture auto-stubs a missing session log + re-syncs adapters; a <b>CI floor</b> runs <code>memory-lint</code> + a changed-config scan. The tool runs nothing — git &amp; CI do.</p></div>
       <div class="card"><h3>First-run init + Windows</h3><p>One idempotent <code>init.sh</code> regenerates adapters &amp; activates the dispatchers on a fresh clone; <code>.gitattributes</code> pins shell scripts + hook fragments to LF so Git for Windows can't break them.</p></div>
-      <div class="card"><h3><code>MERGE.md</code> + safe-write</h3><p>Conflict resolution that <b>never picks a winner</b> (clash → preserve both + Contradiction); and a read-into-memory-write-once discipline that makes the old truncate-before-read bug structurally impossible.</p></div>
+      <div class="card"><h3>Merge at team scale</h3><p><code>MERGE.md</code> <b>never picks a winner</b> (clash → preserve both + Contradiction). And v4.39.0 removed the measured conflict surfaces <b>structurally</b>: one Open Thread per file, the merge-hottest field dropped, archives union-merge — parallel contributors stop colliding, while a genuine same-thread clash still conflicts into the human gate.</p></div>
     </div>
     <p class="lead" style="margin-top:.9em">Enable opens with an <b>exec summary + cancel gate</b> — informed consent before a single file is written.</p>
   </section>
@@ -320,7 +361,7 @@
     <div class="grid g3">
       <div class="card"><h3>Node.js → Rust rewrite</h3><p>A full rewrite delivered against recorded intent — invariants, decisions, and their <i>why</i> pinned and traceable — <b>deterministic, faithful, no drift.</b></p></div>
       <div class="card"><h3>Dogfooded</h3><p>The tool carries its own memory, Vision, and Blueprint — and the VBDI layer was designed <b>using the VBDI loop</b>. Using the thing to build the thing.</p></div>
-      <div class="card new"><h3>Cross-vendor, real product repo</h3><p>Driven end-to-end on a large Accenture repo by <b>GitHub Copilot / Gemini 3.1 Pro</b>. It even <i>independently reinvented</i> <code>refresh-metadata</code> — converging on the design that shipped.</p></div>
+      <div class="card new"><h3>Cross-vendor, real product repo</h3><p>Driven end-to-end on a large Accenture repo by <b>GitHub Copilot / Gemini 3.1 Pro</b> — it even <i>independently reinvented</i> <code>refresh-metadata</code>. Since exercised with <b>Cursor</b> and <b>Grok</b> — the latter with <i>no adapter at all</i>, activated by the one-line <code>AGENTS.md</code> shim alone.</p></div>
     </div>
     <p class="lead" style="margin-top:1em">An industry-alignment self-assessment's known gaps — supersession, <span style="white-space:nowrap">invariant re-checking</span>, contradiction, evaluation, provenance — all shipped as additive, versioned releases.</p>
   </section>
@@ -363,32 +404,83 @@
   <section class="slide">
     <div class="kicker">Roadmap &amp; mission</div>
     <p class="quote"><span class="grad">Memory is the deterministic substrate.<br>The loop is the lightweight control layer.</span></p>
-    <p class="lead" style="margin-top:1em">Next (tracked as Blueprint gaps): greenfield flow · more multi-user hardening (<code>MERGE.md</code> shipped) · an optional SDLC overlay for teams that want it.</p>
+    <p class="lead" style="margin-top:1em">Next (tracked as Blueprint gaps): greenfield flow · more multi-user hardening (<code>MERGE.md</code> + the v4.39.0 merge-scale layout shipped) · an optional SDLC overlay for teams that want it.</p>
     <p class="big" style="margin-top:1em"><b>Predictable innovation with human partnership</b> — bold ideas, faithful delivery, the human in the loop at every altitude.</p>
     <p class="lead" style="margin-top:.9em">Companion article: <a href="https://www.linkedin.com/posts/ericclaw_intent-driven-development-activity-7493145001313390593-cyc5" style="color:inherit"><b>From Context Engineering to Intent-Driven Development</b></a> — the argument behind this system, written from its evolution.</p>
-    <div class="foot">agent-memory · v4.37.0</div>
+    <div class="foot">agent-memory · v4.39.2</div>
   </section>
 
+  <!-- chrome -->
+  <button class="zone zback" id="zback" aria-label="Previous slide" tabindex="-1"></button>
+  <button class="zone zfwd" id="zfwd" aria-label="Next slide" tabindex="-1"></button>
+  <div class="bar">
+    <a class="home" href="https://acn-ericlaw.github.io/agent-memory/"
+       title="agent-memory home" aria-label="agent-memory home">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.33,12.91C21.42,14.46 20.71,15.95 19.44,16.86L20.21,18.35C20.44,18.8 20.47,19.33 20.27,19.8C20.08,20.27 19.69,20.64 19.21,20.8L18.42,21.05C18.25,21.11 18.06,21.14 17.88,21.14C17.37,21.14 16.89,20.91 16.56,20.5L14.44,18C13.55,17.85 12.71,17.47 12,16.9C11.5,17.05 11,17.13 10.5,17.13C9.62,17.13 8.74,16.86 8,16.34C7.47,16.5 6.93,16.57 6.38,16.56C5.59,16.57 4.81,16.41 4.08,16.11C2.65,15.47 1.7,14.07 1.65,12.5C1.57,11.78 1.69,11.05 2,10.39C1.71,9.64 1.68,8.82 1.93,8.06C2.3,7.11 3,6.32 3.87,5.82C4.45,4.13 6.08,3 7.87,3.12C9.47,1.62 11.92,1.46 13.7,2.75C14.12,2.64 14.56,2.58 15,2.58C16.36,2.55 17.65,3.15 18.5,4.22C20.54,4.75 22,6.57 22.08,8.69C22.13,9.8 21.83,10.89 21.22,11.82C21.29,12.18 21.33,12.54 21.33,12.91M16.33,11.5C16.9,11.57 17.35,12 17.35,12.57A1,1 0 0,1 16.35,13.57H15.72C15.4,14.47 14.84,15.26 14.1,15.86C14.35,15.95 14.61,16 14.87,16.07C20,16 19.4,12.87 19.4,12.82C19.34,11.39 18.14,10.27 16.71,10.33A1,1 0 0,1 15.71,9.33A1,1 0 0,1 16.71,8.33C17.94,8.36 19.12,8.82 20.04,9.63C20.09,9.34 20.12,9.04 20.12,8.74C20.06,7.5 19.5,6.42 17.25,6.21C16,3.25 12.85,4.89 12.85,5.81V5.81C12.82,6.04 13.06,6.53 13.1,6.56A1,1 0 0,1 14.1,7.56C14.1,8.11 13.65,8.56 13.1,8.56V8.56C12.57,8.54 12.07,8.34 11.67,8C11.19,8.31 10.64,8.5 10.07,8.56V8.56C9.5,8.61 9.03,8.21 9,7.66C8.92,7.1 9.33,6.61 9.88,6.56C10.04,6.54 10.82,6.42 10.82,5.79V5.79C10.82,5.13 11.07,4.5 11.5,4C10.58,3.75 9.59,4.08 8.59,5.29C6.75,5 6,5.25 5.45,7.2C4.5,7.67 4,8 3.78,9C4.86,8.78 5.97,8.87 7,9.25C7.5,9.44 7.78,10 7.59,10.54C7.4,11.06 6.82,11.32 6.3,11.13C5.57,10.81 4.75,10.79 4,11.07C3.68,11.34 3.68,11.9 3.68,12.34C3.68,13.08 4.05,13.77 4.68,14.17C5.21,14.44 5.8,14.58 6.39,14.57C6.24,14.31 6.11,14.04 6,13.76C5.81,13.22 6.1,12.63 6.64,12.44C7.18,12.25 7.77,12.54 7.96,13.08C8.36,14.22 9.38,15 10.58,15.13C11.95,15.06 13.17,14.25 13.77,13C14,11.62 15.11,11.5 16.33,11.5M18.33,18.97L17.71,17.67L17,17.83L18,19.08L18.33,18.97M13.68,10.36C13.7,9.83 13.3,9.38 12.77,9.33C12.06,9.29 11.37,9.53 10.84,10C10.27,10.58 9.97,11.38 10,12.19A1,1 0 0,0 11,13.19C11.57,13.19 12,12.74 12,12.19C12,11.92 12.07,11.65 12.23,11.43C12.35,11.33 12.5,11.28 12.66,11.28C13.21,11.31 13.68,10.9 13.68,10.36Z"/></svg>
+      <span class="wordmark">agent<span class="dot">·</span>memory</span>
+    </a>
+    <span class="hint">← → to navigate · P to print the handout</span>
+    <nav class="dots" id="dots" aria-label="Slides"></nav>
+    <button class="navbtn" id="prev" aria-label="Previous">‹ Prev</button>
+    <button class="navbtn" id="next" aria-label="Next">Next ›</button>
+    <span class="counter" id="counter">1 / 1</span>
+  </div>
 </div>
-<div class="counter" id="counter"></div>
-<div class="hint">← → / space to navigate · click to advance</div>
 <script>
-  const slides=[...document.querySelectorAll('.slide')];
-  let i=0;
-  function show(n){
-    i=Math.max(0,Math.min(slides.length-1,n));
-    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
-    document.getElementById('bar').style.width=((i)/(slides.length-1)*100)+'%';
-    document.getElementById('counter').textContent=(i+1)+' / '+slides.length;
-  }
-  function next(){show(i+1)} function prev(){show(i-1)}
-  addEventListener('keydown',e=>{
-    if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();next()}
-    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}
-    else if(e.key==='Home'){show(0)} else if(e.key==='End'){show(slides.length-1)}
+(function () {
+  "use strict";
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var dots = document.getElementById("dots");
+  var counter = document.getElementById("counter");
+  var i = 0;
+
+  slides.forEach(function (s, k) {
+    var b = document.createElement("button");
+    var kicker = s.querySelector(".kicker");
+    b.type = "button";
+    b.setAttribute("aria-label", "Slide " + (k + 1) + ": " +
+      (s.getAttribute("aria-label") || (kicker ? kicker.textContent : "")));
+    b.addEventListener("click", function () { go(k); });
+    dots.appendChild(b);
   });
-  addEventListener('click',e=>{ if(e.clientX < innerWidth*0.28) prev(); else next(); });
-  show(0);
+
+  function go(k) {
+    if (k < 0 || k >= slides.length) return;
+    slides[i].classList.remove("active");
+    i = k;
+    slides[i].classList.add("active");
+    slides[i].scrollTop = 0;
+    counter.textContent = (i + 1) + " / " + slides.length;
+    document.getElementById("bar").style.width = (i / (slides.length - 1) * 100) + "%";
+    Array.prototype.forEach.call(dots.children, function (d, k2) {
+      d.classList.toggle("on", k2 === i);
+    });
+    if (("#" + (i + 1)) !== location.hash) {
+      try { history.replaceState(null, "", "#" + (i + 1)); } catch (e) { /* file:// */ }
+    }
+  }
+  function fromHash() {
+    var n = parseInt(location.hash.slice(1), 10);
+    go(isNaN(n) ? 0 : n - 1);
+  }
+
+  document.getElementById("next").addEventListener("click", function () { go(i + 1); });
+  document.getElementById("prev").addEventListener("click", function () { go(i - 1); });
+  document.getElementById("zfwd").addEventListener("click", function () { go(i + 1); });
+  document.getElementById("zback").addEventListener("click", function () { go(i - 1); });
+  window.addEventListener("hashchange", fromHash);
+  document.addEventListener("keydown", function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    switch (e.key) {
+      case "ArrowRight": case "PageDown": case " ": go(i + 1); e.preventDefault(); break;
+      case "ArrowLeft": case "PageUp": go(i - 1); e.preventDefault(); break;
+      case "Home": go(0); e.preventDefault(); break;
+      case "End": go(slides.length - 1); e.preventDefault(); break;
+      case "p": case "P": window.print(); break;
+    }
+  });
+  fromHash();
+})();
 </script>
 </body>
 </html>

@@ -956,10 +956,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-status-rarely-conflicts-now" class="md-nav__link">
+  <a href="#why-most-conflicts-no-longer-happen-v4390" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why status rarely conflicts now
+        Why most conflicts no longer happen (v4.39.0)
       
     </span>
   </a>
@@ -1671,10 +1671,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-status-rarely-conflicts-now" class="md-nav__link">
+  <a href="#why-most-conflicts-no-longer-happen-v4390" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why status rarely conflicts now
+        Why most conflicts no longer happen (v4.39.0)
       
     </span>
   </a>
@@ -1726,12 +1726,26 @@ human-gated, enforcing <code>never-pick-a-winner</code>.</p>
 <li><strong>Gate.</strong> <a href="../../reference/built-in-skills/#memory-lint"><code>memory-lint</code></a> must pass.</li>
 <li><strong>Approval.</strong> <strong>You</strong> approve the merge commit — never auto-commit.</li>
 </ul>
-<h2 id="why-status-rarely-conflicts-now">Why <code>status</code> rarely conflicts now<a class="headerlink" href="#why-status-rarely-conflicts-now" title="Permanent link">&para;</a></h2>
-<p>The <code>continuity.md</code> <code>status</code> field is specified as a <strong>short current-state line, not a
-changelog</strong>. A single accreted <code>status</code> line used to be a merge hotspot for concurrent
-teammates; keeping it lean (one fact per line; append-only sections union; scalar bumps
-take-later) removes most conflicts before they happen.</p>
-<p>For the authoritative protocol, see <a href="../../reference/protocol-files/"><code>MERGE.md</code></a>.</p>
+<h2 id="why-most-conflicts-no-longer-happen-v4390">Why most conflicts no longer happen (v4.39.0)<a class="headerlink" href="#why-most-conflicts-no-longer-happen-v4390" title="Permanent link">&para;</a></h2>
+<p>As team adoption grew, the two measured merge hotspots were removed <strong>structurally</strong> —
+no merge-time machinery:</p>
+<ul>
+<li><strong>One Open Thread per file.</strong> Threads live in <code>memory/open-threads/thread-&lt;id&gt;.md</code>
+  (filename = the fact id; the directory is the index). Parallel work on <em>different</em>
+  threads cannot conflict. Same-thread edits conflict only when they touch
+  <strong>adjacent/overlapping</strong> lines — that conflict <em>is</em> the Tier 2 human gate, preserved by
+  design; edits separated by even one unchanged line merge cleanly with <strong>both sides
+  kept</strong>, and consistency between the survivors is the write-time contradiction check's
+  job.</li>
+<li><strong><code>last_session</code> is gone.</strong> It bumped on nearly every session and conflicted constantly;
+  it was always derivable from the newest session log, so v4.39.0 dropped it.</li>
+<li><strong>Archive files union-merge.</strong> <code>memory/archive/*.md merge=union</code> in <code>.gitattributes</code> —
+  git-native, backstopped by the <code>[both]</code>/<code>[over-archived]</code> lint checks.</li>
+<li><strong><code>status</code> stays a short current-state line, not a changelog</strong> — one fact per line, so
+  concurrent bumps rarely collide.</li>
+</ul>
+<p>For the authoritative protocol, see <a href="../../reference/protocol-files/"><code>MERGE.md</code></a>; the
+design record is <code>docs/DESIGN-merge-scale.md</code>.</p>
 
 
 
