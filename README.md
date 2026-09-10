@@ -8,6 +8,14 @@
 > This repository is the pre-graduation archive (the full history and all tags were
 > transferred). Please use the official repository for the current version, issues and pull
 > requests.
+>
+> **Already have a clone?** Every commit and tag is identical in the new home, so just repoint
+> your remote — no re-clone, and the repositories you have enabled need no action:
+>
+> ```bash
+> git remote set-url origin https://github.com/Accenture/mercury-go.git
+> git pull --ff-only
+> ```
 
 ---
 

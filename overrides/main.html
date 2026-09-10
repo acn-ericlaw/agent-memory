@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{#
+  This site moved with agent-memory into the Mercury family. Forward every page to the same
+  path on the official site (deep links and anchors preserved); the meta refresh is the no-JS
+  fallback and lands on the new home page.
+#}
+{% block extrahead %}
+  {{ super() }}
+  <meta http-equiv="refresh" content="3; url=https://accenture.github.io/mercury-go/">
+  <script>
+    (function () {
+      var path = location.pathname.replace(/^\/agent-memory\/?/, "/");
+      location.replace("https://accenture.github.io/mercury-go" + path + location.search + location.hash);
+    })();
+  </script>
+{% endblock %}

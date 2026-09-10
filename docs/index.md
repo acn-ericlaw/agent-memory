@@ -11,6 +11,10 @@ hide:
     repository at [github.com/Accenture/mercury-go](https://github.com/Accenture/mercury-go).
     This copy is the pre-graduation archive and is no longer updated.
 
+    **Already have a clone of the tool?** Repoint its remote — every commit and tag is identical
+    in the new home, and your enabled repositories need no action:
+    `git remote set-url origin https://github.com/Accenture/mercury-go.git && git pull --ff-only`
+
 # agent-memory
 
 **A lightweight, vendor-neutral AI memory + cognitive-loop system.**
