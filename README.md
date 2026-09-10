@@ -1,3 +1,16 @@
+> ## ➡️ This repository has moved
+>
+> **agent-memory is now an official member of the Mercury family — Accenture's advanced
+> software foundations for human–AI collaboration.** Its official home is
+> **[github.com/Accenture/mercury-go](https://github.com/Accenture/mercury-go)**, and the
+> documentation lives at **[accenture.github.io/mercury-go](https://accenture.github.io/mercury-go/)**.
+>
+> This repository is the pre-graduation archive (the full history and all tags were
+> transferred). Please use the official repository for the current version, issues and pull
+> requests.
+
+---
+
 # agent-memory
 
 A no-code AI memory system, AI-enablement tool, **and migration tool** —

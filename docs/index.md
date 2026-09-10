@@ -4,6 +4,13 @@ hide:
   - navigation
 ---
 
+!!! warning "This site has moved"
+    agent-memory is now an official member of the **Mercury family** — Accenture's advanced
+    software foundations for human–AI collaboration. The documentation lives at
+    **[accenture.github.io/mercury-go](https://accenture.github.io/mercury-go/)** and the
+    repository at [github.com/Accenture/mercury-go](https://github.com/Accenture/mercury-go).
+    This copy is the pre-graduation archive and is no longer updated.
+
 # agent-memory
 
 **A lightweight, vendor-neutral AI memory + cognitive-loop system.**
